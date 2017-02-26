@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const Server = require('http').Server
+const swig = require('swig')
 const Express = require('express')
 
 // initialize the server and configure support for ejs templates
@@ -10,7 +11,9 @@ const server = new Server(app)
 // routes
 
 
-app.set('view engine', 'ejs')
+// view engine setup
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'))
 app.use(Express.static(__dirname + '/public'))
 
@@ -29,4 +32,13 @@ server.listen(port, err => {
     } else {
         console.info(`Server running on http://localhost:${port} [${env}]`)
     }
+})
+
+// socket.io
+const io = require('socket.io')(server)
+io.on('connection', (socket) => {
+    socket.emit('server event', { foo: 'bar' });
+    socket.on('client event', (data) => {
+        console.info(data)
+    })
 })

@@ -1,5 +1,7 @@
 'use strict'
 import React from 'react'
+import Chat from '../Chat/Chat'
+
 
 const MainPageComponent = ({
     title,
@@ -13,9 +15,11 @@ const MainPageComponent = ({
                 return (
                     <div key={name} className="name">
                         {name}
+
                     </div>
                 )
             })}
+            <Chat />
         </div>
     )
 }

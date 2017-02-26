@@ -1,0 +1,18 @@
+.chat {
+    width: 400px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+
+    .messages-box {
+        width: 100%;
+        height: 100%;
+    }
+
+    .chat-form {
+        width: 100%;
+        height: 100px;
+        max-height: 100px;
+    }
+
+}
