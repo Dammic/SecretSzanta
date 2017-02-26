@@ -7,7 +7,7 @@
     "build:webpack": "webpack --config webpack.app.js",
     "build:dll": "webpack --config webpack.dll.js",
     "build": "npm run build:dll && npm run build:webpack",
-    "watch": "npm run build:dll && webpack --config webpack.app.js --watch --progress",
+    "watch": "npm run build:dll && webpack --config webpack.app.js --watch --progress && node server.js",
     "start": "webpack --config webpack.app.js && node server.js",
     "start-clean": "webpack --config webpack.dll.js && webpack --config webpack.app.js && node server.js",
     "eslint": "eslint ./src",
