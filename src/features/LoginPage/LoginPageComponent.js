@@ -8,10 +8,13 @@ const LoginPageComponent = ({
     console.info(userNames)
     return (
         <div className="login-page">
-            Django Chained!
 
+            <form className="login-form">
+                <input type="text" name="firstname" value="Mickey"/>
+                <input type="submit" value="Submit"/>
+            </form>
 
-        </div>
+        </div >
     )
 }
 

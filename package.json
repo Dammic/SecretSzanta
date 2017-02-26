@@ -7,11 +7,13 @@
     "build:webpack": "webpack --config webpack.app.js",
     "build:dll": "webpack --config webpack.dll.js",
     "build": "npm run build:dll && npm run build:webpack",
-    "watch": "npm run build:dll && webpack --config webpack.app.js --watch --progress && node server.js",
+    "watch": "npm run build:dll && webpack --config webpack.app.js --watch --progress",
     "start": "webpack --config webpack.app.js && node server.js",
     "start-clean": "webpack --config webpack.dll.js && webpack --config webpack.app.js && node server.js",
     "eslint": "eslint ./src",
-    "eslint-fix": "eslint ./src --fix"
+    "eslint-fix": "eslint ./src --fix",
+    "dev": "npm-run-all --parallel watch run",
+    "run": "node server.js"
   },
   "authors": [
     "Damian Michalski",
@@ -41,6 +43,7 @@
     "file-loader": "~0.10.0",
     "merge-stream": "~1.0.1",
     "node-sass": "~4.4.0",
+    "npm-run-all": "^4.0.2",
     "sass-loader": "~4.1.1",
     "style-loader": "~0.13.1",
     "url-loader": "~0.5.7",
