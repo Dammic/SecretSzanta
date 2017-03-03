@@ -1,19 +1,17 @@
 'use strict'
 import React from 'react'
 
+
 const LoginPageComponent = ({
-    title,
-    userNames
+    onSetNameClick
 }) => {
-    console.info(userNames)
     return (
         <div className="login-page">
-
-            <form className="login-form">
-                <input type="text" name="firstname" value="Mickey"/>
-                <input type="submit" value="Submit"/>
-            </form>
-
+            <img className="logo" src="Logo.png"/>
+            <div className="login-form">
+                <input type="text" name="firstname" placeholder=""/>
+                <button onClick={onSetNameClick}>Ok</button>
+            </div>
         </div >
     )
 }
