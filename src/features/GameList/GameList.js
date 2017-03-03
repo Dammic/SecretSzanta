@@ -6,6 +6,7 @@ import {testMock} from '../../const/testMock'
 export default class GameList extends React.PureComponent {
     render () {
         const fakeTitle = 'traveler'
+
         return (
             <GameListComponent title={fakeTitle} userNames={testMock} />
         )
