@@ -20,6 +20,15 @@ app.get('/', (req, res) => {
     return res.render('index')
 })
 
+//if middleware before didn't process given route we assume website don't exist
+//marek, 03.03.17r
+app.use('*', (req, res, next) => {
+	res.status(404)
+	
+	console.log('404! Not Found!')
+	return res.render('index')
+})
+
 // start the server
 const port = process.env.PORT || 3000
 const env = process.env.NODE_ENV || 'production'
