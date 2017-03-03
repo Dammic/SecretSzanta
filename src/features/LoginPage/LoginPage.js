@@ -3,7 +3,8 @@ import React from 'react'
 import LoginPageComponent from './LoginPageComponent'
 import {testMock} from '../../const/testMock'
 
-export default class MainPage extends React.PureComponent {
+export default class MainPage extends React.Component {
+
     render () {
         const fakeTitle = 'traveler'
         return (

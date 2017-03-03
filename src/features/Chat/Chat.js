@@ -2,20 +2,42 @@
 import React from 'react'
 import ChatComponent from './ChatComponent'
 import IO from 'socket.io-client'
+import {CLIENT_SEND_MESSAGE} from '../../const/SocketEvents'
 
 export default class Chat extends React.PureComponent {
 
-    componentDidMount() {
-        const socket = IO()
-        socket.on('server event', (data) => {
+    componentWillMount () {
+        this.state = {
+            typedMessage: ''
+        }
+        this.socket = IO()
+    }
+    componentDidMount () {
+        this.socket.on('server event', (data) => {
             console.info(data)
-            socket.emit('client event', { socket: 'io' })
+            this.socket.emit('client event', { socket: 'io' })
+        })
+        this.socket.on('CLIENT_SEND_MESSAGE', (data) => {
+            console.info(data)
         })
     }
 
+    sendMessage () {
+        const {typedMessage} = this.state
+        this.socket.emit('CLIENT_SEND_MESSAGE', { newMessage: typedMessage })
+    }
+
+    changeMessageText(event) {
+        this.setState({typedMessage: event.target.value})
+    }
+
     render () {
+        const {typedMessage} = this.state
         return (
-            <ChatComponent />
+            <ChatComponent
+                sendMessage={this.sendMessage.bind(this)}
+                typedMessage={typedMessage}
+                changeMessageText={this.changeMessageText.bind(this)} />
         )
     }
 }

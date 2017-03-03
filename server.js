@@ -37,8 +37,12 @@ server.listen(port, err => {
 // socket.io
 const io = require('socket.io')(server)
 io.on('connection', (socket) => {
-    socket.emit('server event', { foo: 'bar' });
+    socket.join('ala')
     socket.on('client event', (data) => {
         console.info(data)
+    })
+    socket.on('CLIENT_SEND_MESSAGE', (data) => {
+        console.info(data)
+        io.sockets.in('ala').emit('CLIENT_SEND_MESSAGE', data);
     })
 })

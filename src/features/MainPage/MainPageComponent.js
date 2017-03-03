@@ -1,7 +1,6 @@
 'use strict'
 import React from 'react'
-import Chat from '../Chat/Chat'
-
+import UIBox from '../UIBox/UIBox'
 
 const MainPageComponent = ({
     title,
@@ -19,7 +18,7 @@ const MainPageComponent = ({
                     </div>
                 )
             })}
-            <Chat />
+            <UIBox />
         </div>
     )
 }
