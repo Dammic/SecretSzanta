@@ -7,7 +7,7 @@ const UIBoxComponent = ({
 }) => {
     return (
         <div className="ui-box">
-            <div></div>
+            <img src={require('../../static/cactus.jpg')}></img>
             <Chat socket={socket} />
 
         </div>

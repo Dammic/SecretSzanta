@@ -61,6 +61,10 @@ module.exports = {
                 test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader'
             }, {
+                //IMAGE LOADER
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                loader:'file-loader'
+            }, {
                 test: /\.scss$/,
                 loaders: ['style-loader', 'css-loader', 'sass-loader'],
                 include: [
