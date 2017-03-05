@@ -1,21 +1,15 @@
 'use strict'
 import React from 'react'
 import MessagesBox from './MessagesBox/MessagesBox'
+import ChatForm from './ChatForm/ChatForm'
 
 const ChatComponent = ({
-    sendMessage,
-    typedMessage,
-    changeMessageText,
     socket
 }) => {
-
     return (
         <div className="chat">
             <MessagesBox socket={socket} />
-            <div className="chat-form">
-                <input value={typedMessage} onChange={changeMessageText} />
-                <div className="send-button" onClick={sendMessage}></div>
-            </div>
+            <ChatForm socket={socket} />
         </div>
     )
 }
