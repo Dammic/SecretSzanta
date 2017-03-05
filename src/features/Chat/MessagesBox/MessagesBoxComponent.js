@@ -2,19 +2,20 @@
 import React from 'react'
 
 const MessagesBoxComponent = ({
-    messages = []
+    messages = [],
+    setMessagesBoxRef
 }) => {
     const buildMessage = (message) => {
         const {time, author, content, messageIndex} = message
         return (
             <div key={messageIndex} className="message">
-                [{time}] {author === 'SERVER' ? '' : author}: {content}
+                [{time}] {author}: {content}
             </div>
         )
     }
 
     return (
-        <div className="messages-box">
+        <div className="messages-box" ref={setMessagesBoxRef}>
             {messages.map((message) => buildMessage(message))}
         </div>
     )

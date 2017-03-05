@@ -9,44 +9,46 @@ export default class MessagesBox extends React.PureComponent {
             messages: [],
             messageIndex: 1
         }
+        this.messagesBoxRef = null
     }
     componentDidMount () {
         const {socket} = this.props
         socket.on('CLIENT_SEND_MESSAGE', (data) => {
-            const {messages, messageIndex} = this.state
-            const {author, content, timestamp} = data
-            this.setState(
-                {
-                    messages: [...messages, {
-                        author,
-                        content,
-                        time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
-                        messageIndex: messageIndex
-                    }],
-                    messageIndex: messageIndex + 1
-            })
+            this.addMessage(data)
         })
 
         socket.on('CLIENT_JOIN_ROOM', (data) => {
-            const {messages, messageIndex} = this.state
-            const {playerName, timestamp} = data
-
-            this.setState({
-                messages: [...messages, {
-                    author: 'SERVER',
-                    content: `${playerName} has joined the server!`,
-                    time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
-                    messageIndex
-                }],
-                messageIndex: messageIndex + 1
-            })
+            this.addMessage(data)
         })
+    }
+
+    addMessage(data) {
+        const {messages, messageIndex} = this.state
+        const {author, content, timestamp} = data
+        this.setState({
+            messages: [...messages, {
+                author,
+                content,
+                time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
+                messageIndex
+            }],
+            messageIndex: messageIndex + 1
+        })
+
+        // scrolling to the bottom of messages list
+        this.messagesBoxRef.scrollTop = this.messagesBoxRef.scrollHeight
+    }
+
+    setMessagesBoxRef(ref) {
+        this.messagesBoxRef = ref
     }
 
     render () {
         const {messages} = this.state
         return (
-            <MessagesBoxComponent messages={messages}/>
+            <MessagesBoxComponent
+                messages={messages}
+                setMessagesBoxRef={this.setMessagesBoxRef.bind(this)} />
         )
     }
 }
