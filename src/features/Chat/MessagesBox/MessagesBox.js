@@ -2,7 +2,7 @@
 import React from 'react'
 import MessagesBoxComponent from './MessagesBoxComponent'
 import moment from 'moment'
-import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM} from '../../../const/SocketEvents'
+import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM} from '../../../const/SocketEvents'
 
 export default class MessagesBox extends React.PureComponent {
     componentWillMount () {
@@ -19,6 +19,10 @@ export default class MessagesBox extends React.PureComponent {
         })
 
         socket.on(CLIENT_JOIN_ROOM, (data) => {
+            this.addMessage(data)
+        })
+
+        socket.on(CLIENT_LEAVE_ROOM, (data) => {
             this.addMessage(data)
         })
     }
