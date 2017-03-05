@@ -2,6 +2,7 @@
 import React from 'react'
 import MessagesBoxComponent from './MessagesBoxComponent'
 import moment from 'moment'
+import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM} from '../../../const/SocketEvents'
 
 export default class MessagesBox extends React.PureComponent {
     componentWillMount () {
@@ -13,11 +14,11 @@ export default class MessagesBox extends React.PureComponent {
     }
     componentDidMount () {
         const {socket} = this.props
-        socket.on('CLIENT_SEND_MESSAGE', (data) => {
+        socket.on(CLIENT_SEND_MESSAGE, (data) => {
             this.addMessage(data)
         })
 
-        socket.on('CLIENT_JOIN_ROOM', (data) => {
+        socket.on(CLIENT_JOIN_ROOM, (data) => {
             this.addMessage(data)
         })
     }

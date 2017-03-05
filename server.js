@@ -41,24 +41,29 @@ const getCurrentTimestamp = function() {
 // socket.io
 const io = require('socket.io')(server)
 io.on('connection', (socket) => {
+    let currentRoom = ''
     socket.on('CLIENT_SEND_MESSAGE', (data) => {
         const {content, author} = data
-        io.sockets.in('ala').emit('CLIENT_SEND_MESSAGE', {
+        io.sockets.in(currentRoom).emit('CLIENT_SEND_MESSAGE', {
             timestamp: getCurrentTimestamp(),
             author,
             content
         })
     })
     socket.on('CLIENT_JOIN_ROOM', (data) => {
-        const {playerName} = data
-
-        // checking if the client can join a room (is currently not in any other room)
-        // console.info(io.sockets.manager.roomClients[socket.id])
-        io.sockets.in('ala').emit('CLIENT_JOIN_ROOM', {
-            timestamp: getCurrentTimestamp(),
-            author: '',
-            content: `${playerName} has joined the server!`
-        })
-        socket.join('ala')
+        const {playerName, roomName} = data
+        if(roomName && currentRoom === '') {
+            io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
+                timestamp: getCurrentTimestamp(),
+                author: '',
+                content: `${playerName} has joined the server!`
+            })
+            socket.join(roomName)
+            currentRoom = roomName
+        } else {
+            socket.emit('CLIENT_JOIN_ROOM', {
+                error: 'Error - Could not join the room!'
+            })
+        }
     })
 })

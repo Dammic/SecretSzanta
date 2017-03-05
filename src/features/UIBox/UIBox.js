@@ -1,17 +1,13 @@
 'use strict'
 import React from 'react'
-import Chat from '../Chat/Chat'
+import UIBoxComponent from './UIBoxComponent'
 
-const UIBoxComponent = ({
+export default class UIBox extends React.PureComponent {
 
-}) => {
-    return (
-        <div className="ui-box">
-            <div></div>
-            <Chat />
-
-        </div>
-    )
+    render () {
+        const {socket} = this.props
+        return (
+            <UIBoxComponent socket={socket} />
+        )
+    }
 }
-
-export default UIBoxComponent
