@@ -14,7 +14,7 @@ export default class ChatForm extends React.PureComponent {
     sendMessage () {
         const {typedMessage} = this.state
 
-        if(typedMessage) {
+        if (typedMessage) {
             const {socket} = this.props
             const author = '69aNaLpReDaToR69'
             socket.emit(CLIENT_SEND_MESSAGE, {
@@ -33,7 +33,7 @@ export default class ChatForm extends React.PureComponent {
         }
     }
 
-    changeMessageText(event) {
+    changeMessageText (event) {
         this.setState({typedMessage: event.target.value})
     }
 

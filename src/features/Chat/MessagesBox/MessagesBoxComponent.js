@@ -23,4 +23,3 @@ const MessagesBoxComponent = ({
 
 export default MessagesBoxComponent
 
-

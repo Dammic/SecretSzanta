@@ -23,7 +23,7 @@ export default class MessagesBox extends React.PureComponent {
         })
     }
 
-    addMessage(data) {
+    addMessage (data) {
         const {messages, messageIndex} = this.state
         const {author, content, timestamp} = data
         this.setState({
@@ -40,7 +40,7 @@ export default class MessagesBox extends React.PureComponent {
         this.messagesBoxRef.scrollTop = this.messagesBoxRef.scrollHeight
     }
 
-    setMessagesBoxRef(ref) {
+    setMessagesBoxRef (ref) {
         this.messagesBoxRef = ref
     }
 
