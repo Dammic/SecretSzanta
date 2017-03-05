@@ -5,9 +5,9 @@ const MessagesBoxComponent = ({
     messages = []
 }) => {
     const buildMessage = (message) => {
-        const {timestamp, time, author, content} = message
+        const {time, author, content, messageIndex} = message
         return (
-            <div key={timestamp} className="message">
+            <div key={messageIndex} className="message">
                 [{time}] {author === 'SERVER' ? '' : author}: {content}
             </div>
         )

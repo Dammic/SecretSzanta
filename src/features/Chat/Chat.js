@@ -17,13 +17,15 @@ export default class Chat extends React.PureComponent {
     }
 
     sendMessage () {
-        const {typedMessage} = this.state
+        const {typedMessage, messageIndex} = this.state
         const author = '69aNaLpReDaToR69'
         this.socket.emit('CLIENT_SEND_MESSAGE', {
             author,
             content: typedMessage
         })
-        this.setState({typedMessage: ''})
+        this.setState({
+            typedMessage: ''
+        })
     }
 
     changeMessageText(event) {
