@@ -13,15 +13,18 @@ export default class ChatForm extends React.PureComponent {
 
     sendMessage () {
         const {typedMessage} = this.state
-        const {socket} = this.props
-        const author = '69aNaLpReDaToR69'
-        socket.emit('CLIENT_SEND_MESSAGE', {
-            author,
-            content: typedMessage
-        })
-        this.setState({
-            typedMessage: ''
-        })
+
+        if(typedMessage) {
+            const {socket} = this.props
+            const author = '69aNaLpReDaToR69'
+            socket.emit('CLIENT_SEND_MESSAGE', {
+                author,
+                content: typedMessage
+            })
+            this.setState({
+                typedMessage: ''
+            })
+        }
     }
 
     handleFormKeyPress (event) {
