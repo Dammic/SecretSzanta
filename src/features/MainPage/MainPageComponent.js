@@ -14,7 +14,6 @@ const MainPageComponent = ({
                 return (
                     <div key={name} className="name">
                         {name}
-
                     </div>
                 )
             })}

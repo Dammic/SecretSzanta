@@ -1,23 +1,17 @@
 'use strict'
 import React from 'react'
+import MessagesBox from './MessagesBox/MessagesBox'
 
 const ChatComponent = ({
     sendMessage,
     typedMessage,
-    messages = [],
-    changeMessageText
+    changeMessageText,
+    socket
 }) => {
+
     return (
         <div className="chat">
-            <div className="messages-box">
-                {messages.map((message) => {
-                    return (
-                        <div key={message.content} className="message">
-                            {message.name} said: {message.content}
-                        </div>
-                    )
-                })}
-            </div>
+            <MessagesBox socket={socket} />
             <div className="chat-form">
                 <input value={typedMessage} onChange={changeMessageText} />
                 <div className="send-button" onClick={sendMessage}></div>

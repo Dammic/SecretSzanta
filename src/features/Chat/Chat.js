@@ -13,18 +13,17 @@ export default class Chat extends React.PureComponent {
         this.socket = IO()
     }
     componentDidMount () {
-        this.socket.on('server event', (data) => {
-            console.info(data)
-            this.socket.emit('client event', { socket: 'io' })
-        })
-        this.socket.on('CLIENT_SEND_MESSAGE', (data) => {
-            console.info(data)
-        })
+        this.socket.emit('CLIENT_JOIN_ROOM', { playerName: '69aNaLpReDaToR69' })
     }
 
     sendMessage () {
         const {typedMessage} = this.state
-        this.socket.emit('CLIENT_SEND_MESSAGE', { newMessage: typedMessage })
+        const author = '69aNaLpReDaToR69'
+        this.socket.emit('CLIENT_SEND_MESSAGE', {
+            author,
+            content: typedMessage
+        })
+        this.setState({typedMessage: ''})
     }
 
     changeMessageText(event) {
@@ -37,7 +36,8 @@ export default class Chat extends React.PureComponent {
             <ChatComponent
                 sendMessage={this.sendMessage.bind(this)}
                 typedMessage={typedMessage}
-                changeMessageText={this.changeMessageText.bind(this)} />
+                changeMessageText={this.changeMessageText.bind(this)}
+                socket={this.socket} />
         )
     }
 }

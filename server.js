@@ -34,15 +34,31 @@ server.listen(port, err => {
     }
 })
 
+const getCurrentTimestamp = function() {
+    return Math.floor(Date.now() / 1000)
+}
+
 // socket.io
 const io = require('socket.io')(server)
 io.on('connection', (socket) => {
-    socket.join('ala')
-    socket.on('client event', (data) => {
-        console.info(data)
-    })
     socket.on('CLIENT_SEND_MESSAGE', (data) => {
-        console.info(data)
-        io.sockets.in('ala').emit('CLIENT_SEND_MESSAGE', data);
+        const {content, author} = data
+        io.sockets.in('ala').emit('CLIENT_SEND_MESSAGE', {
+            timestamp: getCurrentTimestamp(),
+            author,
+            content
+        });
+    })
+    socket.on('CLIENT_JOIN_ROOM', (data) => {
+        const {playerName} = data
+
+        // checking if the client can join a room (is currently not in any other room)
+        // console.info(io.sockets.manager.roomClients[socket.id])
+
+        io.sockets.in('ala').emit('CLIENT_JOIN_ROOM', {
+            timestamp: getCurrentTimestamp(),
+            playerName
+        });
+        socket.join('ala')
     })
 })
