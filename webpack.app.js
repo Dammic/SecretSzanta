@@ -19,6 +19,9 @@ module.exports = {
     entry: {
         app: APP_DIR + '/AppClient.js'
     },
+    watchOptions: {
+        poll: true
+    },
     output: {
         path: path.join(__dirname, 'public'),
         filename: '[name].js',
