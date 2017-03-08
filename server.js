@@ -23,6 +23,13 @@ app.get('/', (req, res) => {
     return res.render('index')
 })
 
+app.use('*', (req, res, next) => {
+	res.status(404)
+	
+	console.log('404! Not Found!')
+	return res.render('index')
+})
+
 // start the server
 const port = process.env.PORT || 3000
 const env = process.env.NODE_ENV || 'production'

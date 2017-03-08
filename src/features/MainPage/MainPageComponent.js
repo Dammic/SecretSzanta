@@ -24,3 +24,4 @@ const MainPageComponent = ({
 }
 
 export default MainPageComponent
+
