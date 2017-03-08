@@ -1,9 +1,11 @@
 'use strict'
 import React from 'react'
+import UIBox from '../UIBox/UIBox'
 
 const MainPageComponent = ({
     title,
-    userNames
+    userNames,
+    socket
 }) => {
     console.info(userNames)
     return (
@@ -16,8 +18,10 @@ const MainPageComponent = ({
                     </div>
                 )
             })}
+            <UIBox socket={socket} />
         </div>
     )
 }
 
 export default MainPageComponent
+

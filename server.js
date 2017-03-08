@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const Server = require('http').Server
+const swig = require('swig')
 const Express = require('express')
 
 // initialize the server and configure support for ejs templates
@@ -10,7 +11,9 @@ const server = new Server(app)
 // routes
 
 
-app.set('view engine', 'ejs')
+// view engine setup
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'))
 app.use(Express.static(__dirname + '/public'))
 
@@ -38,4 +41,51 @@ server.listen(port, err => {
     } else {
         console.info(`Server running on http://localhost:${port} [${env}]`)
     }
+})
+
+const getCurrentTimestamp = function() {
+    return Math.floor(Date.now() / 1000)
+}
+
+// socket.io
+const io = require('socket.io')(server)
+io.on('connection', (socket) => {
+    let currentPlayerName = ''
+    let currentRoom = ''
+
+    socket.on('disconnect', function() {
+        io.sockets.in(currentRoom).emit('CLIENT_LEAVE_ROOM', {
+            timestamp: getCurrentTimestamp(),
+            author: '',
+            content: `${currentPlayerName} has left the room.`
+        })
+        currentRoom = ''
+        currentPlayerName = ''
+    })
+
+    socket.on('CLIENT_SEND_MESSAGE', (data) => {
+        const {content, author} = data
+        io.sockets.in(currentRoom).emit('CLIENT_SEND_MESSAGE', {
+            timestamp: getCurrentTimestamp(),
+            author,
+            content
+        })
+    })
+    socket.on('CLIENT_JOIN_ROOM', (data) => {
+        const {playerName, roomName} = data
+        if(roomName && currentRoom === '') {
+            io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
+                timestamp: getCurrentTimestamp(),
+                author: '',
+                content: `${playerName} has joined the server!`
+            })
+            socket.join(roomName)
+            currentPlayerName = playerName
+            currentRoom = roomName
+        } else {
+            socket.emit('CLIENT_JOIN_ROOM', {
+                error: 'Error - Could not join the room!'
+            })
+        }
+    })
 })
