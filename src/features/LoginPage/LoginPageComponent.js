@@ -1,7 +1,6 @@
 'use strict'
 import React from 'react'
 
-
 const LoginPageComponent = ({
     onSetNameClick
 }) => {
