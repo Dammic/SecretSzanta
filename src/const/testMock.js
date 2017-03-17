@@ -3,5 +3,7 @@ export const testMock = [
     'damian',
     'marek',
     'ala',
-    'ola'
+    'ola',
+    'emma',
+    'stefan'
 ]
