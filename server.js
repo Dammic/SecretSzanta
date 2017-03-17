@@ -25,8 +25,9 @@ app.get('/', (req, res) => {
 
 app.use('*', (req, res, next) => {
 	res.status(404)
-	
+
 	console.log('404! Not Found!')
+    console.info('aaadsadassdajahdkja')
 	return res.render('index')
 })
 
@@ -47,6 +48,7 @@ const getCurrentTimestamp = function() {
 
 // socket.io
 const io = require('socket.io')(server)
+const RoomsManager = require('./utils/RoomsManager')(io.sockets.adapter)
 io.on('connection', (socket) => {
     let currentPlayerName = ''
     let currentRoom = ''
@@ -57,6 +59,7 @@ io.on('connection', (socket) => {
             author: '',
             content: `${currentPlayerName} has left the room.`
         })
+        RoomsManager.removePlayer(currentRoom, currentPlayerName)
         currentRoom = ''
         currentPlayerName = ''
     })
@@ -77,9 +80,19 @@ io.on('connection', (socket) => {
                 author: '',
                 content: `${playerName} has joined the server!`
             })
+
+            // if the room does not exist, create it
+            if(!RoomsManager.isRoomAlreadyCreated(roomName)) {
+                RoomsManager.initializeRoom(roomName, 10)
+            }
+            RoomsManager.addPlayer(roomName, playerName)
+
             socket.join(roomName)
+
             currentPlayerName = playerName
             currentRoom = roomName
+
+
         } else {
             socket.emit('CLIENT_JOIN_ROOM', {
                 error: 'Error - Could not join the room!'
