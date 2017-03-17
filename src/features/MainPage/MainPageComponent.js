@@ -5,7 +5,8 @@ import UIBox from '../UIBox/UIBox'
 const MainPageComponent = ({
     title,
     userNames,
-    socket
+    socket,
+    userName
 }) => {
     console.info(userNames)
     return (
@@ -18,7 +19,7 @@ const MainPageComponent = ({
                     </div>
                 )
             })}
-            <UIBox socket={socket} />
+            <UIBox socket={socket} userName={userName}/>
         </div>
     )
 }

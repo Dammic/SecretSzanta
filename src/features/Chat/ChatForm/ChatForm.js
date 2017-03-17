@@ -13,10 +13,11 @@ export default class ChatForm extends React.PureComponent {
 
     sendMessage () {
         const {typedMessage} = this.state
+        const {userName} = this.props
 
         if (typedMessage) {
             const {socket} = this.props
-            const author = '69aNaLpReDaToR69'
+            const author = userName
             socket.emit(CLIENT_SEND_MESSAGE, {
                 author,
                 content: typedMessage

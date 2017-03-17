@@ -1,23 +1,31 @@
 'use strict'
 import React from 'react'
+import GameListItemComponent from './GameListItemComponent'
 
 const GameListComponent = ({
     title,
-    userNames
+    userNames,
+    rooms,
+    onClick
 }) => {
     console.info(userNames)
+    let evenNames = [], oddNames = [];
+    userNames.map((name, index) =>{
+        index%2 === 0 ? evenNames.push(name) : oddNames.push(name)
+    })
     return (
         <div className="main-page">
             Hello {title}!
-            <ul data-columns="2">
-                {userNames.map((name) => {
+            <div className="game-list" >
+                <ul>
+                {rooms.map((room)=>{
+                    const {roomID, roomName, playerCount} = room
                     return (
-                        <li key={name} className="name">
-                            {name}
-                        </li>
+                        <GameListItemComponent roomID={roomID} roomName={roomName} playerCount={playerCount} onClick={onClick}/>
                     )
                 })}
-            </ul>
+                </ul>
+            </div>
         </div>
     )
 }
