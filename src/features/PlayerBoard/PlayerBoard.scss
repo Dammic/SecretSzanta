@@ -4,32 +4,34 @@
     display: flex;
     justify-content: space-between;
     align-content: center;
+    
+    .playersContainer {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        align-content: center;
+
+    }
+
+    .playersContainerMiddle {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: flex-start;
+
+    }
+
+    .player {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .portrait {
+            display: block;
+            max-width: 20%;
+        }
+    }
+
 }
 
-.playersContainer {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    align-content: center;
 
-}
-
-.playersContainerMiddle {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: flex-start;
-
-}
-
-.player {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.portrait {
-    display: block;
-    max-width: 20%;
-}

@@ -2,9 +2,9 @@
 import React from 'react'
 
 const PlayerBoardComponent = ({
-left = [],
-middle = [],
-right = []
+    left = [],
+    middle = [],
+    right = []
 }) => {
 
     const renderPlayer = (player) => {
