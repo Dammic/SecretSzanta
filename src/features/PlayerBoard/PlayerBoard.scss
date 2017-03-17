@@ -4,7 +4,7 @@
     display: flex;
     justify-content: space-between;
     align-content: center;
-    
+
     .playersContainer {
         display: flex;
         justify-content: space-around;
@@ -13,12 +13,23 @@
 
     }
 
-    .playersContainerMiddle {
+    .centralPart {
         display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: flex-start;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
 
+        .playersContainerMiddle {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: flex-start;
+            align-self: flex-start;
+        }
+
+        .policy {
+                     
+        }
     }
 
     .player {

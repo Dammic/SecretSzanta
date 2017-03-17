@@ -8,11 +8,12 @@ const PlayerBoardComponent = ({
 }) => {
 
     const renderPlayer = (player) => {
+        const {playerName, picture} = player
         console.info(player)
         return (
             <div className = "player">
-                <img className = "portrait" src = {require('../../static/portrait1.png')} alt = "Player image"/>    
-                <div>{player}</div>
+                <img className = "portrait" src = {picture} alt = "Player image"/>    
+                <div>{playerName}</div>
             </div>
         )
     }
@@ -24,8 +25,19 @@ const PlayerBoardComponent = ({
                 {left.map( (player) => renderPlayer(player) )}
             </div>
 
-            <div className = "playersContainerMiddle">
-                {middle.map( (player) => renderPlayer(player) )}
+            <div className = "centralPart">
+                <div className = "playersContainerMiddle">
+                    {middle.map( (player) => renderPlayer(player) )}
+                </div>
+
+                <div className = "policy">
+                   <img src = {require('../../static/cactus.jpg')} /> 
+                </div>
+                
+                <div className = "policy">
+                   <img src = {require('../../static/cactus.jpg')} /> 
+                </div>
+
             </div>
 
             <div className = "playersContainer">
