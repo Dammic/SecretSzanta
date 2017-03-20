@@ -11,36 +11,36 @@ const PlayerBoardComponent = ({
         const {playerName, picture} = player
         console.info(player)
         return (
-            <div className = "player">
-                <img className = "portrait" src = {picture} alt = "Player image"/>    
+            <div className="player">
+                <img className="portrait" src = {picture} alt="Player image"/>    
                 <div>{playerName}</div>
             </div>
         )
     }
     
     return (
-        <div className = "playerBoard">
+        <div className="player-board">
 
-            <div className = "playersContainer">
+            <div className="players-container">
                 {left.map( (player) => renderPlayer(player) )}
             </div>
 
-            <div className = "centralPart">
-                <div className = "playersContainerMiddle">
+            <div className="central-part">
+                <div className="players-container-middle">
                     {middle.map( (player) => renderPlayer(player) )}
                 </div>
 
-                <div className = "policy">
+                <div className="policy">
                    <img src = {require('../../static/cactus.jpg')} /> 
                 </div>
                 
-                <div className = "policy">
+                <div className="policy">
                    <img src = {require('../../static/cactus.jpg')} /> 
                 </div>
 
             </div>
 
-            <div className = "playersContainer">
+            <div className="players-container">
                 {right.map( (player) => renderPlayer(player) )}
             </div>
 

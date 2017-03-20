@@ -3,37 +3,39 @@ import React from 'react'
 import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
-    
+
     constructor(props) {
         super(props)
-        
-        var players = ['krokodyl',
-                       'pies',
-                       'zyrafa',
-                       'zaba',
-                       'lis',
-                       'kot',
-                       'tygrys',
-                       'hipopotam'
-                       ].map(
-                               name => this.makePlayer(name)
-                            )
-            
-        var left = []
-        var center = []
-        var right = []
 
-        for( var i = 0; i < players.length; i++) {
-            if (i % 3 == 0) left.push(players[i])
-            else if (i % 3 == 1) right.push(players[i])
-            else center.push(players[i])
-        }
+        const mockPlayers = ['krokodyl',
+                  'pies',
+                  'zyrafa',
+                  'zaba',
+                  'lis',
+                  'kot',
+                  'tygrys',
+                  'hipopotam'
+                      ];
+        const players = mockPlayers.map(
+                    name => this.makePlayer(name)
+                )
+
+        let left = []
+        let center = []
+        let right = []
+
+        players.map((player, index) => {
+                if (index % 3 == 0) left.push(player)
+                else if (index % 3 == 1) right.push(player)
+                else center.push(player)
+             })
+
         this.state = {
             playersLeft: left,
             playersMiddle: center,
             playersRight: right
         }
-        
+
     }
 
     makePlayer(name) {
@@ -44,16 +46,15 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     render () {
+        
+        const {left, middle, right} = this.state
+
         return (
-            <PlayerBoardComponent 
-                //left={['krokodyl', 'pies', 'zyrafa'].map( name => this.makePlayer(name) )} 
-                //middle = {['zaba', 'lis'].map( name => this.makePlayer(name) )} 
-                //right={['kot', 'tygrys', 'hipopotam'].map( name => this.makePlayer(name) )} 
-                left = {this.state.playersLeft}
-                middle = {this.state.playersMiddle}
-                right = {this.state.playersRight}
-                
-            />
-        )
+                <PlayerBoardComponent 
+                    left = {this.state.playersLeft}
+                    middle = {this.state.playersMiddle}
+                    right = {this.state.playersRight}
+                />
+               )
     }
 }
