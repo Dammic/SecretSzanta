@@ -11,6 +11,7 @@ export default class GameList extends React.PureComponent {
         this.state = {
             roomName: ''
         }
+        this.setRoomName = this.setRoomName.bind(this)
     }
 
     setRoomName (event) {
@@ -68,7 +69,7 @@ export default class GameList extends React.PureComponent {
 
         if (roomName === '')
             return (
-                <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName.bind(this)} />
+                <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName} />
             )
         else
             return (
