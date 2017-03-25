@@ -2,9 +2,9 @@
 import React from 'react'
 
 const PlayerBoardComponent = ({
-    left = [],
-    middle = [],
-    right = []
+    playersLeft = [],
+    playersMiddle = [],
+    playersRight = []
 }) => {
 
     const renderPlayer = (player) => {
@@ -22,12 +22,12 @@ const PlayerBoardComponent = ({
         <div className="player-board">
 
             <div className="players-container">
-                {left.map( (player) => renderPlayer(player) )}
+                {playersLeft.map( (player) => renderPlayer(player) )}
             </div>
 
             <div className="central-part">
                 <div className="players-container-middle">
-                    {middle.map( (player) => renderPlayer(player) )}
+                    {playersMiddle.map( (player) => renderPlayer(player) )}
                 </div>
 
                 <div className="policy">
@@ -41,7 +41,7 @@ const PlayerBoardComponent = ({
             </div>
 
             <div className="players-container">
-                {right.map( (player) => renderPlayer(player) )}
+                {playersRight.map( (player) => renderPlayer(player) )}
             </div>
 
         </div>

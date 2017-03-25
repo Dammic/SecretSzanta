@@ -4,11 +4,6 @@ import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
 
-    constructor(props) {
-        super(props)
-
-    }
-
     makePlayer(name) {
         return {
             playerName: name,
@@ -43,9 +38,9 @@ export default class PlayerBoard extends React.PureComponent {
 
         return (
                 <PlayerBoardComponent 
-                    left = {left} 
-                    middle = {center}
-                    right = {right}
+                    playersLeft = {left} 
+                    playersMiddle = {center}
+                    playersRight = {right}
                 />
                )
     }
