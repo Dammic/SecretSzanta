@@ -8,13 +8,13 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, 'public'),
-        filename: 'dll.[page].js',
-        library: '[page]'
+        filename: 'dll.[name].js',
+        library: '[name]'
     },
     plugins: [
         new webpack.DllPlugin({
-            path: '[page]-manifest.json',
-            page: '[page]',
+            path: '[name]-manifest.json',
+            name: '[name]',
             context: path.resolve(__dirname, './')
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
