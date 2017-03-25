@@ -7,7 +7,17 @@ export default class PlayerBoard extends React.PureComponent {
     constructor(props) {
         super(props)
 
-        const mockPlayers = ['krokodyl',
+    }
+
+    makePlayer(name) {
+        return {
+            playerName: name,
+            picture: require('../../static/portrait1.png')
+        }
+    }
+
+    render () {
+         const mockPlayers = ['krokodyl',
                   'pies',
                   'zyrafa',
                   'zaba',
@@ -16,7 +26,8 @@ export default class PlayerBoard extends React.PureComponent {
                   'tygrys',
                   'hipopotam'
                       ];
-        const players = mockPlayers.map(
+        //players later will be given via props
+        const players = mockPlayers.map(   
                     name => this.makePlayer(name)
                 )
 
@@ -28,32 +39,13 @@ export default class PlayerBoard extends React.PureComponent {
                 if (index % 3 == 0) left.push(player)
                 else if (index % 3 == 1) right.push(player)
                 else center.push(player)
-             })
-
-        this.state = {
-            playersLeft: left,
-            playersMiddle: center,
-            playersRight: right
-        }
-
-    }
-
-    makePlayer(name) {
-        return {
-            playerName: name,
-            picture: require('../../static/portrait1.png')
-        }
-    }
-
-    render () {
-        
-        const {left, middle, right} = this.state
+            })
 
         return (
                 <PlayerBoardComponent 
-                    left = {this.state.playersLeft}
-                    middle = {this.state.playersMiddle}
-                    right = {this.state.playersRight}
+                    left = {left} 
+                    middle = {center}
+                    right = {right}
                 />
                )
     }
