@@ -11,14 +11,6 @@ const MainPageComponent = ({
     console.info(userNames)
     return (
         <div className="main-page">
-            Hello {title}!
-            {userNames.map((name) => {
-                return (
-                    <div key={name} className="name">
-                        {name}
-                    </div>
-                )
-            })}
             <UIBox socket={socket} userName={userName}/>
         </div>
     )
