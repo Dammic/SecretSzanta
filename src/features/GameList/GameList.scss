@@ -1,5 +1,22 @@
-ul {
-  columns: 2;
-  -webkit-columns: 2;
-  -moz-columns: 2;
+.game-list{
+  ul {
+    padding: 0;
+    list-style: none;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    -moz-column-gap: 0px;
+    -webkit-column-gap: 0px;
+    li{
+      overflow: hidden;
+      border: black;
+      border-style: double;
+      .name{
+        display: inline-block;
+      }
+      button{
+        float: right;
+      }
+    }
+  }
 }

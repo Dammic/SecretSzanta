@@ -6,21 +6,13 @@ import PlayerBoard from '../PlayerBoard/PlayerBoard'
 const MainPageComponent = ({
     title,
     userNames,
-    socket
+    socket,
+    userName
 }) => {
     console.info(userNames)
     return (
         <div className="main-page">
-            Hello {title}!
-            {userNames.map((name) => {
-                return (
-                    <div key={name} className="name">
-                        {name}
-                    </div>
-                )
-            })}
-            <PlayerBoard />
-            <UIBox socket={socket} />
+            <UIBox socket={socket} userName={userName}/>
         </div>
     )
 }
