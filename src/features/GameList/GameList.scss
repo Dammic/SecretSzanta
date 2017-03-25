@@ -8,11 +8,14 @@
     -moz-column-gap: 0px;
     -webkit-column-gap: 0px;
     li{
-      display: flex;
-      justify-content: space-between;
+      overflow: hidden;
       border: black;
       border-style: double;
+      .name{
+        display: inline-block;
+      }
       button{
+        float: right;
       }
     }
   }

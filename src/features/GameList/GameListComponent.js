@@ -4,21 +4,20 @@ import GameListItemComponent from './GameListItemComponent'
 
 const GameListComponent = ({
     title,
-    userNames
+    userNames,
+    rooms,
+    onClick
 }) => {
     console.info(userNames)
-    let evenNames = [], oddNames = [];
-    userNames.map((name, index) =>{
-        index%2 === 0 ? evenNames.push(name) : oddNames.push(name)
-    })
     return (
         <div className="main-page">
             Hello {title}!
             <div className="game-list" >
                 <ul>
-                {userNames.map((name)=>{
+                {rooms.map((room)=>{
+                    const {roomID, roomName, playerCount} = room
                     return (
-                        <GameListItemComponent name={name}/>
+                        <GameListItemComponent roomID={roomID} roomName={roomName} playerCount={playerCount} onClick={onClick}/>
                     )
                 })}
                 </ul>

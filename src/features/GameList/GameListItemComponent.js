@@ -2,12 +2,15 @@
 import React from 'react'
 
 const GameListItemComponent = ({
-    name
+    roomID,
+    roomName,
+    playerCount,
+    onClick
 }) => {
     return (
-        <li key={name} className="name">
-            <div>{name}</div>
-            <button>JOIN</button>
+        <li key={roomName} className="name">
+            <div>{roomName}</div>
+            <button data-roomID={roomID} onClick={onClick}>JOIN</button>
         </li>
     )
 }
