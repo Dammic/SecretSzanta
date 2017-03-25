@@ -10,7 +10,7 @@ const GameListItemComponent = ({
     return (
         <li key={roomName} className="name">
             <div>{roomName}</div>
-            <button data-roomID={roomID} onClick={(event) => {event.persist(); onClick(event)}}>JOIN</button>
+            <button data-roomID={roomID} onClick={onClick}>JOIN</button>
         </li>
     )
 }

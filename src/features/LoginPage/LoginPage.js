@@ -11,16 +11,9 @@ export default class LoginPage extends React.PureComponent {
         super(props)
         this.inputRef = null
         this.state = {
-            "userName": ''
+            userName: ''
         }
     }
-
-    // componentWillMount() {
-    //     this.state = {
-    //         "page": "Login"
-    //     }
-    //
-    // }
 
     setInputRef(inpRef){
         this.inputRef = inpRef

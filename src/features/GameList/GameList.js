@@ -66,7 +66,7 @@ export default class GameList extends React.PureComponent {
             }
         ]
 
-        if (this.state.roomName === '')
+        if (roomName === '')
             return (
                 <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName.bind(this)} />
             )
