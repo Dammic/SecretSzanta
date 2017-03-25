@@ -1,13 +1,20 @@
 'use strict'
+const _ = require('lodash')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
  * @returns {Object} - set of functions for maintaining rooms variables
  */
 const RoomsManager = function() {
-    const rooms_props = {}
+    let rooms_props = {}
 
-    const initializeRoom = function(roomName, maxPlayers) {
+    /**
+     * Function initializing rooms handler. It initializes default variables for the room,
+     *      as well as empty slots for players
+     * @param {String} roomName - unique name of the modified room
+     * @param {Number} [maxPlayers = 10] - max amount of players in the room
+     */
+    const initializeRoom = function(roomName, maxPlayers = 10) {
         let slots = []
         const tmp = [...Array(maxPlayers)].map((value, index) => {
             slots[index] = {
@@ -23,90 +30,88 @@ const RoomsManager = function() {
         }
     }
 
+    const deleteRoom = function(roomName) {
+        if(isRoomPresent(roomName)) {
+            rooms_props = _.filter(rooms_props, (room, key) => {
+                if (roomName === key) {
+                    return true
+                }
+            })
+        }
+    }
+
+    const getRoomsList = function() {
+        return _.reduce(rooms_props, (result, room, key) => {
+            result.push({
+                roomName: key,
+                maxPlayers: room.maxPlayers,
+                playersCount: room.playersCount
+            })
+        }, [])
+    }
+
+    const getRoomDetails = function(roomName) {
+        const room = rooms_props[roomName]
+        const playersList = _.reduce(room.slots, (result, slot) => {
+            if(slot.player) result.push(slot.player.playerName)
+            return result
+        }, [])
+        return {
+            maxPlayers: room.maxPlayers,
+            playersCount: room.playersCount,
+            slots: room.slots,
+            playersList
+        }
+    }
+
+
+    /**
+     * Function that performs adding a new player to a room, increasing the player count by one.
+     *      It checks if the player is already in the room or if there are no empty slots.
+     * @param {String} roomName - unique name of the modified room
+     * @param {String} playerName - name of the player to be added to the room
+     */
     const addPlayer = function(roomName, playerName) {
         const {slots} = rooms_props[roomName]
 
         // check if there is any free slot, returns first one or undefined if none found
-        const nextEmptySlot = slots.find((slot) => !(slot.player))
+        const nextEmptySlot = slots.find( (slot) => !(slot.player) )
 
         // check if the player is already on the server, returns object or undefined if no player has the same name
-        const samePlayerObject = slots.find((slot) => (slot.player && slot.player.playerName === playerName) )
+        let samePlayerObject = slots.find( (slot) => (slot.player && slot.player.playerName === playerName) )
 
         if(!samePlayerObject && nextEmptySlot) {
             nextEmptySlot.player = {
                 playerName
             }
+            rooms_props[roomName].playersCount += 1
         } else {
             //@TODO: RETURN A PROPER WARNING FOR THE USER (MODAL OR SOMETHING LIKE THAT)
             console.warn('player with the same name is already on this board!')
         }
 
-        console.info(slots)
+        console.info(rooms_props[roomName])
     }
 
+    /**
+     * Function that performs removing a player from a room, decreasing the player count by one.
+     * @param {String} roomName - unique name of the modified room
+     * @param {String} playerName - name of the player to be removed from the room
+     */
     const removePlayer = function(roomName, playerName) {
         const {slots} = rooms_props[roomName]
         const playerObject = slots.find((slot) => (slot.player && slot.player.playerName === playerName) )
-        playerObject.player = null
-
-        console.info(slots)
-    }
-
-    /**
-     * Function that sets a variable for a room
-     * @param roomName - id of a room
-     * @param key - key of the variable we would like to add
-     * @param value - value of the variable we would like to add
-     */
-    const setRoomProperty = function (roomName, key, value) {
-        rooms_props[roomName] = rooms_props[roomName] || {}
-        rooms_props[roomName][key] = value
-    }
-
-    /**
-     * Function that deletes a variable in a room (sets it to null)
-     * @param roomName - id of a room
-     * @param key - key of the variable we would like to delete
-     */
-    const deleteRoomProperty = function (roomName, key) {
-        rooms_props[roomName][key] = null
-    }
-
-    /**
-     * Function that returns a specific room's variables
-     * @param roomName - id of a room
-     * @returns {Object} - an object containing all variables for a room
-     */
-    const getRoomProperties = function (roomName) {
-        return rooms_props[roomName]
-    }
-
-    /**
-     * Function that returns all rooms
-     * @returns {Object} - an object containing all rooms as keys
-     */
-    const getRooms = function () {
-        return rooms
-    }
-
-    /**
-     * Function that returns all users in a room
-     * @param roomName - id of a room
-     * @returns {Object} - an object with all users in a room as keys
-     */
-    // const getUsersInRoom = function (roomName) {
-    //     return rooms_props[roomName].slots
-    // }
-
-    /**
-     * Function that deletes a room variables and room data if a room is empty
-     * @param roomName - id of a room
-     */
-    const deleteEmptyRoom = function (roomName) {
-        if (!rooms[roomName][roomName]) {
-            rooms[roomName] = null
-            rooms_props[roomName] = null
+        if(playerObject) {
+            playerObject.player = null
+            rooms_props[roomName].playersCount -= 1
         }
+
+        console.info(rooms_props[roomName])
+    }
+
+    const getPlayerInfo = function(roomName, playerName) {
+        const {slots} = rooms_props[roomName]
+        return slots.find((slot) => (slot.player && slot.player.playerName === playerName) )
     }
 
     /**
@@ -114,21 +119,19 @@ const RoomsManager = function() {
      * @param roomName - id of a room
      * @returns {Boolean} - true if created, false if not created
      */
-    const isRoomAlreadyCreated = function (roomName) {
-        return rooms_props[roomName]
+    const isRoomPresent = function (roomName) {
+        return !!rooms_props[roomName]
     }
 
     return {
-        setRoomProperty,
-        deleteRoomProperty,
-        getRoomProperties,
-        getRooms,
         addPlayer,
+        deleteRoom,
+        getRoomsList,
         removePlayer,
+        getPlayerInfo,
         initializeRoom,
-        // getUsersInRoom,
-        deleteEmptyRoom,
-        isRoomAlreadyCreated
+        isRoomPresent,
+        getRoomDetails
     }
 }
 

@@ -3,22 +3,13 @@ import React from 'react'
 import UIBox from '../UIBox/UIBox'
 
 const MainPageComponent = ({
-    title,
-    userNames,
     socket,
-    userName
+    userName,
+    playersList = []
 }) => {
-    console.info(userNames)
     return (
-        <div className="main-page">
-            Hello {title}!
-            {userNames.map((name) => {
-                return (
-                    <div key={name} className="name">
-                        {name}
-                    </div>
-                )
-            })}
+        <div>
+            {playersList.map((playerName) => <div key={playerName}>{playerName}</div>)}
             <UIBox socket={socket} userName={userName}/>
         </div>
     )
