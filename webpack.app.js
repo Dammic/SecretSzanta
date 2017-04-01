@@ -52,7 +52,7 @@ module.exports = {
                 ],
                 query: {
                     cacheDirectory: true, //important for performance
-                    presets: ['react', 'es2015', 'stage-3']
+                    presets: ['react', 'es2015', 'stage-3', 'stage-1']
                 }
             }, {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,

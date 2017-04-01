@@ -5,9 +5,9 @@ import UIBoxComponent from './UIBoxComponent'
 export default class UIBox extends React.PureComponent {
 
     render () {
-        const {socket} = this.props
+        const {socket, userName} = this.props
         return (
-            <UIBoxComponent socket={socket} userName={this.props.userName}/>
+            <UIBoxComponent socket={socket} userName={userName}/>
         )
     }
 }

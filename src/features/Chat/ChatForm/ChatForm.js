@@ -17,9 +17,8 @@ export default class ChatForm extends React.PureComponent {
 
         if (typedMessage) {
             const {socket} = this.props
-            const author = userName
             socket.emit(CLIENT_SEND_MESSAGE, {
-                author,
+                author: userName,
                 content: typedMessage
             })
             this.setState({

@@ -10,8 +10,10 @@ export default class LoginPage extends React.PureComponent {
         super(props)
         this.inputRef = null
         this.state = {
-            "userName": ''
+            userName: ''
         }
+        this.setInputRef = this.setInputRef.bind(this)
+        this.setName = this.setName.bind(this)
     }
 
     setInputRef(inpRef){
@@ -32,9 +34,8 @@ export default class LoginPage extends React.PureComponent {
         const {userName=''} = this.state
 
         if (userName === '') {
-            return <LoginPageComponent onSetNameClick={this.setName.bind(this)} setInputRef={this.setInputRef.bind(this)}/>
+            return <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef}/>
         } else {
-            console.log('here')
             return <GameList userName={userName}/>
         }
     }

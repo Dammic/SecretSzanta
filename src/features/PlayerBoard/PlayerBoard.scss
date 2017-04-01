@@ -1,0 +1,48 @@
+.player-board {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+
+    .players-container {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        align-content: center;
+
+    }
+
+    .central-part {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        .players-container-middle {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: flex-start;
+            align-self: flex-start;
+        }
+
+        .policy {
+                     
+        }
+    }
+
+    .player {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .portrait {
+            display: block;
+            max-width: 20%;
+        }
+    }
+
+}
+
+
