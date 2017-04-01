@@ -1,6 +1,5 @@
 'use strict'
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-console.info(getCurrentTimestamp)
 
 module.exports = function(io, RoomsManager) {
 
