@@ -3,12 +3,13 @@ import React from 'react'
 import GameListComponent from './GameListComponent'
 import MainPage from '../MainPage/MainPage'
 import CreateGame from './Create Game/CreateGame'
-import {testMock} from '../../const/testMock'
+import IO from 'socket.io-client'
 
 export default class GameList extends React.PureComponent {
 
     constructor (props) {
         super(props)
+        this.socket = IO()
         this.state = {
             roomName: ''
         }
@@ -71,8 +72,8 @@ export default class GameList extends React.PureComponent {
         if (roomName === '')
             return (
                 <div>
-                    <CreateGame/>
-                    <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName} />
+                    <CreateGame socket={this.socket}/>
+                    <GameListComponent title={userName} rooms={this.rooms} onClick={this.setRoomName} />
                 </div>
             )
         else

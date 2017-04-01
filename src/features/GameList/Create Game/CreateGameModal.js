@@ -5,14 +5,10 @@ import CreateGameModalComponent from './CreateGameModalComponent'
 
 export default class CreateGameModal extends React.PureComponent {
 
-    constructor (props) {
-        super(props)
-    }
-
     render () {
-        const {showModal, onHide, onCreate} = this.props
+        const {showModal, onHide, onCreate, socket} = this.props
         return(
-            <CreateGameModalComponent showModal={showModal} onHide={onHide} onCreate={onCreate}/>
+            <CreateGameModalComponent showModal={showModal} onHide={onHide} onCreate={onCreate} socket={socket}/>
         )
     }
 }

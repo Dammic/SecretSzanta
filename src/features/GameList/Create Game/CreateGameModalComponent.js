@@ -6,7 +6,8 @@ import Button from 'react-bootstrap/lib/Button'
 const CreateGameModalComponent = ({
     showModal,
     onHide,
-    onCreate
+    onCreate,
+    socket
 }) => {
     return (
         <Modal show={showModal} onHide={onHide}>
@@ -20,7 +21,7 @@ const CreateGameModalComponent = ({
                 <div>Number of players: <input type="number" min="5" max="10"/></div>
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="primary" onClick={onHide}>Create</Button>
+                <Button bsStyle="primary" onClick={onCreate}>Create</Button>
                 <Button onClick={onHide}>Close</Button>
             </Modal.Footer>
         </Modal>
