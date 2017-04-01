@@ -6,7 +6,9 @@ const GameListComponent = ({
     title,
     userNames,
     rooms,
-    onClick
+    onClick,
+    showModal,
+    closeModal
 }) => {
     console.info(userNames)
     return (

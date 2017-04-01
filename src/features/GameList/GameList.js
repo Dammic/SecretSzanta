@@ -2,6 +2,7 @@
 import React from 'react'
 import GameListComponent from './GameListComponent'
 import MainPage from '../MainPage/MainPage'
+import CreateGame from './Create Game/CreateGame'
 import {testMock} from '../../const/testMock'
 
 export default class GameList extends React.PureComponent {
@@ -69,7 +70,10 @@ export default class GameList extends React.PureComponent {
 
         if (roomName === '')
             return (
-                <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName} />
+                <div>
+                    <CreateGame/>
+                    <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName} />
+                </div>
             )
         else
             return (
