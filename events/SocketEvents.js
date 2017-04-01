@@ -2,60 +2,71 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 
 module.exports = function(io, RoomsManager) {
+    const socketMethods = {
+        disconnect: function() {
+            const playerInfo = RoomsManager.getPlayerInfo(this.currentRoom, this.currentPlayerName)
 
-    io.on('connection', (socket) => {
-        let currentPlayerName = ''
-        let currentRoom = ''
-        socket.on('disconnect', function() {
-            const playerInfo = RoomsManager.getPlayerInfo(currentRoom, currentPlayerName)
-
-            io.sockets.in(currentRoom).emit('CLIENT_LEAVE_ROOM', {
+            this.io.sockets.in(this.currentRoom).emit('CLIENT_LEAVE_ROOM', {
                 timestamp: getCurrentTimestamp(),
-                playerName: currentPlayerName,
+                playerName: this.currentPlayerName,
                 slotID: playerInfo.slotID
             })
-            RoomsManager.removePlayer(currentRoom, currentPlayerName)
-            currentRoom = ''
-            currentPlayerName = ''
-        })
+            RoomsManager.removePlayer(this.currentRoom, this.currentPlayerName)
+            this.currentRoom = ''
+            this.currentPlayerName = ''
+        },
+        createRoom: function({roomName, maxPlayers, password}) {
+            // if the room does not exist, create it
+            if(!RoomsManager.isRoomPresent(roomName)) {
+                RoomsManager.initializeRoom(roomName, maxPlayers, password)
 
-        socket.on('CLIENT_SEND_MESSAGE', (data) => {
-            const {content, author} = data
-            io.sockets.in(currentRoom).emit('CLIENT_SEND_MESSAGE', {
+            } else {
+                console.error('selected room is already present! Cannot create a duplicate!')
+            }
+        },
+        sendMessage: function({content, author}) {
+            this.io.sockets.in(this.currentRoom).emit('CLIENT_SEND_MESSAGE', {
                 timestamp: getCurrentTimestamp(),
                 author,
                 content
             })
-        })
-        socket.on('CLIENT_JOIN_ROOM', (data) => {
-            const {playerName, roomName} = data
-            if(roomName && currentRoom === '') {
-
-                // if the room does not exist, create it
-                if(!RoomsManager.isRoomPresent(roomName)) {
-                    RoomsManager.initializeRoom(roomName, 10)
-                }
+        },
+        joinRoom: function({playerName, roomName}) {
+            if(roomName && this.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
                 RoomsManager.addPlayer(roomName, playerName)
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
 
-                socket.emit('CLIENT_GET_ROOM_DATA', roomDetails)
+                this.socket.emit('CLIENT_GET_ROOM_DATA', roomDetails)
 
-                io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
+                this.io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
                     timestamp: getCurrentTimestamp(),
                     playerName,
                     playerInfo: RoomsManager.getPlayerInfo(roomName, playerName)
                 })
 
-                socket.join(roomName)
+                this.socket.join(roomName)
 
-                currentPlayerName = playerName
-                currentRoom = roomName
+                this.currentPlayerName = playerName
+                this.currentRoom = roomName
             } else {
-                socket.emit('CLIENT_JOIN_ROOM', {
-                    error: 'Error - Could not join the room!'
+                this.socket.emit('CLIENT_JOIN_ROOM', {
+                    error: 'Error - WHY IS THE ROOM GONE?!'
                 })
             }
-        })
+        }
+    }
+
+
+    io.on('connection', function(socket) {
+        this.io = io
+        this.socket = socket
+        this.currentPlayerName = ''
+        this.currentRoom = ''
+        socket.on('disconnect', socketMethods.disconnect.bind(this))
+
+        socket.on('CLIENT_CREATE_ROOM', socketMethods.createRoom.bind(this))
+        socket.on('CLIENT_SEND_MESSAGE', socketMethods.sendMessage.bind(this))
+        socket.on('CLIENT_JOIN_ROOM', socketMethods.joinRoom.bind(this))
     })
 }

@@ -3,7 +3,7 @@ require('../../styles/main.scss')
 import React from 'react'
 import IO from 'socket.io-client'
 import MainPageComponent from './MainPageComponent'
-import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA} from '../../const/SocketEvents'
+import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM} from '../../const/SocketEvents'
 
 export default class MainPage extends React.PureComponent {
     constructor(props) {
@@ -16,6 +16,7 @@ export default class MainPage extends React.PureComponent {
         }
         this.socket = IO()
 
+        this.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
         this.socket.emit(CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
         this.socket.on(CLIENT_GET_ROOM_DATA, (data) => {
             const {maxPlayers, playersCount, slots, playersList} = data
@@ -27,6 +28,7 @@ export default class MainPage extends React.PureComponent {
             })
         })
         this.socket.on(CLIENT_JOIN_ROOM, (data) => {
+            console.info(data)
             const {playerName, playerInfo} = data
             const {playersList, slots, playersCount} = this.state
 
@@ -60,7 +62,6 @@ export default class MainPage extends React.PureComponent {
     render () {
         const {userName} = this.props
         const {playersList} = this.state
-        console.info(this.state)
         return (
             <MainPageComponent
                 socket={this.socket}

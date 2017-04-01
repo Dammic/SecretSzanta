@@ -15,7 +15,7 @@ const RoomsManager = function() {
      * @param {Number} [maxPlayers = 10] - max amount of players in the room
      */
     return {
-        initializeRoom: function (roomName, maxPlayers = 10) {
+        initializeRoom: function (roomName, maxPlayers = 10, password) {
             let slots = []
             const tmp = [...Array(maxPlayers)].map((value, index) => {
                 slots[index] = {
@@ -27,7 +27,8 @@ const RoomsManager = function() {
             rooms_props[roomName] = {
                 slots,
                 maxPlayers,
-                playersCount: 0
+                playersCount: 0,
+                password
             }
         },
         deleteRoom: function (roomName) {
