@@ -2,7 +2,6 @@
 import React from 'react'
 import GameListComponent from './GameListComponent'
 import MainPage from '../MainPage/MainPage'
-import {testMock} from '../../const/testMock'
 
 export default class GameList extends React.PureComponent {
 
@@ -11,14 +10,12 @@ export default class GameList extends React.PureComponent {
         this.state = {
             roomName: ''
         }
-        this.setRoomName = this.setRoomName.bind(this)
     }
 
-    setRoomName (event) {
+    setRoomName = (event) => {
         // const {target} = event
         // const {roomid} = target.attributes
-        console.log(event.target.attributes.getNamedItem('data-roomid').value)
-        var roomID = event.target.attributes.getNamedItem('data-roomid').value
+        let roomID = event.target.attributes.getNamedItem('data-roomid').value
 
         this.setState({
             roomName: roomID
@@ -67,13 +64,11 @@ export default class GameList extends React.PureComponent {
             }
         ]
 
-        if (roomName === '')
-            return (
-                <GameListComponent title={userName} userNames={testMock} rooms={this.rooms} onClick={this.setRoomName} />
-            )
-        else
-            return (
-                <MainPage userName={userName}/>
-            )
+
+        if (roomName === '') {
+            return <GameListComponent title={userName} rooms={this.rooms} onClick={this.setRoomName} />
+        } else {
+            return <MainPage userName={userName}/>
+        }
     }
 }

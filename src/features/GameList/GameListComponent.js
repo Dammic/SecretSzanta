@@ -4,11 +4,10 @@ import GameListItemComponent from './GameListItemComponent'
 
 const GameListComponent = ({
     title,
-    userNames,
     rooms,
     onClick
 }) => {
-    console.info(userNames)
+
     return (
         <div className="main-page">
             Hello {title}!
