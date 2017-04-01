@@ -4,7 +4,9 @@ import React from 'react'
 const PlayerBoardComponent = ({
     playersLeft = [],
     playersMiddle = [],
-    playersRight = []
+    playersRight = [],
+    policiesLiberalCount = 0,
+    policiesFacistCount = 0
 }) => {
 
     const renderPlayer = (player) => {
@@ -12,10 +14,23 @@ const PlayerBoardComponent = ({
         console.info(player)
         return (
             <div className="player">
-                <img className="portrait" src = {picture} alt="Player image"/>    
                 <div>{playerName}</div>
+                <img className="portrait" src = {picture} alt="Player image"/>    
             </div>
         )
+    }
+
+    const renderPolicies = (count, cardType) => {
+        const result = []
+
+        const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')            
+
+        for( let i = 0; i < count; i++) {
+            result.push(
+                    <img src={cardPicture} alt="Policy" />
+                    )
+        }
+        return result
     }
     
     return (
@@ -31,11 +46,17 @@ const PlayerBoardComponent = ({
                 </div>
 
                 <div className="policy">
-                   <img src = {require('../../static/cactus.jpg')} /> 
+                    <img src = {require('../../static/liberalpolicies.png')} /> 
+                    <div className="policy-card-liberal">
+                        {renderPolicies(policiesLiberalCount, 'liberal')}
+                    </div>
                 </div>
                 
                 <div className="policy">
-                   <img src = {require('../../static/cactus.jpg')} /> 
+                    <img src = {require('../../static/facistpolicies3.png')} /> 
+                    <div className="policy-card-fascist">
+                        {renderPolicies(policiesFacistCount, 'facist')}
+                    </div>
                 </div>
 
             </div>

@@ -4,6 +4,10 @@ import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
 
+    constructor(props) {
+        super(props)
+    }
+
     makePlayer(name) {
         return {
             playerName: name,
@@ -19,7 +23,8 @@ export default class PlayerBoard extends React.PureComponent {
                   'lis',
                   'kot',
                   'tygrys',
-                  'hipopotam'
+                  'hipopotam',
+                  'niedzwiedz'
                       ];
         //players later will be given via props
         const players = mockPlayers.map(   
@@ -41,6 +46,8 @@ export default class PlayerBoard extends React.PureComponent {
                     playersLeft = {left} 
                     playersMiddle = {center}
                     playersRight = {right}
+                    policiesLiberalCount = {5}
+                    policiesFacistCount = {6}
                 />
                )
     }

@@ -12,6 +12,7 @@ const MainPageComponent = ({
     console.info(userNames)
     return (
         <div className="main-page">
+            <PlayerBoard />
             <UIBox socket={socket} userName={userName}/>
         </div>
     )
