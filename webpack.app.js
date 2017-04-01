@@ -66,7 +66,7 @@ module.exports = {
                 loader:'file-loader'
             }, {
                 test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader', 'sass-loader'],
+                loaders: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
                 include: [
                     APP_DIR // important for performance!
                 ],

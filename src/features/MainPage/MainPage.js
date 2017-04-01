@@ -28,19 +28,20 @@ export default class MainPage extends React.PureComponent {
         })
         this.socket.on(CLIENT_JOIN_ROOM, (data) => {
             const {playerName, playerInfo} = data
-            const {playersList, slots} = this.state
+            const {playersList, slots, playersCount} = this.state
 
             const newSlots = [...slots]
             newSlots[playerInfo.slotID - 1] = playerInfo
 
             this.setState({
                 slots: newSlots,
-                playersList: [...playersList, playerName ]
+                playersList: [...playersList, playerName ],
+                playersCount: playersCount + 1
             })
         })
         this.socket.on(CLIENT_LEAVE_ROOM, (data) => {
             const {playerName, slotID} = data
-            const {playersList, slots} = this.state
+            const {playersList, slots, playersCount} = this.state
 
             let newSlots = [...slots]
             newSlots[slotID - 1].player = null
@@ -50,12 +51,11 @@ export default class MainPage extends React.PureComponent {
 
             this.setState({
                 playersList: newPlayersList,
-                slots: newSlots
+                slots: newSlots,
+                playersCount: playersCount - 1
             })
         })
     }
-
-
 
     render () {
         const {userName} = this.props
