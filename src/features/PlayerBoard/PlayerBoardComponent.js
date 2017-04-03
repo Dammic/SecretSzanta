@@ -12,10 +12,15 @@ const PlayerBoardComponent = ({
     const renderPlayer = (player) => {
         const {playerName, picture} = player
         console.info(player)
+        
+        const random = Math.floor(Math.random() * 5 + 1)
+
+        const pictureR = require(`../../static/Avatar${random}.png`)
+        const rolePicture = require('../../static/Chancellor.png')
         return (
             <div className="player">
                 <div>{playerName}</div>
-                <img className="portrait" src = {picture} alt="Player image"/>    
+                <img className="portrait" src={pictureR} alt="Player image" />    
             </div>
         )
     }
