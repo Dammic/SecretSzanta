@@ -2,34 +2,46 @@
 import React from 'react'
 
 const PlayerBoardComponent = ({
-    left = [],
-    middle = [],
-    right = []
+    playersLeft = [],
+    playersMiddle = [],
+    playersRight = []
 }) => {
 
     const renderPlayer = (player) => {
+        const {playerName, picture} = player
         console.info(player)
         return (
-            <div className = "player">
-                <img className = "portrait" src = {require('../../static/portrait1.png')} alt = "Player image"/>    
-                <div>{player}</div>
+            <div className="player">
+                <img className="portrait" src = {picture} alt="Player image"/>    
+                <div>{playerName}</div>
             </div>
         )
     }
     
     return (
-        <div className = "playerBoard">
+        <div className="player-board">
 
-            <div className = "playersContainer">
-                {left.map( (player) => renderPlayer(player) )}
+            <div className="players-container">
+                {playersLeft.map( (player) => renderPlayer(player) )}
             </div>
 
-            <div className = "playersContainerMiddle">
-                {middle.map( (player) => renderPlayer(player) )}
+            <div className="central-part">
+                <div className="players-container-middle">
+                    {playersMiddle.map( (player) => renderPlayer(player) )}
+                </div>
+
+                <div className="policy">
+                   <img src = {require('../../static/cactus.jpg')} /> 
+                </div>
+                
+                <div className="policy">
+                   <img src = {require('../../static/cactus.jpg')} /> 
+                </div>
+
             </div>
 
-            <div className = "playersContainer">
-                {right.map( (player) => renderPlayer(player) )}
+            <div className="players-container">
+                {playersRight.map( (player) => renderPlayer(player) )}
             </div>
 
         </div>
