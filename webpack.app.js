@@ -52,7 +52,7 @@ module.exports = {
                 ],
                 query: {
                     cacheDirectory: true, //important for performance
-                    presets: ['react', 'es2015', 'stage-3']
+                    presets: ['react', 'es2015', 'stage-3', 'stage-1']
                 }
             }, {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -66,7 +66,7 @@ module.exports = {
                 loader:'file-loader'
             }, {
                 test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader', 'sass-loader'],
+                loaders: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
                 include: [
                     APP_DIR // important for performance!
                 ],

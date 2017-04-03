@@ -4,12 +4,10 @@ import UIBox from '../UIBox/UIBox'
 import PlayerBoard from '../PlayerBoard/PlayerBoard'
 
 const MainPageComponent = ({
-    title,
-    userNames,
     socket,
-    userName
+    userName,
+    playersList = []
 }) => {
-    console.info(userNames)
     return (
         <div className="main-page">
             <PlayerBoard />
