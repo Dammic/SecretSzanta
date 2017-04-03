@@ -9,7 +9,10 @@ const LoginPageComponent = ({
     return (
         <div className="login-page">
             <Modal>
-                Akk
+                <div>
+                    Akk
+
+                </div>
             </Modal>
             <img className="logo" src="Logo.png"/>
             <div className="login-form">

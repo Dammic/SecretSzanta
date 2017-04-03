@@ -2,12 +2,15 @@
 import React from 'react'
 
 const ModalComponent = ({
-
+    body,
+    closeModal
 }) => {
     return (
         <div className="modal-container">
-            <div className="modal-overlay"></div>
-            <div className="modal"></div>
+            <div className="modal-overlay" onClick={closeModal}></div>
+            <div className="modal">
+                {body}
+            </div>
         </div>
     )
 }

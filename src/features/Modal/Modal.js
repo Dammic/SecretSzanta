@@ -3,13 +3,11 @@ import React from 'react'
 import ModalComponent from './ModalComponent'
 
 export default class Modal extends React.PureComponent {
-    constructor() {
-        super()
-    }
 
     render () {
+        const {children, closeModal} = this.props
         return (
-            <ModalComponent />
+            <ModalComponent body={children} closeModal={closeModal} />
         )
     }
 }
