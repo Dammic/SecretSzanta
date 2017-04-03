@@ -1,3 +1,6 @@
+// external
+@import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
 // variables
 @import './variables/variables.scss';
 
@@ -11,7 +14,6 @@
 @import './utils/utils.scss';
 
 // components
-@import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import '../features/MainPage/MainPage.scss';
 @import '../features/NotFound/NotFound.scss';
 @import '../features/Chat/Chat.scss';
