@@ -5,9 +5,10 @@ import GameListItemComponent from './GameListItemComponent'
 const GameListComponent = ({
     title,
     rooms,
-    onClick
+    onClick,
+    showModal,
+    closeModal
 }) => {
-
     return (
         <div className="main-page">
             Hello {title}!
