@@ -1,7 +1,6 @@
 'use strict'
 import React from 'react'
 import LoginPageComponent from './LoginPageComponent'
-import {testMock} from '../../const/testMock'
 import MainPage from '../MainPage/MainPage'
 import GameList from '../GameList/GameList'
 
@@ -37,7 +36,6 @@ export default class LoginPage extends React.PureComponent {
         if (userName === '') {
             return <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef}/>
         } else {
-            console.log('here')
             return <GameList userName={userName}/>
         }
     }

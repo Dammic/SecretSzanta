@@ -19,11 +19,21 @@ export default class MessagesBox extends React.PureComponent {
         })
 
         socket.on(CLIENT_JOIN_ROOM, (data) => {
-            this.addMessage(data)
+            const message = {
+                timestamp: data.timestamp,
+                author: '',
+                content: `${data.playerName} has joined the room!`
+            }
+            this.addMessage(message)
         })
 
         socket.on(CLIENT_LEAVE_ROOM, (data) => {
-            this.addMessage(data)
+            const message = {
+                timestamp: data.timestamp,
+                author: '',
+                content: `${data.playerName} has left the room!`
+            }
+            this.addMessage(message)
         })
     }
 

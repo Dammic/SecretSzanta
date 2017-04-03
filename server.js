@@ -3,6 +3,8 @@ const path = require('path')
 const Server = require('http').Server
 const swig = require('swig')
 const Express = require('express')
+const SocketEvents = require('./events/SocketEvents')
+const roomsRoute = require('./routes/rooms')
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
@@ -17,15 +19,20 @@ app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'))
 app.use(Express.static(__dirname + '/public'))
 
+// socket.io
+const io = require('socket.io')(server)
+const RoomsManager = require('./utils/RoomsManager')()
+SocketEvents(io, RoomsManager)
 
 // universal routing and rendering
 app.get('/', (req, res) => {
     return res.render('index')
 })
+app.use('/rooms', roomsRoute(RoomsManager))
 
 app.use('*', (req, res, next) => {
 	res.status(404)
-	
+
 	console.log('404! Not Found!')
 	return res.render('index')
 })
@@ -39,51 +46,4 @@ server.listen(port, err => {
     } else {
         console.info(`Server running on http://localhost:${port} [${env}]`)
     }
-})
-
-const getCurrentTimestamp = function() {
-    return Math.floor(Date.now() / 1000)
-}
-
-// socket.io
-const io = require('socket.io')(server)
-io.on('connection', (socket) => {
-    let currentPlayerName = ''
-    let currentRoom = ''
-
-    socket.on('disconnect', function() {
-        io.sockets.in(currentRoom).emit('CLIENT_LEAVE_ROOM', {
-            timestamp: getCurrentTimestamp(),
-            author: '',
-            content: `${currentPlayerName} has left the room.`
-        })
-        currentRoom = ''
-        currentPlayerName = ''
-    })
-
-    socket.on('CLIENT_SEND_MESSAGE', (data) => {
-        const {content, author} = data
-        io.sockets.in(currentRoom).emit('CLIENT_SEND_MESSAGE', {
-            timestamp: getCurrentTimestamp(),
-            author,
-            content
-        })
-    })
-    socket.on('CLIENT_JOIN_ROOM', (data) => {
-        const {playerName, roomName} = data
-        if(roomName && currentRoom === '') {
-            io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
-                timestamp: getCurrentTimestamp(),
-                author: '',
-                content: `${playerName} has joined the server!`
-            })
-            socket.join(roomName)
-            currentPlayerName = playerName
-            currentRoom = roomName
-        } else {
-            socket.emit('CLIENT_JOIN_ROOM', {
-                error: 'Error - Could not join the room!'
-            })
-        }
-    })
 })
