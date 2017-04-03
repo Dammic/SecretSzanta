@@ -2,8 +2,6 @@
 import React from 'react'
 import CreateGameButtonComponent from './CreateGameButtonComponent'
 import CreateGameModal from './CreateGameModal'
-
-
 export default class CreateGame extends React.PureComponent {
 
     constructor (props) {

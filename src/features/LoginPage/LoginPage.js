@@ -20,9 +20,18 @@ export default class LoginPage extends React.PureComponent {
         this.inputRef = inpRef
     }
 
-    setName () {
-        console.log('pressed')
-        var name = this.inputRef.value
+
+    /**
+     * Function that handles enter press
+     */
+    onInputChange = (event) => {
+        if (event.key === 'Enter') {
+            this.setName()
+        }
+    }
+
+    setName = () => {
+        const name = this.inputRef.value
 
         this.setState({
             "userName": name
@@ -34,7 +43,7 @@ export default class LoginPage extends React.PureComponent {
         const {userName=''} = this.state
 
         if (userName === '') {
-            return <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef}/>
+            return <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef} onInputChange={this.onInputChange}/>
         } else {
             return <GameList userName={userName}/>
         }
