@@ -1,5 +1,7 @@
 'use strict'
 import React from 'react'
+import _ from 'lodash'
+import Player from './Player/Player.js'
 
 const PlayerBoardComponent = ({
     playersLeft = [],
@@ -8,22 +10,6 @@ const PlayerBoardComponent = ({
     policiesLiberalCount = 0,
     policiesFacistCount = 0
 }) => {
-
-    const renderPlayer = (player) => {
-        const {playerName, picture} = player
-        console.info(player)
-        
-        const random = Math.floor(Math.random() * 5 + 1)
-
-        const pictureR = require(`../../static/Avatar${random}.png`)
-        const rolePicture = require('../../static/Chancellor.png')
-        return (
-            <div className="player">
-                <div>{playerName}</div>
-                <img className="portrait" src={pictureR} alt="Player image" />    
-            </div>
-        )
-    }
 
     const renderPolicies = (count, cardType) => {
         const result = []
@@ -42,12 +28,13 @@ const PlayerBoardComponent = ({
         <div className="player-board">
 
             <div className="players-container">
-                {playersLeft.map( (player) => renderPlayer(player) )}
+                <Player player={{playerName: 'aa'}}>
+                <!--{playersLeft.map( (player) => <Player player={player}/> )}-->
             </div>
 
             <div className="central-part">
                 <div className="players-container-middle">
-                    {playersMiddle.map( (player) => renderPlayer(player) )}
+                    <!--{playersMiddle.map( (player) => <Player player={player}/> )}-->
                 </div>
 
                 <div className="policy">
@@ -67,7 +54,7 @@ const PlayerBoardComponent = ({
             </div>
 
             <div className="players-container">
-                {playersRight.map( (player) => renderPlayer(player) )}
+                <!--{playersRight.map( (player) => <Player player={player}/> )}-->
             </div>
 
         </div>

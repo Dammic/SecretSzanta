@@ -4,14 +4,9 @@ import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
 
-    constructor(props) {
-        super(props)
-    }
-
     makePlayer(name) {
         return {
             playerName: name,
-            picture: require('../../static/portrait1.png')
         }
     }
 
