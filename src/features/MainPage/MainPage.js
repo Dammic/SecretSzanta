@@ -48,7 +48,6 @@ export default class MainPage extends React.PureComponent {
             const newPlayersList = playersList.filter((player) => {
                 return (player !== playerName)
             })
-            console.info(newPlayersList)
 
             this.setState({
                 playersList: newPlayersList,

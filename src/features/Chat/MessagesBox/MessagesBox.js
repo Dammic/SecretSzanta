@@ -15,7 +15,6 @@ export default class MessagesBox extends React.PureComponent {
     componentDidMount () {
         const {socket} = this.props
         socket.on(CLIENT_SEND_MESSAGE, (data) => {
-            console.info(data)
             this.addMessage(data)
         })
 
