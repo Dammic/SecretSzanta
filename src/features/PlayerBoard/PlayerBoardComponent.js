@@ -25,7 +25,7 @@ const PlayerBoardComponent = ({
     }
     
     return (
-            <div className="player-board">
+        <div className="player-board">
 
             <div className="players-container">
                 {playersLeft.map( (player) => <Player player={player}/> )}

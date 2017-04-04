@@ -1,3 +1,5 @@
+@import './Player/Player.scss';
+
 $elementsWidth: 80%;
 $elementsHeight: 300px;
 
@@ -13,6 +15,7 @@ $elementsHeight: 300px;
         justify-content: space-around;
         flex-direction: column;
         align-content: center;
+        flex: 1 1 0;
 
     }
 
@@ -21,6 +24,7 @@ $elementsHeight: 300px;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
+        flex: 3 1 0;
 
         .players-container-middle {
             display: flex;

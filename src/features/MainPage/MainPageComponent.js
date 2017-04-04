@@ -10,7 +10,7 @@ const MainPageComponent = ({
 }) => {
     return (
         <div className="main-page">
-            <PlayerBoard />
+            <PlayerBoard players={playersList}/>
             <UIBox socket={socket} userName={userName}/>
         </div>
     )

@@ -1,12 +1,19 @@
+$player-image-width: 50%;
+
 .player {
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex: 0 1 33%;
+    
     .portrait {
-        display: block;
-        max-width: 30%;
+        max-width: $player-image-width;
+    }
+
+    .role {
+        max-width: $player-image-width;
     }
 }
 
