@@ -17,7 +17,8 @@ export default class Player extends React.PureComponent {
         return (
                     <PlayerComponent 
                         playerName = {playerName}
-                        picture = {pictureRandom}
+                        avatar = {pictureRandom}
+                        rolePicture = {rolePicture}
                     />
                )
     }
