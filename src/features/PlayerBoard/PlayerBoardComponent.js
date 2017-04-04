@@ -12,7 +12,7 @@ const PlayerBoardComponent = ({
 }) => {
 
     const renderPolicies = (count, cardType) => {
-        const result = []
+        let result = []
 
         const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')            
 

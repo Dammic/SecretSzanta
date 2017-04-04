@@ -5,7 +5,7 @@ import PlayerComponent from './PlayerComponent'
 export default class Player extends React.PureComponent {
 
     render() {
-        console.log(this.props.player)
+
         const {playerName} = this.props.player
 
         
@@ -15,11 +15,11 @@ export default class Player extends React.PureComponent {
         const rolePicture = require('../../../static/Chancellor.png')
 
         return (
-                    <PlayerComponent 
-                        playerName = {playerName}
-                        avatar = {pictureRandom}
-                        rolePicture = {rolePicture}
-                    />
+                <PlayerComponent 
+                    playerName = {playerName}
+                    avatar = {pictureRandom}
+                    rolePicture = {rolePicture}
+                />
                )
     }
 
