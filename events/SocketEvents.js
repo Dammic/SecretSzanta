@@ -4,7 +4,6 @@ const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 module.exports = function(io, RoomsManager) {
     const socketMethods = {
         disconnect: function() {
-            console.info('DISCONNECT')
             if(this.currentRoom) {
                 const playerInfo = RoomsManager.getPlayerInfo(this.currentRoom, this.currentPlayerName)
 
@@ -39,7 +38,6 @@ module.exports = function(io, RoomsManager) {
         },
         joinRoom: function({playerName, roomName}) {
             if(roomName && this.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
-                console.info('ok')
                 RoomsManager.addPlayer(roomName, playerName)
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)

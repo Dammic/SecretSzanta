@@ -27,7 +27,6 @@ export default class MainPage extends React.PureComponent {
             })
         })
         props.socket.on(CLIENT_JOIN_ROOM, (data) => {
-            console.info(data)
             const {playerName, playerInfo} = data
             const {playersList, slots, playersCount} = this.state
 
@@ -59,11 +58,11 @@ export default class MainPage extends React.PureComponent {
     }
 
     render () {
-        const {userName} = this.props
+        const {userName, socket} = this.props
         const {playersList} = this.state
         return (
             <MainPageComponent
-                socket={this.socket}
+                socket={socket}
                 userName={userName}
                 playersList={playersList}/>
         )

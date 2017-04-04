@@ -34,7 +34,7 @@ export default class LoginPage extends React.PureComponent {
         const name = this.inputRef.value
 
         this.setState({
-            "userName": name
+            userName: name
         })
         console.log('processed')
     }
