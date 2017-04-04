@@ -16,16 +16,16 @@ const PlayerBoardComponent = ({
 
         const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')            
 
-        _.times(count,
-                () => result.push(
-                    <img src={cardPicture} alt="Policy" />
-                    )
-            )
+        _.times(count, (
+                    ) => result.push(
+                        <img src={cardPicture} alt="Policy" />
+                        )
+               )
         return result
     }
     
     return (
-        <div className="player-board">
+            <div className="player-board">
 
             <div className="players-container">
                 {playersLeft.map( (player) => <Player player={player}/> )}

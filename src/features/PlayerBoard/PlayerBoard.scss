@@ -35,7 +35,7 @@ $elementsHeight: 300px;
             display: flex;
             justify-content: center;
 
-            
+
             img {
                 max-width: $elementsWidth;
                 max-height: $elementsHeight;
@@ -68,18 +68,7 @@ $elementsHeight: 300px;
             @extend .policy-card;
             left: 16.5%;
         }
-                
-     }
 
-    .player {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        .portrait {
-            display: block;
-            max-width: 30%;
-        }
     }
 
 }
