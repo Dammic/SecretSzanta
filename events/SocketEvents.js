@@ -2,8 +2,7 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 
 module.exports = function(io, RoomsManager) {
-    const disconnect = function() {
-        let socket = this
+    const disconnect = function(socket) {
         if(socket.currentRoom) {
             const playerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, socket.currentPlayerName)
 
@@ -21,8 +20,7 @@ module.exports = function(io, RoomsManager) {
         socket.currentPlayerName = ''
     }
 
-    const createRoom = function({roomName, maxPlayers, password}) {
-        let socket = this
+    const createRoom = function(socket, {roomName, maxPlayers, password}) {
         // if the room does not exist, create it
         if(roomName && !RoomsManager.isRoomPresent(roomName)) {
             RoomsManager.initializeRoom(roomName, maxPlayers, password)
@@ -31,8 +29,7 @@ module.exports = function(io, RoomsManager) {
         }
     }
 
-    const sendMessage = function({content, author}) {
-        let socket = this
+    const sendMessage = function(socket, {content, author}) {
         io.sockets.in(socket.currentRoom).emit('CLIENT_SEND_MESSAGE', {
             timestamp: getCurrentTimestamp(),
             author,
@@ -40,8 +37,7 @@ module.exports = function(io, RoomsManager) {
         })
     }
 
-    const joinRoom = function({playerName, roomName}) {
-        let socket = this
+    const joinRoom = function(socket, {playerName, roomName}) {
         if(roomName && socket.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
             RoomsManager.addPlayer(roomName, playerName)
 
@@ -74,10 +70,10 @@ module.exports = function(io, RoomsManager) {
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions and we do it by passing it as *this*
         const bindedFunctions = {
-            disconnect: disconnect.bind(socket),
-            createRoom: createRoom.bind(socket),
-            sendMessage: sendMessage.bind(socket),
-            joinRoom: joinRoom.bind(socket)
+            disconnect: disconnect.bind(null, socket),
+            createRoom: createRoom.bind(null, socket),
+            sendMessage: sendMessage.bind(null, socket),
+            joinRoom: joinRoom.bind(null, socket)
         }
 
         socket.on('disconnect', bindedFunctions.disconnect)
