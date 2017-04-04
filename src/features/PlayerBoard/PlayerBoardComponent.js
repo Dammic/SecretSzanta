@@ -28,13 +28,12 @@ const PlayerBoardComponent = ({
         <div className="player-board">
 
             <div className="players-container">
-                <Player player={{playerName: 'aa'}}>
-                <!--{playersLeft.map( (player) => <Player player={player}/> )}-->
+                {playersLeft.map( (player) => <Player player={player}/> )}
             </div>
 
             <div className="central-part">
                 <div className="players-container-middle">
-                    <!--{playersMiddle.map( (player) => <Player player={player}/> )}-->
+                    {playersMiddle.map( (player) => <Player player={player}/> )}
                 </div>
 
                 <div className="policy">
@@ -54,7 +53,7 @@ const PlayerBoardComponent = ({
             </div>
 
             <div className="players-container">
-                <!--{playersRight.map( (player) => <Player player={player}/> )}-->
+                {playersRight.map( (player) => <Player player={player}/> )}
             </div>
 
         </div>

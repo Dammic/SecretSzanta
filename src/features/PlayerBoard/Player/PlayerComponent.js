@@ -1,10 +1,10 @@
 'use strict'
 import React from 'react'
 
-const PlayerComponent = (
+const PlayerComponent = ({
         playerName,
         picture
-) => {
+}) => {
     return (                
             <div className="player">
                 <div>{playerName}</div>
