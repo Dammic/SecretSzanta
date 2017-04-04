@@ -87,8 +87,6 @@ const RoomsManager = function() {
                 //@TODO: RETURN A PROPER WARNING FOR THE USER (MODAL OR SOMETHING LIKE THAT)
                 console.warn('player with the same name is already on this board!')
             }
-
-            console.info(rooms_props[roomName])
         },
 
         /**
@@ -103,8 +101,6 @@ const RoomsManager = function() {
                 playerObject.player = null
                 rooms_props[roomName].playersCount -= 1
             }
-
-            console.info(rooms_props[roomName])
         },
 
         getPlayerInfo: function (roomName, playerName) {
@@ -118,7 +114,7 @@ const RoomsManager = function() {
          * @returns {Boolean} - true if created, false if not created
          */
         isRoomPresent: function (roomName) {
-            return !!rooms_props[roomName]
+            return (rooms_props[roomName] ? true : false)
         }
     }
 }

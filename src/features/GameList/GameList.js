@@ -76,7 +76,7 @@ export default class GameList extends React.PureComponent {
             )
         } else {
             return (
-                <MainPage userName={userName}/>
+                <MainPage socket={this.socket} userName={userName}/>
             )
         }
     }
