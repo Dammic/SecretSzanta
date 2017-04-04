@@ -3,24 +3,26 @@ const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 
 module.exports = function(io, RoomsManager) {
     const disconnect = function() {
-        if(this.currentRoom) {
-            const playerInfo = RoomsManager.getPlayerInfo(this.currentRoom, this.currentPlayerName)
+        let socket = this
+        if(socket.currentRoom) {
+            const playerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, socket.currentPlayerName)
 
-            io.sockets.in(this.currentRoom).emit('CLIENT_LEAVE_ROOM', {
+            io.sockets.in(socket.currentRoom).emit('CLIENT_LEAVE_ROOM', {
                 timestamp: getCurrentTimestamp(),
-                playerName: this.currentPlayerName,
+                playerName: socket.currentPlayerName,
                 slotID: playerInfo.slotID
             })
-            if(RoomsManager.isRoomPresent(this.currentRoom)) {
-                RoomsManager.removePlayer(this.currentRoom, this.currentPlayerName)
+            if(RoomsManager.isRoomPresent(socket.currentRoom)) {
+                RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
             }
-            this.currentRoom = ''
+            socket.currentRoom = ''
         }
 
-        this.currentPlayerName = ''
+        socket.currentPlayerName = ''
     }
 
     const createRoom = function({roomName, maxPlayers, password}) {
+        let socket = this
         // if the room does not exist, create it
         if(roomName && !RoomsManager.isRoomPresent(roomName)) {
             RoomsManager.initializeRoom(roomName, maxPlayers, password)
@@ -30,7 +32,8 @@ module.exports = function(io, RoomsManager) {
     }
 
     const sendMessage = function({content, author}) {
-        io.sockets.in(this.currentRoom).emit('CLIENT_SEND_MESSAGE', {
+        let socket = this
+        io.sockets.in(socket.currentRoom).emit('CLIENT_SEND_MESSAGE', {
             timestamp: getCurrentTimestamp(),
             author,
             content
@@ -38,12 +41,13 @@ module.exports = function(io, RoomsManager) {
     }
 
     const joinRoom = function({playerName, roomName}) {
-        if(roomName && this.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
+        let socket = this
+        if(roomName && socket.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
             RoomsManager.addPlayer(roomName, playerName)
 
             const roomDetails = RoomsManager.getRoomDetails(roomName)
 
-            this.emit('CLIENT_GET_ROOM_DATA', roomDetails)
+            socket.emit('CLIENT_GET_ROOM_DATA', roomDetails)
 
             io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
                 timestamp: getCurrentTimestamp(),
@@ -51,12 +55,12 @@ module.exports = function(io, RoomsManager) {
                 playerInfo: RoomsManager.getPlayerInfo(roomName, playerName)
             })
 
-            this.join(roomName)
+            socket.join(roomName)
 
-            this.currentPlayerName = playerName
-            this.currentRoom = roomName
+            socket.currentPlayerName = playerName
+            socket.currentRoom = roomName
         } else {
-            this.emit('CLIENT_JOIN_ROOM', {
+            socket.emit('CLIENT_JOIN_ROOM', {
                 error: 'Error - WHY IS THE ROOM GONE?!'
             })
         }
