@@ -14,11 +14,10 @@ export default class MainPage extends React.PureComponent {
             slots: [],
             playersList: []
         }
-        this.socket = IO()
 
-        this.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
-        this.socket.emit(CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
-        this.socket.on(CLIENT_GET_ROOM_DATA, (data) => {
+        props.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
+        props.socket.emit(CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
+        props.socket.on(CLIENT_GET_ROOM_DATA, (data) => {
             const {maxPlayers, playersCount, slots, playersList} = data
             this.setState({
                 maxPlayers,
@@ -27,8 +26,7 @@ export default class MainPage extends React.PureComponent {
                 playersList
             })
         })
-        this.socket.on(CLIENT_JOIN_ROOM, (data) => {
-            console.info(data)
+        props.socket.on(CLIENT_JOIN_ROOM, (data) => {
             const {playerName, playerInfo} = data
             const {playersList, slots, playersCount} = this.state
 
@@ -41,7 +39,7 @@ export default class MainPage extends React.PureComponent {
                 playersCount: playersCount + 1
             })
         })
-        this.socket.on(CLIENT_LEAVE_ROOM, (data) => {
+        props.socket.on(CLIENT_LEAVE_ROOM, (data) => {
             const {playerName, slotID} = data
             const {playersList, slots, playersCount} = this.state
 
@@ -60,11 +58,11 @@ export default class MainPage extends React.PureComponent {
     }
 
     render () {
-        const {userName} = this.props
+        const {userName, socket} = this.props
         const {playersList} = this.state
         return (
             <MainPageComponent
-                socket={this.socket}
+                socket={socket}
                 userName={userName}
                 playersList={playersList}/>
         )
