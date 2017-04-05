@@ -16,11 +16,10 @@ const PlayerBoardComponent = ({
 
         const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')            
 
-        _.times(count, (
-                    ) => result.push(
-                        <img src={cardPicture} alt="Policy" />
-                        )
-               )
+        _.times(count, () => {
+            result.push(<img src={cardPicture} alt="Policy" />)
+        })
+
         return result
     }
     

@@ -40,12 +40,12 @@ export default class PlayerBoard extends React.PureComponent {
                    ];
         //players later will be given via props
         //const players = mockPlayers.map(   
-        //        name => this.makePlayer(name)
-        //      )
+        //    name => this.makePlayer(name)
+        //)
 
         const players = this.props.players.map(
-                    name => this.makePlayer(name)
-                )
+            name => this.makePlayer(name)
+        )
 
         let left = []
         let center = []
