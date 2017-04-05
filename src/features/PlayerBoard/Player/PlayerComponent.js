@@ -9,6 +9,14 @@ const PlayerComponent = ({
     return (                
         <div className="player">
             <div>{playerName}</div>
+
+            <div className="bubble"> 
+                <div className="bubble-triangle">
+                </div>
+                <div className="bubble-message">
+                </div>
+            </div>
+
             <img className="portrait" src={avatar} alt="Player image" />    
             <img className="role" src={rolePicture} alt="" />
         </div>

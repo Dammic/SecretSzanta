@@ -19,7 +19,7 @@ export default class PlayerBoard extends React.PureComponent {
 
     makePlayer(name) {
        
-        const role = Math.floor(Math.random() * 3 + 1)
+        const role = Math.floor(Math.random() * 3 + 3)
 
         return {
             playerName: name,
@@ -50,6 +50,7 @@ export default class PlayerBoard extends React.PureComponent {
         let left = []
         let center = []
         let right = []
+
 
         players.map((player, index) => {
             if (index % 3 == 0) left.push(player)
