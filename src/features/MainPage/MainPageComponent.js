@@ -10,7 +10,6 @@ const MainPageComponent = ({
 }) => {
     return (
         <div className="main-page">
-            {playersList.map((playerName) => <div key={playerName}>{playerName}</div>)}
             <PlayerBoard />
             <UIBox socket={socket} userName={userName}/>
         </div>
