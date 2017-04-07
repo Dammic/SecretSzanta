@@ -1,6 +1,5 @@
 .idea
 lib
-dll
 node_modules
 public/
 babel_cache
