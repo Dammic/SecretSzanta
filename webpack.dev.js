@@ -1,9 +1,6 @@
 'use strict'
-const webpack = require('webpack')
-const path = require('path')
-
-const BUILD_DIR = path.resolve(__dirname, 'public')
-const APP_DIR = path.resolve(__dirname, 'src')
+var path = require('path')
+var webpack = require('webpack')
 
 // hack for windows 10 ubuntu, ERROR in EINVAL: invalid argument, uv_interface_addresses
 // remove when MS fixes their WSL (now on windows version 1607)
@@ -15,9 +12,9 @@ try {
 
 module.exports = {
     cache: true,
-    devtool: 'source-map',
+    devtool: 'eval',
     entry: {
-        app: APP_DIR + '/AppClient.js'
+        app: path.join(__dirname, 'src', 'AppClient.js')
     },
     watchOptions: {
         poll: true
@@ -31,14 +28,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: { warnings: false },
-            mangle: true,
-            beautify: false,
-            dead_code: true
-        }),
         new webpack.DllReferencePlugin({
-            context: path.join(__dirname, './'),
+            context: __dirname,
             manifest: require('./vendor-manifest.json')
         })
     ],
@@ -46,12 +37,13 @@ module.exports = {
         loaders: [
             {
                 test: /\.js?$/,
-                loader: 'babel-loader',
+                loader: 'babel',
                 include: [
-                    APP_DIR //important for performance!
+                    path.join(__dirname, 'src') //important for performance!
                 ],
                 query: {
                     cacheDirectory: true, //important for performance
+                    plugins: ['transform-regenerator'],
                     presets: ['react', 'es2015', 'stage-3', 'stage-1']
                 }
             }, {
@@ -68,14 +60,14 @@ module.exports = {
                 test: /\.scss$/,
                 loaders: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
                 include: [
-                    APP_DIR // important for performance!
+                    path.join(__dirname, 'src') //important for performance!
                 ],
             }
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.jsx'],
-        root: path.resolve(__dirname, './'),
+        extensions: ['', '.js'],
+        root: path.resolve(__dirname, 'src'),
         modulesDirectories: ['node_modules']
     }
 }

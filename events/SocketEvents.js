@@ -2,71 +2,83 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 
 module.exports = function(io, RoomsManager) {
-    const socketMethods = {
-        disconnect: function() {
-            const playerInfo = RoomsManager.getPlayerInfo(this.currentRoom, this.currentPlayerName)
+    const disconnect = function(socket) {
+        if(socket.currentRoom) {
+            const playerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, socket.currentPlayerName)
 
-            this.io.sockets.in(this.currentRoom).emit('CLIENT_LEAVE_ROOM', {
+            io.sockets.in(socket.currentRoom).emit('CLIENT_LEAVE_ROOM', {
                 timestamp: getCurrentTimestamp(),
-                playerName: this.currentPlayerName,
+                playerName: socket.currentPlayerName,
                 slotID: playerInfo.slotID
             })
-            RoomsManager.removePlayer(this.currentRoom, this.currentPlayerName)
-            this.currentRoom = ''
-            this.currentPlayerName = ''
-        },
-        createRoom: function({roomName, maxPlayers, password}) {
-            // if the room does not exist, create it
-            if(!RoomsManager.isRoomPresent(roomName)) {
-                RoomsManager.initializeRoom(roomName, maxPlayers, password)
-
-            } else {
-                console.error('selected room is already present! Cannot create a duplicate!')
+            if(RoomsManager.isRoomPresent(socket.currentRoom)) {
+                RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
             }
-        },
-        sendMessage: function({content, author}) {
-            this.io.sockets.in(this.currentRoom).emit('CLIENT_SEND_MESSAGE', {
+            socket.currentRoom = ''
+        }
+
+        socket.currentPlayerName = ''
+    }
+
+    const createRoom = function(socket, {roomName, maxPlayers, password}) {
+        // if the room does not exist, create it
+        if(roomName && !RoomsManager.isRoomPresent(roomName)) {
+            RoomsManager.initializeRoom(roomName, maxPlayers, password)
+        } else {
+            //console.error('selected room is already present! Cannot create a duplicate!')
+        }
+    }
+
+    const sendMessage = function(socket, {content, author}) {
+        io.sockets.in(socket.currentRoom).emit('CLIENT_SEND_MESSAGE', {
+            timestamp: getCurrentTimestamp(),
+            author,
+            content
+        })
+    }
+
+    const joinRoom = function(socket, {playerName, roomName}) {
+        if(roomName && socket.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
+            RoomsManager.addPlayer(roomName, playerName)
+
+            const roomDetails = RoomsManager.getRoomDetails(roomName)
+
+            socket.emit('CLIENT_GET_ROOM_DATA', roomDetails)
+
+            io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
                 timestamp: getCurrentTimestamp(),
-                author,
-                content
+                playerName,
+                playerInfo: RoomsManager.getPlayerInfo(roomName, playerName)
             })
-        },
-        joinRoom: function({playerName, roomName}) {
-            if(roomName && this.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
-                RoomsManager.addPlayer(roomName, playerName)
 
-                const roomDetails = RoomsManager.getRoomDetails(roomName)
+            socket.join(roomName)
 
-                this.socket.emit('CLIENT_GET_ROOM_DATA', roomDetails)
-
-                this.io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
-                    timestamp: getCurrentTimestamp(),
-                    playerName,
-                    playerInfo: RoomsManager.getPlayerInfo(roomName, playerName)
-                })
-
-                this.socket.join(roomName)
-
-                this.currentPlayerName = playerName
-                this.currentRoom = roomName
-            } else {
-                this.socket.emit('CLIENT_JOIN_ROOM', {
-                    error: 'Error - WHY IS THE ROOM GONE?!'
-                })
-            }
+            socket.currentPlayerName = playerName
+            socket.currentRoom = roomName
+        } else {
+            socket.emit('CLIENT_JOIN_ROOM', {
+                error: 'Error - WHY IS THE ROOM GONE?!'
+            })
         }
     }
 
 
-    io.on('connection', function(socket) {
-        this.io = io
-        this.socket = socket
-        this.currentPlayerName = ''
-        this.currentRoom = ''
-        socket.on('disconnect', socketMethods.disconnect.bind(this))
+    io.on('connection', (socket) => {
+        socket.currentPlayerName = ''
+        socket.currentRoom = ''
 
-        socket.on('CLIENT_CREATE_ROOM', socketMethods.createRoom.bind(this))
-        socket.on('CLIENT_SEND_MESSAGE', socketMethods.sendMessage.bind(this))
-        socket.on('CLIENT_JOIN_ROOM', socketMethods.joinRoom.bind(this))
+        // to avoid creating new binded functions each time an action is made. This is made only once.
+        // we need a way to pass socket object into those functions and we do it by passing it as *this*
+        const bindedFunctions = {
+            disconnect: disconnect.bind(null, socket),
+            createRoom: createRoom.bind(null, socket),
+            sendMessage: sendMessage.bind(null, socket),
+            joinRoom: joinRoom.bind(null, socket)
+        }
+
+        socket.on('disconnect', bindedFunctions.disconnect)
+        socket.on('CLIENT_CREATE_ROOM', bindedFunctions.createRoom)
+        socket.on('CLIENT_SEND_MESSAGE', bindedFunctions.sendMessage)
+        socket.on('CLIENT_JOIN_ROOM', bindedFunctions.joinRoom)
     })
 }

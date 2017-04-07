@@ -4,7 +4,8 @@ import Modal from '../Modal/Modal'
 
 const LoginPageComponent = ({
     onSetNameClick,
-    setInputRef
+    setInputRef,
+    onInputChange
 }) => {
     return (
         <div className="login-page">
@@ -16,7 +17,7 @@ const LoginPageComponent = ({
             </Modal>
             <img className="logo" src="Logo.png"/>
             <div className="login-form">
-                <input ref={setInputRef} type="text" name="firstname" placeholder=""/>
+                <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange}/>
                 <button onClick={onSetNameClick}>Ok</button>
             </div>
         </div>
