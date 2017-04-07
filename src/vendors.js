@@ -4,7 +4,7 @@
  */
 require('axios')
 require('bootstrap')
-require('lodash')
+require('lodash/times')
 require('moment')
 require('react')
 require('react-bootstrap')
