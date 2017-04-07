@@ -4,16 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build:webpack": "webpack --config webpack.app.js",
-    "build:dll": "webpack --config webpack.dll.js",
-    "build": "npm run build:dll && npm run build:webpack",
-    "watch": "npm run build:dll && webpack --config webpack.app.js --watch --progress",
-    "start": "webpack --config webpack.app.js && node server.js",
-    "start-clean": "webpack --config webpack.dll.js && webpack --config webpack.app.js && node server.js",
+    "clean": "rimraf public",
+    "build:dll": "rimraf public && webpack --config webpack.dll.js",
+    "build": "webpack --config webpack.dev.js",
+    "build:watch": "webpack --config webpack.dev.js --watch --progress",
+    "run": "node server.js",
+    "dev": "npm-run-all --parallel build:watch run",
     "eslint": "eslint ./src",
-    "eslint-fix": "eslint ./src --fix",
-    "dev": "npm-run-all --parallel watch run",
-    "run": "node server.js"
+    "eslint-fix": "eslint ./src --fix"
   },
   "authors": [
     "Damian Michalski",
