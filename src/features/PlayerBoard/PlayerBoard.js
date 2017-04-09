@@ -1,11 +1,13 @@
 'use strict'
 import React from 'react'
+import _random from 'lodash/random'
+import {PlayerRole} from '../../const/PlayerConsts'
 import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
     
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
             policies: 0
         }
@@ -19,7 +21,10 @@ export default class PlayerBoard extends React.PureComponent {
 
     makePlayer(name) {
        
-        const role = Math.floor(Math.random() * 3 + 3)
+        const role = [
+            PlayerRole.ROLE_CHANCELLOR,
+            PlayerRole.ROLE_PRESIDENT,
+            null][_random(0,2)]
 
         return {
             playerName: name,

@@ -8,7 +8,6 @@ const LoginPageComponent = ({
 }) => {
     return (
         <div className="login-page">
-            <img className="logo" src=""/>
             <div className="login-form">
                 <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange}/>
                 <button onClick={onSetNameClick}>Ok</button>

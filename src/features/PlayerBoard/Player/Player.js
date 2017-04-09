@@ -1,12 +1,9 @@
 'use strict'
 import React from 'react'
+import _random from 'lodash/random'
 import PlayerComponent from './PlayerComponent'
-
-const PlayerDirection = {
-    left: 'left',
-    up : 'up',
-    right: 'right'
-}
+import {PlayerDirection} from '../../../const/PlayerConsts'
+import {PlayerRole} from '../../../const/PlayerConsts'
 
 export default class Player extends React.PureComponent {
 
@@ -14,15 +11,15 @@ export default class Player extends React.PureComponent {
 
         const {playerName, role} = this.props.player
 
-        const random = Math.floor(Math.random() * 5 + 1)
+        const random = _random(0, 5)
 
         const pictureRandom = require(`../../../static/Avatar${random}.png`)
         
-        const bubbleStyle = (direction) => {
+        const getBubbleStyle = (direction) => {
             switch(direction) {
-                case PlayerDirection.left:
-                    return 'left..'
-                case PlayerDirection.right:
+                case PlayerDirection.PLAYER_DIRECTION_LEFT:
+                    return 'left'
+                case PlayerDirection.PLAYER_DIRECTION_RIGHT:
                     return 'right'
                 default:
                     return 'down'
@@ -32,16 +29,16 @@ export default class Player extends React.PureComponent {
 
         const rolePicture = (role) => {
             switch(role) {
-                case 1:
+                case PlayerRole.ROLE_CHANCELLOR:
                     return require('../../../static/Chancellor.png')
                 
-                case 2:
+                case PlayerRole.ROLE_PRESIDENT:
                     return require('../../../static/President.png')
                 
-                case 3:
+                case PlayerRole.ROLE_PREVIOUS_CHANCELLOR:
                     return require('../../../static/PreviousChancelor.png')
 
-                case 4:
+                case PlayerRole.ROLE_PREVIOUS_PRESIDENT:
                     return require('../../../static/PreviousPresident.png')
 
                 default:
