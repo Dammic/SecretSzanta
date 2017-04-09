@@ -16,14 +16,11 @@ export default class GameList extends React.PureComponent {
     }
 
     setRoomName = (event) => {
-        // const {target} = event
-        // const {roomid} = target.attributes
         let roomID = event.target.attributes.getNamedItem('data-roomid').value
 
         this.setState({
             roomName: roomID
         })
-        console.log('processed')
     }
 
     render () {

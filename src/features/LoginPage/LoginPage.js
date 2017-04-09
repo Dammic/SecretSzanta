@@ -3,7 +3,6 @@ import React from 'react'
 import LoginPageComponent from './LoginPageComponent'
 import MainPage from '../MainPage/MainPage'
 import GameList from '../GameList/GameList'
-import Modal from '../Modal/Modal'
 
 export default class LoginPage extends React.PureComponent {
 
@@ -11,8 +10,7 @@ export default class LoginPage extends React.PureComponent {
         super(props)
         this.inputRef = null
         this.state = {
-            userName: '',
-            isModalOpen: false
+            userName: ''
         }
     }
 
@@ -52,19 +50,6 @@ export default class LoginPage extends React.PureComponent {
         if (userName === '') {
             return (
                 <div>
-                    <button onClick={this.openModal}>modal</button>
-                    <Modal show={this.state.isModalOpen} onHide={this.closeModal}>
-                        <div>
-                            <div>akk</div>
-                            <div>akk</div><div>akk</div><div>akk</div>
-                            <div>akk</div>
-
-
-
-
-
-                        </div>
-                    </Modal>
                     <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef} onInputChange={this.onInputChange}/>
                 </div>
             )

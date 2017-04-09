@@ -37,7 +37,6 @@ module.exports = {
                 ],
                 query: {
                     cacheDirectory: true, //important for performance
-                    plugins: ['transform-regenerator'],
                     presets: ['react', 'es2015', 'stage-3', 'stage-1']
                 }
             }, {

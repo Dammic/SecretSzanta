@@ -5,6 +5,7 @@
     align-items: center;
     height: 100%;
     width: 100%;
+    z-index: 9998;
     .modal-overlay {
         position: fixed;
         height: 100%;
@@ -23,6 +24,15 @@
         .modal-body {
             position: relative;
             padding: 15px;
+        }
+        .modal-close-button {
+            font-size: 18px;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            color: $modal-close-mark;
+            z-index: 10000;
+            cursor: pointer;
         }
     }
 }

@@ -8,10 +8,16 @@ const GameListItemComponent = ({
     onClick
 }) => {
     return (
-        <li key={roomName} className="name">
-            <div>{roomName}</div>
-            <button data-roomID={roomID} onClick={onClick}>JOIN</button>
-        </li>
+        <td key={roomName} className="game-list-element">
+            <div className="game-element-container">
+                <div className="room-name">
+                    <div>{roomName}</div>
+                </div>
+                <div className="join-button-area">
+                    <button data-roomID={roomID} onClick={onClick}>JOIN</button>
+                </div>
+            </div>
+        </td>
     )
 }
 

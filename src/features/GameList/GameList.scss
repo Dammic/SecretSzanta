@@ -2,25 +2,26 @@
   background-color: #6495ed;
 }
 
-.game-list{
-  ul {
-    padding: 0;
-    list-style: none;
-    columns: 2;
-    -webkit-columns: 2;
-    -moz-columns: 2;
-    -moz-column-gap: 0px;
-    -webkit-column-gap: 0px;
-    li{
-      overflow: hidden;
-      border: black;
-      border-style: double;
-      .name{
-        display: inline-block;
-      }
-      button{
-        float: right;
-      }
+.game-list {
+    width: 100%;
+    border-collapse: collapse;
+    .game-list-row {
+
+        .game-list-element {
+            height: 60px;
+            border: 1px solid $game-list-elements-separator;
+            width: 50%;
+            padding: 10px;
+            .game-element-container {
+                display: flex;
+                justify-content: space-between;
+                .room-name {
+
+                }
+                .join-button-area {
+
+                }
+            }
+        }
     }
-  }
 }
