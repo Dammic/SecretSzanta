@@ -44,10 +44,6 @@ export default class PlayerBoard extends React.PureComponent {
                'niedzwiedz'
                    ];
                    
-        //const players = mockPlayers.map(   
-        //    name => this.makePlayer(name)
-        //)
-
         const players = this.props.players.map(
             name => this.makePlayer(name)
         )
