@@ -2,22 +2,16 @@
 var path = require('path')
 var webpack = require('webpack')
 
-// hack for windows 10 ubuntu, ERROR in EINVAL: invalid argument, uv_interface_addresses
-// remove when MS fixes their WSL (now on windows version 1607)
-try {
-    require('os').networkInterfaces()
-} catch (e) {
-    require('os').networkInterfaces = () => ({})
-}
-
 module.exports = {
     cache: true,
     devtool: 'eval',
+    watchOptions: {
+        aggregateTimeout: 300,
+        poll: 1000,
+        ignored: /node_modules/
+    },
     entry: {
         app: path.join(__dirname, 'src', 'AppClient.js')
-    },
-    watchOptions: {
-        poll: true
     },
     output: {
         path: path.join(__dirname, 'public'),
