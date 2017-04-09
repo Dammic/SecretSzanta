@@ -36,8 +36,7 @@ module.exports = {
                     path.join(__dirname, 'src') //important for performance!
                 ],
                 query: {
-                    cacheDirectory: true, //important for performance
-                    plugins: ['transform-regenerator'],
+                    cacheDirectory: true, //important for performance:
                     presets: ['react', 'es2015', 'stage-3', 'stage-1']
                 }
             }, {
