@@ -1,21 +1,21 @@
 'use strict'
-const path = require('path')
-const webpack = require('webpack')
+var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
     entry: {
-        vendor: ['vendors.js']
+        vendor: [path.join(__dirname, 'src', 'vendors.js')]
     },
     output: {
-        path: path.join(__dirname, 'public'),
+        path: path.join(__dirname, 'public', 'dll'),
         filename: 'dll.[name].js',
         library: '[name]'
     },
     plugins: [
         new webpack.DllPlugin({
-            path: '[name]-manifest.json',
+            path: path.join(__dirname, '[name]-manifest.json'),
             name: '[name]',
-            context: path.resolve(__dirname, './')
+            context: path.resolve(__dirname, 'src')
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
@@ -23,7 +23,7 @@ module.exports = {
         })
     ],
     resolve: {
-        root: path.resolve(__dirname, './'),
+        root: path.resolve(__dirname),
         modulesDirectories: ['node_modules']
     }
 }

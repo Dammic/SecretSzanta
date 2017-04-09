@@ -1,6 +1,6 @@
 'use strict'
 import React from 'react'
-import _ from 'lodash'
+import _times from 'lodash/times'
 import Player from './Player/Player.js'
 
 const PlayerBoardComponent = ({
@@ -14,9 +14,9 @@ const PlayerBoardComponent = ({
     const renderPolicies = (count, cardType) => {
         let result = []
 
-        const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')            
+        const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')
 
-        _.times(count, () => {
+        _times(count, () => {
             result.push(<img src={cardPicture} alt="Policy" />)
         })
 

@@ -38,7 +38,6 @@ $elementsHeight: 300px;
             position: relative;
             display: flex;
             justify-content: center;
-            flex: 1 0 auto;
 
             img {
                 max-width: $elementsWidth;
@@ -52,7 +51,7 @@ $elementsHeight: 300px;
             display: flex;
             height: $elementsHeight;
             width: $elementsWidth;
-            max-height: 100%;
+
             flex-direction: row;
             justify-content: flex-start;
             align-items:  center;
