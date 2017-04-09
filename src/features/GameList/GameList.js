@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import GameListComponent from './GameListComponent'
-import MainPage from '../MainPage/MainPage'
+import MainPage from '../GameRoom/GameRoom'
 import CreateGame from './CreateGame/CreateGame'
 import IO from 'socket.io-client'
 
@@ -42,7 +42,7 @@ export default class GameList extends React.PureComponent {
             },
             {
                 roomID: 2,
-                roomName: 'Wrong Room',
+                roomName: 'Wrong GameRoom',
                 playerCount: 10
             },
             {
