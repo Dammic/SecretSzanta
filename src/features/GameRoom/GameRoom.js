@@ -5,7 +5,7 @@ import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
 import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM} from '../../const/SocketEvents'
 
-export default class MainPage extends React.PureComponent {
+export default class GameRoom extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
