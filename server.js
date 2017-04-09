@@ -34,6 +34,7 @@ app.use('*', (req, res, next) => {
 	res.status(404)
 
 	console.log('404! Not Found!')
+    console.log('original url:', req.originalUrl)
 	return res.render('index')
 })
 
