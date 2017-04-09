@@ -6,16 +6,44 @@
     height: 100%;
     width: 100%;
     .modal-overlay {
-        background-color: rgba(0, 0, 0, 0.25);
         position: fixed;
         height: 100%;
         width: 100%;
+        background-color: rgba(0, 0, 0, 0.25);
     }
-    .modal {
+    .modal-content {
+        z-index: 9999;
+        width: 60%;
+        max-width: 600px;
+        max-height: 60%;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .25);
+        background-color: $modal-background;
 
-
-
+        .modal-body {
+            position: relative;
+            padding: 15px;
+        }
     }
-
-
 }
+
+/* animations for modal */
+.modal-enter {
+    opacity: 0;
+}
+
+.modal-enter.modal-enter-active {
+    opacity: 1;
+    transition: opacity 400ms ease-in;
+}
+
+.modal-leave {
+    opacity: 1;
+}
+
+.modal-leave.modal-leave-active {
+    opacity: 0;
+    transition: opacity 300ms ease-in;
+}
+
+

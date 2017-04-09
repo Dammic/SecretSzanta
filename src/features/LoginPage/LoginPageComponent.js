@@ -1,6 +1,5 @@
 'use strict'
 import React from 'react'
-import Modal from '../Modal/Modal'
 
 const LoginPageComponent = ({
     onSetNameClick,
@@ -9,12 +8,6 @@ const LoginPageComponent = ({
 }) => {
     return (
         <div className="login-page">
-            <Modal>
-                <div>
-                    Akk
-
-                </div>
-            </Modal>
             <img className="logo" src="Logo.png"/>
             <div className="login-form">
                 <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange}/>
