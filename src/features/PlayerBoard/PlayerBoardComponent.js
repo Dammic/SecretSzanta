@@ -19,7 +19,7 @@ const PlayerBoardComponent = ({
         _times(count, () => {
             result.push(<img src={cardPicture} alt="Policy" />)
         })
-        
+
         return result
     }
     

@@ -10,7 +10,7 @@ const GameRoomComponent = ({
 }) => {
     return (
         <div className="game-room">
-            <PlayerBoard />
+            <PlayerBoard players={playersList}/>
             <UIBox socket={socket} userName={userName}/>
         </div>
     )

@@ -1,12 +1,41 @@
+$player-image-width: 10vw;
+
 .player {
 
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex: 0 1 33%;
+
+    .bubble {
+
+        position: absolute;
+        right: 20px;
+
+        .bubble-triangle {
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #335588;            
+        }
+
+        .bubble-message {
+            width: 50px;
+            height: 20px;
+            border: 1px solid #000066;
+            border-radius: 5px;
+        }
+    }
+    
     .portrait {
-        display: block;
-        max-width: 30%;
+        max-width: $player-image-width;
+    }
+
+    .role {
+        max-width: $player-image-width;
     }
 }
 
