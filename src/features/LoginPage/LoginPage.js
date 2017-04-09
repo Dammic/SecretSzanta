@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import LoginPageComponent from './LoginPageComponent'
-import MainPage from '../GameRoom/GameRoom'
+import GameRoom from '../GameRoom/GameRoom'
 import GameList from '../GameList/GameList'
 
 export default class LoginPage extends React.PureComponent {

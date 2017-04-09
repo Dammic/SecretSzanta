@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import GameListComponent from './GameListComponent'
-import MainPage from '../GameRoom/GameRoom'
+import GameRoom from '../GameRoom/GameRoom'
 import CreateGame from './CreateGame/CreateGame'
 import IO from 'socket.io-client'
 
@@ -76,7 +76,7 @@ export default class GameList extends React.PureComponent {
             )
         } else {
             return (
-                <MainPage socket={this.socket} userName={userName}/>
+                <GameRoom socket={this.socket} userName={userName}/>
             )
         }
     }

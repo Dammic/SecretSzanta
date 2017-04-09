@@ -10,7 +10,7 @@ const GameListComponent = ({
     closeModal
 }) => {
     return (
-        <div className="main-page">
+        <div className="game-room">
             Hello {title}!
             <div className="game-list" >
                 <ul>

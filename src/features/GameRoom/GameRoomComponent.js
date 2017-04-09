@@ -9,7 +9,7 @@ const GameRoomComponent = ({
     playersList = []
 }) => {
     return (
-        <div className="main-page">
+        <div className="game-room">
             <PlayerBoard />
             <UIBox socket={socket} userName={userName}/>
         </div>
