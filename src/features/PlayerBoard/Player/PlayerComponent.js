@@ -9,8 +9,9 @@ const PlayerComponent = ({
     return (                
         <div className="player">
             <div>{playerName}</div>
+
             <img className="portrait" src={avatar} alt="Player image" />    
-            <img className="role" src={rolePicture} alt="Players role" />
+            {rolePicture && <img className="role" src={rolePicture} alt="" />}
         </div>
     )
 }

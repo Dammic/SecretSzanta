@@ -10,7 +10,7 @@ const GameListComponent = ({
     socket
 }) => {
     return (
-        <div className="main-page">
+        <div className="game-room">
             <TopNavbar socket={socket}/>
             Hello {title}!
             <div className="game-list">
