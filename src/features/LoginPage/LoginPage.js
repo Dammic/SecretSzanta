@@ -18,16 +18,6 @@ export default class LoginPage extends React.PureComponent {
         this.inputRef = inpRef
     }
 
-    closeModal = () => {
-        console.info('hide!')
-        this.setState({isModalOpen: false})
-    }
-
-    openModal = () => {
-        this.setState({isModalOpen: true})
-    }
-
-
     /**
      * Function that handles enter press
      */

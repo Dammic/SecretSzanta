@@ -8,7 +8,6 @@ const GameListComponent = ({
     rooms,
     onClick,
     socket
-
 }) => {
     return (
         <div className="main-page">

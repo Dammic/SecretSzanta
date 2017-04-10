@@ -5,13 +5,13 @@ var webpack = require('webpack')
 module.exports = {
     cache: true,
     devtool: 'eval',
-    entry: {
-        app: path.join(__dirname, 'src', 'AppClient.js')
-    },
     watchOptions: {
         aggregateTimeout: 300,
         poll: 1000,
         ignored: /node_modules/
+    },
+    entry: {
+        app: path.join(__dirname, 'src', 'AppClient.js')
     },
     output: {
         path: path.join(__dirname, 'public'),

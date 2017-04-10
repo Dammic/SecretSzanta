@@ -8,7 +8,7 @@ const GameListItemComponent = ({
     onClick
 }) => {
     return (
-        <td key={roomName} className="game-list-element">
+        <div key={roomName} className="game-list-element">
             <div className="game-element-container">
                 <div className="room-name">
                     <div>{roomName}</div>
@@ -17,7 +17,7 @@ const GameListItemComponent = ({
                     <button data-roomID={roomID} onClick={onClick}>JOIN</button>
                 </div>
             </div>
-        </td>
+        </div>
     )
 }
 
