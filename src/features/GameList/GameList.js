@@ -2,7 +2,6 @@
 import React from 'react'
 import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
-import CreateGame from './CreateGame/CreateGame'
 import IO from 'socket.io-client'
 
 export default class GameList extends React.PureComponent {
