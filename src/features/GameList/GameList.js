@@ -2,7 +2,6 @@
 import React from 'react'
 import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
-import CreateGame from './CreateGame/CreateGame'
 import IO from 'socket.io-client'
 
 export default class GameList extends React.PureComponent {
@@ -16,14 +15,11 @@ export default class GameList extends React.PureComponent {
     }
 
     setRoomName = (event) => {
-        // const {target} = event
-        // const {roomid} = target.attributes
         let roomID = event.target.attributes.getNamedItem('data-roomid').value
 
         this.setState({
             roomName: roomID
         })
-        console.log('processed')
     }
 
     render () {
@@ -70,8 +66,7 @@ export default class GameList extends React.PureComponent {
         if (roomName === '') {
             return (
                 <div>
-                    <CreateGame socket={this.socket}/>
-                    <GameListComponent title={userName} rooms={this.rooms} onClick={this.setRoomName} />
+                    <GameListComponent socket={this.socket} title={userName} rooms={this.rooms} onClick={this.setRoomName} />
                 </div>
             )
         } else {

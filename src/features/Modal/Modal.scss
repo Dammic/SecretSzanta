@@ -1,0 +1,57 @@
+.modal-container {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    z-index: 9998;
+    .modal-overlay {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+    .modal-content {
+        z-index: 9999;
+        width: 60%;
+        max-width: 600px;
+        max-height: 60%;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .25);
+        background-color: $modal-background;
+
+        .modal-body {
+            position: relative;
+            padding: 15px;
+        }
+        .modal-close-button {
+            font-size: 18px;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            color: $modal-close-mark;
+            z-index: 10000;
+            cursor: pointer;
+        }
+    }
+}
+
+/* animations for modal */
+.modal-enter {
+    opacity: 0;
+    &.modal-enter-active {
+        opacity: 1;
+        transition: opacity 400ms ease-in;
+    }
+}
+
+.modal-leave {
+    opacity: 1;
+    .modal-leave-active {
+        opacity: 0;
+        transition: opacity 300ms ease-in;
+    }
+}
+
+

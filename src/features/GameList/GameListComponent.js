@@ -1,26 +1,30 @@
 'use strict'
 import React from 'react'
 import GameListItemComponent from './GameListItemComponent'
+import TopNavbar from './TopNavbar/TopNavbar'
 
 const GameListComponent = ({
     title,
     rooms,
     onClick,
-    showModal,
-    closeModal
+    socket
 }) => {
     return (
         <div className="game-room">
+            <TopNavbar socket={socket}/>
             Hello {title}!
-            <div className="game-list" >
-                <ul>
-                {rooms.map((room)=>{
-                    const {roomID, roomName, playerCount} = room
+            <div className="game-list">
+                {rooms.map((room) => {
                     return (
-                        <GameListItemComponent roomID={roomID} roomName={roomName} playerCount={playerCount} onClick={onClick}/>
+                        <GameListItemComponent
+                            key={room.roomID}
+                            roomID={room.roomID}
+                            roomName={room.roomName}
+                            playerCount={room.playerCount}
+                            onClick={onClick}
+                        />
                     )
                 })}
-                </ul>
             </div>
         </div>
     )

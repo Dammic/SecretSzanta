@@ -1,26 +1,19 @@
-.top-bar{
-  background-color: #6495ed;
-}
+.game-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
 
-.game-list{
-  ul {
-    padding: 0;
-    list-style: none;
-    columns: 2;
-    -webkit-columns: 2;
-    -moz-columns: 2;
-    -moz-column-gap: 0px;
-    -webkit-column-gap: 0px;
-    li{
-      overflow: hidden;
-      border: black;
-      border-style: double;
-      .name{
-        display: inline-block;
-      }
-      button{
-        float: right;
-      }
+    .game-list-element {
+        height: 60px;
+        border: 1px solid $game-list-elements-separator;
+        padding: 10px;
+        margin: 5px;
+        .game-element-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
     }
-  }
 }

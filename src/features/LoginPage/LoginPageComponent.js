@@ -12,7 +12,7 @@ const LoginPageComponent = ({
                 <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange}/>
                 <button onClick={onSetNameClick}>Ok</button>
             </div>
-        </div >
+        </div>
     )
 }
 
