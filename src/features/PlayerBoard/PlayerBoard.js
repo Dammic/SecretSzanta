@@ -20,7 +20,7 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer(name) {
-       
+        //All those data should be received from server       
         const role = [
             PlayerRole.ROLE_CHANCELLOR,
             PlayerRole.ROLE_PRESIDENT,

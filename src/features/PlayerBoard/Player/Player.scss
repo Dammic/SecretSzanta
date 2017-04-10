@@ -4,6 +4,8 @@ $player-bubble-width: 150px;
 $player-bubble-height: 40px;
 $player-bubble-radius: 5px;
 $player-bubble-triangle-size: $player-bubble-height/2;
+$player-bubble-original-position: 85%;
+$player-bubble-activated-position: 100%;
 
 .player {
 
@@ -57,11 +59,17 @@ $player-bubble-triangle-size: $player-bubble-height/2;
     .bubble-left {
         @extend .bubble;
         vertical-align: center;
-        left: 100%;
+        left: $player-bubble-original-position;
         top: 0px;
 
     }
     
+    .bubble-left-active {
+        @extend .bubble-left;
+        opacity: 1;        
+        
+        left: $player-bubble-activated-position;
+    }
 
     .bubble-right:after {
         @extend .bubble-triangle;
@@ -75,8 +83,15 @@ $player-bubble-triangle-size: $player-bubble-height/2;
 
     .bubble-right {
         @extend .bubble;
-        right: 100%;
+        right: $player-bubble-original-position;
         top: 0px;
+    }
+
+    .bubble-right-active {
+        @extend .bubble-right;
+        opacity: 1;
+
+        right: $player-bubble-activated-position;
     }
     
     .bubble-top:before {
@@ -90,7 +105,14 @@ $player-bubble-triangle-size: $player-bubble-height/2;
 
     .bubble-top {
         @extend .bubble;
-        top: 100%;
+        top: $player-bubble-original-position;
+    }
+
+    .bubble-top-active {
+        @extend .bubble-top;
+        opacity: 1;
+
+        top: $player-bubble-activated-position;
     }
     
     .portrait {
