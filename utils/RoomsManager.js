@@ -33,11 +33,7 @@ const RoomsManager = function() {
         },
         deleteRoom: function (roomName) {
             if (isRoomPresent(roomName)) {
-                rooms_props = _.filter(rooms_props, (room, key) => {
-                    if (roomName === key) {
-                        return true
-                    }
-                })
+                rooms_props = _.filter(rooms_props, (room, key) => (roomName !== key) ? true : false)
             }
         },
         getRoomsList: function () {
