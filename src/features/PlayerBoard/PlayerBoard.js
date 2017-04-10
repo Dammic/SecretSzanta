@@ -31,7 +31,8 @@ export default class PlayerBoard extends React.PureComponent {
         return {
             playerName: name,
             role: role,
-            avatar: randomAvatar
+            avatar: randomAvatar,
+            isBubbleActive: (_random(0,1) === 0) ? true : false
         }
     }
 
