@@ -9,20 +9,18 @@ export default class Player extends React.PureComponent {
 
     render() {
 
-        const {playerName, role} = this.props.player
+        const {playerName, role, avatar} = this.props.player
+            
+        const avatarPicture = require(`../../../static/Avatar${avatar}.png`) 
 
-        const random = _random(0, 5)
-
-        const pictureRandom = require(`../../../static/Avatar${random}.png`)
-        
         const getBubbleStyle = (direction) => {
             switch(direction) {
                 case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                    return 'left'
+                    return 'bubble-left'
                 case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                    return 'right'
+                    return 'bubble-right'
                 default:
-                    return 'down'
+                    return 'bubble-top'
             }
 
         }
@@ -49,8 +47,9 @@ export default class Player extends React.PureComponent {
         return (
             <PlayerComponent 
                 playerName = {playerName}
-                avatar = {pictureRandom}
+                avatar = {avatarPicture}
                 rolePicture = {rolePicture(role)}
+                bubbleStyle = {getBubbleStyle(this.props.direction)}
             />
         )
     }

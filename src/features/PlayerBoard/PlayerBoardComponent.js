@@ -1,6 +1,7 @@
 'use strict'
 import React from 'react'
 import _times from 'lodash/times'
+import {PlayerDirection} from '../../const/PlayerConsts'
 import Player from './Player/Player.js'
 
 const PlayerBoardComponent = ({
@@ -27,12 +28,23 @@ const PlayerBoardComponent = ({
         <div className="player-board">
 
             <div className="players-container">
-                {playersLeft.map( (player) => <Player player={player}/> )}
+                {playersLeft.map( (player) => 
+                    <Player 
+                        player={player} 
+                        direction={PlayerDirection.PLAYER_DIRECTION_LEFT}
+                    /> 
+                 )}
+
             </div>
 
             <div className="central-part">
                 <div className="players-container-middle">
-                    {playersMiddle.map( (player) => <Player player={player}/> )}
+                    {playersMiddle.map( (player) => 
+                        <Player 
+                            player={player} 
+                            direction={PlayerDirection.PLAYER_DIRECTION_UP}
+                        /> 
+                    )}
                 </div>
 
                 <div className="policy">
@@ -52,7 +64,12 @@ const PlayerBoardComponent = ({
             </div>
 
             <div className="players-container">
-                {playersRight.map( (player) => <Player player={player}/> )}
+                {playersRight.map( (player) => 
+                    <Player 
+                        player={player} 
+                        direction={PlayerDirection.PLAYER_DIRECTION_RIGHT}
+                    /> 
+                )}
             </div>
 
         </div>

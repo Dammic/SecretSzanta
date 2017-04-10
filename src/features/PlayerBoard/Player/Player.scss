@@ -1,4 +1,9 @@
 $player-image-width: 10vw;
+$player-bubble-color: #446677;
+$player-bubble-width: 150px;
+$player-bubble-height: 40px;
+$player-bubble-radius: 5px;
+$player-bubble-triangle-size: $player-bubble-height/2;
 
 .player {
 
@@ -9,25 +14,76 @@ $player-image-width: 10vw;
     align-items: center;
     flex: 0 1 33%;
 
-    .bubble {
-
+    .bubble-triangle {
+        content: "";
         position: absolute;
-        right: 20px;
+        display: block;
 
-        .bubble-triangle {
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-right: 10px solid #335588;            
-        }
+        width: 0;
+        height: 0;
 
-        .bubble-message {
-            width: 50px;
-            height: 20px;
-            border: 1px solid #000066;
-            border-radius: 5px;
-        }
+    }
+
+    .bubble {
+        position: absolute;
+        z-index: 1;
+
+        width: $player-bubble-width;
+        height: $player-bubble-height;
+        
+        max-width: 10vw;
+
+        background-color: $player-bubble-color;
+
+        border: 1px solid $player-bubble-color;
+        border-radius: $player-bubble-radius;
+    }
+
+    .bubble-left:before {
+        @extend .bubble-triangle;
+        right: 95%;
+
+        border-top: $player-bubble-triangle-size solid transparent;
+        border-bottom: $player-bubble-triangle-size solid transparent;
+        border-right: $player-bubble-triangle-size solid $player-bubble-color;
+    }
+
+    .bubble-left {
+        @extend .bubble;
+        vertical-align: center;
+        left: 100%;
+        top: 0px;
+
+    }
+
+    .bubble-right:after {
+        @extend .bubble-triangle;
+        vertical-align: center;
+        left: 95%;
+
+        border-top: $player-bubble-triangle-size solid transparent;
+        border-bottom: $player-bubble-triangle-size solid transparent;
+        border-left: $player-bubble-triangle-size solid $player-bubble-color;
+    }
+
+    .bubble-right {
+        @extend .bubble;
+        right: 100%;
+        top: 0px;
+    }
+    
+    .bubble-top:before {
+        @extend .bubble-triangle;
+
+        bottom: 95%;
+        border-bottom: $player-bubble-triangle-size solid $player-bubble-color;
+        border-right: $player-bubble-triangle-size solid transparent;
+        border-left: $player-bubble-triangle-size solid transparent;
+    }
+
+    .bubble-top {
+        @extend .bubble;
+        top: 100%;
     }
     
     .portrait {
