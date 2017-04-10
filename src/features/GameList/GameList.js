@@ -2,7 +2,6 @@
 import React from 'react'
 import GameListComponent from './GameListComponent'
 import MainPage from '../MainPage/MainPage'
-import CreateGame from './CreateGame/CreateGame'
 import IO from 'socket.io-client'
 
 export default class GameList extends React.PureComponent {
@@ -67,8 +66,7 @@ export default class GameList extends React.PureComponent {
         if (roomName === '') {
             return (
                 <div>
-                    <CreateGame socket={this.socket}/>
-                    <GameListComponent title={userName} rooms={this.rooms} onClick={this.setRoomName} />
+                    <GameListComponent socket={this.socket} title={userName} rooms={this.rooms} onClick={this.setRoomName} />
                 </div>
             )
         } else {

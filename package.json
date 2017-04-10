@@ -19,7 +19,7 @@
     "Marek Tkaczyk"
   ],
   "dependencies": {
-    "autoprefixer": "^6.7.7",
+    "autoprefixer": "~6.7.7",
     "axios": "~0.15.3",
     "babel-cli": "~6.22.2",
     "babel-core": "~6.22.1",
@@ -29,8 +29,8 @@
     "lodash": "~4.17.4",
     "moment": "~2.17.1",
     "react": "~15.4.2",
-    "react-addons-css-transition-group": "^15.4.2",
-    "react-custom-scrollbars": "^4.0.2",
+    "react-addons-css-transition-group": "~15.4.2",
+    "react-custom-scrollbars": "~4.0.2",
     "react-dom": "~15.4.2",
     "react-router": "~3.0.2",
     "socket.io": "~1.7.3",

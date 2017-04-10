@@ -1,6 +1,7 @@
 'use strict'
 import React from 'react'
 import GameListItemComponent from './GameListItemComponent'
+import TopNavbar from './TopNavbar/TopNavbar'
 
 const GameListComponent = ({
     title,
@@ -8,6 +9,7 @@ const GameListComponent = ({
     onClick,
     showModal,
     closeModal,
+    socket
 
 }) => {
     const renderRooms = () => {
@@ -28,6 +30,7 @@ const GameListComponent = ({
 
     return (
         <div className="main-page">
+            <TopNavbar socket={socket}/>
             Hello {title}!
             <table className="game-list">
                 <tbody>
