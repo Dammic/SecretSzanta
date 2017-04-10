@@ -1,6 +1,6 @@
 'use strict'
 import React from 'react'
-import Modal from '../../Modal/Modal'
+import Modal from '../../../Modal/Modal'
 
 const CreateGameModalComponent = ({
     showModal,

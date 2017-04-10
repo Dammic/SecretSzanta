@@ -1,6 +1,6 @@
 'use strict'
 import React from 'react'
-import CreateGameModal from '../CreateGameModal/CreateGameModal'
+import CreateGameModal from './CreateGameModal/CreateGameModal'
 
 const TopNavbarComponent = ({
     isModalShown,
