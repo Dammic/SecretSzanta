@@ -42,10 +42,6 @@ $player-bubble-activated-position: 100%;
         border-radius: $player-bubble-radius;
     }
 
-    .bubble-active {
-        opacity: 1;    
-    }
-
     .bubble-left {
         @extend .bubble;
         vertical-align: center;

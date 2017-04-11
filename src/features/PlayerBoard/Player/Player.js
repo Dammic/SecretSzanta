@@ -28,7 +28,7 @@ export default class Player extends React.PureComponent {
 
         }
 
-        const rolePicture = () => {
+        const getRolePicture = () => {
             switch(role) {
                 case PlayerRole.ROLE_CHANCELLOR:
                     return require('../../../static/Chancellor.png')
@@ -51,7 +51,7 @@ export default class Player extends React.PureComponent {
             <PlayerComponent 
                 playerName = {playerName}
                 avatar = {avatarPicture}
-                rolePicture = {rolePicture()}
+                rolePicture = {getRolePicture()}
                 bubbleStyle = {getBubbleStyle()}
             />
         )
