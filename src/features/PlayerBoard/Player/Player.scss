@@ -61,8 +61,7 @@ $player-bubble-activated-position: 100%;
             border-right: $player-bubble-triangle-size solid $player-bubble-color;
         }
 
-        &-active {
-            @extend .bubble-left;
+        &.active {
             opacity: 1;
             left: $player-bubble-activated-position;
         }
@@ -84,8 +83,7 @@ $player-bubble-activated-position: 100%;
             border-left: $player-bubble-triangle-size solid $player-bubble-color;
         }
 
-        &-active {
-            @extend .bubble-right;
+        &.active {
             opacity: 1;
             
             right: $player-bubble-activated-position;
@@ -105,8 +103,7 @@ $player-bubble-activated-position: 100%;
             border-left: $player-bubble-triangle-size solid transparent;
         }
 
-        &-active {
-            @extend .bubble-top;
+        &.active {
             opacity: 1;
 
             top: $player-bubble-activated-position;

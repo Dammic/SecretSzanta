@@ -15,7 +15,7 @@ export default class Player extends React.PureComponent {
 
         const getBubbleStyle = () => {
             
-            const bubbleActiveStyle = isBubbleActive ? '-active' : '' 
+            const bubbleActiveStyle = isBubbleActive ? ' active' : '' 
                 
             switch(this.props.direction) {
                 case PlayerDirection.PLAYER_DIRECTION_LEFT:
