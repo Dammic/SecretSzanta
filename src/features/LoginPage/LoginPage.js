@@ -12,14 +12,11 @@ export default class LoginPage extends React.PureComponent {
         this.state = {
             userName: ''
         }
-        this.setInputRef = this.setInputRef.bind(this)
-        this.setName = this.setName.bind(this)
     }
 
-    setInputRef(inpRef){
+    setInputRef = (inpRef) => {
         this.inputRef = inpRef
     }
-
 
     /**
      * Function that handles enter press
@@ -36,14 +33,16 @@ export default class LoginPage extends React.PureComponent {
         this.setState({
             userName: name
         })
-        console.log('processed')
     }
 
     render () {
         const {userName=''} = this.state
-
         if (userName === '') {
-            return <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef} onInputChange={this.onInputChange}/>
+            return (
+                <div>
+                    <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef} onInputChange={this.onInputChange}/>
+                </div>
+            )
         } else {
             return <GameList userName={userName}/>
         }
