@@ -63,11 +63,12 @@ $elementsHeight: 100%;
                 width: 12%;
 
                 transition: all 0.5s;
+
+                &:hover {
+                    opacity: 0.15;
+                }
             }
 
-            img:hover {
-                opacity: 0.15;
-            }
         }
 
         .policy-card-liberal {

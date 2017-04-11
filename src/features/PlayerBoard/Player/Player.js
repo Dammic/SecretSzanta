@@ -1,5 +1,6 @@
 'use strict'
 import React from 'react'
+import classNames from 'classnames/bind'
 import _random from 'lodash/random'
 import PlayerComponent from './PlayerComponent'
 import {PlayerDirection} from '../../../const/PlayerConsts'
@@ -14,16 +15,14 @@ export default class Player extends React.PureComponent {
         const avatarPicture = require(`../../../static/Avatar${avatar}.png`) 
 
         const getBubbleStyle = () => {
-            
-            const bubbleActiveStyle = isBubbleActive ? ' active' : '' 
                 
             switch(this.props.direction) {
                 case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                    return 'bubble-left' + bubbleActiveStyle
+                    return classNames('bubble-left', {'active' : isBubbleActive}) 
                 case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                    return 'bubble-right' + bubbleActiveStyle
+                    return classNames('bubble-right', {'active' : isBubbleActive}) 
                 default:
-                    return 'bubble-top' + bubbleActiveStyle
+                    return classNames('bubble-top', {'active' : isBubbleActive})
             }
 
         }
