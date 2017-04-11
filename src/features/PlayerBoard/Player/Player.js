@@ -1,5 +1,6 @@
 'use strict'
 import React from 'react'
+import classNames from 'classnames/bind'
 import _random from 'lodash/random'
 import PlayerComponent from './PlayerComponent'
 import {PlayerDirection} from '../../../const/PlayerConsts'
@@ -9,25 +10,24 @@ export default class Player extends React.PureComponent {
 
     render() {
 
-        const {playerName, role} = this.props.player
-
-        const random = _random(0, 5)
-
-        const pictureRandom = require(`../../../static/Avatar${random}.png`)
+        const {playerName, role, avatar, isBubbleActive} = this.props.player
         
-        const getBubbleStyle = (direction) => {
-            switch(direction) {
+        const avatarPicture = require(`../../../static/Avatar${avatar}.png`) 
+
+        const getBubbleStyle = () => {
+                
+            switch(this.props.direction) {
                 case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                    return 'left'
+                    return classNames('bubble-left', {'active' : isBubbleActive}) 
                 case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                    return 'right'
+                    return classNames('bubble-right', {'active' : isBubbleActive}) 
                 default:
-                    return 'down'
+                    return classNames('bubble-top', {'active' : isBubbleActive})
             }
 
         }
 
-        const rolePicture = (role) => {
+        const getRolePicture = () => {
             switch(role) {
                 case PlayerRole.ROLE_CHANCELLOR:
                     return require('../../../static/Chancellor.png')
@@ -49,8 +49,9 @@ export default class Player extends React.PureComponent {
         return (
             <PlayerComponent 
                 playerName = {playerName}
-                avatar = {pictureRandom}
-                rolePicture = {rolePicture(role)}
+                avatar = {avatarPicture}
+                rolePicture = {getRolePicture()}
+                bubbleStyle = {getBubbleStyle()}
             />
         )
     }

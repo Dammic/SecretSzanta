@@ -20,31 +20,27 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer(name) {
-       
+        //All those data should be received from server       
         const role = [
             PlayerRole.ROLE_CHANCELLOR,
             PlayerRole.ROLE_PRESIDENT,
             null][_random(0,2)]
 
+        const randomAvatar = _random(1, 5)
+
         return {
             playerName: name,
-            role: role
+            role: role,
+            avatar: randomAvatar,
+            isBubbleActive: (_random(0,1) === 1) ? true : false
         }
     }
 
     render () {
-         const mockPlayers = ['krokodyl',
-               'pies',
-               'zyrafa',
-               'zaba',
-               'lis',
-               'kot',
-               'tygrys',
-               'hipopotam',
-               'niedzwiedz'
-                   ];
                    
-        const players = this.props.players.map(
+        const playersWithoutMe = this.props.players.filter(name => (name !== this.props.userName)) 
+
+        const players = playersWithoutMe.map(
             name => this.makePlayer(name)
         )
 

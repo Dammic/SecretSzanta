@@ -1,11 +1,11 @@
 @import './Player/Player.scss';
 
 $elementsWidth: 80%;
-$elementsHeight: 300px;
+$elementsHeight: 100%;
 
 .player-board {
     width: 100%;
-    height: 100%;
+    height: 80vh;
     display: flex;
     justify-content: space-between;
     align-content: center;
@@ -31,13 +31,14 @@ $elementsHeight: 300px;
             flex-direction: row;
             justify-content: space-around;
             align-items: center;
-            flex: 1 0 auto;
         }
 
         .policy {
             position: relative;
             display: flex;
             justify-content: center;
+
+            flex: 1 0 0;
 
             img {
                 max-width: $elementsWidth;
@@ -57,20 +58,27 @@ $elementsHeight: 300px;
             align-items:  center;
 
             img {
-                margin: 0 0.32%;
-                height: 55%;
-                width: 13.5%;
+                margin: 0 1.1%;
+                height: 51%;
+                width: 12%;
+
+                transition: all 0.5s;
+
+                &:hover {
+                    opacity: 0.15;
+                }
             }
+
         }
 
         .policy-card-liberal {
             @extend .policy-card;
-            left: 22%;
+            left: 21.5%;
         }
 
         .policy-card-fascist {
             @extend .policy-card;
-            left: 16.5%;
+            left: 16%;
         }
 
     }
