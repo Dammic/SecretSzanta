@@ -32,7 +32,7 @@ export default class PlayerBoard extends React.PureComponent {
             playerName: name,
             role: role,
             avatar: randomAvatar,
-            isBubbleActive: (_random(0,1) === 0) ? true : false
+            isBubbleActive: (_random(0,1) === 1) ? true : false
         }
     }
 
