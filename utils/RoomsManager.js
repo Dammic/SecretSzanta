@@ -28,9 +28,66 @@ const RoomsManager = function() {
                 slots,
                 maxPlayers,
                 playersCount: 0,
-                password
+                password,
+                president: "",
+                chancellor: "",
+                votes: [],
+                phase: 'GAME_PHASE_NEW'
             }
         },
+        setChancellor: function(roomName) {
+            rooms_props[roomName].chancellor = rooms_props[roomName].chancellorCandidate;
+        },
+
+        getChancellor: function(roomName) {
+            return rooms_props[roomName].chancellor;
+        },
+
+        setPresident: function(roomName, presidentName) {
+            rooms_props[roomName].president = presidentName;
+        },
+
+        getPresident: function(roomName) {
+            return rooms_props[roomName].president;
+        },
+
+        /***********Voting***********/
+
+
+        initializeVoting: function(roomName, chancellorCandidateName) {
+            room_props[roomName].votes = _.reduce(rooms_props[roomName], (result, room) => {
+                if(room.player)  result.push({playerName: room.player.playerName, didVote: false, value: null})
+                return result;
+            }, []);
+            room_props[roomName].chancellorCandidate = chancellorCandidateName
+        },
+
+        vote: function(roomName, playerName, value) {
+            let playerVote = room_props[roomName].votes[playerName];
+            playerVote.didVote = true;
+            playerVote.value = value;
+        },
+
+        removeVoting: function(roomName) {
+            room_props[roomName].votes = [];
+        },
+
+        didAllVote: function(roomName) {
+            return (_.find(room_props[roomName].votes, (vote) => vote.didVote === false) ? false : true)
+        },
+
+        getVotes: function(roomName) {
+            return room_props[roomName].votes;
+        },
+
+        getVotingResult: function(roomName) {
+            const votesCount = _.countBy(rooms_props[roomName].votes, 'value');
+            return votesCount['true'] > votesCount['false']
+        },
+
+        /****************************/
+
+
         deleteRoom: function (roomName) {
             if (isRoomPresent(roomName)) {
                 rooms_props = _.filter(rooms_props, (room, key) => (roomName !== key) ? true : false)

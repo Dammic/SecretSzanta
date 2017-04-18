@@ -62,6 +62,40 @@ module.exports = function(io, RoomsManager) {
         }
     }
 
+    const startVotingPhaseVote = function(socket, {chancellorName}) {
+        if(chancellorName !== RoomsManager.getChancellor()) {
+            RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
+            io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_START', {
+                chancellorName: chancellorName,
+                presidentName: RoomsManager.getPresident()
+            })
+        } else {
+            socket.emit('START_VOTING_PHASE_VOTE', {
+                error: 'Error - you cannot choose the previous chancellor as the current one!'
+            })
+        }
+    }
+
+    const vote = function(socket, {value}) {
+        RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value);
+        if(RoomsManager.didAllVote(socket.currentRoom)) {
+            const votingResult = RoomsManager.getVotingResult(this.currentRoom)
+            if(votingResult) {
+                RoomsManager.setChancellor(socket.currentRoom)
+            }
+            setTimeout(() => {
+                io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_REVEAL', {
+                    votes: RoomsManager.getVotes(this.currentRoom),
+                    votingResult
+                })
+            }, 3000);
+        } else {
+            io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_NEWVOTE', {
+                playerName: socket.currentPlayerName
+            })
+        }
+    }
+
 
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
@@ -73,12 +107,15 @@ module.exports = function(io, RoomsManager) {
             disconnect: disconnect.bind(null, socket),
             createRoom: createRoom.bind(null, socket),
             sendMessage: sendMessage.bind(null, socket),
-            joinRoom: joinRoom.bind(null, socket)
+            joinRoom: joinRoom.bind(null, socket),
+            startVotingPhaseVote: startVotingPhaseVote.bind(null, socket),
+            vote: vote.bind(null, socket)
         }
 
         socket.on('disconnect', bindedFunctions.disconnect)
         socket.on('CLIENT_CREATE_ROOM', bindedFunctions.createRoom)
         socket.on('CLIENT_SEND_MESSAGE', bindedFunctions.sendMessage)
         socket.on('CLIENT_JOIN_ROOM', bindedFunctions.joinRoom)
+        socket.on('START_VOTING_PHASE_VOTE', bindedFunctions.startVotingPhaseVote)
     })
 }
