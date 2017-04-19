@@ -17,7 +17,7 @@ const GameRoomComponent = ({
     return (
         <div className="game-room">
             <VotingModal showModal={isVotingModalShown} onHide={onVotingModalHide} socket={socket}/>
-            <PlayerBoard userName={userName} players={playersList} presidentName={presidentName} socket={socket}/>
+            <PlayerBoard userName={userName} players={playersList} presidentName={presidentName} socket={socket} gamePhase={gamePhase}/>
             <UIBox socket={socket} userName={userName}/>
         </div>
     )

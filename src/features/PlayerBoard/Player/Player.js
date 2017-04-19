@@ -6,14 +6,16 @@ import _find from 'lodash/find'
 import PlayerComponent from './PlayerComponent'
 import {PlayerDirection} from '../../../const/PlayerConsts'
 import {PlayerRole} from '../../../const/PlayerConsts'
-import {VOTING_PHASE_NEWVOTE, VOTING_PHASE_REVEAL} from '../../../const/SocketEvents'
+import {VOTING_PHASE_NEWVOTE, VOTING_PHASE_REVEAL, CHANCELLOR_CHOICE_PHASE} from '../../../const/SocketEvents'
 
 export default class Player extends React.PureComponent {
 
     constructor(props) {
         super(props)
         this.state = {
-            voteBubbleInfo: null
+            voteBubbleInfo: null,
+            isChancellorChoiceShown: false,
+            potentialChancellorsChoices: []
         }
 
         props.socket.on(VOTING_PHASE_NEWVOTE, ({playerName}) => {
@@ -30,6 +32,22 @@ export default class Player extends React.PureComponent {
                 this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
             }
         })
+
+        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
+            const {player} = this.props
+            console.info(presidentName, player.playerName)
+            if(presidentName === player.playerName) {
+                console.info('chancellor choice!')
+                this.setState({
+                    isChancellorChoiceShown: true,
+                    potentialChancellorsChoices: playersChoices
+                })
+            }
+        })
+    }
+
+    onChancellorChoiceHide = () => {
+        this.setState({isChancellorChoiceShown: false})
     }
 
     getRolePicture = () => {
@@ -62,7 +80,7 @@ export default class Player extends React.PureComponent {
 
     render() {
         const {socket} = this.props
-        const {voteBubbleInfo} = this.state
+        const {voteBubbleInfo, isChancellorChoiceShown, potentialChancellorsChoices} = this.state
         const {playerName, avatar} = this.props.player
         
         const avatarPicture = require(`../../../static/Avatar${avatar}.png`)
@@ -74,7 +92,10 @@ export default class Player extends React.PureComponent {
                 rolePicture = {this.getRolePicture()}
                 voteBubbleStyle = {this.getVoteBubbleStyle()}
                 voteBubbleInfo = {voteBubbleInfo}
-            />
+                onChancellorChoiceHide = {this.onChancellorChoiceHide}
+                isChancellorChoiceShown = {isChancellorChoiceShown}
+                potentialChancellorsChoices = {potentialChancellorsChoices}
+                socket={socket} />
         )
     }
 

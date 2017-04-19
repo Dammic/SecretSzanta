@@ -83,6 +83,15 @@ module.exports = function(io, RoomsManager) {
         }
     }
 
+    const startChancellorChoicePhase = function(socket) {
+        RoomsManager.startChancellorChoicePhase(socket.currentRoom)
+        const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
+        io.sockets.in(socket.currentRoom).emit('CHANCELLOR_CHOICE_PHASE', {
+            playersChoices,
+            presidentName: RoomsManager.getPresident(socket.currentRoom)
+        })
+    }
+
     const vote = function(socket, {value}) {
         RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value);
         if(RoomsManager.didAllVote(socket.currentRoom)) {
@@ -117,7 +126,8 @@ module.exports = function(io, RoomsManager) {
             joinRoom: joinRoom.bind(null, socket),
             startVotingPhaseVote: startVotingPhaseVote.bind(null, socket),
             vote: vote.bind(null, socket),
-            startGame: startGame.bind(null, socket)
+            startGame: startGame.bind(null, socket),
+            startChancellorChoicePhase: startChancellorChoicePhase.bind(null, socket)
         }
 
         socket.on('disconnect', bindedFunctions.disconnect)
@@ -127,5 +137,6 @@ module.exports = function(io, RoomsManager) {
         socket.on('VOTING_PHASE_START', bindedFunctions.startVotingPhaseVote)
         socket.on('CLIENT_VOTE', bindedFunctions.vote)
         socket.on('START_GAME', bindedFunctions.startGame)
+        socket.on('CHANCELLOR_CHOICE_PHASE', bindedFunctions.startChancellorChoicePhase)
     })
 }

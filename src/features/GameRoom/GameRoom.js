@@ -70,7 +70,6 @@ export default class GameRoom extends React.PureComponent {
         })
 
         props.socket.on(START_GAME, ({presidentName, gamePhase}) => {
-            console.info('game start!')
             this.setState({
                 presidentName,
                 gamePhase
@@ -87,6 +86,8 @@ export default class GameRoom extends React.PureComponent {
     render () {
         const {userName, socket} = this.props
         const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase, presidentName} = this.state
+        console.info('Current game phase: ', gamePhase)
+
         return (
             <GameRoomComponent
                 socket={socket}
