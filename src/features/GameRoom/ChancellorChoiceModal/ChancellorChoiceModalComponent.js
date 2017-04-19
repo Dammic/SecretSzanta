@@ -9,11 +9,11 @@ const ChancellorChoiceModalComponent = ({
 }) => {
     return (
         <Modal show={showModal} clickOutside={false} isCloseButton={false}>
-            <div onClick={onChancellorChoice}>
+            <ul onClick={onChancellorChoice}>
                 {chancellorsChoices.map((choice) => {
-                    return <a key={choice} name={choice}>{choice}</a>
+                    return <div key={choice} data-playername={choice}>{choice}</div>
                 })}
-            </div>
+            </ul>
         </Modal>
     )
 }

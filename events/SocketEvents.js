@@ -97,13 +97,15 @@ module.exports = function(io, RoomsManager) {
             const votingResult = RoomsManager.getVotingResult(socket.currentRoom)
             if(votingResult) {
                 RoomsManager.setChancellor(socket.currentRoom)
+            } else {
+                setTimeout(() => {
+                    startChancellorChoicePhase(socket)
+                }, 3000);
             }
-            setTimeout(() => {
-                io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_REVEAL', {
-                    votes: RoomsManager.getVotes(socket.currentRoom),
-                    newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null )
-                })
-            }, 3000);
+            io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_REVEAL', {
+                votes: RoomsManager.getVotes(socket.currentRoom),
+                newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null )
+            })
         } else {
             io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_NEWVOTE', {
                 playerName: socket.currentPlayerName

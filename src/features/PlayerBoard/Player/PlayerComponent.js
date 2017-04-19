@@ -6,11 +6,7 @@ const PlayerComponent = ({
     avatar,
     rolePicture,
     voteBubbleStyle,
-    voteBubbleInfo,
-    onChancellorChoiceHide,
-    isChancellorChoiceShown,
-    potentialChancellorsChoices,
-    socket
+    voteBubbleInfo
 }) => {
     return (
         <div className="player">

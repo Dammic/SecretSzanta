@@ -1,9 +1,7 @@
 'use strict'
 import React from 'react'
-import _random from 'lodash/random'
 import {PlayerRole} from '../../const/PlayerConsts'
 import PlayerBoardComponent from './PlayerBoardComponent'
-import {START_GAME} from '../../const/SocketEvents'
 
 export default class PlayerBoard extends React.PureComponent {
     
@@ -20,32 +18,29 @@ export default class PlayerBoard extends React.PureComponent {
         }, 1000)
     }
 
-    makePlayer(name) {
+    makePlayer(player) {
         const {presidentName, chancellorName} = this.props
         let role
-        if(name === presidentName) {
+        if(player.playerName === presidentName) {
             role = PlayerRole.ROLE_PRESIDENT
-        } else if(name === chancellorName) {
+        } else if(player.playerName === chancellorName) {
             role = PlayerRole.ROLE_CHANCELLOR
         } else {
             role = null
         }
 
-        const randomAvatar = _random(1, 5)
-
         return {
-            playerName: name,
+            playerName: player.playerName,
             role: role,
-            avatar: randomAvatar
+            avatarNumber: player.avatarNumber
         }
     }
 
     render () {
         const {socket} = this.props;
-        const playersWithoutMe = this.props.players.filter(name => (name !== this.props.userName)) 
-
+        const playersWithoutMe = this.props.players.filter(player => (player.playerName !== this.props.userName))
         const players = playersWithoutMe.map(
-            name => this.makePlayer(name)
+            player => this.makePlayer(player)
         )
 
         let left = []
@@ -65,7 +60,7 @@ export default class PlayerBoard extends React.PureComponent {
 
         return (
             <PlayerBoardComponent 
-                playersLeft = {left} 
+                playersLeft = {left}
                 playersMiddle = {center}
                 playersRight = {right}
                 policiesLiberalCount = {this.state.policies}

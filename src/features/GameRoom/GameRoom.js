@@ -40,10 +40,9 @@ export default class GameRoom extends React.PureComponent {
 
             const newSlots = [...slots]
             newSlots[playerInfo.slotID - 1] = playerInfo
-
             this.setState({
                 slots: newSlots,
-                playersList: [...playersList, playerName ],
+                playersList: [...playersList, {playerName: playerName, avatarNumber: playerInfo.avatarNumber} ],
                 playersCount: playersCount + 1
             })
         })
@@ -54,7 +53,7 @@ export default class GameRoom extends React.PureComponent {
             let newSlots = [...slots]
             newSlots[slotID - 1].player = null
             const newPlayersList = playersList.filter((player) => {
-                return (player !== playerName)
+                return (player.playerName !== playerName)
             })
 
             this.setState({
@@ -79,21 +78,16 @@ export default class GameRoom extends React.PureComponent {
         })
 
         props.socket.on(VOTING_PHASE_REVEAL, ({newChancellor}) => {
-            console.info(newChancellor)
             if(newChancellor) {
                 this.setState({
                     chancellorName: newChancellor
                 })
-            } else {
-                console.info("Voting failed. No chancellor set. Starting again with a new president...")
-                props.socket.emit(CHANCELLOR_CHOICE_PHASE, { })
             }
         })
 
         props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
             const {userName} = this.props
             this.setState({presidentName})
-
             if(presidentName === userName) {
                 this.setState({
                     isChancellorChoiceShown: true,
@@ -116,7 +110,6 @@ export default class GameRoom extends React.PureComponent {
         const {userName, socket} = this.props
         const {playersList, isVotingModalShown, gamePhase, presidentName, chancellorName, isChancellorChoiceShown, potentialChancellorsChoices} = this.state
         console.info('Current game phase: ', gamePhase)
-
         return (
             <GameRoomComponent
                 socket={socket}

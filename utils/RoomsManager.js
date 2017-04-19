@@ -159,7 +159,7 @@ const RoomsManager = function() {
         getRoomDetails: function (roomName) {
             const room = rooms_props[roomName]
             const playersList = _.reduce(room.slots, (result, slot) => {
-                if (slot.player) result.push(slot.player.playerName)
+                if (slot.player) result.push({playerName: slot.player.playerName, avatarNumber: slot.player.avatarNumber})
                 return result
             }, [])
             return {
@@ -190,7 +190,8 @@ const RoomsManager = function() {
             if (!samePlayerObject && nextEmptySlot) {
                 nextEmptySlot.player = {
                     playerName,
-                    role: null
+                    role: null,
+                    avatarNumber: _.random(1, 5)
                 }
                 rooms_props[roomName].playersCount += 1
             } else {
@@ -215,7 +216,13 @@ const RoomsManager = function() {
 
         getPlayerInfo: function (roomName, playerName) {
             const {slots} = rooms_props[roomName]
-            return slots.find((slot) => (slot.player && slot.player.playerName === playerName))
+            const playerInfo = slots.find((slot) => (slot.player && slot.player.playerName === playerName))
+            return {
+                playerName: playerInfo.player.playerName,
+                role: playerInfo.player.role,
+                avatarNumber: playerInfo.player.avatarNumber,
+                slotID: playerInfo.slotID
+            }
         },
 
         /**

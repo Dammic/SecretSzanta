@@ -15,6 +15,10 @@ export default class Player extends React.PureComponent {
             voteBubbleInfo: null
         }
 
+        props.socket.on(CHANCELLOR_CHOICE_PHASE, () => {
+            this.setState({ voteBubbleInfo: null})
+        })
+
         props.socket.on(VOTING_PHASE_NEWVOTE, ({playerName}) => {
             const {player} = this.props
             if(playerName === player.playerName) {
@@ -62,8 +66,8 @@ export default class Player extends React.PureComponent {
     render() {
         const {socket} = this.props
         const {voteBubbleInfo} = this.state
-        const {playerName, avatar} = this.props.player
-        const avatarPicture = require(`../../../static/Avatar${avatar}.png`)
+        const {playerName, avatarNumber} = this.props.player
+        const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
 
         return (
             <PlayerComponent 
