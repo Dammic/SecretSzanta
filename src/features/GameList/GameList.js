@@ -66,7 +66,7 @@ export default class GameList extends React.PureComponent {
         if (roomName === '') {
             return (
                 <div>
-                    <GameListComponent socket={this.socket} title={userName} rooms={this.rooms} onClick={this.setRoomName} />
+                    <GameListComponent socket={this.socket} userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
                 </div>
             )
         } else {

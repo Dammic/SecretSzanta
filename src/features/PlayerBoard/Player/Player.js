@@ -1,7 +1,6 @@
 'use strict'
 import React from 'react'
 import classNames from 'classnames/bind'
-import _random from 'lodash/random'
 import _find from 'lodash/find'
 import PlayerComponent from './PlayerComponent'
 import {PlayerDirection} from '../../../const/PlayerConsts'
@@ -13,9 +12,7 @@ export default class Player extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            voteBubbleInfo: null,
-            isChancellorChoiceShown: false,
-            potentialChancellorsChoices: []
+            voteBubbleInfo: null
         }
 
         props.socket.on(VOTING_PHASE_NEWVOTE, ({playerName}) => {
@@ -32,21 +29,6 @@ export default class Player extends React.PureComponent {
                 this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
             }
         })
-
-        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
-            const {player} = this.props
-            console.info(presidentName, player.playerName)
-            if(presidentName === player.playerName) {
-                this.setState({
-                    isChancellorChoiceShown: true,
-                    potentialChancellorsChoices: playersChoices
-                })
-            }
-        })
-    }
-
-    onChancellorChoiceHide = () => {
-        this.setState({isChancellorChoiceShown: false})
     }
 
     getRolePicture = () => {
@@ -79,10 +61,8 @@ export default class Player extends React.PureComponent {
 
     render() {
         const {socket} = this.props
-        const {voteBubbleInfo, isChancellorChoiceShown, potentialChancellorsChoices} = this.state
+        const {voteBubbleInfo} = this.state
         const {playerName, avatar} = this.props.player
-        
-        console.info(playerName)
         const avatarPicture = require(`../../../static/Avatar${avatar}.png`)
 
         return (
@@ -92,9 +72,6 @@ export default class Player extends React.PureComponent {
                 rolePicture = {this.getRolePicture()}
                 voteBubbleStyle = {this.getVoteBubbleStyle()}
                 voteBubbleInfo = {voteBubbleInfo}
-                onChancellorChoiceHide = {this.onChancellorChoiceHide}
-                isChancellorChoiceShown = {isChancellorChoiceShown}
-                potentialChancellorsChoices = {potentialChancellorsChoices}
                 socket={socket} />
         )
     }

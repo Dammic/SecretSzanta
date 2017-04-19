@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import ChancellorChoiceModalComponent from './ChancellorChoiceModalComponent'
-import {VOTING_PHASE_START} from '../../../../const/SocketEvents'
+import {VOTING_PHASE_START} from '../../../const/SocketEvents'
 
 export default class ChancellorChoiceModal extends React.PureComponent {
 

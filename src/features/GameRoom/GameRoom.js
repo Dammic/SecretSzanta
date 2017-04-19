@@ -16,7 +16,9 @@ export default class GameRoom extends React.PureComponent {
             chancellorCandidateName: '',
             gamePhase: '',
             presidentName: '',
-            chancellorName: ''
+            chancellorName: '',
+            isChancellorChoiceShown: false,
+            potentialChancellorsChoices: []
         }
 
         props.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
@@ -88,21 +90,31 @@ export default class GameRoom extends React.PureComponent {
             }
         })
 
-        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName}) => {
+        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
+            const {userName} = this.props
             this.setState({presidentName})
+
+            if(presidentName === userName) {
+                this.setState({
+                    isChancellorChoiceShown: true,
+                    potentialChancellorsChoices: playersChoices
+                })
+            }
         })
         
     }
 
+    onChancellorChoiceHide = () => {
+        this.setState({isChancellorChoiceShown: false})
+    }
+
     hideVotingModal = () => {
-        this.setState({
-            isVotingModalShown: false
-        })
+        this.setState({isVotingModalShown: false})
     }
 
     render () {
         const {userName, socket} = this.props
-        const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase, presidentName, chancellorName} = this.state
+        const {playersList, isVotingModalShown, gamePhase, presidentName, chancellorName, isChancellorChoiceShown, potentialChancellorsChoices} = this.state
         console.info('Current game phase: ', gamePhase)
 
         return (
@@ -110,12 +122,15 @@ export default class GameRoom extends React.PureComponent {
                 socket={socket}
                 userName={userName}
                 playersList={playersList}
-                chancellorCandidateName={chancellorCandidateName}
                 gamePhase={gamePhase}
                 isVotingModalShown={isVotingModalShown}
                 onVotingModalHide={this.hideVotingModal}
                 presidentName={presidentName}
-                chancellorName={chancellorName}/>
+                chancellorName={chancellorName}
+                onChancellorChoiceHide = {this.onChancellorChoiceHide}
+                isChancellorChoiceShown = {isChancellorChoiceShown}
+                potentialChancellorsChoices = {potentialChancellorsChoices}
+            />
         )
     }
 }
