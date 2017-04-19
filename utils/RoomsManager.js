@@ -73,6 +73,17 @@ const RoomsManager = function() {
             return rooms_props[roomName].president;
         },
 
+        chooseNextPresident: function(roomName) {
+            const playersList = _.reduce(rooms_props[roomName].slots, function(result, slot) {
+                if(slot.player) result.push(slot.player.playerName)
+                return result;
+            }, [])
+            const indexOfLastPresident = _.findIndex(playersList, (player) => player === this.getPresident(roomName))
+            // if no president has been choosen, we choose the first player on the list
+            const nextPresidentName = ( indexOfLastPresident >= 0 ? playersList[(indexOfLastPresident + 1) % playersList.length] : playersList[0])
+            this.setPresident(roomName, nextPresidentName)
+        },
+
         startGame: function(roomName) {
             rooms_props[roomName].gamePhase = 'STARTED';
 
@@ -83,11 +94,11 @@ const RoomsManager = function() {
                 if (slot.player) result.push(slot.player.playerName)
                 return result
             }, [])
-            this.setPresident(roomName, playersList[0])
         },
 
         startChancellorChoicePhase: function(roomName) {
             rooms_props[roomName].gamePhase = 'GAME_PHASE_CHANCELLOR_CHOICE'
+            this.chooseNextPresident(roomName)
         },
 
         getChancellorChoices: function(roomName) {

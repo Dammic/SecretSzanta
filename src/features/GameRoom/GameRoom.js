@@ -3,7 +3,7 @@ require('../../styles/main.scss')
 import React from 'react'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
-import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START, VOTING_PHASE_REVEAL, START_GAME} from '../../const/SocketEvents'
+import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START, VOTING_PHASE_REVEAL, START_GAME, CHANCELLOR_CHOICE_PHASE} from '../../const/SocketEvents'
 
 export default class GameRoom extends React.PureComponent {
     constructor(props) {
@@ -70,9 +70,8 @@ export default class GameRoom extends React.PureComponent {
             })
         })
 
-        props.socket.on(START_GAME, ({presidentName, gamePhase}) => {
+        props.socket.on(START_GAME, ({gamePhase}) => {
             this.setState({
-                presidentName,
                 gamePhase
             })
         })
@@ -84,9 +83,13 @@ export default class GameRoom extends React.PureComponent {
                     chancellorName: newChancellor
                 })
             } else {
-                console.info("in this place, make request for a new round of chancellor voting (with next president)")
+                console.info("Voting failed. No chancellor set. Starting again with a new president...")
+                props.socket.emit(CHANCELLOR_CHOICE_PHASE, { })
             }
-            
+        })
+
+        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName}) => {
+            this.setState({presidentName})
         })
         
     }

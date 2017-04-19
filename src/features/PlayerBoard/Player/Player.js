@@ -35,6 +35,7 @@ export default class Player extends React.PureComponent {
 
         props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
             const {player} = this.props
+            console.info(presidentName, player.playerName)
             if(presidentName === player.playerName) {
                 this.setState({
                     isChancellorChoiceShown: true,
@@ -81,6 +82,7 @@ export default class Player extends React.PureComponent {
         const {voteBubbleInfo, isChancellorChoiceShown, potentialChancellorsChoices} = this.state
         const {playerName, avatar} = this.props.player
         
+        console.info(playerName)
         const avatarPicture = require(`../../../static/Avatar${avatar}.png`)
 
         return (
