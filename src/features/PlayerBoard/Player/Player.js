@@ -35,9 +35,7 @@ export default class Player extends React.PureComponent {
 
         props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
             const {player} = this.props
-            console.info(presidentName, player.playerName)
             if(presidentName === player.playerName) {
-                console.info('chancellor choice!')
                 this.setState({
                     isChancellorChoiceShown: true,
                     potentialChancellorsChoices: playersChoices

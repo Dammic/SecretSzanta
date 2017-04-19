@@ -5,14 +5,14 @@ import Modal from '../../../Modal/Modal'
 const ChancellorChoiceModalComponent = ({
     showModal,
     chancellorsChoices,
-    onHide,
-    socket
+    onChancellorChoice
 }) => {
-    console.info(showModal)
     return (
         <Modal show={showModal} clickOutside={false} isCloseButton={false}>
-            <div>
-                Did you know that my name is jeff?
+            <div onClick={onChancellorChoice}>
+                {chancellorsChoices.map((choice) => {
+                    return <a key={choice} name={choice}>{choice}</a>
+                })}
             </div>
         </Modal>
     )
