@@ -29,10 +29,11 @@ const RoomsManager = function() {
                 maxPlayers,
                 playersCount: 0,
                 password,
-                president: "",
-                chancellor: "",
+                president: '',
+                chancellor: '',
+                chancellorCandidateName: '',
                 votes: [],
-                phase: 'GAME_PHASE_NEW'
+                gamePhase: 'GAME_PHASE_NEW'
             }
         },
         setChancellor: function(roomName) {
@@ -55,29 +56,29 @@ const RoomsManager = function() {
 
 
         initializeVoting: function(roomName, chancellorCandidateName) {
-            room_props[roomName].votes = _.reduce(rooms_props[roomName], (result, room) => {
-                if(room.player)  result.push({playerName: room.player.playerName, didVote: false, value: null})
+            rooms_props[roomName].votes = _.reduce(rooms_props[roomName].slots, (result, slot) => {
+                if(slot.player)  result.push({playerName: slot.player.playerName, didVote: false, value: null})
                 return result;
             }, []);
-            room_props[roomName].chancellorCandidate = chancellorCandidateName
+            rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
         },
 
         vote: function(roomName, playerName, value) {
-            let playerVote = room_props[roomName].votes[playerName];
+            let playerVote = rooms_props[roomName].votes[playerName];
             playerVote.didVote = true;
             playerVote.value = value;
         },
 
         removeVoting: function(roomName) {
-            room_props[roomName].votes = [];
+            rooms_props[roomName].votes = [];
         },
 
         didAllVote: function(roomName) {
-            return (_.find(room_props[roomName].votes, (vote) => vote.didVote === false) ? false : true)
+            return (_.find(rooms_props[roomName].votes, (vote) => vote.didVote === false) ? false : true)
         },
 
         getVotes: function(roomName) {
-            return room_props[roomName].votes;
+            return rooms_props[roomName].votes;
         },
 
         getVotingResult: function(roomName) {
@@ -112,7 +113,9 @@ const RoomsManager = function() {
                 maxPlayers: room.maxPlayers,
                 playersCount: room.playersCount,
                 slots: room.slots,
-                playersList
+                playersList,
+                gamePhase: room.gamePhase,
+                chancellorCandidateName: room.chancellorCandidateName
             }
         },
 

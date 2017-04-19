@@ -63,14 +63,13 @@ module.exports = function(io, RoomsManager) {
     }
 
     const startVotingPhaseVote = function(socket, {chancellorName}) {
-        if(chancellorName !== RoomsManager.getChancellor()) {
+        if(chancellorName !== RoomsManager.getChancellor(socket.currentRoom)) {
             RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
             io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_START', {
-                chancellorName: chancellorName,
-                presidentName: RoomsManager.getPresident()
+                chancellorName: chancellorName
             })
         } else {
-            socket.emit('START_VOTING_PHASE_VOTE', {
+            socket.emit('VOTING_PHASE_START', {
                 error: 'Error - you cannot choose the previous chancellor as the current one!'
             })
         }
@@ -116,6 +115,7 @@ module.exports = function(io, RoomsManager) {
         socket.on('CLIENT_CREATE_ROOM', bindedFunctions.createRoom)
         socket.on('CLIENT_SEND_MESSAGE', bindedFunctions.sendMessage)
         socket.on('CLIENT_JOIN_ROOM', bindedFunctions.joinRoom)
-        socket.on('START_VOTING_PHASE_VOTE', bindedFunctions.startVotingPhaseVote)
+        socket.on('VOTING_PHASE_START', bindedFunctions.startVotingPhaseVote)
+        socket.on('CLIENT_VOTE', bindedFunctions.vote)
     })
 }

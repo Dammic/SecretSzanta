@@ -3,7 +3,7 @@ require('../../styles/main.scss')
 import React from 'react'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
-import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM} from '../../const/SocketEvents'
+import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START} from '../../const/SocketEvents'
 
 export default class GameRoom extends React.PureComponent {
     constructor(props) {
@@ -12,18 +12,23 @@ export default class GameRoom extends React.PureComponent {
             maxPlayers: null,
             playersCount: 0,
             slots: [],
-            playersList: []
+            playersList: [],
+            chancellorCandidateName: '',
+            gamePhase: '',
+            presidentName: 'a' //temporary
         }
 
         props.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
         props.socket.emit(CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
         props.socket.on(CLIENT_GET_ROOM_DATA, (data) => {
-            const {maxPlayers, playersCount, slots, playersList} = data
+            const {maxPlayers, playersCount, slots, playersList, chancellorCandidateName, gamePhase} = data
             this.setState({
                 maxPlayers,
                 playersCount,
                 slots,
-                playersList
+                playersList,
+                gamePhase,
+                chancellorCandidateName
             })
         })
         props.socket.on(CLIENT_JOIN_ROOM, (data) => {
@@ -55,16 +60,28 @@ export default class GameRoom extends React.PureComponent {
                 playersCount: playersCount - 1
             })
         })
+
+        props.socket.on(VOTING_PHASE_START, ({chancellorName}) => {
+            console.info('vote start!')
+            this.setState({
+                isVotingModalShown: true,
+                chancellorCandidateName: chancellorName,
+                gamePhase: 'GAME_PHASE_VOTING'
+            })
+        })
     }
 
     render () {
         const {userName, socket} = this.props
-        const {playersList} = this.state
+        const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase} = this.state
         return (
             <GameRoomComponent
                 socket={socket}
                 userName={userName}
-                playersList={playersList}/>
+                playersList={playersList}
+                chancellorCandidateName={chancellorCandidateName}
+                gamePhase={gamePhase}
+                isVotingModalShown={isVotingModalShown}/>
         )
     }
 }

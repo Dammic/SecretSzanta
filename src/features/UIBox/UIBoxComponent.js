@@ -4,11 +4,12 @@ import Chat from '../Chat/Chat'
 
 const UIBoxComponent = ({
     socket,
-    userName
+    userName,
+    onStartVote
 }) => {
     return (
         <div className="ui-box">
-            <img src={require('../../static/cactus.jpg')}></img>
+            <button onClick={onStartVote}>voting (test)</button>
             <Chat socket={socket} userName={userName}/>
 
         </div>
