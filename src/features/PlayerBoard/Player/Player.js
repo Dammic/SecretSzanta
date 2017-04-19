@@ -12,6 +12,10 @@ export default class Player extends React.PureComponent {
 
     constructor(props) {
         super(props)
+        this.state = {
+            voteBubbleInfo: null
+        }
+
         props.socket.on(VOTING_PHASE_NEWVOTE, ({playerName}) => {
             const {player} = this.props
             if(playerName === player.playerName) {
@@ -26,10 +30,6 @@ export default class Player extends React.PureComponent {
                 this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
             }
         })
-
-        this.state = {
-            voteBubbleInfo: null
-        }
     }
 
     getRolePicture = () => {
@@ -37,16 +37,12 @@ export default class Player extends React.PureComponent {
         switch(role) {
             case PlayerRole.ROLE_CHANCELLOR:
                 return require('../../../static/Chancellor.png')
-            
             case PlayerRole.ROLE_PRESIDENT:
                 return require('../../../static/President.png')
-            
             case PlayerRole.ROLE_PREVIOUS_CHANCELLOR:
                 return require('../../../static/PreviousChancelor.png')
-
             case PlayerRole.ROLE_PREVIOUS_PRESIDENT:
                 return require('../../../static/PreviousPresident.png')
-
             default:
                 return null
         }

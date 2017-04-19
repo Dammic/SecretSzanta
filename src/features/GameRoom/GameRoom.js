@@ -3,7 +3,7 @@ require('../../styles/main.scss')
 import React from 'react'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
-import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START, VOTING_PHASE_REVEAL} from '../../const/SocketEvents'
+import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START, VOTING_PHASE_REVEAL, START_GAME} from '../../const/SocketEvents'
 
 export default class GameRoom extends React.PureComponent {
     constructor(props) {
@@ -15,7 +15,7 @@ export default class GameRoom extends React.PureComponent {
             playersList: [],
             chancellorCandidateName: '',
             gamePhase: '',
-            presidentName: 'a' //temporary
+            presidentName: ''
         }
 
         props.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
@@ -68,6 +68,14 @@ export default class GameRoom extends React.PureComponent {
                 gamePhase: 'GAME_PHASE_VOTING'
             })
         })
+
+        props.socket.on(START_GAME, ({presidentName, gamePhase}) => {
+            console.info('game start!')
+            this.setState({
+                presidentName,
+                gamePhase
+            })
+        })
     }
 
     hideVotingModal = () => {
@@ -78,7 +86,7 @@ export default class GameRoom extends React.PureComponent {
 
     render () {
         const {userName, socket} = this.props
-        const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase} = this.state
+        const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase, presidentName} = this.state
         return (
             <GameRoomComponent
                 socket={socket}
@@ -87,7 +95,8 @@ export default class GameRoom extends React.PureComponent {
                 chancellorCandidateName={chancellorCandidateName}
                 gamePhase={gamePhase}
                 isVotingModalShown={isVotingModalShown}
-                onVotingModalHide={this.hideVotingModal}/>
+                onVotingModalHide={this.hideVotingModal}
+                presidentName={presidentName}/>
         )
     }
 }

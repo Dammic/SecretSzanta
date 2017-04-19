@@ -3,6 +3,7 @@ import React from 'react'
 import _random from 'lodash/random'
 import {PlayerRole} from '../../const/PlayerConsts'
 import PlayerBoardComponent from './PlayerBoardComponent'
+import {START_GAME} from '../../const/SocketEvents'
 
 export default class PlayerBoard extends React.PureComponent {
     
@@ -20,11 +21,18 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer(name) {
-        //All those data should be received from server
-        const role = [
-            PlayerRole.ROLE_CHANCELLOR,
-            PlayerRole.ROLE_PRESIDENT,
-            null][_random(0,2)]
+        const {presidentName} = this.props
+
+        let role
+        if(name === presidentName) {
+            role = PlayerRole.ROLE_PRESIDENT
+        } else {
+            role = null
+        }
+        // const role = (name === presidentName ?[
+        //     PlayerRole.ROLE_CHANCELLOR,
+        //     PlayerRole.ROLE_PRESIDENT,
+        //     null][_random(0,2)]
 
         const randomAvatar = _random(1, 5)
 

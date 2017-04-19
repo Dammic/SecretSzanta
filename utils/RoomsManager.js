@@ -52,6 +52,19 @@ const RoomsManager = function() {
             return rooms_props[roomName].president;
         },
 
+        startGame: function(roomName) {
+            rooms_props[roomName].gamePhase = 'STARTED';
+
+            // filtering unnecessary empty slots
+            //rooms_props[roomName].slots = _.filter(rooms_props[roomName].slots, (slot) => slot.player)
+
+            const playersList = _.reduce(rooms_props[roomName].slots, (result, slot) => {
+                if (slot.player) result.push(slot.player.playerName)
+                return result
+            }, [])
+            this.setPresident(roomName, playersList[0])
+        },
+
         /***********Voting***********/
 
 
