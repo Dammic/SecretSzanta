@@ -17,11 +17,12 @@ const GameRoomComponent = ({
     onChancellorChoiceHide,
     isChancellorChoiceShown,
     potentialChancellorsChoices,
+    chancellorCandidate
 }) => {
     return (
         <div className="game-room">
             <ChancellorChoiceModal chancellorsChoices={potentialChancellorsChoices} showModal={isChancellorChoiceShown} onHide={onChancellorChoiceHide} socket={socket}/>
-            <VotingModal showModal={isVotingModalShown} onHide={onVotingModalHide} socket={socket}/>
+            <VotingModal showModal={isVotingModalShown} onHide={onVotingModalHide} socket={socket} chancellorCandidate={chancellorCandidate} presidentName={presidentName}/>
             <PlayerBoard userName={userName} players={playersList} presidentName={presidentName} chancellorName={chancellorName} socket={socket} gamePhase={gamePhase}/>
             <UIBox socket={socket} userName={userName}/>
         </div>

@@ -108,7 +108,7 @@ export default class GameRoom extends React.PureComponent {
 
     render () {
         const {userName, socket} = this.props
-        const {playersList, isVotingModalShown, gamePhase, presidentName, chancellorName, isChancellorChoiceShown, potentialChancellorsChoices} = this.state
+        const {playersList, isVotingModalShown, gamePhase, presidentName, chancellorName, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidateName} = this.state
         console.info('Current game phase: ', gamePhase)
         return (
             <GameRoomComponent
@@ -123,6 +123,7 @@ export default class GameRoom extends React.PureComponent {
                 onChancellorChoiceHide = {this.onChancellorChoiceHide}
                 isChancellorChoiceShown = {isChancellorChoiceShown}
                 potentialChancellorsChoices = {potentialChancellorsChoices}
+                chancellorCandidate = {chancellorCandidateName}
             />
         )
     }

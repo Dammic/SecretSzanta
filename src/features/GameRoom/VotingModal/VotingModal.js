@@ -18,9 +18,14 @@ export default class VotingModal extends React.PureComponent {
     }
 
     render () {
-        const {showModal, socket} = this.props
+        const {showModal, presidentName, chancellorCandidate} = this.props
         return(
-            <VotingModalComponent showModal={showModal} onYesVote={this.onYesVote} onNoVote={this.onNoVote} socket={socket}/>
+            <VotingModalComponent
+                showModal={showModal}
+                onYesVote={this.onYesVote}
+                onNoVote={this.onNoVote}
+                presidentName={presidentName}
+                chancellorCandidate={chancellorCandidate} />
         )
     }
 }
