@@ -20,7 +20,7 @@ const {object, bool, func, string} = React.PropTypes
 Modal.propTypes = {
     children: object.isRequired,
     show: bool.isRequired,
-    onHide: func.isRequired,
+    onHide: func,
     clickOutside: bool,
     isCloseButton: bool,
     customClass: string

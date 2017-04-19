@@ -4,15 +4,18 @@ import Modal from '../../Modal/Modal'
 
 const VotingModalComponent = ({
     showModal,
-    onHide,
+    onYesVote,
+    onNoVote,
     socket
 }) => {
     return (
-        <Modal show={showModal} onHide={onHide} clickOutside={true}>
+        <Modal show={showModal} clickOutside={false} isCloseButton={false}>
             <div>
+                <div>President:</div>
+                <div>Chancellor:</div>
                 <span>My name is jeff</span>
-                <button>YES</button>
-                <button>NO</button>
+                <button onClick={onYesVote}>YAS!</button>
+                <button onClick={onNoVote}>No!</button>
             </div>
         </Modal>
     )

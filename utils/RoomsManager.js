@@ -64,7 +64,7 @@ const RoomsManager = function() {
         },
 
         vote: function(roomName, playerName, value) {
-            let playerVote = rooms_props[roomName].votes[playerName];
+            let playerVote = _.find(rooms_props[roomName].votes, (vote) => vote.playerName === playerName);
             playerVote.didVote = true;
             playerVote.value = value;
         },

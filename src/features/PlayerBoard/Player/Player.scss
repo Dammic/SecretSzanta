@@ -29,6 +29,7 @@ $player-bubble-activated-position: 100%;
         opacity: 0;
         position: absolute;
         z-index: 1;
+        padding: 6px;
 
         width: $player-bubble-width;
         height: $player-bubble-height;

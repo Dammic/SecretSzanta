@@ -4,6 +4,7 @@
  */
 require('axios')
 require('lodash/times')
+require('lodash/find')
 require('moment')
 require('react')
 require('react-dom')

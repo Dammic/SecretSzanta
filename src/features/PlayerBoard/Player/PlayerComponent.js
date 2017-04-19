@@ -5,16 +5,14 @@ const PlayerComponent = ({
     playerName,
     avatar,
     rolePicture,
-    bubbleStyle
+    voteBubbleStyle,
+    voteBubbleInfo
 }) => {
     return (                
         <div className="player">
             <div>{playerName}</div>
-
-            <div className={bubbleStyle}>
-            </div>
-
-            <img className="portrait" src={avatar} alt="Player image" />    
+            {voteBubbleInfo && <div className={voteBubbleStyle}>{voteBubbleInfo.voteValue}</div>}
+            <img className="portrait" src={avatar} alt="Player image" />
             {rolePicture && <img className="role" src={rolePicture} alt="" />}
         </div>
     )

@@ -20,7 +20,7 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer(name) {
-        //All those data should be received from server       
+        //All those data should be received from server
         const role = [
             PlayerRole.ROLE_CHANCELLOR,
             PlayerRole.ROLE_PRESIDENT,
@@ -31,13 +31,12 @@ export default class PlayerBoard extends React.PureComponent {
         return {
             playerName: name,
             role: role,
-            avatar: randomAvatar,
-            isBubbleActive: (_random(0,1) === 1) ? true : false
+            avatar: randomAvatar
         }
     }
 
     render () {
-                   
+        const {socket} = this.props;
         const playersWithoutMe = this.props.players.filter(name => (name !== this.props.userName)) 
 
         const players = playersWithoutMe.map(
@@ -66,6 +65,7 @@ export default class PlayerBoard extends React.PureComponent {
                 playersRight = {right}
                 policiesLiberalCount = {this.state.policies}
                 policiesFacistCount = {this.state.policies+1}
+                socket={socket}
             />
         )
     }

@@ -78,13 +78,13 @@ module.exports = function(io, RoomsManager) {
     const vote = function(socket, {value}) {
         RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value);
         if(RoomsManager.didAllVote(socket.currentRoom)) {
-            const votingResult = RoomsManager.getVotingResult(this.currentRoom)
+            const votingResult = RoomsManager.getVotingResult(socket.currentRoom)
             if(votingResult) {
                 RoomsManager.setChancellor(socket.currentRoom)
             }
             setTimeout(() => {
                 io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_REVEAL', {
-                    votes: RoomsManager.getVotes(this.currentRoom),
+                    votes: RoomsManager.getVotes(socket.currentRoom),
                     votingResult
                 })
             }, 3000);

@@ -3,7 +3,7 @@ require('../../styles/main.scss')
 import React from 'react'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
-import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START} from '../../const/SocketEvents'
+import {CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM, CLIENT_GET_ROOM_DATA, CLIENT_CREATE_ROOM, VOTING_PHASE_START, VOTING_PHASE_REVEAL} from '../../const/SocketEvents'
 
 export default class GameRoom extends React.PureComponent {
     constructor(props) {
@@ -62,12 +62,17 @@ export default class GameRoom extends React.PureComponent {
         })
 
         props.socket.on(VOTING_PHASE_START, ({chancellorName}) => {
-            console.info('vote start!')
             this.setState({
                 isVotingModalShown: true,
                 chancellorCandidateName: chancellorName,
                 gamePhase: 'GAME_PHASE_VOTING'
             })
+        })
+    }
+
+    hideVotingModal = () => {
+        this.setState({
+            isVotingModalShown: false
         })
     }
 
@@ -81,7 +86,8 @@ export default class GameRoom extends React.PureComponent {
                 playersList={playersList}
                 chancellorCandidateName={chancellorCandidateName}
                 gamePhase={gamePhase}
-                isVotingModalShown={isVotingModalShown}/>
+                isVotingModalShown={isVotingModalShown}
+                onVotingModalHide={this.hideVotingModal}/>
         )
     }
 }
