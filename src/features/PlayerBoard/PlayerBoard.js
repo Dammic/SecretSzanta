@@ -21,18 +21,16 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer(name) {
-        const {presidentName} = this.props
-
+        const {presidentName, chancellorName} = this.props
+        console.info(chancellorName)
         let role
         if(name === presidentName) {
             role = PlayerRole.ROLE_PRESIDENT
+        } else if(name === chancellorName) {
+            role = PlayerRole.ROLE_CHANCELLOR
         } else {
             role = null
         }
-        // const role = (name === presidentName ?[
-        //     PlayerRole.ROLE_CHANCELLOR,
-        //     PlayerRole.ROLE_PRESIDENT,
-        //     null][_random(0,2)]
 
         const randomAvatar = _random(1, 5)
 

@@ -12,12 +12,13 @@ const GameRoomComponent = ({
     gamePhase,
     isVotingModalShown,
     onVotingModalHide,
-    presidentName
+    presidentName,
+    chancellorName
 }) => {
     return (
         <div className="game-room">
             <VotingModal showModal={isVotingModalShown} onHide={onVotingModalHide} socket={socket}/>
-            <PlayerBoard userName={userName} players={playersList} presidentName={presidentName} socket={socket} gamePhase={gamePhase}/>
+            <PlayerBoard userName={userName} players={playersList} presidentName={presidentName} chancellorName={chancellorName} socket={socket} gamePhase={gamePhase}/>
             <UIBox socket={socket} userName={userName}/>
         </div>
     )

@@ -15,7 +15,8 @@ export default class GameRoom extends React.PureComponent {
             playersList: [],
             chancellorCandidateName: '',
             gamePhase: '',
-            presidentName: ''
+            presidentName: '',
+            chancellorName: ''
         }
 
         props.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
@@ -75,6 +76,19 @@ export default class GameRoom extends React.PureComponent {
                 gamePhase
             })
         })
+
+        props.socket.on(VOTING_PHASE_REVEAL, ({newChancellor}) => {
+            console.info(newChancellor)
+            if(newChancellor) {
+                this.setState({
+                    chancellorName: newChancellor
+                })
+            } else {
+                console.info("in this place, make request for a new round of chancellor voting (with next president)")
+            }
+            
+        })
+        
     }
 
     hideVotingModal = () => {
@@ -85,7 +99,7 @@ export default class GameRoom extends React.PureComponent {
 
     render () {
         const {userName, socket} = this.props
-        const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase, presidentName} = this.state
+        const {playersList, chancellorCandidateName, isVotingModalShown, gamePhase, presidentName, chancellorName} = this.state
         console.info('Current game phase: ', gamePhase)
 
         return (
@@ -97,7 +111,8 @@ export default class GameRoom extends React.PureComponent {
                 gamePhase={gamePhase}
                 isVotingModalShown={isVotingModalShown}
                 onVotingModalHide={this.hideVotingModal}
-                presidentName={presidentName}/>
+                presidentName={presidentName}
+                chancellorName={chancellorName}/>
         )
     }
 }

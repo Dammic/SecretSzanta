@@ -102,7 +102,7 @@ module.exports = function(io, RoomsManager) {
             setTimeout(() => {
                 io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_REVEAL', {
                     votes: RoomsManager.getVotes(socket.currentRoom),
-                    votingResult
+                    newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null )
                 })
             }, 3000);
         } else {

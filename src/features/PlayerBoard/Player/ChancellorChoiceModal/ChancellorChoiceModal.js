@@ -15,7 +15,7 @@ export default class ChancellorChoiceModal extends React.PureComponent {
         const {showModal, chancellorsChoices, onChancellorChoice} = this.props
         return (
             <ChancellorChoiceModalComponent
-                showModal={showModal} 
+                showModal={showModal}
                 chancellorsChoices={chancellorsChoices}
                 onChancellorChoice={this.onChancellorChoice} />
         )

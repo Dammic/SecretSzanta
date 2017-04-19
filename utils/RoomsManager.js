@@ -115,10 +115,6 @@ const RoomsManager = function() {
             playerVote.value = value;
         },
 
-        removeVoting: function(roomName) {
-            rooms_props[roomName].votes = [];
-        },
-
         didAllVote: function(roomName) {
             return (_.find(rooms_props[roomName].votes, (vote) => vote.didVote === false) ? false : true)
         },
@@ -129,7 +125,7 @@ const RoomsManager = function() {
 
         getVotingResult: function(roomName) {
             const votesCount = _.countBy(rooms_props[roomName].votes, 'value');
-            return votesCount['true'] > votesCount['false']
+            return votesCount[true] > votesCount[false] || !votesCount[false]
         },
 
         /****************************/
