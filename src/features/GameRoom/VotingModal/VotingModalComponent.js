@@ -10,7 +10,7 @@ const VotingModalComponent = ({
     chancellorCandidate
 }) => {
     return (
-        <Modal show={showModal} clickOutside={false} isCloseButton={false}>
+        <Modal customClass="voting-modal" show={showModal} clickOutside={false} isCloseButton={false}>
             <div>
                 <div>President: {presidentName}</div>
                 <div>Chancellor candidate: {chancellorCandidate}</div>

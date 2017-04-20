@@ -7,11 +7,19 @@ const ChancellorChoiceModalComponent = ({
     chancellorsChoices,
     onChancellorChoice
 }) => {
+    console.info(chancellorsChoices)
     return (
-        <Modal show={showModal} clickOutside={false} isCloseButton={false}>
+        <Modal customClass="chancellor-choice-modal" show={showModal} clickOutside={false} isCloseButton={false}>
+            <div className="choice-introduction">Choose the chancellor:</div>
             <ul onClick={onChancellorChoice}>
                 {chancellorsChoices.map((choice) => {
-                    return <div key={choice} data-playername={choice}>{choice}</div>
+                    const avatarPicture = require(`../../../static/Avatar${choice.avatarNumber}.png`)
+                    return (
+                        <div key={choice.playerName} className="chancellor-candidate-container" data-playername={choice.playerName}>
+                            <img className="chancellor-candidate-photo" src={avatarPicture}></img>
+                            <div>{choice.playerName}</div>
+                        </div>
+                    )
                 })}
             </ul>
         </Modal>

@@ -103,7 +103,7 @@ const RoomsManager = function() {
 
         getChancellorChoices: function(roomName) {
             const chancellorChoices = _.reduce(rooms_props[roomName].slots, function(result, slot) {
-                if(slot.player && slot.player.role === null) result.push(slot.player.playerName)
+                if(slot.player && slot.player.role === null) result.push({playerName: slot.player.playerName, avatarNumber: slot.player.avatarNumber})
                 return result;
             }, [])
             return chancellorChoices
