@@ -29,8 +29,6 @@ const RoomsManager = function() {
                 maxPlayers,
                 playersCount: 0,
                 password,
-                president: '',
-                chancellor: '',
                 chancellorCandidateName: '',
                 votes: [],
                 gamePhase: 'GAME_PHASE_NEW'
@@ -39,7 +37,6 @@ const RoomsManager = function() {
 
         setChancellor: function(roomName) {
             let {slots, chancellorCandidateName} = rooms_props[roomName]
-            rooms_props[roomName].chancellor = chancellorCandidateName;
 
             const previousChancellor = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_CHANCELLOR')
             if(previousChancellor) previousChancellor.player.role = null
@@ -52,7 +49,15 @@ const RoomsManager = function() {
         },
 
         getChancellor: function(roomName) {
-            return rooms_props[roomName].chancellor;
+            let {slots} = rooms_props[roomName]
+            const {playerName, avatarNumber} = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
+            return {playerName: playerName, avatarNumber: avatarNumber}
+        },
+
+        getChancellorCandidateInfo: function(roomName, chancellorCandidateName) {
+            let {slots} = rooms_props[roomName]
+            const chancellorCandidate = _.find(slots, (slot) => slot.player && slot.player.playerName === chancellorCandidateName);
+            return ( chancellorCandidate ? {playerName: chancellorCandidate.playerName, avatarNumber: chancellorCandidate.avatarNumber} : null )
         },
 
         setPresident: function(roomName, presidentName) {
@@ -70,7 +75,9 @@ const RoomsManager = function() {
         },
 
         getPresident: function(roomName) {
-            return rooms_props[roomName].president;
+            let {slots} = rooms_props[roomName]
+            const president = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
+            return ( president ? {playerName: president.playerName, avatarNumber: president.avatarNumber} : null )
         },
 
         chooseNextPresident: function(roomName) {
@@ -168,7 +175,7 @@ const RoomsManager = function() {
                 slots: room.slots,
                 playersList,
                 gamePhase: room.gamePhase,
-                chancellorCandidateName: room.chancellorCandidateName
+                chancellorCandidate: this.getChancellorCandidateInfo(roomName, room.chancellorCandidateName)
             }
         },
 

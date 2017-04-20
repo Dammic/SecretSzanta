@@ -6,15 +6,14 @@ const VotingModalComponent = ({
     showModal,
     onYesVote,
     onNoVote,
-    presidentName,
+    president,
     chancellorCandidate
 }) => {
     return (
         <Modal customClass="voting-modal" show={showModal} clickOutside={false} isCloseButton={false}>
             <div>
-                <div>President: {presidentName}</div>
-                <div>Chancellor candidate: {chancellorCandidate}</div>
-                <span>My name is jeff</span>
+                {president && <div>President: {president.playerName}</div>}
+                {chancellorCandidate && <div>Chancellor candidate: {chancellorCandidate.playerName}</div>}
                 <button onClick={onYesVote}>YAS!</button>
                 <button onClick={onNoVote}>No!</button>
             </div>

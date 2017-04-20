@@ -19,11 +19,11 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer(player) {
-        const {presidentName, chancellorName} = this.props
+        const {president, chancellor} = this.props
         let role
-        if(player.playerName === presidentName) {
+        if(player.playerName === president.playerName) {
             role = PlayerRole.ROLE_PRESIDENT
-        } else if(player.playerName === chancellorName) {
+        } else if(player.playerName === chancellor.playerName) {
             role = PlayerRole.ROLE_CHANCELLOR
         } else {
             role = null

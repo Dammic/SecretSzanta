@@ -13,10 +13,10 @@ export default class GameRoom extends React.PureComponent {
             playersCount: 0,
             slots: [],
             playersList: [],
-            chancellorCandidateName: '',
+            chancellorCandidate: null,
             gamePhase: '',
-            presidentName: '',
-            chancellorName: '',
+            president: '',
+            chancellor: '',
             isChancellorChoiceShown: false,
             potentialChancellorsChoices: []
         }
@@ -24,14 +24,14 @@ export default class GameRoom extends React.PureComponent {
         props.socket.emit(CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
         props.socket.emit(CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
         props.socket.on(CLIENT_GET_ROOM_DATA, (data) => {
-            const {maxPlayers, playersCount, slots, playersList, chancellorCandidateName, gamePhase} = data
+            const {maxPlayers, playersCount, slots, playersList, chancellorCandidate, gamePhase} = data
             this.setState({
                 maxPlayers,
                 playersCount,
                 slots,
                 playersList,
                 gamePhase,
-                chancellorCandidateName
+                chancellorCandidate
             })
         })
         props.socket.on(CLIENT_JOIN_ROOM, (data) => {
@@ -63,10 +63,10 @@ export default class GameRoom extends React.PureComponent {
             })
         })
 
-        props.socket.on(VOTING_PHASE_START, ({chancellorName}) => {
+        props.socket.on(VOTING_PHASE_START, ({chancellor}) => {
             this.setState({
                 isVotingModalShown: true,
-                chancellorCandidateName: chancellorName,
+                chancellorCandidate: chancellor,
                 gamePhase: 'GAME_PHASE_VOTING'
             })
         })
@@ -80,15 +80,15 @@ export default class GameRoom extends React.PureComponent {
         props.socket.on(VOTING_PHASE_REVEAL, ({newChancellor}) => {
             if(newChancellor) {
                 this.setState({
-                    chancellorName: newChancellor
+                    chancellor: newChancellor
                 })
             }
         })
 
-        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({presidentName, playersChoices}) => {
+        props.socket.on(CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
             const {userName} = this.props
-            this.setState({presidentName})
-            if(presidentName === userName) {
+            this.setState({president})
+            if(president.playerName === userName) {
                 this.setState({
                     isChancellorChoiceShown: true,
                     potentialChancellorsChoices: playersChoices
@@ -108,7 +108,8 @@ export default class GameRoom extends React.PureComponent {
 
     render () {
         const {userName, socket} = this.props
-        const {playersList, isVotingModalShown, gamePhase, presidentName, chancellorName, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidateName} = this.state
+        const {playersList, isVotingModalShown, gamePhase, president, chancellor, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidate} = this.state
+        console.info(president, chancellor, chancellorCandidate)
         console.info('Current game phase: ', gamePhase)
         return (
             <GameRoomComponent
@@ -118,12 +119,12 @@ export default class GameRoom extends React.PureComponent {
                 gamePhase={gamePhase}
                 isVotingModalShown={isVotingModalShown}
                 onVotingModalHide={this.hideVotingModal}
-                presidentName={presidentName}
-                chancellorName={chancellorName}
+                president={president}
+                chancellor={chancellor}
                 onChancellorChoiceHide = {this.onChancellorChoiceHide}
                 isChancellorChoiceShown = {isChancellorChoiceShown}
                 potentialChancellorsChoices = {potentialChancellorsChoices}
-                chancellorCandidate = {chancellorCandidateName}
+                chancellorCandidate = {chancellorCandidate}
             />
         )
     }
