@@ -7,6 +7,7 @@ export default class ChancellorChoiceModal extends React.PureComponent {
 
     onChancellorChoice = (event) => {
         const {onHide, socket} = this.props
+        console.info(event.target.getAttribute('data-playername'))
         socket.emit(VOTING_PHASE_START, { chancellorName: event.target.getAttribute('data-playername')})
         onHide()
     }

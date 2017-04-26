@@ -71,7 +71,7 @@ module.exports = function(io, RoomsManager) {
 
     const startVotingPhaseVote = function(socket, {chancellorName}) {
         RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
-        console.info(chancellorName)
+        console.info(RoomsManager.getChancellorCandidateInfo(socket.currentRoom, chancellorName))
         io.sockets.in(socket.currentRoom).emit('VOTING_PHASE_START', {
             chancellor: RoomsManager.getChancellorCandidateInfo(socket.currentRoom, chancellorName)
         })

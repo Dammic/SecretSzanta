@@ -87,6 +87,7 @@ export default class GameRoom extends React.PureComponent {
 
         props.socket.on(CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
             const {userName} = this.props
+            console.info(president)
             this.setState({president})
             if(president.playerName === userName) {
                 this.setState({

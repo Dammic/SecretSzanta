@@ -38,13 +38,13 @@ const RoomsManager = function() {
         setChancellor: function(roomName) {
             let {slots, chancellorCandidateName} = rooms_props[roomName]
 
-            const previousChancellor = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_CHANCELLOR')
+            const previousChancellor = slots.find((slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_CHANCELLOR')
             if(previousChancellor) previousChancellor.player.role = null
 
-            const currentChancellor = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
+            const currentChancellor = slots.find((slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
             if(currentChancellor) currentChancellor.player.role = 'ROLE_PREVIOUS_CHANCELLOR'
 
-            const nextChancellor = _.find(slots, (slot) => slot.player && slot.player.playerName === chancellorCandidateName)
+            const nextChancellor = slots.find((slot) => slot.player && slot.player.playerName === chancellorCandidateName)
             nextChancellor.player.role = 'ROLE_CHANCELLOR'
         },
 
@@ -56,28 +56,30 @@ const RoomsManager = function() {
 
         getChancellorCandidateInfo: function(roomName, chancellorCandidateName) {
             let {slots} = rooms_props[roomName]
+            console.info(chancellorCandidateName)
             const chancellorCandidate = _.find(slots, (slot) => slot.player && slot.player.playerName === chancellorCandidateName);
-            return ( chancellorCandidate ? {playerName: chancellorCandidate.playerName, avatarNumber: chancellorCandidate.avatarNumber} : null )
+            return ( chancellorCandidate ? {playerName: chancellorCandidate.player.playerName, avatarNumber: chancellorCandidate.player.avatarNumber} : null )
         },
 
         setPresident: function(roomName, presidentName) {
             let {slots} = rooms_props[roomName]
-            rooms_props[roomName].president = presidentName
 
-            const previousPresident = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_PRESIDENT')
+            const previousPresident = slots.find((slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_PRESIDENT')
             if(previousPresident) previousPresident.player.role = null
 
-            const currentPresident = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
+            const currentPresident = slots.find((slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
             if(currentPresident) currentPresident.player.role = 'ROLE_PREVIOUS_PRESIDENT'
 
-            const nextPresident = _.find(slots, (slot) => slot.player && slot.player.playerName === presidentName)
+            const nextPresident = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
             nextPresident.player.role = 'ROLE_PRESIDENT'
+
+            const nextPresidenttest = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
         },
 
         getPresident: function(roomName) {
             let {slots} = rooms_props[roomName]
             const president = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
-            return ( president ? {playerName: president.playerName, avatarNumber: president.avatarNumber} : null )
+            return ( president ? {playerName: president.player.playerName, avatarNumber: president.player.avatarNumber} : null )
         },
 
         chooseNextPresident: function(roomName) {
@@ -85,10 +87,10 @@ const RoomsManager = function() {
                 if(slot.player) result.push(slot.player.playerName)
                 return result;
             }, [])
-            const indexOfLastPresident = _.findIndex(playersList, (player) => player === this.getPresident(roomName))
+            const indexOfLastPresident = _.findIndex(rooms_props[roomName].slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
             // if no president has been choosen, we choose the first player on the list
-            const nextPresidentName = ( indexOfLastPresident >= 0 ? playersList[(indexOfLastPresident + 1) % playersList.length] : playersList[0])
-            this.setPresident(roomName, nextPresidentName)
+            const nextPresident = ( indexOfLastPresident >= 0 ? playersList[(indexOfLastPresident + 1) % playersList.length] : playersList[0])
+            this.setPresident(roomName, nextPresident)
         },
 
         startGame: function(roomName) {
