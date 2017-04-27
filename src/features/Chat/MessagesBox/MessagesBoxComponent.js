@@ -5,10 +5,10 @@ const MessagesBoxComponent = ({
     messages = [],
     setMessagesBoxRef
 }) => {
-    const buildMessage = (message) => {
+    const buildMessage = (message, index) => {
         const {time, author, content, messageIndex} = message
         return (
-            <div key={messageIndex} className="message">
+            <div key={index} className="message">
                 [{time}] {author}: {content}
             </div>
         )
@@ -16,7 +16,7 @@ const MessagesBoxComponent = ({
 
     return (
         <div className="messages-box" ref={setMessagesBoxRef}>
-            {messages.map((message) => buildMessage(message))}
+            {messages.map((message, index) => buildMessage(message, index))}
         </div>
     )
 }

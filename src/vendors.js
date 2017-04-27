@@ -3,11 +3,13 @@
  * on front. This will optimize build times, as we build vendor files separately
  */
 require('axios')
-require('bootstrap')
 require('lodash/times')
 require('moment')
 require('react')
-require('react-bootstrap')
 require('react-dom')
 require('react-router')
 require('socket.io-client')
+require('react-router-redux')
+require('redux')
+require('redux-thunk')
+require('react-redux')

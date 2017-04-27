@@ -2,64 +2,33 @@
 import React from 'react'
 import MessagesBoxComponent from './MessagesBoxComponent'
 import moment from 'moment'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM} from '../../../const/SocketEvents'
+import {dispatchAction} from '../../../utils/utils'
 
-export default class MessagesBox extends React.PureComponent {
+export class MessagesBox extends React.PureComponent {
     componentWillMount () {
-        this.state = {
-            messages: [],
-            messageIndex: 1
-        }
         this.messagesBoxRef = null
     }
     componentDidMount () {
-        const {socket} = this.props
-        socket.on(CLIENT_SEND_MESSAGE, (data) => {
-            this.addMessage(data)
-        })
+        const {socket, actions} = this.props
 
-        socket.on(CLIENT_JOIN_ROOM, (data) => {
-            const message = {
-                timestamp: data.timestamp,
-                author: '',
-                content: `${data.playerName} has joined the room!`
-            }
-            this.addMessage(message)
-        })
-
-        socket.on(CLIENT_LEAVE_ROOM, (data) => {
-            const message = {
-                timestamp: data.timestamp,
-                author: '',
-                content: `${data.playerName} has left the room!`
-            }
-            this.addMessage(message)
-        })
-    }
-
-    addMessage (data) {
-        const {messages, messageIndex} = this.state
-        const {author, content, timestamp} = data
-        this.setState({
-            messages: [...messages, {
-                author,
-                content,
-                time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
-                messageIndex
-            }],
-            messageIndex: messageIndex + 1
-        })
-
-        // scrolling to the bottom of messages list
-        this.messagesBoxRef.scrollTop = this.messagesBoxRef.scrollHeight
+        socket.on(CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(CLIENT_JOIN_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(CLIENT_LEAVE_ROOM, (data) => actions.dispatchAction(CLIENT_LEAVE_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(CLIENT_SEND_MESSAGE, (data) => actions.dispatchAction(CLIENT_SEND_MESSAGE, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
     }
 
     setMessagesBoxRef (ref) {
+        const {scrollHeight} = this.props
         this.messagesBoxRef = ref
+
+        // scrolling to the bottom of messages list
+        if(this.messagesBoxRef) this.messagesBoxRef.scrollTop = scrollHeight
     }
 
-    render () {
-        const {messages} = this.state
+    render () {        
+        const {messages, scrollHeight} = this.props
         return (
             <MessagesBoxComponent
                 messages={messages}
@@ -67,3 +36,16 @@ export default class MessagesBox extends React.PureComponent {
         )
     }
 }
+
+const mapStateToProps = ({chat}) => {
+    return {
+        messages: chat.messages,
+        scrollHeight: chat.scrollHeight
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: bindActionCreators({dispatchAction}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(MessagesBox)
