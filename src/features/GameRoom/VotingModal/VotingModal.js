@@ -1,19 +1,19 @@
 'use strict'
 import React from 'react'
 import VotingModalComponent from './VotingModalComponent'
-import {CLIENT_VOTE} from '../../../const/SocketEvents'
+import {SocketEvents} from '../../../../Dictionary'
 
 export default class VotingModal extends React.PureComponent {
 
     onYesVote = () => {
         const { onHide, socket } = this.props;
-        socket.emit(CLIENT_VOTE, { value: true })
+        socket.emit(SocketEvents.CLIENT_VOTE, { value: true })
         onHide()
     }
 
     onNoVote = () => {
         const { onHide, socket } = this.props;
-        socket.emit(CLIENT_VOTE, { value: false })
+        socket.emit(SocketEvents.CLIENT_VOTE, { value: false })
         onHide()
     }
 

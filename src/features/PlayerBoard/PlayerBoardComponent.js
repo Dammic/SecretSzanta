@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import _times from 'lodash/times'
-import {PlayerDirection} from '../../const/PlayerConsts'
+import {PlayerDirection} from '../../../Dictionary'
 import Player from './Player/Player.js'
 
 const PlayerBoardComponent = ({

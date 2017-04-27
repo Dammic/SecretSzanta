@@ -1,13 +1,13 @@
 'use strict'
 import React from 'react'
 import ChancellorChoiceModalComponent from './ChancellorChoiceModalComponent'
-import {VOTING_PHASE_START} from '../../../const/SocketEvents'
+import {SocketEvents} from '../../../../Dictionary'
 
 export default class ChancellorChoiceModal extends React.PureComponent {
 
     onChancellorChoice = (event) => {
         const {onHide, socket} = this.props
-        socket.emit(VOTING_PHASE_START, { chancellorName: event.target.getAttribute('data-playername')})
+        socket.emit(SocketEvents.VOTING_PHASE_START, { chancellorName: event.target.getAttribute('data-playername')})
         onHide()
     }
 

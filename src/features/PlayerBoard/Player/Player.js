@@ -3,9 +3,9 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import _find from 'lodash/find'
 import PlayerComponent from './PlayerComponent'
-import {PlayerDirection} from '../../../const/PlayerConsts'
-import {PlayerRole} from '../../../const/PlayerConsts'
-import {VOTING_PHASE_NEWVOTE, VOTING_PHASE_REVEAL, CHANCELLOR_CHOICE_PHASE} from '../../../const/SocketEvents'
+import {PlayerDirection} from '../../../../Dictionary'
+import {PlayerRole} from '../../../../Dictionary'
+import {SocketEvents} from '../../../../Dictionary'
 
 export default class Player extends React.PureComponent {
 
@@ -15,18 +15,18 @@ export default class Player extends React.PureComponent {
             voteBubbleInfo: null
         }
 
-        props.socket.on(CHANCELLOR_CHOICE_PHASE, () => {
+        props.socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, () => {
             this.setState({ voteBubbleInfo: null})
         })
 
-        props.socket.on(VOTING_PHASE_NEWVOTE, ({playerName}) => {
+        props.socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
             const {player} = this.props
             if(playerName === player.playerName) {
                 this.setState({ voteBubbleInfo: {voteValue: ''} })
             }
         })
 
-        props.socket.on(VOTING_PHASE_REVEAL, ({votes}) => {
+        props.socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
             const {player} = this.props
             const thisPlayerVote = _find(votes, (vote) => vote.playerName === player.playerName)
             if(thisPlayerVote) {

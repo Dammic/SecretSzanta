@@ -1,16 +1,16 @@
 'use strict'
 import React from 'react'
 import UIBoxComponent from './UIBoxComponent'
-import {VOTING_PHASE_START, START_GAME, CHANCELLOR_CHOICE_PHASE} from '../../const/SocketEvents'
+import {SocketEvents} from '../../../Dictionary'
 
 export default class UIBox extends React.PureComponent {
 
     onStartVote = () => {
-        this.props.socket.emit(CHANCELLOR_CHOICE_PHASE, { })
+        this.props.socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, { })
     }
 
     onStartGame = () => {
-        this.props.socket.emit(START_GAME, { })
+        this.props.socket.emit(SocketEvents.START_GAME, { })
     }
 
     render () {

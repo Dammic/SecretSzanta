@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import ChatFormComponent from './ChatFormComponent'
-import {CLIENT_SEND_MESSAGE} from '../../../const/SocketEvents'
+import {SocketEvents} from '../../../../Dictionary'
 
 export default class ChatForm extends React.PureComponent {
 
@@ -17,7 +17,7 @@ export default class ChatForm extends React.PureComponent {
 
         if (typedMessage) {
             const {socket} = this.props
-            socket.emit(CLIENT_SEND_MESSAGE, {
+            socket.emit(SocketEvents.CLIENT_SEND_MESSAGE, {
                 author: userName,
                 content: typedMessage
             })

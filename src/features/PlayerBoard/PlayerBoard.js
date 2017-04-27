@@ -1,6 +1,6 @@
 'use strict'
 import React from 'react'
-import {PlayerRole} from '../../const/PlayerConsts'
+import {PlayerRole} from  '../../../Dictionary'
 import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
