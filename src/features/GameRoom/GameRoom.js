@@ -63,10 +63,10 @@ export default class GameRoom extends React.PureComponent {
             })
         })
 
-        props.socket.on(VOTING_PHASE_START, ({chancellor}) => {
+        props.socket.on(VOTING_PHASE_START, ({chancellorCandidate}) => {
             this.setState({
                 isVotingModalShown: true,
-                chancellorCandidate: chancellor,
+                chancellorCandidate: chancellorCandidate,
                 gamePhase: 'GAME_PHASE_VOTING'
             })
         })
@@ -87,7 +87,6 @@ export default class GameRoom extends React.PureComponent {
 
         props.socket.on(CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
             const {userName} = this.props
-            console.info(president)
             this.setState({president})
             if(president.playerName === userName) {
                 this.setState({
@@ -110,7 +109,6 @@ export default class GameRoom extends React.PureComponent {
     render () {
         const {userName, socket} = this.props
         const {playersList, isVotingModalShown, gamePhase, president, chancellor, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidate} = this.state
-        console.info(president, chancellor, chancellorCandidate)
         console.info('Current game phase: ', gamePhase)
         return (
             <GameRoomComponent

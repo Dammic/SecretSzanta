@@ -7,7 +7,6 @@ const ChancellorChoiceModalComponent = ({
     chancellorsChoices,
     onChancellorChoice
 }) => {
-    console.info(chancellorsChoices)
     return (
         <Modal customClass="chancellor-choice-modal" show={showModal} clickOutside={false} isCloseButton={false}>
             <div className="choice-introduction">Choose the chancellor:</div>

@@ -85,7 +85,7 @@ const RoomsManager = function() {
         chooseNextPresident: function(roomName) {
             const playersList = _.reduce(rooms_props[roomName].slots, function(result, slot) {
                 if(slot.player) result.push(slot.player.playerName)
-                return result;
+                return result
             }, [])
             const indexOfLastPresident = _.findIndex(rooms_props[roomName].slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
             // if no president has been choosen, we choose the first player on the list
@@ -124,15 +124,15 @@ const RoomsManager = function() {
         initializeVoting: function(roomName, chancellorCandidateName) {
             rooms_props[roomName].votes = _.reduce(rooms_props[roomName].slots, (result, slot) => {
                 if(slot.player)  result.push({playerName: slot.player.playerName, didVote: false, value: null})
-                return result;
-            }, []);
+                return result
+            }, [])
             rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
         },
 
         vote: function(roomName, playerName, value) {
-            let playerVote = _.find(rooms_props[roomName].votes, (vote) => vote.playerName === playerName);
-            playerVote.didVote = true;
-            playerVote.value = value;
+            let playerVote = _.find(rooms_props[roomName].votes, (vote) => vote.playerName === playerName)
+            playerVote.didVote = true
+            playerVote.value = value
         },
 
         didAllVote: function(roomName) {
@@ -144,7 +144,7 @@ const RoomsManager = function() {
         },
 
         getVotingResult: function(roomName) {
-            const votesCount = _.countBy(rooms_props[roomName].votes, 'value');
+            const votesCount = _.countBy(rooms_props[roomName].votes, 'value')
             return votesCount[true] > votesCount[false] || !votesCount[false]
         },
 

@@ -1,9 +1,58 @@
 .voting-modal {
+    .voting-intro {
+        text-align: center;
+    }
 
+    .voting-info-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 15% 0 15%;
+        .voting-info-player {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            .voting-info-avatar {
+                height: 160px;
+                width: 140px;
+            }
+            .voting-info-role {
+                width: 140px;
+                height: 30px;
+            }
+        }
+        .choice-order-container {
+            text-align: center;
+        }
+    }
 
-
-
-
-
-
+    .voting-buttons-container {
+        display: grid;
+        grid-template-rows: auto;
+        grid-template-columns: 48% 49%;
+        grid-gap: 0 15px;
+        height: 260px;
+        
+        .voting-button {
+            transition: all .2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:hover {
+                cursor: pointer;
+            }
+            &.yes {
+                background-color: green;
+                &:hover {
+                    background-color: darken(green, 15%);
+                }
+            }
+            &.no {
+                background-color: red;
+                &:hover {
+                    background-color: darken(red, 15%);
+                }
+            }
+        }
+    }
 }
