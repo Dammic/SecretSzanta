@@ -50,13 +50,13 @@ const RoomsManager = function() {
 
         getChancellor: function(roomName) {
             let {slots} = rooms_props[roomName]
-            const {playerName, avatarNumber} = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
-            return {playerName: playerName, avatarNumber: avatarNumber}
+            const chancellor = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
+
+            return ( chancellor ? {playerName: chancellor.player.playerName, avatarNumber: chancellor.player.avatarNumber} : null )
         },
 
         getChancellorCandidateInfo: function(roomName, chancellorCandidateName) {
             let {slots} = rooms_props[roomName]
-            console.info(chancellorCandidateName)
             const chancellorCandidate = _.find(slots, (slot) => slot.player && slot.player.playerName === chancellorCandidateName);
             return ( chancellorCandidate ? {playerName: chancellorCandidate.player.playerName, avatarNumber: chancellorCandidate.player.avatarNumber} : null )
         },
@@ -72,8 +72,6 @@ const RoomsManager = function() {
 
             const nextPresident = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
             nextPresident.player.role = 'ROLE_PRESIDENT'
-
-            const nextPresidenttest = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
         },
 
         getPresident: function(roomName) {
