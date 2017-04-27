@@ -1,11 +1,11 @@
 'use strict'
 import React from 'react'
-import {PlayerRole} from  '../../../Dictionary'
+import {PlayerRole} from '../../../Dictionary'
 import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
-    
-    constructor() {
+
+    constructor () {
         super()
         this.state = {
             policies: 0
@@ -18,12 +18,12 @@ export default class PlayerBoard extends React.PureComponent {
         }, 1000)
     }
 
-    makePlayer(player) {
+    makePlayer (player) {
         const {president, chancellor} = this.props
         let role
-        if(president && player.playerName === president.playerName) {
+        if (president && player.playerName === president.playerName) {
             role = PlayerRole.ROLE_PRESIDENT
-        } else if(chancellor && player.playerName === chancellor.playerName) {
+        } else if (chancellor && player.playerName === chancellor.playerName) {
             role = PlayerRole.ROLE_CHANCELLOR
         } else {
             role = null
@@ -37,7 +37,7 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     render () {
-        const {socket} = this.props;
+        const {socket} = this.props
         const playersWithoutMe = this.props.players.filter(player => (player.playerName !== this.props.userName))
         const players = playersWithoutMe.map(
             player => this.makePlayer(player)
@@ -46,7 +46,6 @@ export default class PlayerBoard extends React.PureComponent {
         let left = []
         let center = []
         let right = []
-
 
         players.map((player, index) => {
             if (index % 3 == 0) left.push(player)
@@ -59,12 +58,12 @@ export default class PlayerBoard extends React.PureComponent {
         }
 
         return (
-            <PlayerBoardComponent 
+            <PlayerBoardComponent
                 playersLeft = {left}
                 playersMiddle = {center}
                 playersRight = {right}
                 policiesLiberalCount = {this.state.policies}
-                policiesFacistCount = {this.state.policies+1}
+                policiesFacistCount = {this.state.policies + 1}
                 socket={socket}
             />
         )

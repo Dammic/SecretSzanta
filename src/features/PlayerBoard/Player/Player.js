@@ -7,7 +7,7 @@ import {PlayerDirection, PlayerRole, SocketEvents} from '../../../../Dictionary'
 
 export default class Player extends React.PureComponent {
 
-    constructor(props) {
+    constructor (props) {
         super(props)
         this.state = {
             voteBubbleInfo: null
@@ -19,7 +19,7 @@ export default class Player extends React.PureComponent {
 
         props.socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
             const {player} = this.props
-            if(playerName === player.playerName) {
+            if (playerName === player.playerName) {
                 this.setState({ voteBubbleInfo: {voteValue: ''} })
             }
         })
@@ -27,7 +27,7 @@ export default class Player extends React.PureComponent {
         props.socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
             const {player} = this.props
             const thisPlayerVote = _find(votes, (vote) => vote.playerName === player.playerName)
-            if(thisPlayerVote) {
+            if (thisPlayerVote) {
                 this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
             }
         })
@@ -35,7 +35,7 @@ export default class Player extends React.PureComponent {
 
     getRolePicture = () => {
         const {role} = this.props.player
-        switch(role) {
+        switch (role) {
             case PlayerRole.ROLE_CHANCELLOR:
                 return require('../../../static/Chancellor.png')
             case PlayerRole.ROLE_PRESIDENT:
@@ -51,24 +51,24 @@ export default class Player extends React.PureComponent {
 
     getVoteBubbleStyle = () => {
         const {voteBubbleInfo} = this.state
-        switch(this.props.direction) {
+        switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames('bubble-left', {'active' : !!voteBubbleInfo})
+                return classNames('bubble-left', {'active': !!voteBubbleInfo})
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames('bubble-right', {'active' : !!voteBubbleInfo})
+                return classNames('bubble-right', {'active': !!voteBubbleInfo})
             default:
-                return classNames('bubble-top', {'active' : !!voteBubbleInfo})
+                return classNames('bubble-top', {'active': !!voteBubbleInfo})
         }
     }
 
-    render() {
+    render () {
         const {socket} = this.props
         const {voteBubbleInfo} = this.state
         const {playerName, avatarNumber} = this.props.player
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
 
         return (
-            <PlayerComponent 
+            <PlayerComponent
                 playerName = {playerName}
                 avatar = {avatarPicture}
                 rolePicture = {this.getRolePicture()}

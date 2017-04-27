@@ -4,7 +4,7 @@ import ModalComponent from './ModalComponent'
 
 class Modal extends React.PureComponent {
     render () {
-        const {children, show, onHide, customClass, clickOutside=true, isCloseButton=true} = this.props
+        const {children, show, onHide, customClass, clickOutside = true, isCloseButton = true} = this.props
         return <ModalComponent
             body={children}
             show={show}

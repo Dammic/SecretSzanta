@@ -36,7 +36,7 @@ export default class LoginPage extends React.PureComponent {
     }
 
     render () {
-        const {userName=''} = this.state
+        const {userName = ''} = this.state
         if (userName === '') {
             return (
                 <div>

@@ -12,11 +12,11 @@ const ModalComponent = ({
     clickOutside,
     isCloseButton
 }) => {
-    if(show) {
+    if (show) {
         return (
             <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
                 <div className="modal-container">
-                    <Scrollbars className={classNames("modal-content", {[customClass]: !!customClass})}>
+                    <Scrollbars className={classNames('modal-content', {[customClass]: !!customClass})}>
                         {isCloseButton && <a className="modal-close-button" onClick={onHide}>✖</a>}
                         <div className="modal-body">{body}</div>
                     </Scrollbars>

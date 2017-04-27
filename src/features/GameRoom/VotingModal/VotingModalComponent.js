@@ -10,7 +10,6 @@ const VotingModalComponent = ({
     president,
     chancellorCandidate
 }) => {
-
     const renderPlayer = (avatarNumber, role, playerName) => {
         return (
             <div className="voting-info-player">
@@ -21,7 +20,7 @@ const VotingModalComponent = ({
         )
     }
 
-    if(!chancellorCandidate || !president) return null
+    if (!chancellorCandidate || !president) return null
 
     return (
         <Modal customClass="voting-modal" show={showModal} clickOutside={false} isCloseButton={false}>

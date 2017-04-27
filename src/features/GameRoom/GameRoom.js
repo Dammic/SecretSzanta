@@ -6,7 +6,7 @@ import GameRoomComponent from './GameRoomComponent'
 import {SocketEvents, GamePhases} from '../../../Dictionary'
 
 export default class GameRoom extends React.PureComponent {
-    constructor(props) {
+    constructor (props) {
         super(props)
         this.state = {
             maxPlayers: null,
@@ -78,7 +78,7 @@ export default class GameRoom extends React.PureComponent {
         })
 
         props.socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({newChancellor}) => {
-            if(newChancellor) {
+            if (newChancellor) {
                 this.setState({
                     chancellor: newChancellor
                 })
@@ -88,7 +88,7 @@ export default class GameRoom extends React.PureComponent {
         props.socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
             const {userName} = this.props
             this.setState({president})
-            if(president.playerName === userName) {
+            if (president.playerName === userName) {
                 this.setState({
                     isChancellorChoiceShown: true,
                     potentialChancellorsChoices: playersChoices
