@@ -3,7 +3,7 @@ require('../../styles/main.scss')
 import React from 'react'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
-import {SocketEvents} from '../../../Dictionary'
+import {SocketEvents, GamePhases} from '../../../Dictionary'
 
 export default class GameRoom extends React.PureComponent {
     constructor(props) {
@@ -15,8 +15,8 @@ export default class GameRoom extends React.PureComponent {
             playersList: [],
             chancellorCandidate: null,
             gamePhase: '',
-            president: '',
-            chancellor: '',
+            president: null,
+            chancellor: null,
             isChancellorChoiceShown: false,
             potentialChancellorsChoices: []
         }
@@ -35,14 +35,14 @@ export default class GameRoom extends React.PureComponent {
             })
         })
         props.socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => {
-            const {playerName, playerInfo} = data
+            const {playerInfo} = data
             const {playersList, slots, playersCount} = this.state
 
             const newSlots = [...slots]
             newSlots[playerInfo.slotID - 1] = playerInfo
             this.setState({
                 slots: newSlots,
-                playersList: [...playersList, {playerName: playerName, avatarNumber: playerInfo.avatarNumber} ],
+                playersList: [...playersList, {playerName: playerInfo.playerName, avatarNumber: playerInfo.avatarNumber} ],
                 playersCount: playersCount + 1
             })
         })
@@ -67,7 +67,7 @@ export default class GameRoom extends React.PureComponent {
             this.setState({
                 isVotingModalShown: true,
                 chancellorCandidate: chancellorCandidate,
-                gamePhase: 'GAME_PHASE_VOTING'
+                gamePhase: GamePhases.GAME_PHASE_VOTING
             })
         })
 
@@ -95,7 +95,6 @@ export default class GameRoom extends React.PureComponent {
                 })
             }
         })
-        
     }
 
     onChancellorChoiceHide = () => {

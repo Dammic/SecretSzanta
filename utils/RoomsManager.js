@@ -1,5 +1,6 @@
 'use strict'
 const _ = require('lodash')
+const {GamePhases, PlayerRole}  = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -31,26 +32,26 @@ const RoomsManager = function() {
                 password,
                 chancellorCandidateName: '',
                 votes: [],
-                gamePhase: 'GAME_PHASE_NEW'
+                gamePhase: GamePhases.GAME_PHASE_NEW
             }
         },
 
         setChancellor: function(roomName) {
             let {slots, chancellorCandidateName} = rooms_props[roomName]
 
-            const previousChancellor = slots.find((slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_CHANCELLOR')
+            const previousChancellor = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PREVIOUS_CHANCELLOR)
             if(previousChancellor) previousChancellor.player.role = null
 
-            const currentChancellor = slots.find((slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
-            if(currentChancellor) currentChancellor.player.role = 'ROLE_PREVIOUS_CHANCELLOR'
+            const currentChancellor = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_CHANCELLOR)
+            if(currentChancellor) currentChancellor.player.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
 
             const nextChancellor = slots.find((slot) => slot.player && slot.player.playerName === chancellorCandidateName)
-            nextChancellor.player.role = 'ROLE_CHANCELLOR'
+            nextChancellor.player.role = PlayerRole.ROLE_CHANCELLOR
         },
 
         getChancellor: function(roomName) {
             let {slots} = rooms_props[roomName]
-            const chancellor = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_CHANCELLOR')
+            const chancellor = _.find(slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_CHANCELLOR)
 
             return ( chancellor ? {playerName: chancellor.player.playerName, avatarNumber: chancellor.player.avatarNumber} : null )
         },
@@ -64,19 +65,19 @@ const RoomsManager = function() {
         setPresident: function(roomName, presidentName) {
             let {slots} = rooms_props[roomName]
 
-            const previousPresident = slots.find((slot) => slot.player && slot.player.role === 'ROLE_PREVIOUS_PRESIDENT')
+            const previousPresident = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PREVIOUS_PRESIDENT)
             if(previousPresident) previousPresident.player.role = null
 
-            const currentPresident = slots.find((slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
-            if(currentPresident) currentPresident.player.role = 'ROLE_PREVIOUS_PRESIDENT'
+            const currentPresident = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
+            if(currentPresident) currentPresident.player.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
 
             const nextPresident = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
-            nextPresident.player.role = 'ROLE_PRESIDENT'
+            nextPresident.player.role = PlayerRole.ROLE_PRESIDENT
         },
 
         getPresident: function(roomName) {
             let {slots} = rooms_props[roomName]
-            const president = _.find(slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
+            const president = _.find(slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
             return ( president ? {playerName: president.player.playerName, avatarNumber: president.player.avatarNumber} : null )
         },
 
@@ -85,14 +86,14 @@ const RoomsManager = function() {
                 if(slot.player) result.push(slot.player.playerName)
                 return result
             }, [])
-            const indexOfLastPresident = _.findIndex(rooms_props[roomName].slots, (slot) => slot.player && slot.player.role === 'ROLE_PRESIDENT')
+            const indexOfLastPresident = _.findIndex(rooms_props[roomName].slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
             // if no president has been choosen, we choose the first player on the list
             const nextPresident = ( indexOfLastPresident >= 0 ? playersList[(indexOfLastPresident + 1) % playersList.length] : playersList[0])
             this.setPresident(roomName, nextPresident)
         },
 
         startGame: function(roomName) {
-            rooms_props[roomName].gamePhase = 'STARTED';
+            rooms_props[roomName].gamePhase = GamePhases.START_GAME;
 
             // filtering unnecessary empty slots
             //rooms_props[roomName].slots = _.filter(rooms_props[roomName].slots, (slot) => slot.player)
@@ -104,7 +105,7 @@ const RoomsManager = function() {
         },
 
         startChancellorChoicePhase: function(roomName) {
-            rooms_props[roomName].gamePhase = 'GAME_PHASE_CHANCELLOR_CHOICE'
+            rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             this.chooseNextPresident(roomName)
         },
 

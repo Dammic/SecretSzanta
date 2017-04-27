@@ -9,7 +9,7 @@ const ChancellorChoiceModalComponent = ({
 }) => {
     return (
         <Modal customClass="chancellor-choice-modal" show={showModal} clickOutside={false} isCloseButton={false}>
-            <div className="choice-introduction">Choose the chancellor:</div>
+            <div className="choice-introduction">Choose the next chancellor:</div>
             <ul onClick={onChancellorChoice}>
                 {chancellorsChoices.map((choice) => {
                     const avatarPicture = require(`../../../static/Avatar${choice.avatarNumber}.png`)

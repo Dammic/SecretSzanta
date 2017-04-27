@@ -3,9 +3,7 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import _find from 'lodash/find'
 import PlayerComponent from './PlayerComponent'
-import {PlayerDirection} from '../../../../Dictionary'
-import {PlayerRole} from '../../../../Dictionary'
-import {SocketEvents} from '../../../../Dictionary'
+import {PlayerDirection, PlayerRole, SocketEvents} from '../../../../Dictionary'
 
 export default class Player extends React.PureComponent {
 

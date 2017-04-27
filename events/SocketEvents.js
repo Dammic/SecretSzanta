@@ -1,6 +1,6 @@
 'use strict'
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const SocketEvents = require('../Dictionary').SocketEvents
+const {SocketEvents, GamePhases} = require('../Dictionary')
 
 module.exports = function(io, RoomsManager) {
     const disconnect = function(socket) {
@@ -66,7 +66,7 @@ module.exports = function(io, RoomsManager) {
     const startGame = function(socket) {
         RoomsManager.startGame(socket.currentRoom)
         io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
-            gamePhase: 'START_GAME'
+            gamePhase: GamePhases.START_GAME
         })
     }
 

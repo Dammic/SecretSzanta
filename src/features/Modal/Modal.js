@@ -16,9 +16,9 @@ class Modal extends React.PureComponent {
     }
 }
 
-const {object, bool, func, string} = React.PropTypes
+const {object, bool, func, string, array, oneOfType} = React.PropTypes
 Modal.propTypes = {
-    children: object.isRequired,
+    children: oneOfType([object, array]).isRequired,
     show: bool.isRequired,
     onHide: func,
     clickOutside: bool,
