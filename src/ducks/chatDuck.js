@@ -3,7 +3,7 @@ import moment from 'moment'
 import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM} from '../const/SocketEvents'
 
 // Actions
-const SET_AFFIX = 'chat/SET_AFFIX'
+const TEST = 'chat/TEST'
 
 const initialState = {
     messages: [],
@@ -61,11 +61,11 @@ export default function reducer (state = initialState, action = {}) {
 }
 
 // Action Creators
-export function setHeaderAffix (isToBeAffixed) {
+export function someAction (aaa) {
     return {
-        type: SET_AFFIX,
+        type: TEST,
         payload: {
-            isToBeAffixed
+            TESTVAR: aaa
         }
     }
 }

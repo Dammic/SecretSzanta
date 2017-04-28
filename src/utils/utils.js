@@ -1,8 +1,8 @@
 'use strict'
 
-export const dispatchAction = function (type, payload, parameters) {
+export const dispatchAction = function (type, payload) {
     return {
         type,
-        payload: {...payload, ...parameters}
+        payload
     }
 }

@@ -14,7 +14,7 @@ export class MessagesBox extends React.PureComponent {
     componentDidMount () {
         const {socket, actions} = this.props
 
-        socket.on(CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(CLIENT_JOIN_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(CLIENT_JOIN_ROOM, {...data, scrollHeight: this.messagesBoxRef.scrollHeight}))
         socket.on(CLIENT_LEAVE_ROOM, (data) => actions.dispatchAction(CLIENT_LEAVE_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
         socket.on(CLIENT_SEND_MESSAGE, (data) => actions.dispatchAction(CLIENT_SEND_MESSAGE, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
     }
