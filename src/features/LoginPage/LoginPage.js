@@ -1,17 +1,17 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import LoginPageComponent from './LoginPageComponent'
 import GameRoom from '../GameRoom/GameRoom'
 import GameList from '../GameList/GameList'
+import {selectName} from '../../ducks/userDuck'
 
-export default class LoginPage extends React.PureComponent {
+export class LoginPage extends React.PureComponent {
 
     constructor (props) {
         super(props)
         this.inputRef = null
-        this.state = {
-            userName: ''
-        }
     }
 
     setInputRef = (inpRef) => {
@@ -29,14 +29,12 @@ export default class LoginPage extends React.PureComponent {
 
     setName = () => {
         const name = this.inputRef.value
-
-        this.setState({
-            userName: name
-        })
+        const {selectName} = this.props.actions
+        selectName(name)
     }
 
     render () {
-        const {userName = ''} = this.state
+        const {userName} = this.props
         if (userName === '') {
             return (
                 <div>
@@ -49,3 +47,15 @@ export default class LoginPage extends React.PureComponent {
     }
 
 }
+
+const mapStateToProps = ({user}) => {
+    return {
+        userName: user.userName
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: bindActionCreators({selectName}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

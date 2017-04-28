@@ -1,11 +1,13 @@
 'use strict'
 require('../../styles/main.scss')
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
 import {SocketEvents, GamePhases} from '../../../Dictionary'
 
-export default class GameRoom extends React.PureComponent {
+export class GameRoom extends React.PureComponent {
     constructor (props) {
         super(props)
         this.state = {
@@ -107,6 +109,7 @@ export default class GameRoom extends React.PureComponent {
 
     render () {
         const {userName, socket} = this.props
+        console.info(userName)
         const {playersList, isVotingModalShown, gamePhase, president, chancellor, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidate} = this.state
         console.info('Current game phase: ', gamePhase)
         return (
@@ -127,3 +130,15 @@ export default class GameRoom extends React.PureComponent {
         )
     }
 }
+
+const mapStateToProps = ({user}) => {
+    return {
+        userName: user.userName
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: bindActionCreators({}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(GameRoom)
