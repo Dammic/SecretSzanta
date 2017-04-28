@@ -4,8 +4,8 @@ import MessagesBoxComponent from './MessagesBoxComponent'
 import moment from 'moment'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM} from '../../../const/SocketEvents'
 import {dispatchAction} from '../../../utils/utils'
+import {SocketEvents} from '../../../../Dictionary'
 
 export class MessagesBox extends React.PureComponent {
     componentWillMount () {
@@ -14,9 +14,9 @@ export class MessagesBox extends React.PureComponent {
     componentDidMount () {
         const {socket, actions} = this.props
 
-        socket.on(CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(CLIENT_JOIN_ROOM, {...data, scrollHeight: this.messagesBoxRef.scrollHeight}))
-        socket.on(CLIENT_LEAVE_ROOM, (data) => actions.dispatchAction(CLIENT_LEAVE_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
-        socket.on(CLIENT_SEND_MESSAGE, (data) => actions.dispatchAction(CLIENT_SEND_MESSAGE, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(SocketEvents.CLIENT_JOIN_ROOM, {...data, scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => actions.dispatchAction(SocketEvents.CLIENT_LEAVE_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (data) => actions.dispatchAction(SocketEvents.CLIENT_SEND_MESSAGE, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
     }
 
     setMessagesBoxRef (ref) {

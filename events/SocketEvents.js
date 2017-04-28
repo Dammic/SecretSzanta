@@ -1,12 +1,13 @@
 'use strict'
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
+const {SocketEvents, GamePhases} = require('../Dictionary')
 
 module.exports = function(io, RoomsManager) {
     const disconnect = function(socket) {
         if(socket.currentRoom) {
             const playerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, socket.currentPlayerName)
 
-            io.sockets.in(socket.currentRoom).emit('CLIENT_LEAVE_ROOM', {
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
                 timestamp: getCurrentTimestamp(),
                 playerName: socket.currentPlayerName,
                 slotID: playerInfo.slotID
@@ -30,7 +31,7 @@ module.exports = function(io, RoomsManager) {
     }
 
     const sendMessage = function(socket, {content, author}) {
-        io.sockets.in(socket.currentRoom).emit('CLIENT_SEND_MESSAGE', {
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_SEND_MESSAGE, {
             timestamp: getCurrentTimestamp(),
             author,
             content
@@ -43,9 +44,9 @@ module.exports = function(io, RoomsManager) {
 
             const roomDetails = RoomsManager.getRoomDetails(roomName)
 
-            socket.emit('CLIENT_GET_ROOM_DATA', roomDetails)
+            socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, roomDetails)
 
-            io.sockets.in(roomName).emit('CLIENT_JOIN_ROOM', {
+            io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
                 timestamp: getCurrentTimestamp(),
                 playerName,
                 playerInfo: RoomsManager.getPlayerInfo(roomName, playerName)
@@ -56,8 +57,53 @@ module.exports = function(io, RoomsManager) {
             socket.currentPlayerName = playerName
             socket.currentRoom = roomName
         } else {
-            socket.emit('CLIENT_JOIN_ROOM', {
+            socket.emit(SocketEvents.CLIENT_JOIN_ROOM, {
                 error: 'Error - WHY IS THE ROOM GONE?!'
+            })
+        }
+    }
+
+    const startGame = function(socket) {
+        RoomsManager.startGame(socket.currentRoom)
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
+            gamePhase: GamePhases.START_GAME
+        })
+    }
+
+    const startVotingPhaseVote = function(socket, {chancellorName}) {
+        RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
+            chancellorCandidate: RoomsManager.getChancellorCandidateInfo(socket.currentRoom, chancellorName)
+        })
+    }
+
+    const startChancellorChoicePhase = function(socket) {
+        RoomsManager.startChancellorChoicePhase(socket.currentRoom)
+        const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
+            playersChoices,
+            president: RoomsManager.getPresident(socket.currentRoom)
+        })
+    }
+
+    const vote = function(socket, {value}) {
+        RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value);
+        if(RoomsManager.didAllVote(socket.currentRoom)) {
+            const votingResult = RoomsManager.getVotingResult(socket.currentRoom)
+            if(votingResult) {
+                RoomsManager.setChancellor(socket.currentRoom)
+            } else {
+                setTimeout(() => {
+                    startChancellorChoicePhase(socket)
+                }, 3000);
+            }
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
+                votes: RoomsManager.getVotes(socket.currentRoom),
+                newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null )
+            })
+        } else {
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
+                playerName: socket.currentPlayerName
             })
         }
     }
@@ -73,12 +119,20 @@ module.exports = function(io, RoomsManager) {
             disconnect: disconnect.bind(null, socket),
             createRoom: createRoom.bind(null, socket),
             sendMessage: sendMessage.bind(null, socket),
-            joinRoom: joinRoom.bind(null, socket)
+            joinRoom: joinRoom.bind(null, socket),
+            startVotingPhaseVote: startVotingPhaseVote.bind(null, socket),
+            vote: vote.bind(null, socket),
+            startGame: startGame.bind(null, socket),
+            startChancellorChoicePhase: startChancellorChoicePhase.bind(null, socket)
         }
 
         socket.on('disconnect', bindedFunctions.disconnect)
-        socket.on('CLIENT_CREATE_ROOM', bindedFunctions.createRoom)
-        socket.on('CLIENT_SEND_MESSAGE', bindedFunctions.sendMessage)
-        socket.on('CLIENT_JOIN_ROOM', bindedFunctions.joinRoom)
+        socket.on(SocketEvents.CLIENT_CREATE_ROOM, bindedFunctions.createRoom)
+        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, bindedFunctions.sendMessage)
+        socket.on(SocketEvents.CLIENT_JOIN_ROOM, bindedFunctions.joinRoom)
+        socket.on(SocketEvents.VOTING_PHASE_START, bindedFunctions.startVotingPhaseVote)
+        socket.on(SocketEvents.CLIENT_VOTE, bindedFunctions.vote)
+        socket.on(SocketEvents.START_GAME, bindedFunctions.startGame)
+        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, bindedFunctions.startChancellorChoicePhase)
     })
 }

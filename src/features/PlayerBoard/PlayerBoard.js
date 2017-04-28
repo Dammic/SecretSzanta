@@ -1,12 +1,11 @@
 'use strict'
 import React from 'react'
-import _random from 'lodash/random'
-import {PlayerRole} from '../../const/PlayerConsts'
+import {PlayerRole} from '../../../Dictionary'
 import PlayerBoardComponent from './PlayerBoardComponent'
 
 export default class PlayerBoard extends React.PureComponent {
-    
-    constructor() {
+
+    constructor () {
         super()
         this.state = {
             policies: 0
@@ -19,35 +18,34 @@ export default class PlayerBoard extends React.PureComponent {
         }, 1000)
     }
 
-    makePlayer(name) {
-        //All those data should be received from server       
-        const role = [
-            PlayerRole.ROLE_CHANCELLOR,
-            PlayerRole.ROLE_PRESIDENT,
-            null][_random(0,2)]
-
-        const randomAvatar = _random(1, 5)
+    makePlayer (player) {
+        const {president, chancellor} = this.props
+        let role
+        if (president && player.playerName === president.playerName) {
+            role = PlayerRole.ROLE_PRESIDENT
+        } else if (chancellor && player.playerName === chancellor.playerName) {
+            role = PlayerRole.ROLE_CHANCELLOR
+        } else {
+            role = null
+        }
 
         return {
-            playerName: name,
+            playerName: player.playerName,
             role: role,
-            avatar: randomAvatar,
-            isBubbleActive: (_random(0,1) === 1) ? true : false
+            avatarNumber: player.avatarNumber
         }
     }
 
     render () {
-                   
-        const playersWithoutMe = this.props.players.filter(name => (name !== this.props.userName)) 
-
+        const {socket} = this.props
+        const playersWithoutMe = this.props.players.filter(player => (player.playerName !== this.props.userName))
         const players = playersWithoutMe.map(
-            name => this.makePlayer(name)
+            player => this.makePlayer(player)
         )
 
         let left = []
         let center = []
         let right = []
-
 
         players.map((player, index) => {
             if (index % 3 == 0) left.push(player)
@@ -60,12 +58,13 @@ export default class PlayerBoard extends React.PureComponent {
         }
 
         return (
-            <PlayerBoardComponent 
-                playersLeft = {left} 
+            <PlayerBoardComponent
+                playersLeft = {left}
                 playersMiddle = {center}
                 playersRight = {right}
                 policiesLiberalCount = {this.state.policies}
-                policiesFacistCount = {this.state.policies+1}
+                policiesFacistCount = {this.state.policies + 1}
+                socket={socket}
             />
         )
     }

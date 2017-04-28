@@ -1,6 +1,6 @@
 'use strict'
 import moment from 'moment'
-import {CLIENT_SEND_MESSAGE, CLIENT_JOIN_ROOM, CLIENT_LEAVE_ROOM} from '../const/SocketEvents'
+import {SocketEvents} from '../../Dictionary'
 
 // Actions
 const TEST = 'chat/TEST'
@@ -13,7 +13,7 @@ const initialState = {
 // Reducer
 export default function reducer (state = initialState, action = {}) {
     switch (action.type) {
-        case CLIENT_JOIN_ROOM: {
+        case SocketEvents.CLIENT_JOIN_ROOM: {
             const {messages} = state
             const {timestamp, playerName, scrollHeight} = action.payload
             const newMessage = {
@@ -27,7 +27,7 @@ export default function reducer (state = initialState, action = {}) {
                 scrollHeight
             }
         }
-        case CLIENT_LEAVE_ROOM: {
+        case SocketEvents.CLIENT_LEAVE_ROOM: {
             const {messages} = state
             const {timestamp, playerName, scrollHeight} = action.payload
             const newMessage = {
@@ -41,7 +41,7 @@ export default function reducer (state = initialState, action = {}) {
                 scrollHeight
             }
         }
-        case CLIENT_SEND_MESSAGE: {
+        case SocketEvents.CLIENT_SEND_MESSAGE: {
             const {messages} = state
             const {timestamp, content, author, scrollHeight} = action.payload
             const newMessage = {

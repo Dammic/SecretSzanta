@@ -2,6 +2,7 @@
 import React from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { Scrollbars } from 'react-custom-scrollbars'
+import classNames from 'classnames/bind'
 
 const ModalComponent = ({
     body,
@@ -11,11 +12,11 @@ const ModalComponent = ({
     clickOutside,
     isCloseButton
 }) => {
-    if(show) {
+    if (show) {
         return (
             <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
                 <div className="modal-container">
-                    <Scrollbars className="modal-content">
+                    <Scrollbars className={classNames('modal-content', {[customClass]: !!customClass})}>
                         {isCloseButton && <a className="modal-close-button" onClick={onHide}>✖</a>}
                         <div className="modal-body">{body}</div>
                     </Scrollbars>
