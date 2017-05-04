@@ -4,15 +4,16 @@ import MessagesBoxComponent from './MessagesBoxComponent'
 import moment from 'moment'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {dispatchAction} from '../../../utils/utils'
-import {SocketEvents} from '../../../../Dictionary'
+import {dispatchAction} from '../../../../utils/utils'
+import {SocketEvents} from '../../../../../Dictionary'
+import {socket} from '../../../../utils/socket'
 
 export class MessagesBox extends React.PureComponent {
     componentWillMount () {
         this.messagesBoxRef = null
     }
     componentDidMount () {
-        const {socket, actions} = this.props
+        const {actions} = this.props
 
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(SocketEvents.CLIENT_JOIN_ROOM, {...data, scrollHeight: this.messagesBoxRef.scrollHeight}))
         socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => actions.dispatchAction(SocketEvents.CLIENT_LEAVE_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))

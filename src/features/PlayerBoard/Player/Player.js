@@ -4,6 +4,7 @@ import classNames from 'classnames/bind'
 import _find from 'lodash/find'
 import PlayerComponent from './PlayerComponent'
 import {PlayerDirection, PlayerRole, SocketEvents} from '../../../../Dictionary'
+import {socket} from '../../../utils/socket'
 
 export default class Player extends React.PureComponent {
 
@@ -13,18 +14,18 @@ export default class Player extends React.PureComponent {
             voteBubbleInfo: null
         }
 
-        props.socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, () => {
+        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, () => {
             this.setState({ voteBubbleInfo: null})
         })
 
-        props.socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
+        socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
             const {player} = this.props
             if (playerName === player.playerName) {
                 this.setState({ voteBubbleInfo: {voteValue: ''} })
             }
         })
 
-        props.socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
+        socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
             const {player} = this.props
             const thisPlayerVote = _find(votes, (vote) => vote.playerName === player.playerName)
             if (thisPlayerVote) {
@@ -62,7 +63,6 @@ export default class Player extends React.PureComponent {
     }
 
     render () {
-        const {socket} = this.props
         const {voteBubbleInfo} = this.state
         const {playerName, avatarNumber} = this.props.player
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
@@ -73,8 +73,7 @@ export default class Player extends React.PureComponent {
                 avatar = {avatarPicture}
                 rolePicture = {this.getRolePicture()}
                 voteBubbleStyle = {this.getVoteBubbleStyle()}
-                voteBubbleInfo = {voteBubbleInfo}
-                socket={socket} />
+                voteBubbleInfo = {voteBubbleInfo} />
         )
     }
 

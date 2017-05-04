@@ -9,8 +9,7 @@ const PlayerBoardComponent = ({
     playersMiddle = [],
     playersRight = [],
     policiesLiberalCount = 0,
-    policiesFacistCount = 0,
-    socket
+    policiesFacistCount = 0
 }) => {
     const renderPolicies = (count, cardType) => {
         let result = []
@@ -32,7 +31,6 @@ const PlayerBoardComponent = ({
                     <Player
                         player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_LEFT}
-                        socket={socket}
                     />
                  )}
 
@@ -44,7 +42,6 @@ const PlayerBoardComponent = ({
                         <Player
                             player={player}
                             direction={PlayerDirection.PLAYER_DIRECTION_UP}
-                            socket={socket}
                         />
                     )}
                 </div>
@@ -70,7 +67,6 @@ const PlayerBoardComponent = ({
                     <Player
                         player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_RIGHT}
-                        socket={socket}
                     />
                 )}
             </div>

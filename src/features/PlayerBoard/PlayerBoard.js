@@ -37,7 +37,6 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     render () {
-        const {socket} = this.props
         const playersWithoutMe = this.props.players.filter(player => (player.playerName !== this.props.userName))
         const players = playersWithoutMe.map(
             player => this.makePlayer(player)
@@ -64,7 +63,6 @@ export default class PlayerBoard extends React.PureComponent {
                 playersRight = {right}
                 policiesLiberalCount = {this.state.policies}
                 policiesFacistCount = {this.state.policies + 1}
-                socket={socket}
             />
         )
     }

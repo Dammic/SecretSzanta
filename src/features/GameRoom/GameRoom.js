@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
 import {SocketEvents, GamePhases} from '../../../Dictionary'
+import {socket} from '../../utils/socket'
 
 export class GameRoom extends React.PureComponent {
     constructor (props) {
@@ -23,9 +24,9 @@ export class GameRoom extends React.PureComponent {
             potentialChancellorsChoices: []
         }
 
-        props.socket.emit(SocketEvents.CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
-        props.socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
-        props.socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (data) => {
+        socket.emit(SocketEvents.CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
+        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
+        socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (data) => {
             const {maxPlayers, playersCount, slots, playersList, chancellorCandidate, gamePhase} = data
             this.setState({
                 maxPlayers,
@@ -36,7 +37,7 @@ export class GameRoom extends React.PureComponent {
                 chancellorCandidate
             })
         })
-        props.socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => {
+        socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => {
             const {playerInfo} = data
             const {playersList, slots, playersCount} = this.state
 
@@ -48,7 +49,7 @@ export class GameRoom extends React.PureComponent {
                 playersCount: playersCount + 1
             })
         })
-        props.socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => {
+        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => {
             const {playerName, slotID} = data
             const {playersList, slots, playersCount} = this.state
 
@@ -65,7 +66,7 @@ export class GameRoom extends React.PureComponent {
             })
         })
 
-        props.socket.on(SocketEvents.VOTING_PHASE_START, ({chancellorCandidate}) => {
+        socket.on(SocketEvents.VOTING_PHASE_START, ({chancellorCandidate}) => {
             this.setState({
                 isVotingModalShown: true,
                 chancellorCandidate: chancellorCandidate,
@@ -73,13 +74,13 @@ export class GameRoom extends React.PureComponent {
             })
         })
 
-        props.socket.on(SocketEvents.START_GAME, ({gamePhase}) => {
+        socket.on(SocketEvents.START_GAME, ({gamePhase}) => {
             this.setState({
                 gamePhase
             })
         })
 
-        props.socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({newChancellor}) => {
+        socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({newChancellor}) => {
             if (newChancellor) {
                 this.setState({
                     chancellor: newChancellor
@@ -87,7 +88,7 @@ export class GameRoom extends React.PureComponent {
             }
         })
 
-        props.socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
+        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
             const {userName} = this.props
             this.setState({president})
             if (president.playerName === userName) {
@@ -108,13 +109,12 @@ export class GameRoom extends React.PureComponent {
     }
 
     render () {
-        const {userName, socket} = this.props
+        const {userName} = this.props
         console.info(userName)
         const {playersList, isVotingModalShown, gamePhase, president, chancellor, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidate} = this.state
         console.info('Current game phase: ', gamePhase)
         return (
             <GameRoomComponent
-                socket={socket}
                 userName={userName}
                 playersList={playersList}
                 gamePhase={gamePhase}

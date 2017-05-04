@@ -4,14 +4,14 @@ import GameListComponent from './GameListComponent'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import GameRoom from '../GameRoom/GameRoom'
-import IO from 'socket.io-client'
 import {joinRoom} from '../../ducks/userDuck'
+import {initializeSocket, socket} from '../../utils/socket'
 
 export class GameList extends React.PureComponent {
 
     constructor () {
         super()
-        this.socket = IO()
+        initializeSocket()
     }
 
     setRoomName = (event) => {
@@ -21,7 +21,7 @@ export class GameList extends React.PureComponent {
     }
 
     render () {
-        const {userName} = this.props
+        const {userName, roomName} = this.props
         this.rooms = [
             {
                 roomID: 0,
@@ -60,8 +60,8 @@ export class GameList extends React.PureComponent {
             }
         ]
         return (roomName
-            ? <GameRoom socket={this.socket} /> 
-            : <GameListComponent socket={this.socket} userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
+            ? <GameRoom /> 
+            : <GameListComponent userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
         )
     }
 }

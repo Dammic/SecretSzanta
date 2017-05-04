@@ -6,7 +6,6 @@ import VotingModal from './VotingModal/VotingModal'
 import ChancellorChoiceModal from './ChancellorChoiceModal/ChancellorChoiceModal'
 
 const GameRoomComponent = ({
-    socket,
     userName,
     playersList = [],
     gamePhase,
@@ -21,10 +20,10 @@ const GameRoomComponent = ({
 }) => {
     return (
         <div className="game-room">
-            <ChancellorChoiceModal chancellorsChoices={potentialChancellorsChoices} showModal={isChancellorChoiceShown} onHide={onChancellorChoiceHide} socket={socket}/>
-            <VotingModal showModal={isVotingModalShown} onHide={onVotingModalHide} socket={socket} chancellorCandidate={chancellorCandidate} president={president}/>
-            <PlayerBoard userName={userName} players={playersList} president={president} chancellor={chancellor} socket={socket} gamePhase={gamePhase}/>
-            <UIBox socket={socket} userName={userName}/>
+            <ChancellorChoiceModal chancellorsChoices={potentialChancellorsChoices} showModal={isChancellorChoiceShown} onHide={onChancellorChoiceHide}/>
+            <VotingModal showModal={isVotingModalShown} onHide={onVotingModalHide} chancellorCandidate={chancellorCandidate} president={president}/>
+            <PlayerBoard userName={userName} players={playersList} president={president} chancellor={chancellor} gamePhase={gamePhase}/>
+            <UIBox userName={userName}/>
         </div>
     )
 }

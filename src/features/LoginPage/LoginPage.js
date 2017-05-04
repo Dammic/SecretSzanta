@@ -42,7 +42,7 @@ export class LoginPage extends React.PureComponent {
                 </div>
             )
         } else {
-            return <GameList userName={userName}/>
+            return <GameList />
         }
     }
 
