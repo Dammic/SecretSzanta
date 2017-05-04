@@ -9,6 +9,7 @@ import thunk from 'redux-thunk'
 
 import chat from './ducks/chatDuck'
 import user from './ducks/userDuck'
+import room from './ducks/roomDuck'
 
 import GameRoom from './features/GameRoom/GameRoom'
 import LoginPage from './features/LoginPage/LoginPage'
@@ -20,6 +21,7 @@ const store = createStore(
     combineReducers({
         chat,
         user,
+        room,
         routing: routerReducer
     }),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

@@ -7,97 +7,19 @@ import IO from 'socket.io-client'
 import GameRoomComponent from './GameRoomComponent'
 import {SocketEvents, GamePhases} from '../../../Dictionary'
 import {socket} from '../../utils/socket'
+import {dispatchAction} from '../../utils/utils'
 
 export class GameRoom extends React.PureComponent {
     constructor (props) {
         super(props)
         this.state = {
-            maxPlayers: null,
-            playersCount: 0,
-            slots: [],
-            playersList: [],
-            chancellorCandidate: null,
-            gamePhase: '',
-            president: null,
-            chancellor: null,
             isChancellorChoiceShown: false,
-            potentialChancellorsChoices: []
+            isVotingModalShown: false
         }
 
-        socket.emit(SocketEvents.CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: 'example' })
-        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: 'example' })
-        socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (data) => {
-            const {maxPlayers, playersCount, slots, playersList, chancellorCandidate, gamePhase} = data
-            this.setState({
-                maxPlayers,
-                playersCount,
-                slots,
-                playersList,
-                gamePhase,
-                chancellorCandidate
-            })
-        })
-        socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => {
-            const {playerInfo} = data
-            const {playersList, slots, playersCount} = this.state
+        socket.emit(SocketEvents.CLIENT_CREATE_ROOM, { playerName: props.userName, roomName: 'example' })
+        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: props.userName, roomName: 'example' })
 
-            const newSlots = [...slots]
-            newSlots[playerInfo.slotID - 1] = playerInfo
-            this.setState({
-                slots: newSlots,
-                playersList: [...playersList, {playerName: playerInfo.playerName, avatarNumber: playerInfo.avatarNumber} ],
-                playersCount: playersCount + 1
-            })
-        })
-        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => {
-            const {playerName, slotID} = data
-            const {playersList, slots, playersCount} = this.state
-
-            let newSlots = [...slots]
-            newSlots[slotID - 1].player = null
-            const newPlayersList = playersList.filter((player) => {
-                return (player.playerName !== playerName)
-            })
-
-            this.setState({
-                playersList: newPlayersList,
-                slots: newSlots,
-                playersCount: playersCount - 1
-            })
-        })
-
-        socket.on(SocketEvents.VOTING_PHASE_START, ({chancellorCandidate}) => {
-            this.setState({
-                isVotingModalShown: true,
-                chancellorCandidate: chancellorCandidate,
-                gamePhase: GamePhases.GAME_PHASE_VOTING
-            })
-        })
-
-        socket.on(SocketEvents.START_GAME, ({gamePhase}) => {
-            this.setState({
-                gamePhase
-            })
-        })
-
-        socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({newChancellor}) => {
-            if (newChancellor) {
-                this.setState({
-                    chancellor: newChancellor
-                })
-            }
-        })
-
-        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, ({president, playersChoices}) => {
-            const {userName} = this.props
-            this.setState({president})
-            if (president.playerName === userName) {
-                this.setState({
-                    isChancellorChoiceShown: true,
-                    potentialChancellorsChoices: playersChoices
-                })
-            }
-        })
     }
 
     onChancellorChoiceHide = () => {
@@ -109,9 +31,8 @@ export class GameRoom extends React.PureComponent {
     }
 
     render () {
-        const {userName} = this.props
-        console.info(userName)
-        const {playersList, isVotingModalShown, gamePhase, president, chancellor, isChancellorChoiceShown, potentialChancellorsChoices, chancellorCandidate} = this.state
+        const {isVotingModalShown, isChancellorChoiceShown} = this.state
+        const {userName, playersList, gamePhase, president, chancellor, potentialChancellorsChoices, chancellorCandidate} = this.props
         console.info('Current game phase: ', gamePhase)
         return (
             <GameRoomComponent
@@ -131,14 +52,25 @@ export class GameRoom extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({user}) => {
+const mapStateToProps = ({user, room}) => {
     return {
-        userName: user.userName
+        userName: user.userName,
+        maxPlayers: room.maxPlayers,
+        playersCount: room.playerCount,
+        slots: room.slots,
+        playersList: room.playersList,
+        chancellorCandidate: room.chancellorCandidate,
+        gamePhase: room.gamePhase,
+        president: room.president,
+        chancellor: room.chancellor,
+        isChancellorChoiceShown: room.isChancellorChoiceShown,
+        potentialChancellorsChoices: room.potentialChancellorsChoices
+
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({}, dispatch)
+        actions: bindActionCreators({dispatchAction}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameRoom)

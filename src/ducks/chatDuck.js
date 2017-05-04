@@ -3,7 +3,7 @@ import moment from 'moment'
 import {SocketEvents} from '../../Dictionary'
 
 // Actions
-const TEST = 'chat/TEST'
+const SCROLL_CHAT = 'chat/SCROLL_CHAT'
 
 const initialState = {
     messages: [],
@@ -15,7 +15,7 @@ export default function reducer (state = initialState, action = {}) {
     switch (action.type) {
         case SocketEvents.CLIENT_JOIN_ROOM: {
             const {messages} = state
-            const {timestamp, playerName, scrollHeight} = action.payload
+            const {timestamp, playerName} = action.payload
             const newMessage = {
                 time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
                 author: '',
@@ -23,13 +23,12 @@ export default function reducer (state = initialState, action = {}) {
             }
             return {
                 ...state,
-                messages: [...messages, newMessage],
-                scrollHeight
+                messages: [...messages, newMessage]
             }
         }
         case SocketEvents.CLIENT_LEAVE_ROOM: {
             const {messages} = state
-            const {timestamp, playerName, scrollHeight} = action.payload
+            const {timestamp, playerName} = action.payload
             const newMessage = {
                 time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
                 author: '',
@@ -37,13 +36,12 @@ export default function reducer (state = initialState, action = {}) {
             }
             return {
                 ...state,
-                messages: [...messages, newMessage],
-                scrollHeight
+                messages: [...messages, newMessage]
             }
         }
         case SocketEvents.CLIENT_SEND_MESSAGE: {
             const {messages} = state
-            const {timestamp, content, author, scrollHeight} = action.payload
+            const {timestamp, content, author} = action.payload
             const newMessage = {
                 time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
                 author,
@@ -51,7 +49,13 @@ export default function reducer (state = initialState, action = {}) {
             }
             return {
                 ...state,
-                messages: [...messages, newMessage],
+                messages: [...messages, newMessage]
+            }
+        }
+        case SCROLL_CHAT: {
+            const {scrollHeight} = action.payload
+            return {
+                ...state,
                 scrollHeight
             }
         }
@@ -61,11 +65,11 @@ export default function reducer (state = initialState, action = {}) {
 }
 
 // Action Creators
-export function someAction (aaa) {
+export function scrollChat (scrollHeight) {
     return {
-        type: TEST,
+        type: SCROLL_CHAT,
         payload: {
-            TESTVAR: aaa
+            scrollHeight
         }
     }
 }

@@ -9,9 +9,9 @@ import {initializeSocket, socket} from '../../utils/socket'
 
 export class GameList extends React.PureComponent {
 
-    constructor () {
-        super()
-        initializeSocket()
+    constructor (props) {
+        super(props)
+        props.actions.initializeSocket()
     }
 
     setRoomName = (event) => {
@@ -74,7 +74,7 @@ const mapStateToProps = ({user}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({joinRoom}, dispatch)
+        actions: bindActionCreators({joinRoom, initializeSocket}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)

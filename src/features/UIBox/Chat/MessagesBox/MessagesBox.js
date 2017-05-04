@@ -5,6 +5,7 @@ import moment from 'moment'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {dispatchAction} from '../../../../utils/utils'
+import {scrollChat} from '../../../../ducks/chatDuck'
 import {SocketEvents} from '../../../../../Dictionary'
 import {socket} from '../../../../utils/socket'
 
@@ -15,9 +16,9 @@ export class MessagesBox extends React.PureComponent {
     componentDidMount () {
         const {actions} = this.props
 
-        socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => actions.dispatchAction(SocketEvents.CLIENT_JOIN_ROOM, {...data, scrollHeight: this.messagesBoxRef.scrollHeight}))
-        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => actions.dispatchAction(SocketEvents.CLIENT_LEAVE_ROOM, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
-        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (data) => actions.dispatchAction(SocketEvents.CLIENT_SEND_MESSAGE, {...data}, {scrollHeight: this.messagesBoxRef.scrollHeight}))
+        socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => actions.scrollChat(this.messagesBoxRef.scrollHeight))
+        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => actions.scrollChat(this.messagesBoxRef.scrollHeight))
+        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (data) => actions.scrollChat(this.messagesBoxRef.scrollHeight))
     }
 
     setMessagesBoxRef (ref) {
@@ -46,7 +47,7 @@ const mapStateToProps = ({chat}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({dispatchAction}, dispatch)
+        actions: bindActionCreators({dispatchAction, scrollChat}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessagesBox)
