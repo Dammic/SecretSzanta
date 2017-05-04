@@ -4,7 +4,7 @@ import ModalComponent from './ModalComponent'
 
 class Modal extends React.PureComponent {
     render () {
-        const {children, show, onHide, customClass, clickOutside=true, isCloseButton=true} = this.props
+        const {children, show, onHide, customClass, clickOutside = true, isCloseButton = true} = this.props
         return <ModalComponent
             body={children}
             show={show}
@@ -16,11 +16,11 @@ class Modal extends React.PureComponent {
     }
 }
 
-const {object, bool, func, string} = React.PropTypes
+const {object, bool, func, string, array, oneOfType} = React.PropTypes
 Modal.propTypes = {
-    children: object.isRequired,
+    children: oneOfType([object, array]).isRequired,
     show: bool.isRequired,
-    onHide: func.isRequired,
+    onHide: func,
     clickOutside: bool,
     isCloseButton: bool,
     customClass: string

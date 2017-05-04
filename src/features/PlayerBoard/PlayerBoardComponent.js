@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
 import _times from 'lodash/times'
-import {PlayerDirection} from '../../const/PlayerConsts'
+import {PlayerDirection} from '../../../Dictionary'
 import Player from './Player/Player.js'
 
 const PlayerBoardComponent = ({
@@ -9,9 +9,9 @@ const PlayerBoardComponent = ({
     playersMiddle = [],
     playersRight = [],
     policiesLiberalCount = 0,
-    policiesFacistCount = 0
+    policiesFacistCount = 0,
+    socket
 }) => {
-
     const renderPolicies = (count, cardType) => {
         let result = []
 
@@ -23,39 +23,41 @@ const PlayerBoardComponent = ({
 
         return result
     }
-    
+
     return (
         <div className="player-board">
 
             <div className="players-container">
-                {playersLeft.map( (player) => 
-                    <Player 
-                        player={player} 
+                {playersLeft.map((player) =>
+                    <Player
+                        player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_LEFT}
-                    /> 
+                        socket={socket}
+                    />
                  )}
 
             </div>
 
             <div className="central-part">
                 <div className="players-container-middle">
-                    {playersMiddle.map( (player) => 
-                        <Player 
-                            player={player} 
+                    {playersMiddle.map((player) =>
+                        <Player
+                            player={player}
                             direction={PlayerDirection.PLAYER_DIRECTION_UP}
-                        /> 
+                            socket={socket}
+                        />
                     )}
                 </div>
 
                 <div className="policy">
-                    <img src = {require('../../static/liberalpolicies.png')} /> 
+                    <img src = {require('../../static/liberalpolicies.png')} />
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
                 </div>
-                
+
                 <div className="policy">
-                    <img src = {require('../../static/facistpolicies3.png')} /> 
+                    <img src = {require('../../static/facistpolicies3.png')} />
                     <div className="policy-card-fascist">
                         {renderPolicies(policiesFacistCount, 'facist')}
                     </div>
@@ -64,11 +66,12 @@ const PlayerBoardComponent = ({
             </div>
 
             <div className="players-container">
-                {playersRight.map( (player) => 
-                    <Player 
-                        player={player} 
+                {playersRight.map((player) =>
+                    <Player
+                        player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_RIGHT}
-                    /> 
+                        socket={socket}
+                    />
                 )}
             </div>
 

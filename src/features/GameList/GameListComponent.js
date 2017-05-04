@@ -4,7 +4,7 @@ import GameListItemComponent from './GameListItemComponent'
 import TopNavbar from './TopNavbar/TopNavbar'
 
 const GameListComponent = ({
-    title,
+    userName,
     rooms,
     onClick,
     socket
@@ -12,7 +12,7 @@ const GameListComponent = ({
     return (
         <div className="game-room">
             <TopNavbar socket={socket}/>
-            Hello {title}!
+            Hello {userName}!
             <div className="game-list">
                 {rooms.map((room) => {
                     return (

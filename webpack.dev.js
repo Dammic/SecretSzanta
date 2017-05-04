@@ -5,11 +5,6 @@ var webpack = require('webpack')
 module.exports = {
     cache: true,
     devtool: 'eval',
-    watchOptions: {
-        aggregateTimeout: 300,
-        poll: 1000,
-        ignored: /node_modules/
-    },
     entry: {
         app: path.join(__dirname, 'src', 'AppClient.js')
     },

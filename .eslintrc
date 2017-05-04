@@ -1,6 +1,10 @@
 {
-    "extends": "standard",
+    "extends": ["standard", "plugin:react/recommended"],
     "rules": {
         "indent": ["error", 4, {"SwitchCase": 1}]
-    }
+    },
+    "plugins": [
+        "react"
+    ],
+    "parser": "babel-eslint"
 }

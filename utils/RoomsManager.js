@@ -1,5 +1,6 @@
 'use strict'
 const _ = require('lodash')
+const {GamePhases, PlayerRole}  = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -28,9 +29,127 @@ const RoomsManager = function() {
                 slots,
                 maxPlayers,
                 playersCount: 0,
-                password
+                password,
+                chancellorCandidateName: '',
+                votes: [],
+                gamePhase: GamePhases.GAME_PHASE_NEW
             }
         },
+
+        setChancellor: function(roomName) {
+            let {slots, chancellorCandidateName} = rooms_props[roomName]
+
+            const previousChancellor = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PREVIOUS_CHANCELLOR)
+            if(previousChancellor) previousChancellor.player.role = null
+
+            const currentChancellor = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_CHANCELLOR)
+            if(currentChancellor) currentChancellor.player.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+
+            const nextChancellor = slots.find((slot) => slot.player && slot.player.playerName === chancellorCandidateName)
+            nextChancellor.player.role = PlayerRole.ROLE_CHANCELLOR
+        },
+
+        getChancellor: function(roomName) {
+            let {slots} = rooms_props[roomName]
+            const chancellor = _.find(slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_CHANCELLOR)
+
+            return ( chancellor ? {playerName: chancellor.player.playerName, avatarNumber: chancellor.player.avatarNumber} : null )
+        },
+
+        getChancellorCandidateInfo: function(roomName, chancellorCandidateName) {
+            let {slots} = rooms_props[roomName]
+            const chancellorCandidate = _.find(slots, (slot) => slot.player && slot.player.playerName === chancellorCandidateName);
+            return ( chancellorCandidate ? {playerName: chancellorCandidate.player.playerName, avatarNumber: chancellorCandidate.player.avatarNumber} : null )
+        },
+
+        setPresident: function(roomName, presidentName) {
+            let {slots} = rooms_props[roomName]
+
+            const previousPresident = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PREVIOUS_PRESIDENT)
+            if(previousPresident) previousPresident.player.role = null
+
+            const currentPresident = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
+            if(currentPresident) currentPresident.player.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
+
+            const nextPresident = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
+            nextPresident.player.role = PlayerRole.ROLE_PRESIDENT
+        },
+
+        getPresident: function(roomName) {
+            let {slots} = rooms_props[roomName]
+            const president = _.find(slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
+            return ( president ? {playerName: president.player.playerName, avatarNumber: president.player.avatarNumber} : null )
+        },
+
+        chooseNextPresident: function(roomName) {
+            const playersList = _.reduce(rooms_props[roomName].slots, function(result, slot) {
+                if(slot.player) result.push(slot.player.playerName)
+                return result
+            }, [])
+            const indexOfLastPresident = _.findIndex(rooms_props[roomName].slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
+            // if no president has been choosen, we choose the first player on the list
+            const nextPresident = ( indexOfLastPresident >= 0 ? playersList[(indexOfLastPresident + 1) % playersList.length] : playersList[0])
+            this.setPresident(roomName, nextPresident)
+        },
+
+        startGame: function(roomName) {
+            rooms_props[roomName].gamePhase = GamePhases.START_GAME;
+
+            // filtering unnecessary empty slots
+            //rooms_props[roomName].slots = _.filter(rooms_props[roomName].slots, (slot) => slot.player)
+
+            const playersList = _.reduce(rooms_props[roomName].slots, (result, slot) => {
+                if (slot.player) result.push(slot.player.playerName)
+                return result
+            }, [])
+        },
+
+        startChancellorChoicePhase: function(roomName) {
+            rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
+            this.chooseNextPresident(roomName)
+        },
+
+        getChancellorChoices: function(roomName) {
+            const chancellorChoices = _.reduce(rooms_props[roomName].slots, function(result, slot) {
+                if(slot.player && slot.player.role === null) result.push({playerName: slot.player.playerName, avatarNumber: slot.player.avatarNumber})
+                return result;
+            }, [])
+            return chancellorChoices
+        },
+
+        /***********Voting***********/
+
+
+        initializeVoting: function(roomName, chancellorCandidateName) {
+            rooms_props[roomName].votes = _.reduce(rooms_props[roomName].slots, (result, slot) => {
+                if(slot.player)  result.push({playerName: slot.player.playerName, didVote: false, value: null})
+                return result
+            }, [])
+            rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
+        },
+
+        vote: function(roomName, playerName, value) {
+            let playerVote = _.find(rooms_props[roomName].votes, (vote) => vote.playerName === playerName)
+            playerVote.didVote = true
+            playerVote.value = value
+        },
+
+        didAllVote: function(roomName) {
+            return (_.find(rooms_props[roomName].votes, (vote) => vote.didVote === false) ? false : true)
+        },
+
+        getVotes: function(roomName) {
+            return rooms_props[roomName].votes;
+        },
+
+        getVotingResult: function(roomName) {
+            const votesCount = _.countBy(rooms_props[roomName].votes, 'value')
+            return votesCount[true] > votesCount[false] || !votesCount[false]
+        },
+
+        /****************************/
+
+
         deleteRoom: function (roomName) {
             if (isRoomPresent(roomName)) {
                 rooms_props = _.filter(rooms_props, (room, key) => (roomName !== key) ? true : false)
@@ -48,14 +167,16 @@ const RoomsManager = function() {
         getRoomDetails: function (roomName) {
             const room = rooms_props[roomName]
             const playersList = _.reduce(room.slots, (result, slot) => {
-                if (slot.player) result.push(slot.player.playerName)
+                if (slot.player) result.push({playerName: slot.player.playerName, avatarNumber: slot.player.avatarNumber})
                 return result
             }, [])
             return {
                 maxPlayers: room.maxPlayers,
                 playersCount: room.playersCount,
                 slots: room.slots,
-                playersList
+                playersList,
+                gamePhase: room.gamePhase,
+                chancellorCandidate: this.getChancellorCandidateInfo(roomName, room.chancellorCandidateName)
             }
         },
 
@@ -76,7 +197,9 @@ const RoomsManager = function() {
 
             if (!samePlayerObject && nextEmptySlot) {
                 nextEmptySlot.player = {
-                    playerName
+                    playerName,
+                    role: null,
+                    avatarNumber: _.random(1, 5)
                 }
                 rooms_props[roomName].playersCount += 1
             } else {
@@ -101,7 +224,13 @@ const RoomsManager = function() {
 
         getPlayerInfo: function (roomName, playerName) {
             const {slots} = rooms_props[roomName]
-            return slots.find((slot) => (slot.player && slot.player.playerName === playerName))
+            const playerInfo = slots.find((slot) => (slot.player && slot.player.playerName === playerName))
+            return {
+                playerName: playerInfo.player.playerName,
+                role: playerInfo.player.role,
+                avatarNumber: playerInfo.player.avatarNumber,
+                slotID: playerInfo.slotID
+            }
         },
 
         /**
