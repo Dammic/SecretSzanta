@@ -1,40 +1,35 @@
 'use strict'
 import React from 'react'
 import MessagesBoxComponent from './MessagesBoxComponent'
-import moment from 'moment'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {dispatchAction} from '../../../../utils/utils'
-import {scrollChat} from '../../../../ducks/chatDuck'
+import {addMessage} from '../../../../ducks/chatDuck'
 import {SocketEvents} from '../../../../../Dictionary'
 import {socket} from '../../../../utils/socket'
 
 export class MessagesBox extends React.PureComponent {
-    componentWillMount () {
-        this.messagesBoxRef = null
-    }
     componentDidMount () {
         const {actions} = this.props
 
-        socket.on(SocketEvents.CLIENT_JOIN_ROOM, (data) => actions.scrollChat(this.messagesBoxRef.scrollHeight))
-        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (data) => actions.scrollChat(this.messagesBoxRef.scrollHeight))
-        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (data) => actions.scrollChat(this.messagesBoxRef.scrollHeight))
+        socket.on(SocketEvents.CLIENT_JOIN_ROOM, ({timestamp, playerName}) => actions.addMessage(timestamp, `${playerName} has joined the room!`))
+        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, ({timestamp, playerName}) => actions.addMessage(timestamp, `${playerName} has left the room!`))
+        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, ({timestamp, content, author}) => actions.addMessage(timestamp, content, author))
     }
 
-    setMessagesBoxRef (ref) {
-        const {scrollHeight} = this.props
-        this.messagesBoxRef = ref
-
-        // scrolling to the bottom of messages list
-        if(this.messagesBoxRef) this.messagesBoxRef.scrollTop = scrollHeight
+    componentDidUpdate() {
+        this.scrollToBottomOfMessages()
     }
 
-    render () {        
-        const {messages, scrollHeight} = this.props
+    setMessagesEndRef = (ref) => {this.messagesEndRef = ref}
+    scrollToBottomOfMessages = () => {
+        if(this.messagesEndRef) this.messagesEndRef.scrollIntoView()
+    }
+
+    render () {
         return (
             <MessagesBoxComponent
-                messages={messages}
-                setMessagesBoxRef={this.setMessagesBoxRef.bind(this)} />
+                messages={this.props.messages}
+                setMessagesEndRef={this.setMessagesEndRef} />
         )
     }
 }
@@ -47,7 +42,7 @@ const mapStateToProps = ({chat}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({dispatchAction, scrollChat}, dispatch)
+        actions: bindActionCreators({addMessage}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessagesBox)

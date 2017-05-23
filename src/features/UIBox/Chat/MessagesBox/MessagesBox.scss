@@ -8,4 +8,9 @@
     .message {
 
     }
+
+    .server-message {
+        color: $chat-server-message-font;
+        font-weight: 700;
+    }
 }

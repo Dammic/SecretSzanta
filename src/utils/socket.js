@@ -14,6 +14,5 @@ export const initializeSocket = () => {
         socket.on(SocketEvents.START_GAME, (data) => dispatch({type: SocketEvents.START_GAME, payload: {...data}}))
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (data) => dispatch({type: SocketEvents.VOTING_PHASE_REVEAL, payload: {...data}}))
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, (data) => dispatch({type: SocketEvents.CHANCELLOR_CHOICE_PHASE, payload: {...data}}))
-        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (data) => dispatch({type: SocketEvents.CLIENT_SEND_MESSAGE, payload: {...data}}))
     }
 }
