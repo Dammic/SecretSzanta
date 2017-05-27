@@ -29,6 +29,7 @@ const PlayerBoardComponent = ({
             <div className="players-container">
                 {playersLeft.map((player) =>
                     <Player
+                        key={player.playerName}
                         player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_LEFT}
                     />
@@ -40,6 +41,7 @@ const PlayerBoardComponent = ({
                 <div className="players-container-middle">
                     {playersMiddle.map((player) =>
                         <Player
+                            key={player.playerName}
                             player={player}
                             direction={PlayerDirection.PLAYER_DIRECTION_UP}
                         />
@@ -65,6 +67,7 @@ const PlayerBoardComponent = ({
             <div className="players-container">
                 {playersRight.map((player) =>
                     <Player
+                        key={player.playerName}
                         player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_RIGHT}
                     />

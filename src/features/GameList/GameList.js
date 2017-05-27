@@ -8,11 +8,6 @@ import {joinRoom} from '../../ducks/userDuck'
 import SocketHandler from '../../utils/socket'
 
 export class GameList extends React.PureComponent {
-
-    constructor (props) {
-        super(props)
-    }
-
     setRoomName = (event) => {
         let roomID = event.target.attributes.getNamedItem('data-roomid').value
         this.props.userActions.joinRoom(roomID)

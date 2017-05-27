@@ -30,7 +30,7 @@ const mapStateToProps = ({user, room}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({}, dispatch)
+        roomActions: bindActionCreators({}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameRoom)
