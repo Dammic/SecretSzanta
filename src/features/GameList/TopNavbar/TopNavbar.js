@@ -20,13 +20,11 @@ export default class TopNavbar extends React.PureComponent {
     }
 
     render () {
-        const {socket} = this.props
         return <TopNavbarComponent
             showModal={this.showModal}
             isModalShown={this.state.isModalShown}
             onHide={this.hideModal}
             onCreate={this.hideModal}
-            socket={socket}
         />
     }
 }

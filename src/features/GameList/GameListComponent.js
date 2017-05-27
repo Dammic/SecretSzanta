@@ -6,12 +6,11 @@ import TopNavbar from './TopNavbar/TopNavbar'
 const GameListComponent = ({
     userName,
     rooms,
-    onClick,
-    socket
+    onClick
 }) => {
     return (
         <div className="game-room">
-            <TopNavbar socket={socket}/>
+            <TopNavbar />
             Hello {userName}!
             <div className="game-list">
                 {rooms.map((room) => {

@@ -1,30 +1,20 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
-import IO from 'socket.io-client'
+import {joinRoom} from '../../ducks/userDuck'
+import SocketHandler from '../../utils/socket'
 
-export default class GameList extends React.PureComponent {
-
-    constructor () {
-        super()
-        this.socket = IO()
-        this.state = {
-            roomName: ''
-        }
-    }
-
+export class GameList extends React.PureComponent {
     setRoomName = (event) => {
         let roomID = event.target.attributes.getNamedItem('data-roomid').value
-
-        this.setState({
-            roomName: roomID
-        })
+        this.props.userActions.joinRoom(roomID)
     }
 
     render () {
-        const {userName} = this.props
-        const {roomName} = this.state
+        const {userName, roomName} = this.props
         this.rooms = [
             {
                 roomID: 0,
@@ -62,17 +52,27 @@ export default class GameList extends React.PureComponent {
                 playerCount: 10
             }
         ]
-
-        if (roomName === '') {
-            return (
-                <div>
-                    <GameListComponent socket={this.socket} userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
-                </div>
-            )
-        } else {
-            return (
-                <GameRoom socket={this.socket} userName={userName}/>
-            )
-        }
+        return (
+            <div>
+                <SocketHandler />
+                {roomName
+                    ? <GameRoom />
+                    : <GameListComponent userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
+                }
+            </div>
+        )
     }
 }
+
+const mapStateToProps = ({user}) => {
+    return {
+        userName: user.userName,
+        roomName: user.roomName
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        userActions: bindActionCreators({joinRoom}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(GameList)

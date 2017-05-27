@@ -4,9 +4,9 @@ import ChatComponent from './ChatComponent'
 
 export default class Chat extends React.PureComponent {
     render () {
-        const {socket, userName} = this.props
+        const {userName} = this.props
         return (
-            <ChatComponent socket={socket} userName={userName}/>
+            <ChatComponent userName={userName}/>
         )
     }
 }

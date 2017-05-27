@@ -4,13 +4,12 @@ import MessagesBox from './MessagesBox/MessagesBox'
 import ChatForm from './ChatForm/ChatForm'
 
 const ChatComponent = ({
-    socket,
     userName
 }) => {
     return (
         <div className="chat">
-            <MessagesBox socket={socket} />
-            <ChatForm socket={socket} userName={userName}/>
+            <MessagesBox />
+            <ChatForm userName={userName}/>
         </div>
     )
 }

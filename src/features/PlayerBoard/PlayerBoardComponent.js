@@ -9,8 +9,7 @@ const PlayerBoardComponent = ({
     playersMiddle = [],
     playersRight = [],
     policiesLiberalCount = 0,
-    policiesFacistCount = 0,
-    socket
+    policiesFacistCount = 0
 }) => {
     const renderPolicies = (count, cardType) => {
         let result = []
@@ -30,9 +29,9 @@ const PlayerBoardComponent = ({
             <div className="players-container">
                 {playersLeft.map((player) =>
                     <Player
+                        key={player.playerName}
                         player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_LEFT}
-                        socket={socket}
                     />
                  )}
 
@@ -42,9 +41,9 @@ const PlayerBoardComponent = ({
                 <div className="players-container-middle">
                     {playersMiddle.map((player) =>
                         <Player
+                            key={player.playerName}
                             player={player}
                             direction={PlayerDirection.PLAYER_DIRECTION_UP}
-                            socket={socket}
                         />
                     )}
                 </div>
@@ -68,9 +67,9 @@ const PlayerBoardComponent = ({
             <div className="players-container">
                 {playersRight.map((player) =>
                     <Player
+                        key={player.playerName}
                         player={player}
                         direction={PlayerDirection.PLAYER_DIRECTION_RIGHT}
-                        socket={socket}
                     />
                 )}
             </div>

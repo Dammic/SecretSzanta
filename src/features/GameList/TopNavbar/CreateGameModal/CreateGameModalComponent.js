@@ -5,8 +5,7 @@ import Modal from '../../../Modal/Modal'
 const CreateGameModalComponent = ({
     showModal,
     onHide,
-    onCreate,
-    socket
+    onCreate
 }) => {
     return (
         <Modal show={showModal} onHide={onHide} clickOutside={true}>

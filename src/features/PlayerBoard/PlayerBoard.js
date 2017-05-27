@@ -1,29 +1,25 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import {PlayerRole} from '../../../Dictionary'
 import PlayerBoardComponent from './PlayerBoardComponent'
+import { increasePolicyCount } from '../../ducks/roomDuck'
 
-export default class PlayerBoard extends React.PureComponent {
-
+export class PlayerBoard extends React.PureComponent {
     constructor () {
         super()
-        this.state = {
-            policies: 0
-        }
-
         this.TestTimer = setInterval(() => {
-            this.setState({
-                policies: this.state.policies + 1
-            })
+            this.props.roomActions.increasePolicyCount(true);
+            this.props.roomActions.increasePolicyCount(false);
         }, 1000)
     }
 
     makePlayer (player) {
-        const {president, chancellor} = this.props
         let role
-        if (president && player.playerName === president.playerName) {
+        if (this.props.president && player.playerName === this.props.president.playerName) {
             role = PlayerRole.ROLE_PRESIDENT
-        } else if (chancellor && player.playerName === chancellor.playerName) {
+        } else if (this.props.chancellor && player.playerName === this.props.chancellor.playerName) {
             role = PlayerRole.ROLE_CHANCELLOR
         } else {
             role = null
@@ -37,8 +33,8 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     render () {
-        const {socket} = this.props
-        const playersWithoutMe = this.props.players.filter(player => (player.playerName !== this.props.userName))
+        const playersWithoutMe = this.props.playersList.filter(player => (player.playerName !== this.props.userName))
+
         const players = playersWithoutMe.map(
             player => this.makePlayer(player)
         )
@@ -53,7 +49,7 @@ export default class PlayerBoard extends React.PureComponent {
             else center.push(player)
         })
 
-        if (this.state.policies > 4) {
+        if (this.props.liberalPoliciesCount > 4) {
             clearInterval(this.TestTimer)
         }
 
@@ -62,10 +58,28 @@ export default class PlayerBoard extends React.PureComponent {
                 playersLeft = {left}
                 playersMiddle = {center}
                 playersRight = {right}
-                policiesLiberalCount = {this.state.policies}
-                policiesFacistCount = {this.state.policies + 1}
-                socket={socket}
+                policiesLiberalCount = {this.props.liberalPoliciesCount}
+                policiesFacistCount = {this.props.facistPoliciesCount}
             />
         )
     }
 }
+
+
+const mapStateToProps = ({user, room}) => {
+    return {
+        userName: user.userName,
+        playersList: room.playersList,
+        president: room.president,
+        chancellor: room.chancellor,
+        gamePhase: room.gamePhase,
+        facistPoliciesCount: room.facistPoliciesCount,
+        liberalPoliciesCount: room.liberalPoliciesCount
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        roomActions: bindActionCreators({increasePolicyCount}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerBoard)

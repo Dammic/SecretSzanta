@@ -1,10 +1,8 @@
 'use strict'
 import React from 'react'
-import Chat from '../Chat/Chat'
+import Chat from './Chat/Chat'
 
 const UIBoxComponent = ({
-    socket,
-    userName,
     onStartVote,
     onStartGame
 }) => {
@@ -12,7 +10,7 @@ const UIBoxComponent = ({
         <div className="ui-box">
             <button onClick={onStartVote}>voting (test)</button>
             <button onClick={onStartGame}>start game (test)</button>
-            <Chat socket={socket} userName={userName}/>
+            <Chat />
         </div>
     )
 }

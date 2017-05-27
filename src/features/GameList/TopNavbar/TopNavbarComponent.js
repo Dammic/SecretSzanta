@@ -6,13 +6,12 @@ const TopNavbarComponent = ({
     isModalShown,
     showModal,
     onHide,
-    onCreate,
-    socket
+    onCreate
 }) => {
     return (
         <div className="top-bar">
             <button onClick={showModal}>Create</button>
-            <CreateGameModal showModal={isModalShown} onHide={onHide} onCreate={onCreate} socket={socket}/>
+            <CreateGameModal showModal={isModalShown} onHide={onHide} onCreate={onCreate}/>
         </div>
     )
 }

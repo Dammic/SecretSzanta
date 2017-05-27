@@ -4,6 +4,7 @@ import classNames from 'classnames/bind'
 import _find from 'lodash/find'
 import PlayerComponent from './PlayerComponent'
 import {PlayerDirection, PlayerRole, SocketEvents} from '../../../../Dictionary'
+import {socket} from '../../../utils/socket'
 
 export default class Player extends React.PureComponent {
 
@@ -13,20 +14,18 @@ export default class Player extends React.PureComponent {
             voteBubbleInfo: null
         }
 
-        props.socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, () => {
+        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, () => {
             this.setState({ voteBubbleInfo: null})
         })
 
-        props.socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
-            const {player} = this.props
-            if (playerName === player.playerName) {
+        socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
+            if (playerName === this.props.player.playerName) {
                 this.setState({ voteBubbleInfo: {voteValue: ''} })
             }
         })
 
-        props.socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
-            const {player} = this.props
-            const thisPlayerVote = _find(votes, (vote) => vote.playerName === player.playerName)
+        socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
+            const thisPlayerVote = _find(votes, (vote) => vote.playerName === this.props.player.playerName)
             if (thisPlayerVote) {
                 this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
             }
@@ -50,20 +49,17 @@ export default class Player extends React.PureComponent {
     }
 
     getVoteBubbleStyle = () => {
-        const {voteBubbleInfo} = this.state
         switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames('bubble-left', {'active': !!voteBubbleInfo})
+                return classNames('bubble-left', {'active': !!this.state.voteBubbleInfo})
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames('bubble-right', {'active': !!voteBubbleInfo})
+                return classNames('bubble-right', {'active': !!this.state.voteBubbleInfo})
             default:
-                return classNames('bubble-top', {'active': !!voteBubbleInfo})
+                return classNames('bubble-top', {'active': !!this.state.voteBubbleInfo})
         }
     }
 
     render () {
-        const {socket} = this.props
-        const {voteBubbleInfo} = this.state
         const {playerName, avatarNumber} = this.props.player
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
 
@@ -73,8 +69,7 @@ export default class Player extends React.PureComponent {
                 avatar = {avatarPicture}
                 rolePicture = {this.getRolePicture()}
                 voteBubbleStyle = {this.getVoteBubbleStyle()}
-                voteBubbleInfo = {voteBubbleInfo}
-                socket={socket} />
+                voteBubbleInfo = {this.state.voteBubbleInfo} />
         )
     }
 
