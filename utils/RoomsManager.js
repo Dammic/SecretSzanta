@@ -1,6 +1,6 @@
 'use strict'
 const _ = require('lodash')
-const {GamePhases, PlayerRole}  = require('../Dictionary')
+const {GamePhases, PlayerRole, PlayerAffilications}  = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -98,10 +98,27 @@ const RoomsManager = function() {
             // filtering unnecessary empty slots
             //rooms_props[roomName].slots = _.filter(rooms_props[roomName].slots, (slot) => slot.player)
 
-            const playersList = _.reduce(rooms_props[roomName].slots, (result, slot) => {
-                if (slot.player) result.push(slot.player.playerName)
-                return result
-            }, [])
+            const playersList = _.filter(rooms_props[roomName].slots, 'player')
+
+            const liberalCount = Math.floor(playersList.length / 2) + 1
+            const facistCount = playersList.length - liberalCount;
+
+            // selecting random facists and hitler
+            const shuffledPlayers = playersList.sort(() => .5 - Math.random())
+            const selectedFacists = shuffledPlayers.slice(0, facistCount)
+            const hitlerPlayer = selectedFacists[0]
+            _.forEach(selectedFacists, (slot) => {
+                slot.player.affiliation = PlayerAffilications.FACIST_AFFILIATION
+                slot.player.facistAvatar = _.random(21, 21)
+            })
+            hitlerPlayer.player.affiliation = PlayerAffilications.HITLER_AFFILIATION
+            hitlerPlayer.player.facistAvatar = 50
+
+            rooms_props[roomName].slots = playersList
+        },
+
+        getFacists: function(roomName) {
+            return _.filter(rooms_props[roomName].slots, (slot) => player.affiliation === PlayerAffilications.FACIST_AFFILIATION || player.affiliation === PlayerAffilications.HITLER_AFFILIATION)
         },
 
         startChancellorChoicePhase: function(roomName) {
@@ -185,8 +202,9 @@ const RoomsManager = function() {
          *      It checks if the player is already in the room or if there are no empty slots.
          * @param {String} roomName - unique name of the modified room
          * @param {String} playerName - name of the player to be added to the room
+         * @param {Object} socket - Socket.IO socket object of the added player
          */
-        addPlayer: function (roomName, playerName) {
+        addPlayer: function (roomName, playerName, socket) {
             const {slots} = rooms_props[roomName]
 
             // check if there is any free slot, returns first one or undefined if none found
@@ -199,7 +217,10 @@ const RoomsManager = function() {
                 nextEmptySlot.player = {
                     playerName,
                     role: null,
-                    avatarNumber: _.random(1, 5)
+                    avatarNumber: _.random(1, 5),
+                    facistAvatar: null,
+                    affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
+                    emit: socket.emit.bind(socket)
                 }
                 rooms_props[roomName].playersCount += 1
             } else {
@@ -240,6 +261,10 @@ const RoomsManager = function() {
          */
         isRoomPresent: function (roomName) {
             return (rooms_props[roomName] ? true : false)
+        },
+
+        getPlayersCount: function(roomName) {
+            return rooms_props[roomName].playerCount
         }
     }
 }

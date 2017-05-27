@@ -40,7 +40,7 @@ module.exports = function(io, RoomsManager) {
 
     const joinRoom = function(socket, {playerName, roomName}) {
         if(roomName && socket.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
-            RoomsManager.addPlayer(roomName, playerName)
+            RoomsManager.addPlayer(roomName, playerName, socket)
 
             const roomDetails = RoomsManager.getRoomDetails(roomName)
 
@@ -65,6 +65,11 @@ module.exports = function(io, RoomsManager) {
 
     const startGame = function(socket) {
         RoomsManager.startGame(socket.currentRoom)
+        const facists = RoomsManager.getFacists(socket.currentRoom)
+        const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
+        _.forEach(facists, (player) => {
+            player.emit()
+        })
         io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME)
     }
 
