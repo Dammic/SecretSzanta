@@ -7,7 +7,6 @@ import PlayerBoardComponent from './PlayerBoardComponent'
 import { increasePolicyCount } from '../../ducks/roomDuck'
 
 export class PlayerBoard extends React.PureComponent {
-
     constructor () {
         super()
         this.TestTimer = setInterval(() => {
@@ -35,6 +34,7 @@ export class PlayerBoard extends React.PureComponent {
 
     render () {
         const playersWithoutMe = this.props.playersList.filter(player => (player.playerName !== this.props.userName))
+
         const players = playersWithoutMe.map(
             player => this.makePlayer(player)
         )

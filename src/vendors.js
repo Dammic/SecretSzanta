@@ -10,8 +10,11 @@ require('react')
 require('react-dom')
 require('react-router')
 require('socket.io-client')
+<<<<<<< HEAD
 require('react-router-redux')
 require('redux')
 require('redux-thunk')
 require('react-redux')
+=======
+>>>>>>> 78108d0d18278ae1787e19338c5d15d594a05fc0
 require('classnames')

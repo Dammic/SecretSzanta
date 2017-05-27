@@ -29,13 +29,11 @@ export class LoginPage extends React.PureComponent {
 
     setName = () => {
         const name = this.inputRef.value
-        const {selectName} = this.props.actions
-        selectName(name)
+        this.props.userActions.selectName(name)
     }
 
     render () {
-        const {userName} = this.props
-        if (userName === '') {
+        if (this.props.userName === '') {
             return (
                 <div>
                     <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef} onInputChange={this.onInputChange}/>
@@ -55,7 +53,7 @@ const mapStateToProps = ({user}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({selectName}, dispatch)
+        userActions: bindActionCreators({selectName}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

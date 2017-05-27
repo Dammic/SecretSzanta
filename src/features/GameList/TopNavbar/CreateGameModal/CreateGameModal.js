@@ -9,7 +9,6 @@ export default class CreateGameModal extends React.PureComponent {
         const {showModal, onHide, onCreate} = this.props
         return (
             <CreateGameModalComponent showModal={showModal} onHide={onHide} onCreate={onCreate}/>
-
         )
     }
 }

@@ -1,10 +1,12 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import ChatFormComponent from './ChatFormComponent'
 import {SocketEvents} from '../../../../../Dictionary'
 import {socket} from '../../../../utils/socket'
 
-export default class ChatForm extends React.PureComponent {
+export class ChatForm extends React.PureComponent {
 
     componentWillMount () {
         this.state = {
@@ -48,3 +50,12 @@ export default class ChatForm extends React.PureComponent {
         )
     }
 }
+
+
+const mapStateToProps = ({user}) => {
+    return {
+        userName: user.userName
+    }
+}
+
+export default connect(mapStateToProps)(ChatForm)

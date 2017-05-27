@@ -14,9 +14,8 @@ export class GameList extends React.PureComponent {
     }
 
     setRoomName = (event) => {
-        const {joinRoom} = this.props.actions
         let roomID = event.target.attributes.getNamedItem('data-roomid').value
-        joinRoom(roomID)
+        this.props.userActions.joinRoom(roomID)
     }
 
     render () {
@@ -78,7 +77,7 @@ const mapStateToProps = ({user}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({joinRoom}, dispatch)
+        userActions: bindActionCreators({joinRoom}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)
