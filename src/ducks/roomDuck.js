@@ -10,6 +10,7 @@ const CHOOSE_NEW_PRESIDENT = 'room/CHOOSE_NEW_PRESIDENT'
 const TOGGLE_CHANCELLOR_CHOICE_MODAL = 'room/TOGGLE_CHANCELLOR_CHOICE_MODAL'
 const TOGGLE_VOTING_MODAL = 'room/TOGGLE_VOTING_MODAL'
 const SYNC_ROOM_DATA = 'room/SYNC_ROOM_DATA'
+const INCREASE_POLICY_COUNT = 'room/INCREASE_POLICY_COUNT'
 
 const initialState = {
     maxPlayers: 0,
@@ -22,7 +23,9 @@ const initialState = {
     chancellor: null,
     isChancellorChoiceModalShown: false,
     isVotingModalShown: false,
-    potentialChancellorsChoices: []
+    potentialChancellorsChoices: [],
+    facistPoliciesCount: 0,
+    liberalPoliciesCount: 0
 }
 
 // Reducer
@@ -107,6 +110,22 @@ export default function reducer (state = initialState, action = {}) {
                 chancellorCandidate: (isVisible ? chancellorCandidate : null)
             }
         }
+        case INCREASE_POLICY_COUNT: {
+            const {facistPoliciesCount, liberalPoliciesCount} = state
+            const {isFacist} = action.payload
+
+            if(isFacist) {
+                return {
+                    ...state,
+                    facistPoliciesCount: facistPoliciesCount + 1
+                }
+            } else {
+                return {
+                    ...state,
+                    liberalPoliciesCount: liberalPoliciesCount + 1
+                }
+            }
+        }
         default:
             return state
     }
@@ -189,6 +208,15 @@ export function syncRoomData (maxPlayers, playersCount, slots, playersList, game
             playersList,
             gamePhase,
             chancellorCandidate
+        }
+    }
+}
+
+export function increasePolicyCount (isFacist) {
+    return {
+        type: INCREASE_POLICY_COUNT,
+        payload: {
+            isFacist
         }
     }
 }

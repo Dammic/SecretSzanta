@@ -4,19 +4,15 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {PlayerRole} from '../../../Dictionary'
 import PlayerBoardComponent from './PlayerBoardComponent'
+import { increasePolicyCount } from '../../ducks/roomDuck'
 
 export class PlayerBoard extends React.PureComponent {
 
     constructor () {
         super()
-        this.state = {
-            policies: 0
-        }
-
         this.TestTimer = setInterval(() => {
-            this.setState({
-                policies: this.state.policies + 1
-            })
+            this.props.roomActions.increasePolicyCount(true);
+            this.props.roomActions.increasePolicyCount(false);
         }, 1000)
     }
 
@@ -53,7 +49,7 @@ export class PlayerBoard extends React.PureComponent {
             else center.push(player)
         })
 
-        if (this.state.policies > 4) {
+        if (this.props.liberalPoliciesCount > 4) {
             clearInterval(this.TestTimer)
         }
 
@@ -62,8 +58,8 @@ export class PlayerBoard extends React.PureComponent {
                 playersLeft = {left}
                 playersMiddle = {center}
                 playersRight = {right}
-                policiesLiberalCount = {this.state.policies}
-                policiesFacistCount = {this.state.policies + 1}
+                policiesLiberalCount = {this.props.liberalPoliciesCount}
+                policiesFacistCount = {this.props.facistPoliciesCount}
             />
         )
     }
@@ -76,12 +72,14 @@ const mapStateToProps = ({user, room}) => {
         playersList: room.playersList,
         president: room.president,
         chancellor: room.chancellor,
-        gamePhase: room.gamePhase
+        gamePhase: room.gamePhase,
+        facistPoliciesCount: room.facistPoliciesCount,
+        liberalPoliciesCount: room.liberalPoliciesCount
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        roomActions: bindActionCreators({}, dispatch)
+        roomActions: bindActionCreators({increasePolicyCount}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerBoard)
