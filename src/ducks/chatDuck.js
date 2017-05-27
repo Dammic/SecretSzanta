@@ -1,6 +1,5 @@
 'use strict'
 import moment from 'moment'
-import {SocketEvents} from '../../Dictionary'
 
 // Actions
 const ADD_MESSAGE = 'chat/ADD_MESSAGE'

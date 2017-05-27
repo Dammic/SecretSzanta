@@ -65,9 +65,7 @@ module.exports = function(io, RoomsManager) {
 
     const startGame = function(socket) {
         RoomsManager.startGame(socket.currentRoom)
-        io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
-            gamePhase: GamePhases.START_GAME
-        })
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME)
     }
 
     const startVotingPhaseVote = function(socket, {chancellorName}) {

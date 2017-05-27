@@ -1,24 +1,37 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import ChancellorChoiceModalComponent from './ChancellorChoiceModalComponent'
 import {SocketEvents} from '../../../../Dictionary'
 import {socket} from '../../../utils/socket'
+import {toggleChancellorChoiceModal} from '../../../ducks/roomDuck'
 
-export default class ChancellorChoiceModal extends React.PureComponent {
-
+export class ChancellorChoiceModal extends React.PureComponent {
     onChancellorChoice = (event) => {
-        const {onHide} = this.props
         socket.emit(SocketEvents.VOTING_PHASE_START, { chancellorName: event.target.getAttribute('data-playername')})
-        onHide()
+        this.props.roomActions.toggleChancellorChoiceModal(false)
     }
 
     render () {
-        const {showModal, chancellorsChoices} = this.props
         return (
             <ChancellorChoiceModalComponent
-                showModal={showModal}
-                chancellorsChoices={chancellorsChoices}
+                showModal={this.props.isChancellorChoiceModalShown}
+                potentialChancellorsChoices={this.props.potentialChancellorsChoices}
                 onChancellorChoice={this.onChancellorChoice} />
         )
     }
 }
+
+const mapStateToProps = ({room}) => {
+    return {
+        potentialChancellorsChoices: room.potentialChancellorsChoices,
+        isChancellorChoiceModalShown: room.isChancellorChoiceModalShown
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        roomActions: bindActionCreators({toggleChancellorChoiceModal}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ChancellorChoiceModal)

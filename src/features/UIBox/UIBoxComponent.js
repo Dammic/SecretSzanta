@@ -11,7 +11,7 @@ const UIBoxComponent = ({
         <div className="ui-box">
             <button onClick={onStartVote}>voting (test)</button>
             <button onClick={onStartGame}>start game (test)</button>
-            <Chat userName={userName}/>
+            <Chat />
         </div>
     )
 }

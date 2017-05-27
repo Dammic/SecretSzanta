@@ -1,32 +1,46 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import VotingModalComponent from './VotingModalComponent'
 import {SocketEvents} from '../../../../Dictionary'
 import {socket} from '../../../utils/socket'
+import {toggleVotingModal} from '../../../ducks/roomDuck'
 
-export default class VotingModal extends React.PureComponent {
+export class VotingModal extends React.PureComponent {
 
     onYesVote = () => {
-        const {onHide} = this.props
         socket.emit(SocketEvents.CLIENT_VOTE, { value: true })
-        onHide()
+        this.props.roomActions.toggleVotingModal(false)
     }
 
     onNoVote = () => {
-        const {onHide} = this.props
         socket.emit(SocketEvents.CLIENT_VOTE, { value: false })
-        onHide()
+        this.props.roomActions.toggleVotingModal(false)
     }
 
     render () {
-        const {showModal, president, chancellorCandidate} = this.props
         return (
             <VotingModalComponent
-                showModal={showModal}
+                showModal={this.props.isVotingModalShown}
                 onYesVote={this.onYesVote}
                 onNoVote={this.onNoVote}
-                president={president}
-                chancellorCandidate={chancellorCandidate} />
+                president={this.props.president}
+                chancellorCandidate={this.props.chancellorCandidate} />
         )
     }
 }
+
+const mapStateToProps = ({room}) => {
+    return {
+        president: room.president,
+        chancellorCandidate: room.chancellorCandidate,
+        isVotingModalShown: room.isVotingModalShown
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        roomActions: bindActionCreators({toggleVotingModal}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(VotingModal)

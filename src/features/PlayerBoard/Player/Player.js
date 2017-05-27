@@ -19,15 +19,13 @@ export default class Player extends React.PureComponent {
         })
 
         socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
-            const {player} = this.props
-            if (playerName === player.playerName) {
+            if (playerName === this.props.player.playerName) {
                 this.setState({ voteBubbleInfo: {voteValue: ''} })
             }
         })
 
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
-            const {player} = this.props
-            const thisPlayerVote = _find(votes, (vote) => vote.playerName === player.playerName)
+            const thisPlayerVote = _find(votes, (vote) => vote.playerName === this.props.player.playerName)
             if (thisPlayerVote) {
                 this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
             }
@@ -51,19 +49,17 @@ export default class Player extends React.PureComponent {
     }
 
     getVoteBubbleStyle = () => {
-        const {voteBubbleInfo} = this.state
         switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames('bubble-left', {'active': !!voteBubbleInfo})
+                return classNames('bubble-left', {'active': !!this.state.voteBubbleInfo})
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames('bubble-right', {'active': !!voteBubbleInfo})
+                return classNames('bubble-right', {'active': !!this.state.voteBubbleInfo})
             default:
-                return classNames('bubble-top', {'active': !!voteBubbleInfo})
+                return classNames('bubble-top', {'active': !!this.state.voteBubbleInfo})
         }
     }
 
     render () {
-        const {voteBubbleInfo} = this.state
         const {playerName, avatarNumber} = this.props.player
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
 
@@ -73,7 +69,7 @@ export default class Player extends React.PureComponent {
                 avatar = {avatarPicture}
                 rolePicture = {this.getRolePicture()}
                 voteBubbleStyle = {this.getVoteBubbleStyle()}
-                voteBubbleInfo = {voteBubbleInfo} />
+                voteBubbleInfo = {this.state.voteBubbleInfo} />
         )
     }
 

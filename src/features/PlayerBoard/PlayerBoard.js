@@ -1,9 +1,11 @@
 'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import {PlayerRole} from '../../../Dictionary'
 import PlayerBoardComponent from './PlayerBoardComponent'
 
-export default class PlayerBoard extends React.PureComponent {
+export class PlayerBoard extends React.PureComponent {
 
     constructor () {
         super()
@@ -19,11 +21,10 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     makePlayer (player) {
-        const {president, chancellor} = this.props
         let role
-        if (president && player.playerName === president.playerName) {
+        if (this.props.president && player.playerName === this.props.president.playerName) {
             role = PlayerRole.ROLE_PRESIDENT
-        } else if (chancellor && player.playerName === chancellor.playerName) {
+        } else if (this.props.chancellor && player.playerName === this.props.chancellor.playerName) {
             role = PlayerRole.ROLE_CHANCELLOR
         } else {
             role = null
@@ -37,7 +38,7 @@ export default class PlayerBoard extends React.PureComponent {
     }
 
     render () {
-        const playersWithoutMe = this.props.players.filter(player => (player.playerName !== this.props.userName))
+        const playersWithoutMe = this.props.playersList.filter(player => (player.playerName !== this.props.userName))
         const players = playersWithoutMe.map(
             player => this.makePlayer(player)
         )
@@ -67,3 +68,20 @@ export default class PlayerBoard extends React.PureComponent {
         )
     }
 }
+
+
+const mapStateToProps = ({user, room}) => {
+    return {
+        userName: user.userName,
+        playersList: room.playersList,
+        president: room.president,
+        chancellor: room.chancellor,
+        gamePhase: room.gamePhase
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        roomActions: bindActionCreators({}, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerBoard)

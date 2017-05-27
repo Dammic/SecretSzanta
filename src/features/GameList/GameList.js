@@ -1,17 +1,16 @@
 'use strict'
 import React from 'react'
-import GameListComponent from './GameListComponent'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
 import {joinRoom} from '../../ducks/userDuck'
-import {initializeSocket, socket} from '../../utils/socket'
+import SocketHandler from '../../utils/socket'
 
 export class GameList extends React.PureComponent {
 
     constructor (props) {
         super(props)
-        props.actions.initializeSocket()
     }
 
     setRoomName = (event) => {
@@ -59,9 +58,14 @@ export class GameList extends React.PureComponent {
                 playerCount: 10
             }
         ]
-        return (roomName
-            ? <GameRoom /> 
-            : <GameListComponent userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
+        return (
+            <div>
+                <SocketHandler />
+                {roomName
+                    ? <GameRoom />
+                    : <GameListComponent userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
+                }
+            </div>
         )
     }
 }
@@ -74,7 +78,7 @@ const mapStateToProps = ({user}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators({joinRoom, initializeSocket}, dispatch)
+        actions: bindActionCreators({joinRoom}, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)
