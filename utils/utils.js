@@ -1,4 +1,4 @@
-const getCurrentTimestamp = function() {
+const getCurrentTimestamp = () => {
     return Math.floor(Date.now() / 1000)
 }
 

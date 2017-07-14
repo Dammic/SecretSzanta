@@ -1,5 +1,6 @@
 'use strict'
 import {SocketEvents} from '../../Dictionary'
+import { forEach, find } from 'lodash'
 
 // Actions
 const ADD_PLAYER = 'room/ADD_PLAYER'
@@ -11,6 +12,7 @@ const TOGGLE_CHANCELLOR_CHOICE_MODAL = 'room/TOGGLE_CHANCELLOR_CHOICE_MODAL'
 const TOGGLE_VOTING_MODAL = 'room/TOGGLE_VOTING_MODAL'
 const SYNC_ROOM_DATA = 'room/SYNC_ROOM_DATA'
 const INCREASE_POLICY_COUNT = 'room/INCREASE_POLICY_COUNT'
+const REVEAL_FACISTS = 'room/REVEAL_FACISTS'
 
 const initialState = {
     maxPlayers: 0,
@@ -36,7 +38,7 @@ export default function reducer (state = initialState, action = {}) {
             const {playersList, slots, playersCount} = state
 
             const newSlots = [...slots]
-            newSlots[playerInfo.slotID - 1] = playerInfo
+            newSlots[playerInfo.slotNumber - 1] = playerInfo
             return {
                 ...state,
                 slots: newSlots,
@@ -45,11 +47,11 @@ export default function reducer (state = initialState, action = {}) {
             }
         }
         case REMOVE_PLAYER: {
-            const {playerName, slotID} = action.payload
+            const {playerName, slotNumber} = action.payload
             const {playersList, slots, playersCount} = state
 
             let newSlots = [...slots]
-            newSlots[slotID - 1].player = null
+            newSlots[slotNumber - 1].player = null
             const newPlayersList = playersList.filter((player) => {
                 return (player.playerName !== playerName)
             })
@@ -126,6 +128,25 @@ export default function reducer (state = initialState, action = {}) {
                 }
             }
         }
+        case REVEAL_FACISTS: {
+            const { slots } = state
+            const { facists } = action.payload
+            
+            const slotsCopy = { ...slots }
+            console.info(slotsCopy)
+            forEach(facists, (facist) => {
+                const player = find(slotsCopy, { player: { playerName: facist.playerName } })
+                console.info(facist.facistAvatar)
+                if (player) {
+                    player.affiliation = facist.affiliation
+                    player.facistAvatar = facist.facistAvatar
+                }
+            })
+            return {
+                ...state,
+                slots: slotsCopy,
+            }
+        }
         default:
             return state
     }
@@ -141,12 +162,12 @@ export function addPlayer (playerInfo) {
     }
 }
 
-export function removePlayer (playerName, slotID) {
+export function removePlayer (playerName, slotNumber) {
     return {
         type: REMOVE_PLAYER,
         payload: {
             playerName,
-            slotID
+            slotNumber
         }
     }
 }
@@ -219,4 +240,13 @@ export function increasePolicyCount (isFacist) {
             isFacist
         }
     }
+}
+
+export function revealFacists(facists) {
+    return {
+        type: REVEAL_FACISTS,
+        payload: {
+            facists, 
+        },
+    };
 }

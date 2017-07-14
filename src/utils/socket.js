@@ -4,7 +4,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {SocketEvents, GamePhases} from '../../Dictionary'
-import {addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident, toggleChancellorChoiceModal, toggleVotingModal, syncRoomData} from '../ducks/roomDuck'
+import { addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident, toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists } from '../ducks/roomDuck'
 import {addMessage} from '../ducks/chatDuck';
 
 export let socket
@@ -19,9 +19,9 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(timestamp, `${playerName} has joined the room!`)
             this.props.roomActions.addPlayer(playerInfo)
         })
-        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, ({playerName, slotID, timestamp}) => {
+        socket.on(SocketEvents.CLIENT_LEAVE_ROOM, ({playerName, slotNumber, timestamp}) => {
             this.props.chatActions.addMessage(timestamp, `${playerName} has left the room!`)
-            this.props.roomActions.removePlayer(playerName, slotID)
+            this.props.roomActions.removePlayer(playerName, slotNumber)
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, ({timestamp, content, author}) => {
             this.props.chatActions.addMessage(timestamp, content, author)
@@ -44,6 +44,10 @@ export class SocketHandler extends React.PureComponent {
                 this.props.roomActions.toggleChancellorChoiceModal(true, playersChoices);
             }
         })
+        socket.on(SocketEvents.BECOME_FACIST, ({facists}) => {
+            console.info(facists) 
+            this.props.roomActions.revealFacists(facists);
+        })
     }
 
     render () {
@@ -59,7 +63,7 @@ const mapStateToProps = ({user, room}) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        roomActions: bindActionCreators({addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident, toggleChancellorChoiceModal, toggleVotingModal, syncRoomData}, dispatch),
+        roomActions: bindActionCreators({addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident, toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists }, dispatch),
         chatActions: bindActionCreators({addMessage}, dispatch)
     }
 }

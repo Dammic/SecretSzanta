@@ -1,6 +1,6 @@
 'use strict'
-const _ = require('lodash')
-const {GamePhases, PlayerRole, PlayerAffilications}  = require('../Dictionary')
+const { tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, sortBy, size } = require('lodash');
+const { GamePhases, PlayerRole, PlayerAffilications }  = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -16,242 +16,227 @@ const RoomsManager = function() {
      * @param {Number} [maxPlayers = 10] - max amount of players in the room
      */
     return {
-        initializeRoom: function (roomName, maxPlayers = 10, password) {
-            let slots = []
-            const tmp = [...Array(maxPlayers)].map((value, index) => {
-                slots[index] = {
-                    slotID: index + 1,
-                    player: null
-                }
-            })
+        initializeRoom: (roomName, maxPlayers = 10, password) => {
+            let freeSlots = []
+            times(maxPlayers, index => freeSlots.push(index + 1))
 
             rooms_props[roomName] = {
-                slots,
+                freeSlots,
+                playersDict: [],
                 maxPlayers,
-                playersCount: 0,
                 password,
                 chancellorCandidateName: '',
                 votes: [],
-                gamePhase: GamePhases.GAME_PHASE_NEW
+                gamePhase: GamePhases.GAME_PHASE_NEW,
             }
         },
 
-        setChancellor: function(roomName) {
-            let {slots, chancellorCandidateName} = rooms_props[roomName]
+        setChancellor: (roomName) => {
+            const { playersDict, chancellorCandidateName } = rooms_props[roomName]
 
-            const previousChancellor = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PREVIOUS_CHANCELLOR)
-            if(previousChancellor) previousChancellor.player.role = null
+            const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
+            if (previousChancellor) previousChancellor.role = null
 
-            const currentChancellor = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_CHANCELLOR)
-            if(currentChancellor) currentChancellor.player.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+            const currentChancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
+            if (currentChancellor) currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
 
-            const nextChancellor = slots.find((slot) => slot.player && slot.player.playerName === chancellorCandidateName)
-            nextChancellor.player.role = PlayerRole.ROLE_CHANCELLOR
+            const nextChancellor = playersDict[chancellorCandidateName]
+            nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
         },
 
-        getChancellor: function(roomName) {
-            let {slots} = rooms_props[roomName]
-            const chancellor = _.find(slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_CHANCELLOR)
+        getChancellor: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
+            const chancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
 
-            return ( chancellor ? {playerName: chancellor.player.playerName, avatarNumber: chancellor.player.avatarNumber} : null )
+            return (chancellor ? pick(chancellor, ['playerName', 'avatarNumber']) : null)
         },
 
-        getChancellorCandidateInfo: function(roomName, chancellorCandidateName) {
-            let {slots} = rooms_props[roomName]
-            const chancellorCandidate = _.find(slots, (slot) => slot.player && slot.player.playerName === chancellorCandidateName);
-            return ( chancellorCandidate ? {playerName: chancellorCandidate.player.playerName, avatarNumber: chancellorCandidate.player.avatarNumber} : null )
+        getChancellorCandidateInfo: (roomName) => {
+            const { playersDict, chancellorCandidateName } = rooms_props[roomName]
+            const chancellorCandidate = playersDict[chancellorCandidateName]
+            
+            return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
         },
 
-        setPresident: function(roomName, presidentName) {
-            let {slots} = rooms_props[roomName]
+        setPresident: (roomName, presidentName) => {
+            const { playersDict } = rooms_props[roomName]
 
-            const previousPresident = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PREVIOUS_PRESIDENT)
-            if(previousPresident) previousPresident.player.role = null
+            const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
+            if (previousPresident) { 
+                previousPresident.role = null
+            }
 
-            const currentPresident = slots.find((slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
-            if(currentPresident) currentPresident.player.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
+            const currentPresident = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
+            if (currentPresident) {
+                currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
+            }
 
-            const nextPresident = slots.find((slot) => slot.player && slot.player.playerName === presidentName)
-            nextPresident.player.role = PlayerRole.ROLE_PRESIDENT
+            const nextPresident = playersDict[presidentName]
+            nextPresident.role = PlayerRole.ROLE_PRESIDENT
         },
 
-        getPresident: function(roomName) {
-            let {slots} = rooms_props[roomName]
-            const president = _.find(slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
-            return ( president ? {playerName: president.player.playerName, avatarNumber: president.player.avatarNumber} : null )
+        getPresident: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
+            const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
+            
+            return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
         },
 
-        chooseNextPresident: function(roomName) {
-            const playersList = _.reduce(rooms_props[roomName].slots, function(result, slot) {
-                if(slot.player) result.push(slot.player.playerName)
-                return result
-            }, [])
-            const indexOfLastPresident = _.findIndex(rooms_props[roomName].slots, (slot) => slot.player && slot.player.role === PlayerRole.ROLE_PRESIDENT)
+        chooseNextPresident: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
+            const lastPresidentSlotNumber = get(find(playersDict, { role: PlayerRole.ROLE_PRESIDENT }), 'slotNumber')
+
             // if no president has been choosen, we choose the first player on the list
-            const nextPresident = ( indexOfLastPresident >= 0 ? playersList[(indexOfLastPresident + 1) % playersList.length] : playersList[0])
+            const nextPresident = (lastPresidentSlotNumber 
+                ? find(playersDict, { slotNumber: (lastPresidentSlotNumber + 1) % size(playersDict) })
+                : find(playersDict, { slotNumber: 0 })
+            )
             this.setPresident(roomName, nextPresident)
         },
 
-        startGame: function(roomName) {
+        startGame: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
             rooms_props[roomName].gamePhase = GamePhases.START_GAME;
 
-            // filtering unnecessary empty slots
-            //rooms_props[roomName].slots = _.filter(rooms_props[roomName].slots, (slot) => slot.player)
-
-            const playersList = _.filter(rooms_props[roomName].slots, 'player')
-
-            const liberalCount = Math.floor(playersList.length / 2) + 1
-            const facistCount = playersList.length - liberalCount;
+            const liberalCount = Math.floor(size(playersDict) / 2) + 1
+            const facistCount = size(playersDict) - liberalCount;
 
             // selecting random facists and hitler
-            const shuffledPlayers = playersList.sort(() => .5 - Math.random())
-            const selectedFacists = shuffledPlayers.slice(0, facistCount)
-            const hitlerPlayer = selectedFacists[0]
-            _.forEach(selectedFacists, (slot) => {
-                slot.player.affiliation = PlayerAffilications.FACIST_AFFILIATION
-                slot.player.facistAvatar = _.random(21, 21)
+            const shuffledPlayers = map(playersDict.sort(() => .5 - Math.random()), 'playerName')
+            const hitlerPlayerName = shuffledPlayers[0]
+            const selectedFacists = slice(shuffledPlayers, 1, facistCount - 1)
+            forEach(selectedFacists, (playerName) => {
+                playersDict[playerName].affiliation = PlayerAffilications.FACIST_AFFILIATION
+                playersDict[playerName].facistAvatar = random(21, 21)
             })
-            hitlerPlayer.player.affiliation = PlayerAffilications.HITLER_AFFILIATION
-            hitlerPlayer.player.facistAvatar = 50
-
-            rooms_props[roomName].slots = playersList
+            playersDict[hitlerPlayerName].affiliation = PlayerAffilications.HITLER_AFFILIATION
+            playersDict[hitlerPlayerName].facistAvatar = 50
         },
 
-        getFacists: function(roomName) {
-            return _.filter(rooms_props[roomName].slots, (slot) => player.affiliation === PlayerAffilications.FACIST_AFFILIATION || player.affiliation === PlayerAffilications.HITLER_AFFILIATION)
+        getFacists: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
+            const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
+            return filter(
+                pick(playersDict, ['playerName', 'affiliation', 'facistAvatar']),
+                player => includes(facistsDict, player.affiliation)
+            )
         },
 
-        startChancellorChoicePhase: function(roomName) {
+        startChancellorChoicePhase: (roomName) => {
             rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             this.chooseNextPresident(roomName)
         },
 
-        getChancellorChoices: function(roomName) {
-            const chancellorChoices = _.reduce(rooms_props[roomName].slots, function(result, slot) {
-                if(slot.player && slot.player.role === null) result.push({playerName: slot.player.playerName, avatarNumber: slot.player.avatarNumber})
-                return result;
-            }, [])
+        getChancellorChoices: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
+            const chancellorChoices = filter(
+                pick(playersDict, ['playerName', 'avatarNumber', 'role']),
+                player => isNil(player.role) 
+            )
             return chancellorChoices
         },
 
         /***********Voting***********/
 
-
-        initializeVoting: function(roomName, chancellorCandidateName) {
-            rooms_props[roomName].votes = _.reduce(rooms_props[roomName].slots, (result, slot) => {
-                if(slot.player)  result.push({playerName: slot.player.playerName, didVote: false, value: null})
-                return result
-            }, [])
+        initializeVoting: (roomName, chancellorCandidateName) => {
+            const { playersDict } = rooms_props[roomName]
+            rooms_props[roomName].votes = mapValues(playersDict, player => ({ playerName: player.playerName, didVote: false, value: null }))
             rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
         },
 
-        vote: function(roomName, playerName, value) {
-            let playerVote = _.find(rooms_props[roomName].votes, (vote) => vote.playerName === playerName)
-            playerVote.didVote = true
-            playerVote.value = value
+        vote: (roomName, playerName, value) => {
+            const { votes } = rooms_props[roomName]
+            votes[playerName].didVote = true
+            votes[playerName].value = value
         },
 
-        didAllVote: function(roomName) {
-            return (_.find(rooms_props[roomName].votes, (vote) => vote.didVote === false) ? false : true)
+        didAllVote: (roomName) => {
+            const { votes } = rooms_props[roomName]
+            return !find(votes, { didVote: false })
         },
 
-        getVotes: function(roomName) {
-            return rooms_props[roomName].votes;
+        getVotes: (roomName) => {
+            return rooms_props[roomName].votes
         },
 
-        getVotingResult: function(roomName) {
-            const votesCount = _.countBy(rooms_props[roomName].votes, 'value')
-            return votesCount[true] > votesCount[false] || !votesCount[false]
+        getVotingResult: (roomName) => {
+            const { votes } = rooms_props[roomName]
+            const votesCount = countBy(votes, 'value')
+            return ((votesCount[true] > votesCount[false]) || !votesCount[false])
         },
 
         /****************************/
 
-
-        deleteRoom: function (roomName) {
-            if (isRoomPresent(roomName)) {
-                rooms_props = _.filter(rooms_props, (room, key) => (roomName !== key) ? true : false)
-            }
-        },
-        getRoomsList: function () {
-            return _.reduce(rooms_props, (result, room, key) => {
-                result.push({
-                    roomName: key,
-                    maxPlayers: room.maxPlayers,
-                    playersCount: room.playersCount
-                })
-            }, [])
-        },
-        getRoomDetails: function (roomName) {
-            const room = rooms_props[roomName]
-            const playersList = _.reduce(room.slots, (result, slot) => {
-                if (slot.player) result.push({playerName: slot.player.playerName, avatarNumber: slot.player.avatarNumber})
-                return result
-            }, [])
-            return {
+        getRoomsList: () => {
+            return map(rooms_props, (room, key) => ({
+                roomName: key,
                 maxPlayers: room.maxPlayers,
-                playersCount: room.playersCount,
-                slots: room.slots,
-                playersList,
-                gamePhase: room.gamePhase,
-                chancellorCandidate: this.getChancellorCandidateInfo(roomName, room.chancellorCandidateName)
+                playersCount: size(room.playersDict),
+            }))
+        },
+        getRoomDetails: (roomName) => {
+            const { playersDict, maxPlayers, gamePhase } = rooms_props[roomName]
+            return {
+                maxPlayers,
+                gamePhase,
+                playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'avatarNumber'])),
+                chancellorCandidate: this.getChancellorCandidateInfo(roomName),
             }
         },
 
         /**
-         * Function that performs adding a new player to a room, increasing the player count by one.
+         * Function that performs adding a new player to a room
          *      It checks if the player is already in the room or if there are no empty slots.
          * @param {String} roomName - unique name of the modified room
          * @param {String} playerName - name of the player to be added to the room
-         * @param {Object} socket - Socket.IO socket object of the added player
+         * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
          */
-        addPlayer: function (roomName, playerName, socket) {
-            const {slots} = rooms_props[roomName]
+        addPlayer: (roomName, playerName, socket) => {
+            const { playersDict, freeSlots } = rooms_props[roomName]     
+            const nextEmptySlot = freeSlots[0]
 
-            // check if there is any free slot, returns first one or undefined if none found
-            const nextEmptySlot = slots.find((slot) => !(slot.player))
-
-            // check if the player is already on the server, returns object or undefined if no player has the same name
-            let samePlayerObject = slots.find((slot) => (slot.player && slot.player.playerName === playerName))
-
-            if (!samePlayerObject && nextEmptySlot) {
-                nextEmptySlot.player = {
+            if (!nextEmptySlot) {
+                console.error("The rum is full!") 
+            } else if (playersDict[playerName]) {
+                console.error("The rum has player with the same name as you!")
+            } else {
+                const newPlayer = {
                     playerName,
                     role: null,
                     avatarNumber: _.random(1, 5),
                     facistAvatar: null,
                     affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
-                    emit: socket.emit.bind(socket)
+                    slotNumber: nextEmptySlot, 
+                    emit: socket.emit.bind(socket),
                 }
-                rooms_props[roomName].playersCount += 1
-            } else {
-                //@TODO: RETURN A PROPER WARNING FOR THE USER (MODAL OR SOMETHING LIKE THAT)
-                console.warn('player with the same name is already on this board!')
+                playersDict[playerName] = newPlayer
+                rooms_props[roomName].freeSlots = tail(freeSlots)
             }
         },
 
         /**
-         * Function that performs removing a player from a room, decreasing the player count by one.
+         * Function that performs removing a player from a room
          * @param {String} roomName - unique name of the modified room
          * @param {String} playerName - name of the player to be removed from the room
          */
-        removePlayer: function (roomName, playerName) {
-            const {slots} = rooms_props[roomName]
-            const playerObject = slots.find((slot) => (slot.player && slot.player.playerName === playerName))
-            if (playerObject) {
-                playerObject.player = null
-                rooms_props[roomName].playersCount -= 1
+        removePlayer: (roomName, playerName) => {
+            const { playersDict, freeSlots } = rooms_props[roomName]
+            const player = playersDict[playerName] 
+            
+            if (player) {
+                freeSlots.push(player.slotNumber) 
+                delete playersDict[playerName]
             }
         },
 
-        getPlayerInfo: function (roomName, playerName) {
-            const {slots} = rooms_props[roomName]
-            const playerInfo = slots.find((slot) => (slot.player && slot.player.playerName === playerName))
-            return {
-                playerName: playerInfo.player.playerName,
-                role: playerInfo.player.role,
-                avatarNumber: playerInfo.player.avatarNumber,
-                slotID: playerInfo.slotID
-            }
+        getPlayerInfo: (roomName, playerName) => {
+            const { playersDict } = rooms_props[roomName]
+            const player = playersDict[player]
+ 
+            return (player
+                ? pick(player, ['playerName', 'role', 'avatarNumber', 'slotNumber'])
+                : null 
+            )
         },
 
         /**
@@ -259,12 +244,13 @@ const RoomsManager = function() {
          * @param roomName - id of a room
          * @returns {Boolean} - true if created, false if not created
          */
-        isRoomPresent: function (roomName) {
-            return (rooms_props[roomName] ? true : false)
+        isRoomPresent: (roomName) => {
+            return !isNil(rooms_props[roomName])
         },
 
-        getPlayersCount: function(roomName) {
-            return rooms_props[roomName].playerCount
+        getPlayersCount: (roomName) => {
+            const { playersDict } = rooms_props[roomName]
+            return size(playersDict)
         }
     }
 }

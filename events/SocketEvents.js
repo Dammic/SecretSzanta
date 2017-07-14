@@ -1,61 +1,59 @@
 'use strict'
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const {SocketEvents, GamePhases} = require('../Dictionary')
+const { SocketEvents, GamePhases } = require('../Dictionary')
+const { forEach } = require('lodash')
 
 module.exports = function(io, RoomsManager) {
-    const disconnect = function(socket) {
-        if(socket.currentRoom) {
-            const playerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, socket.currentPlayerName)
-
+    const disconnect = (socket) => {
+        if (socket.currentRoom && RoomsManager.isRoomPresent(socket.currentRoom)) {
+            RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
-                timestamp: getCurrentTimestamp(),
-                playerName: socket.currentPlayerName,
-                slotID: playerInfo.slotID
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    playerName: socket.currentPlayerName,
+                },
             })
-            if(RoomsManager.isRoomPresent(socket.currentRoom)) {
-                RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
-            }
             socket.currentRoom = ''
         }
-
         socket.currentPlayerName = ''
     }
 
-    const createRoom = function(socket, {roomName, maxPlayers, password}) {
+    const createRoom = (socket, { roomName, maxPlayers, password }) => {
         // if the room does not exist, create it
-        if(roomName && !RoomsManager.isRoomPresent(roomName)) {
+        if (roomName && !RoomsManager.isRoomPresent(roomName)) {
             RoomsManager.initializeRoom(roomName, maxPlayers, password)
         } else {
-            //console.error('selected room is already present! Cannot create a duplicate!')
+            console.error('selected room is already present! Cannot create a duplicate!')
         }
     }
 
-    const sendMessage = function(socket, {content, author}) {
+    const sendMessage = (socket, { content, author }) => {
         io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_SEND_MESSAGE, {
-            timestamp: getCurrentTimestamp(),
-            author,
-            content
+            data: {
+                timestamp: getCurrentTimestamp(),
+                author,
+                content,
+            },
         })
     }
 
-    const joinRoom = function(socket, {playerName, roomName}) {
-        if(roomName && socket.currentRoom === '' && RoomsManager.isRoomPresent(roomName)) {
-            RoomsManager.addPlayer(roomName, playerName, socket)
-
+    const joinRoom = (socket, { playerName, roomName }) => {
+        if (roomName && !socket.currentRoom && RoomsManager.isRoomPresent(roomName)) {
             const roomDetails = RoomsManager.getRoomDetails(roomName)
-
-            socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, roomDetails)
-
-            io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
-                timestamp: getCurrentTimestamp(),
-                playerName,
-                playerInfo: RoomsManager.getPlayerInfo(roomName, playerName)
-            })
-
+            
             socket.join(roomName)
-
             socket.currentPlayerName = playerName
             socket.currentRoom = roomName
+
+            RoomsManager.addPlayer(roomName, playerName, socket)
+            socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+
+            io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    player: RoomsManager.getPlayerInfo(roomName, playerName)
+                },
+            })
         } else {
             socket.emit(SocketEvents.CLIENT_JOIN_ROOM, {
                 error: 'Error - WHY IS THE ROOM GONE?!'
@@ -63,54 +61,66 @@ module.exports = function(io, RoomsManager) {
         }
     }
 
-    const startGame = function(socket) {
-        RoomsManager.startGame(socket.currentRoom)
+    const startGame = (socket) => {
         const facists = RoomsManager.getFacists(socket.currentRoom)
-        const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
-        _.forEach(facists, (player) => {
-            player.emit()
+        
+        RoomsManager.startGame(socket.currentRoom)
+        forEach(facists, (player) => {
+            player.emit(SocketEvents.BECOME_FACIST, {
+                data: {
+                    facists,
+                },
+            })
         })
         io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME)
     }
 
-    const startVotingPhaseVote = function(socket, {chancellorName}) {
+    const startVotingPhaseVote = (socket, { chancellorName }) => {
         RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
         io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
-            chancellorCandidate: RoomsManager.getChancellorCandidateInfo(socket.currentRoom, chancellorName)
+            data: {
+                chancellorCandidate: chancellorName,
+            },
         })
     }
 
-    const startChancellorChoicePhase = function(socket) {
-        RoomsManager.startChancellorChoicePhase(socket.currentRoom)
+    const startChancellorChoicePhase = (socket) => {
         const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
+        
+        RoomsManager.startChancellorChoicePhase(socket.currentRoom)
         io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
-            playersChoices,
-            president: RoomsManager.getPresident(socket.currentRoom)
+            data: {
+                playersChoices,
+                president: RoomsManager.getPresident(socket.currentRoom),
+            },
         })
     }
 
-    const vote = function(socket, {value}) {
+    const vote = (socket, { value }) => {
         RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value);
-        if(RoomsManager.didAllVote(socket.currentRoom)) {
+        if (RoomsManager.didAllVote(socket.currentRoom)) {
             const votingResult = RoomsManager.getVotingResult(socket.currentRoom)
-            if(votingResult) {
+            if (votingResult) {
                 RoomsManager.setChancellor(socket.currentRoom)
             } else {
                 setTimeout(() => {
                     startChancellorChoicePhase(socket)
-                }, 3000);
+                }, 3000)
             }
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
-                votes: RoomsManager.getVotes(socket.currentRoom),
-                newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null )
+                data: {
+                    votes: RoomsManager.getVotes(socket.currentRoom),
+                    newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null ),
+                },
             })
         } else {
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
-                playerName: socket.currentPlayerName
+                data: {
+                    playerName: socket.currentPlayerName,
+                },
             })
         }
     }
-
 
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
