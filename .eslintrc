@@ -1,10 +1,15 @@
 {
-    "extends": ["airbnb", "plugin:react/recommended"],
+    "extends": ["airbnb", "plugin:react/recommended", "plugin:lodash/recommended"],
     "rules": {
-        "indent": ["error", 4, {"SwitchCase": 1}]
+        "indent": ["error", 4, {"SwitchCase": 1}],
+        "semi": ["error", "never"],
+        "linebreak-style": "off",
+        "react/require-default-props": "off"
+
     },
     "plugins": [
-        "react"
+        "react",
+        "lodash"
     ],
     "parser": "babel-eslint"
 }
