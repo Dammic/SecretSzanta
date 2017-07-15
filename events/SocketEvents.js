@@ -40,7 +40,6 @@ module.exports = function(io, RoomsManager) {
     const joinRoom = (socket, { playerName, roomName }) => {
         if (roomName && !socket.currentRoom && RoomsManager.isRoomPresent(roomName)) {
             const roomDetails = RoomsManager.getRoomDetails(roomName)
-            
             socket.join(roomName)
             socket.currentPlayerName = playerName
             socket.currentRoom = roomName
@@ -55,6 +54,7 @@ module.exports = function(io, RoomsManager) {
                 },
             })
         } else {
+            console.error("Why is the room gone!")
             socket.emit(SocketEvents.CLIENT_JOIN_ROOM, {
                 error: 'Error - WHY IS THE ROOM GONE?!'
             })
@@ -91,7 +91,7 @@ module.exports = function(io, RoomsManager) {
         io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
             data: {
                 playersChoices,
-                president: RoomsManager.getPresident(socket.currentRoom),
+                presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
             },
         })
     }
@@ -110,7 +110,7 @@ module.exports = function(io, RoomsManager) {
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
                 data: {
                     votes: RoomsManager.getVotes(socket.currentRoom),
-                    newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom) : null ),
+                    newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom).playerName : null ),
                 },
             })
         } else {

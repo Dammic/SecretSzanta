@@ -1,5 +1,5 @@
 'use strict'
-const { tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, sortBy, size } = require('lodash');
+const { values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash');
 const { GamePhases, PlayerRole, PlayerAffilications }  = require('../Dictionary')
 
 /**
@@ -16,13 +16,13 @@ const RoomsManager = function() {
      * @param {Number} [maxPlayers = 10] - max amount of players in the room
      */
     return {
-        initializeRoom: (roomName, maxPlayers = 10, password) => {
+        initializeRoom: function(roomName, maxPlayers = 10, password) {
             let freeSlots = []
             times(maxPlayers, index => freeSlots.push(index + 1))
 
             rooms_props[roomName] = {
                 freeSlots,
-                playersDict: [],
+                playersDict: {},
                 maxPlayers,
                 password,
                 chancellorCandidateName: '',
@@ -31,7 +31,7 @@ const RoomsManager = function() {
             }
         },
 
-        setChancellor: (roomName) => {
+        setChancellor: function(roomName) {
             const { playersDict, chancellorCandidateName } = rooms_props[roomName]
 
             const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
@@ -44,21 +44,21 @@ const RoomsManager = function() {
             nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
         },
 
-        getChancellor: (roomName) => {
+        getChancellor: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             const chancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
 
             return (chancellor ? pick(chancellor, ['playerName', 'avatarNumber']) : null)
         },
 
-        getChancellorCandidateInfo: (roomName) => {
+        getChancellorCandidateInfo: function(roomName) {
             const { playersDict, chancellorCandidateName } = rooms_props[roomName]
             const chancellorCandidate = playersDict[chancellorCandidateName]
             
             return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
         },
 
-        setPresident: (roomName, presidentName) => {
+        setPresident: function(roomName, presidentName) {
             const { playersDict } = rooms_props[roomName]
 
             const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
@@ -70,31 +70,30 @@ const RoomsManager = function() {
             if (currentPresident) {
                 currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             }
-
+            
             const nextPresident = playersDict[presidentName]
             nextPresident.role = PlayerRole.ROLE_PRESIDENT
         },
 
-        getPresident: (roomName) => {
+        getPresident: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
             
             return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
         },
 
-        chooseNextPresident: (roomName) => {
+        chooseNextPresident: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             const lastPresidentSlotNumber = get(find(playersDict, { role: PlayerRole.ROLE_PRESIDENT }), 'slotNumber')
-
             // if no president has been choosen, we choose the first player on the list
             const nextPresident = (lastPresidentSlotNumber 
                 ? find(playersDict, { slotNumber: (lastPresidentSlotNumber + 1) % size(playersDict) })
-                : find(playersDict, { slotNumber: 0 })
+                : find(playersDict, { slotNumber: 1 })
             )
-            this.setPresident(roomName, nextPresident)
+            this.setPresident(roomName, nextPresident.playerName)
         },
 
-        startGame: (roomName) => {
+        startGame: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             rooms_props[roomName].gamePhase = GamePhases.START_GAME;
 
@@ -102,7 +101,7 @@ const RoomsManager = function() {
             const facistCount = size(playersDict) - liberalCount;
 
             // selecting random facists and hitler
-            const shuffledPlayers = map(playersDict.sort(() => .5 - Math.random()), 'playerName')
+            const shuffledPlayers = map(shuffle(values(playersDict)), 'playerName')
             const hitlerPlayerName = shuffledPlayers[0]
             const selectedFacists = slice(shuffledPlayers, 1, facistCount - 1)
             forEach(selectedFacists, (playerName) => {
@@ -113,7 +112,7 @@ const RoomsManager = function() {
             playersDict[hitlerPlayerName].facistAvatar = 50
         },
 
-        getFacists: (roomName) => {
+        getFacists: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
             return filter(
@@ -122,44 +121,46 @@ const RoomsManager = function() {
             )
         },
 
-        startChancellorChoicePhase: (roomName) => {
+        startChancellorChoicePhase: function(roomName) {
             rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             this.chooseNextPresident(roomName)
         },
 
-        getChancellorChoices: (roomName) => {
+        getChancellorChoices: function(roomName) {
             const { playersDict } = rooms_props[roomName]
-            const chancellorChoices = filter(
-                pick(playersDict, ['playerName', 'avatarNumber', 'role']),
-                player => isNil(player.role) 
-            )
+            let chancellorChoices = []
+            forEach(playersDict, (player) => {
+                if (isNil(player.role)) {
+                    chancellorChoices.push(pick(player, [ 'playerName', 'avatarNumber' ]))
+                } 
+            })
             return chancellorChoices
         },
 
         /***********Voting***********/
 
-        initializeVoting: (roomName, chancellorCandidateName) => {
+        initializeVoting: function(roomName, chancellorCandidateName) {
             const { playersDict } = rooms_props[roomName]
             rooms_props[roomName].votes = mapValues(playersDict, player => ({ playerName: player.playerName, didVote: false, value: null }))
             rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
         },
 
-        vote: (roomName, playerName, value) => {
+        vote: function(roomName, playerName, value) {
             const { votes } = rooms_props[roomName]
             votes[playerName].didVote = true
             votes[playerName].value = value
         },
 
-        didAllVote: (roomName) => {
+        didAllVote: function(roomName) {
             const { votes } = rooms_props[roomName]
             return !find(votes, { didVote: false })
         },
 
-        getVotes: (roomName) => {
+        getVotes: function(roomName) {
             return rooms_props[roomName].votes
         },
 
-        getVotingResult: (roomName) => {
+        getVotingResult: function(roomName) {
             const { votes } = rooms_props[roomName]
             const votesCount = countBy(votes, 'value')
             return ((votesCount[true] > votesCount[false]) || !votesCount[false])
@@ -167,14 +168,14 @@ const RoomsManager = function() {
 
         /****************************/
 
-        getRoomsList: () => {
+        getRoomsList: function() {
             return map(rooms_props, (room, key) => ({
                 roomName: key,
                 maxPlayers: room.maxPlayers,
                 playersCount: size(room.playersDict),
             }))
         },
-        getRoomDetails: (roomName) => {
+        getRoomDetails: function(roomName) {
             const { playersDict, maxPlayers, gamePhase } = rooms_props[roomName]
             return {
                 maxPlayers,
@@ -191,7 +192,7 @@ const RoomsManager = function() {
          * @param {String} playerName - name of the player to be added to the room
          * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
          */
-        addPlayer: (roomName, playerName, socket) => {
+        addPlayer(roomName, playerName, socket) {
             const { playersDict, freeSlots } = rooms_props[roomName]     
             const nextEmptySlot = freeSlots[0]
 
@@ -203,7 +204,7 @@ const RoomsManager = function() {
                 const newPlayer = {
                     playerName,
                     role: null,
-                    avatarNumber: _.random(1, 5),
+                    avatarNumber: random(1, 5),
                     facistAvatar: null,
                     affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
                     slotNumber: nextEmptySlot, 
@@ -219,7 +220,7 @@ const RoomsManager = function() {
          * @param {String} roomName - unique name of the modified room
          * @param {String} playerName - name of the player to be removed from the room
          */
-        removePlayer: (roomName, playerName) => {
+        removePlayer: function(roomName, playerName) {
             const { playersDict, freeSlots } = rooms_props[roomName]
             const player = playersDict[playerName] 
             
@@ -229,9 +230,9 @@ const RoomsManager = function() {
             }
         },
 
-        getPlayerInfo: (roomName, playerName) => {
+        getPlayerInfo: function(roomName, playerName) {
             const { playersDict } = rooms_props[roomName]
-            const player = playersDict[player]
+            const player = playersDict[playerName]
  
             return (player
                 ? pick(player, ['playerName', 'role', 'avatarNumber', 'slotNumber'])
@@ -244,11 +245,11 @@ const RoomsManager = function() {
          * @param roomName - id of a room
          * @returns {Boolean} - true if created, false if not created
          */
-        isRoomPresent: (roomName) => {
+        isRoomPresent: function(roomName) {
             return !isNil(rooms_props[roomName])
         },
 
-        getPlayersCount: (roomName) => {
+        getPlayersCount: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             return size(playersDict)
         }

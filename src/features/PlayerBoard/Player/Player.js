@@ -18,7 +18,8 @@ export default class Player extends React.PureComponent {
             this.setState({ voteBubbleInfo: null})
         })
 
-        socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({playerName}) => {
+        socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({ playerName }) => {
+            console.info(this.props.player.playerName)
             if (playerName === this.props.player.playerName) {
                 this.setState({ voteBubbleInfo: {voteValue: ''} })
             }

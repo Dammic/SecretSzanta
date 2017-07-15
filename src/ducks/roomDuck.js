@@ -1,5 +1,5 @@
 'use strict'
-import {SocketEvents} from '../../Dictionary'
+import { SocketEvents, PlayerRole } from '../../Dictionary'
 import { forEach, find } from 'lodash'
 
 // Actions
@@ -16,127 +16,114 @@ const REVEAL_FACISTS = 'room/REVEAL_FACISTS'
 
 const initialState = {
     maxPlayers: 0,
-    playersCount: 0,
-    slots: [],
-    playersList: [],
+    playersDict: {},
     chancellorCandidate: null,
     gamePhase: '',
-    president: null,
-    chancellor: null,
     isChancellorChoiceModalShown: false,
     isVotingModalShown: false,
     potentialChancellorsChoices: [],
     facistPoliciesCount: 0,
-    liberalPoliciesCount: 0
+    liberalPoliciesCount: 0,
 }
 
 // Reducer
 export default function reducer (state = initialState, action = {}) {
     switch (action.type) {
         case ADD_PLAYER: {
-            const {playerInfo} = action.payload
-            const {playersList, slots, playersCount} = state
+            const { player } = action.payload
+            const { playersDict } = state
 
-            const newSlots = [...slots]
-            newSlots[playerInfo.slotNumber - 1] = playerInfo
             return {
                 ...state,
-                slots: newSlots,
-                playersList: [...playersList, {playerName: playerInfo.playerName, avatarNumber: playerInfo.avatarNumber} ],
-                playersCount: playersCount + 1
+                playersDict: { ...playersDict, [player.playerName]: player },
             }
         }
         case REMOVE_PLAYER: {
-            const {playerName, slotNumber} = action.payload
-            const {playersList, slots, playersCount} = state
-
-            let newSlots = [...slots]
-            newSlots[slotNumber - 1].player = null
-            const newPlayersList = playersList.filter((player) => {
-                return (player.playerName !== playerName)
-            })
+            const { playerName } = action.payload
+            const newPlayersDict = { ...state.playersDict }
+            delete newPlayersDict[playerName]
 
             return {
                 ...state,
-                playersList: newPlayersList,
-                slots: newSlots,
-                playersCount: playersCount - 1
+                playersDict: newPlayersDict,
             }
         }
         case SYNC_ROOM_DATA: {
-            const {maxPlayers, playersCount, slots, playersList, gamePhase, chancellorCandidate} = action.payload
+            const { maxPlayers, playersDict, gamePhase, chancellorCandidate } = action.payload
+
             return {
                 ...state,
                 maxPlayers,
-                playersCount,
-                slots,
-                playersList,
+                playersDict,
                 gamePhase,
-                chancellorCandidate
+                chancellorCandidate,
             }
         }
         case CHANGE_GAME_PHASE: {
-            const {gamePhase} = action.payload
+            const { gamePhase } = action.payload
+
             return {
                 ...state,
-                gamePhase
+                gamePhase,
             }
         }
         case CHOOSE_NEW_CHANCELLOR: {
-            const {newChancellor} = action.payload
+            const { newChancellor } = action.payload
+            const newPlayersDict = { ...state.playersDict }
+            
+            newPlayersDict[newChancellor].role = PlayerRole.ROLE_CHANCELLOR
             return {
                 ...state,
-                chancellor: newChancellor
+                playersDict: newPlayersDict,
             }
         }
         case CHOOSE_NEW_PRESIDENT: {
-            const {newPresident} = action.payload
+            const { newPresident } = action.payload
+            const newPlayersDict = { ...state.playersDict }
+            newPlayersDict[newPresident].role = PlayerRole.ROLE_PRESIDENT 
             return {
                 ...state,
-                president: newPresident
+                playersDict: newPlayersDict,
             }
         }
         case TOGGLE_CHANCELLOR_CHOICE_MODAL: {
-            const {isVisible, potentialChancellorsChoices} = action.payload
+            const { isVisible, potentialChancellorsChoices } = action.payload
             return {
                 ...state,
                 isChancellorChoiceModalShown: isVisible,
-                potentialChancellorsChoices: (isVisible ? potentialChancellorsChoices : [])
+                potentialChancellorsChoices: (isVisible ? potentialChancellorsChoices : []),
             }
         }
         case TOGGLE_VOTING_MODAL: {
-            const {isVisible, chancellorCandidate} = action.payload
+            const { isVisible, chancellorCandidate } = action.payload
             return {
                 ...state,
                 isVotingModalShown: isVisible,
-                chancellorCandidate: (isVisible ? chancellorCandidate : null)
+                chancellorCandidate: (isVisible ? chancellorCandidate : null),
             }
         }
         case INCREASE_POLICY_COUNT: {
-            const {facistPoliciesCount, liberalPoliciesCount} = state
-            const {isFacist} = action.payload
+            const { facistPoliciesCount, liberalPoliciesCount } = state
+            const { isFacist } = action.payload
 
-            if(isFacist) {
+            if (isFacist) {
                 return {
                     ...state,
-                    facistPoliciesCount: facistPoliciesCount + 1
+                    facistPoliciesCount: facistPoliciesCount + 1,
                 }
             } else {
                 return {
                     ...state,
-                    liberalPoliciesCount: liberalPoliciesCount + 1
+                    liberalPoliciesCount: liberalPoliciesCount + 1,
                 }
             }
         }
         case REVEAL_FACISTS: {
-            const { slots } = state
             const { facists } = action.payload
             
-            const slotsCopy = { ...slots }
-            console.info(slotsCopy)
+            const newPlayersDict = { ...state.playersDict }
             forEach(facists, (facist) => {
-                const player = find(slotsCopy, { player: { playerName: facist.playerName } })
-                console.info(facist.facistAvatar)
+                const player = newPlayersDict[facist.playerName]
                 if (player) {
                     player.affiliation = facist.affiliation
                     player.facistAvatar = facist.facistAvatar
@@ -144,7 +131,7 @@ export default function reducer (state = initialState, action = {}) {
             })
             return {
                 ...state,
-                slots: slotsCopy,
+                playersDict: newPlayersDict,
             }
         }
         default:
@@ -153,22 +140,21 @@ export default function reducer (state = initialState, action = {}) {
 }
 
 // Action Creators
-export function addPlayer (playerInfo) {
+export function addPlayer (player) {
     return {
         type: ADD_PLAYER,
         payload: {
-            playerInfo: playerInfo
-        }
+            player,
+        },
     }
 }
 
-export function removePlayer (playerName, slotNumber) {
+export function removePlayer (playerName) {
     return {
         type: REMOVE_PLAYER,
         payload: {
             playerName,
-            slotNumber
-        }
+        },
     }
 }
 
@@ -176,8 +162,8 @@ export function changeGamePhase (gamePhase) {
     return {
         type: CHANGE_GAME_PHASE,
         payload: {
-            gamePhase
-        }
+            gamePhase,
+        },
     }
 }
 
@@ -185,17 +171,18 @@ export function chooseNewChancellor (newChancellor) {
     return {
         type: CHOOSE_NEW_CHANCELLOR,
         payload: {
-            newChancellor
-        }
+            newChancellor,
+        },
     }
 }
 
 export function selectNewPresident (newPresident) {
+    console.info(newPresident)
     return {
         type: CHOOSE_NEW_PRESIDENT,
         payload: {
-            newPresident
-        }
+            newPresident,
+        },
     }
 }
 
@@ -204,8 +191,8 @@ export function toggleChancellorChoiceModal (isVisible, potentialChancellorsChoi
         type: TOGGLE_CHANCELLOR_CHOICE_MODAL,
         payload: {
             isVisible,
-            potentialChancellorsChoices
-        }
+            potentialChancellorsChoices,
+        },
     }
 }
 
@@ -214,22 +201,20 @@ export function toggleVotingModal (isVisible, chancellorCandidate = null) {
         type: TOGGLE_VOTING_MODAL,
         payload: {
             isVisible,
-            chancellorCandidate
-        }
+            chancellorCandidate,
+        },
     }
 }
 
-export function syncRoomData (maxPlayers, playersCount, slots, playersList, gamePhase, chancellorCandidate) {
+export function syncRoomData (maxPlayers, playersDict, gamePhase, chancellorCandidate) {
     return {
         type: SYNC_ROOM_DATA,
         payload: {
             maxPlayers,
-            playersCount,
-            slots,
-            playersList,
+            playersDict,
             gamePhase,
-            chancellorCandidate
-        }
+            chancellorCandidate,
+        },
     }
 }
 
@@ -237,8 +222,8 @@ export function increasePolicyCount (isFacist) {
     return {
         type: INCREASE_POLICY_COUNT,
         payload: {
-            isFacist
-        }
+            isFacist,
+        },
     }
 }
 
