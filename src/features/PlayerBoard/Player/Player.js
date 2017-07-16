@@ -1,9 +1,8 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
-import { isUndefined, includes, get } from 'lodash'
+import { isUndefined, get } from 'lodash'
 import PlayerComponent from './PlayerComponent'
 import { PlayerDirection, PlayerRole } from '../../../../Dictionary'
 
@@ -52,14 +51,14 @@ export class Player extends React.PureComponent {
         const { votes } = this.props
         const { playerName } = this.props.player
         const vote = get(votes, playerName)
-        
+
         let voteValue
         if (vote === '' || isUndefined(vote)) {
             voteValue = vote
         } else {
-            voteValue = (vote ? 'JA' : 'NEIN')    
+            voteValue = (vote ? 'JA' : 'NEIN')
         }
-        return voteValue 
+        return voteValue
     }
 
     render() {

@@ -1,19 +1,22 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import LoginPageComponent from './LoginPageComponent'
 import GameRoom from '../GameRoom/GameRoom'
 import GameList from '../GameList/GameList'
-import {selectName} from '../../ducks/userDuck'
+import { selectName } from '../../ducks/userDuck'
 
 export class LoginPage extends React.PureComponent {
-    constructor (props) {
-        super(props)
-        this.inputRef = null
+    static propTypes = {
+        // redux
+        userActions: PropTypes.objectOf(PropTypes.func),
+        userName: PropTypes.string,
     }
 
-    setInputRef = (inpRef) => {
-        this.inputRef = inpRef
+    constructor(props) {
+        super(props)
+        this.inputRef = null
     }
 
     /**
@@ -25,33 +28,31 @@ export class LoginPage extends React.PureComponent {
         }
     }
 
+    setInputRef = (inpRef) => {
+        this.inputRef = inpRef
+    }
+
     setName = () => {
         const name = this.inputRef.value
         this.props.userActions.selectName(name)
     }
 
-    render () {
+    render() {
         if (this.props.userName === '') {
             return (
                 <div>
                     <LoginPageComponent onSetNameClick={this.setName} setInputRef={this.setInputRef} onInputChange={this.onInputChange}/>
                 </div>
             )
-        } else {
-            return <GameList />
         }
+        return <GameList />
     }
+}
 
-}
-
-const mapStateToProps = ({user}) => {
-    return {
-        userName: user.userName
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        userActions: bindActionCreators({selectName}, dispatch)
-    }
-}
+const mapStateToProps = ({ user }) => ({
+    userName: user.userName,
+})
+const mapDispatchToProps = dispatch => ({
+    userActions: bindActionCreators({ selectName }, dispatch),
+})
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

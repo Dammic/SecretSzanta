@@ -1,10 +1,10 @@
-'use strict'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const LoginPageComponent = ({
     onSetNameClick,
     setInputRef,
-    onInputChange
+    onInputChange,
 }) => {
     return (
         <div className="login-page">
@@ -16,4 +16,9 @@ const LoginPageComponent = ({
     )
 }
 
+LoginPageComponent.propTypes = {
+    onSetNameClick: PropTypes.func,
+    setInputRef: PropTypes.func,
+    onInputChange: PropTypes.func,
+}
 export default LoginPageComponent

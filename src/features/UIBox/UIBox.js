@@ -12,7 +12,7 @@ export default class UIBox extends React.PureComponent {
         socket.emit(SocketEvents.START_GAME)
     }
 
-    render () {
+    render() {
         return (
             <UIBoxComponent onStartVote={this.onStartVote} onStartGame={this.onStartGame}/>
         )

@@ -1,10 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import ChatFormComponent from './ChatFormComponent'
 import { SocketEvents } from '../../../../../Dictionary'
 import { socket } from '../../../../utils/SocketHandler'
 
 export class ChatForm extends React.PureComponent {
+    static propTypes = {
+        // redux
+        userName: PropTypes.string,
+    }
+
     componentWillMount() {
         this.state = {
             typedMessage: '',
@@ -39,7 +45,8 @@ export class ChatForm extends React.PureComponent {
                 sendMessage={this.sendMessage}
                 typedMessage={this.state.typedMessage}
                 handleFormKeyPress={this.handleFormKeyPress}
-                changeMessageText={this.changeMessageText} />
+                changeMessageText={this.changeMessageText}
+            />
         )
     }
 }

@@ -1,10 +1,10 @@
-'use strict'
 import React from 'react'
+import PropTypes from 'prop-types'
 import Chat from './Chat/Chat'
 
 const UIBoxComponent = ({
     onStartVote,
-    onStartGame
+    onStartGame,
 }) => {
     return (
         <div className="ui-box">
@@ -15,4 +15,8 @@ const UIBoxComponent = ({
     )
 }
 
+UIBoxComponent.propTypes = {
+    onStartVote: PropTypes.func,
+    onStartGame: PropTypes.func,
+}
 export default UIBoxComponent
