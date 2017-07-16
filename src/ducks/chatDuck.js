@@ -1,22 +1,21 @@
-'use strict'
 import moment from 'moment'
 
 // Actions
 const ADD_MESSAGE = 'chat/ADD_MESSAGE'
 
 const initialState = {
-    messages: []
+    messages: [],
 }
 
 // Reducer
-export default function reducer (state = initialState, action = {}) {
+export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
         case ADD_MESSAGE: {
-            const {messages} = state
-            const {message} = action.payload
+            const { messages } = state
+            const { message } = action.payload
             return {
                 ...state,
-                messages: [...messages, message]
+                messages: [...messages, message],
             }
         }
         default:
@@ -36,12 +35,12 @@ export function addMessage(timestamp, content, author = null) {
     const newMessage = {
         time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
         content,
-        author: author || ''
+        author: author || '',
     }
     return {
         type: ADD_MESSAGE,
         payload: {
-            message: newMessage
-        }
+            message: newMessage,
+        },
     }
 }

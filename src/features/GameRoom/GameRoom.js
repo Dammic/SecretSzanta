@@ -1,36 +1,37 @@
-'use strict'
-require('../../styles/main.scss')
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import GameRoomComponent from './GameRoomComponent'
-import {SocketEvents} from '../../../Dictionary'
-import {socket} from '../../utils/socket'
+import { SocketEvents } from '../../../Dictionary'
+import { socket } from '../../utils/SocketHandler'
+
+require('../../styles/main.scss')
 
 export class GameRoom extends React.PureComponent {
-    constructor (props) {
+    static propTypes = {
+        // redux
+        userName: PropTypes.string,
+        gamePhase: PropTypes.string,
+    }
+
+    constructor(props) {
         super(props)
         socket.emit(SocketEvents.CLIENT_CREATE_ROOM, { playerName: props.userName, roomName: 'example' })
         socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: props.userName, roomName: 'example' })
     }
 
-    render () {
+    render() {
         console.info('Current game phase: ', this.props.gamePhase)
-        return (
-            <GameRoomComponent />
-        )
+        return <GameRoomComponent />
     }
 }
 
-const mapStateToProps = ({user, room}) => {
-    return {
-        userName: user.userName,
-        gamePhase: room.gamePhase
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        roomActions: bindActionCreators({}, dispatch)
-    }
-}
+const mapStateToProps = ({ user, room }) => ({
+    userName: user.userName,
+    gamePhase: room.gamePhase,
+})
+const mapDispatchToProps = dispatch => ({
+    roomActions: bindActionCreators({}, dispatch),
+})
 export default connect(mapStateToProps, mapDispatchToProps)(GameRoom)

@@ -1,6 +1,5 @@
-'use strict'
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases } = require('../Dictionary')
+const { SocketEvents } = require('../Dictionary')
 const { forEach } = require('lodash')
 
 module.exports = function(io, RoomsManager) {
@@ -50,20 +49,20 @@ module.exports = function(io, RoomsManager) {
             io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
                 data: {
                     timestamp: getCurrentTimestamp(),
-                    player: RoomsManager.getPlayerInfo(roomName, playerName)
+                    player: RoomsManager.getPlayerInfo(roomName, playerName),
                 },
             })
         } else {
-            console.error("Why is the room gone!")
+            console.error('Why is the room gone!')
             socket.emit(SocketEvents.CLIENT_JOIN_ROOM, {
-                error: 'Error - WHY IS THE ROOM GONE?!'
+                error: 'Error - WHY IS THE ROOM GONE?!',
             })
         }
     }
 
     const startGame = (socket) => {
         const facists = RoomsManager.getFacists(socket.currentRoom)
-        
+
         RoomsManager.startGame(socket.currentRoom)
         forEach(facists, (player) => {
             player.emit(SocketEvents.BECOME_FACIST, {
@@ -86,7 +85,7 @@ module.exports = function(io, RoomsManager) {
 
     const startChancellorChoicePhase = (socket) => {
         const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
-        
+
         RoomsManager.startChancellorChoicePhase(socket.currentRoom)
         io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
             data: {
@@ -97,7 +96,7 @@ module.exports = function(io, RoomsManager) {
     }
 
     const vote = (socket, { value }) => {
-        RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value);
+        RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value)
         if (RoomsManager.didAllVote(socket.currentRoom)) {
             const votingResult = RoomsManager.getVotingResult(socket.currentRoom)
             if (votingResult) {
@@ -110,7 +109,10 @@ module.exports = function(io, RoomsManager) {
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
                 data: {
                     votes: RoomsManager.getVotes(socket.currentRoom),
-                    newChancellor: ( votingResult ? RoomsManager.getChancellor(socket.currentRoom).playerName : null ),
+                    newChancellor: (votingResult
+                        ? RoomsManager.getChancellor(socket.currentRoom).playerName
+                        : null
+                    ),
                 },
             })
         } else {
@@ -136,7 +138,7 @@ module.exports = function(io, RoomsManager) {
             startVotingPhaseVote: startVotingPhaseVote.bind(null, socket),
             vote: vote.bind(null, socket),
             startGame: startGame.bind(null, socket),
-            startChancellorChoicePhase: startChancellorChoicePhase.bind(null, socket)
+            startChancellorChoicePhase: startChancellorChoicePhase.bind(null, socket),
         }
 
         socket.on('disconnect', bindedFunctions.disconnect)

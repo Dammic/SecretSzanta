@@ -94,7 +94,7 @@ export default function reducer(state = initialState, action = {}) {
             const newPlayersDict = { ...state.playersDict }
 
             const previousPresident = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
-            if (previousPresident) { 
+            if (previousPresident) {
                 previousPresident.role = null
             }
 
@@ -102,7 +102,7 @@ export default function reducer(state = initialState, action = {}) {
             if (currentPresident) {
                 currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             }
-            
+
             const nextPresident = newPlayersDict[newPresident]
             nextPresident.role = PlayerRole.ROLE_PRESIDENT
 
@@ -182,7 +182,7 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 // Action Creators
-export function addPlayer (player) {
+export function addPlayer(player) {
     return {
         type: ADD_PLAYER,
         payload: {
@@ -191,7 +191,7 @@ export function addPlayer (player) {
     }
 }
 
-export function removePlayer (playerName) {
+export function removePlayer(playerName) {
     return {
         type: REMOVE_PLAYER,
         payload: {
@@ -200,7 +200,7 @@ export function removePlayer (playerName) {
     }
 }
 
-export function changeGamePhase (gamePhase) {
+export function changeGamePhase(gamePhase) {
     return {
         type: CHANGE_GAME_PHASE,
         payload: {
@@ -209,7 +209,7 @@ export function changeGamePhase (gamePhase) {
     }
 }
 
-export function chooseNewChancellor (newChancellor) {
+export function chooseNewChancellor(newChancellor) {
     return {
         type: CHOOSE_NEW_CHANCELLOR,
         payload: {
@@ -218,7 +218,7 @@ export function chooseNewChancellor (newChancellor) {
     }
 }
 
-export function selectNewPresident (newPresident) {
+export function selectNewPresident(newPresident) {
     return {
         type: CHOOSE_NEW_PRESIDENT,
         payload: {
@@ -227,7 +227,7 @@ export function selectNewPresident (newPresident) {
     }
 }
 
-export function toggleChancellorChoiceModal (isVisible, potentialChancellorsChoices = null) {
+export function toggleChancellorChoiceModal(isVisible, potentialChancellorsChoices = null) {
     return {
         type: TOGGLE_CHANCELLOR_CHOICE_MODAL,
         payload: {
@@ -237,7 +237,7 @@ export function toggleChancellorChoiceModal (isVisible, potentialChancellorsChoi
     }
 }
 
-export function toggleVotingModal (isVisible, chancellorCandidate = null) {
+export function toggleVotingModal(isVisible, chancellorCandidate = null) {
     return {
         type: TOGGLE_VOTING_MODAL,
         payload: {
@@ -247,7 +247,7 @@ export function toggleVotingModal (isVisible, chancellorCandidate = null) {
     }
 }
 
-export function syncRoomData (maxPlayers, playersDict, gamePhase, chancellorCandidate) {
+export function syncRoomData(maxPlayers, playersDict, gamePhase, chancellorCandidate) {
     return {
         type: SYNC_ROOM_DATA,
         payload: {
@@ -281,7 +281,7 @@ export function registerVote(playerName) {
     return {
         type: REGISTER_VOTE,
         payload: {
-            playerName, 
+            playerName,
         },
     }
 }
@@ -290,7 +290,7 @@ export function revealVotes(votes) {
     return {
         type: REVEAL_VOTES,
         payload: {
-            newVotes: votes, 
+            newVotes: votes,
         },
     }
 }

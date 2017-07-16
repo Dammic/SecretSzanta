@@ -1,4 +1,3 @@
-'use strict'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -8,7 +7,6 @@ import GameList from '../GameList/GameList'
 import {selectName} from '../../ducks/userDuck'
 
 export class LoginPage extends React.PureComponent {
-
     constructor (props) {
         super(props)
         this.inputRef = null
