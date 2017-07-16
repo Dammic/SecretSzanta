@@ -1,20 +1,27 @@
-'use strict'
 import React from 'react'
-import MessagesBoxComponent from './MessagesBoxComponent'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import MessagesBoxComponent from './MessagesBoxComponent'
 
 export class MessagesBox extends React.PureComponent {
+    static propTypes = {
+        // redux
+        messages: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
+    }
 
     componentDidUpdate() {
         this.scrollToBottomOfMessages()
     }
 
-    setMessagesEndRef = (ref) => {this.messagesEndRef = ref}
+    setMessagesEndRef = (ref) => { this.messagesEndRef = ref }
+
     scrollToBottomOfMessages = () => {
-        if(this.messagesEndRef) this.messagesEndRef.scrollIntoView()
+        if (this.messagesEndRef) {
+            this.messagesEndRef.scrollIntoView()
+        }
     }
 
-    render () {
+    render() {
         return (
             <MessagesBoxComponent
                 messages={this.props.messages}
@@ -23,11 +30,8 @@ export class MessagesBox extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({chat}) => {
-    return {
-        messages: chat.messages,
-        scrollHeight: chat.scrollHeight
-    }
-}
+const mapStateToProps = ({ chat }) => ({
+    messages: chat.messages,
+})
 
 export default connect(mapStateToProps)(MessagesBox)

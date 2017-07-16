@@ -1,4 +1,3 @@
-'use strict'
 import React from 'react'
 import UIBox from '../UIBox/UIBox'
 import PlayerBoard from '../PlayerBoard/PlayerBoard'

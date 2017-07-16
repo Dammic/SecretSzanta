@@ -2,10 +2,11 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { find } from 'lodash'
 import VotingModalComponent from './VotingModalComponent'
-import {SocketEvents} from '../../../../Dictionary'
-import {socket} from '../../../utils/socket'
-import {toggleVotingModal} from '../../../ducks/roomDuck'
+import { SocketEvents, PlayerRole } from '../../../../Dictionary'
+import { socket } from '../../../utils/SocketHandler'
+import { toggleVotingModal } from '../../../ducks/roomDuck'
 
 export class VotingModal extends React.PureComponent {
 
@@ -20,20 +21,22 @@ export class VotingModal extends React.PureComponent {
     }
 
     render () {
+        const chancellorCandidate = this.props.playersDict[this.props.chancellorCandidate];
+        const president = find(this.props.playersDict, { role: PlayerRole.ROLE_PRESIDENT })
         return (
             <VotingModalComponent
                 showModal={this.props.isVotingModalShown}
                 onYesVote={this.onYesVote}
                 onNoVote={this.onNoVote}
-                president={this.props.president}
-                chancellorCandidate={this.props.chancellorCandidate} />
+                president={president}
+                chancellorCandidate={chancellorCandidate} />
         )
     }
 }
 
 const mapStateToProps = ({room}) => {
     return {
-        president: room.president,
+        playersDict: room.playersDict,
         chancellorCandidate: room.chancellorCandidate,
         isVotingModalShown: room.isVotingModalShown
     }
