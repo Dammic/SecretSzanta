@@ -4,7 +4,8 @@
         "indent": ["error", 4, {"SwitchCase": 1}],
         "semi": ["error", "never"],
         "linebreak-style": "off",
-        "react/require-default-props": "off"
+        "react/require-default-props": "off",
+        "lodash/import-scope": [2, "member"]
 
     },
     "plugins": [

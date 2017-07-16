@@ -1,11 +1,12 @@
-'use strict'
 import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases, PlayerRole } from '../../Dictionary'
-import { addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident, toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists } from '../ducks/roomDuck'
-import { addMessage } from '../ducks/chatDuck';
+import { SocketEvents, GamePhases } from '../../Dictionary'
+import { addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
+    toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote,
+    revealVotes } from '../ducks/roomDuck'
+import { addMessage } from '../ducks/chatDuck'
 
 export let socket
 
@@ -56,22 +57,31 @@ export class SocketHandler extends React.PureComponent {
             const { facists } = payload.data
             this.props.roomActions.revealFacists(facists);
         })
+        socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, (payload) => {
+            const { playerName } = payload.data
+            this.props.roomActions.registerVote(playerName)
+        })
+        socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
+            const { votes } = payload.data
+            this.props.roomActions.revealVotes(votes)
+        })
     }
 
-    render () {
-        return null;
+    render() {
+        return null
     }
 }
 
-const mapStateToProps = ({ user, room }) => {
+const mapStateToProps = ({ user }) => {
     return {
         userName: user.userName,
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        roomActions: bindActionCreators({addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident, toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists }, dispatch),
-        chatActions: bindActionCreators({addMessage}, dispatch),
+        roomActions: bindActionCreators({ addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
+            toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote, revealVotes }, dispatch),
+        chatActions: bindActionCreators({ addMessage }, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)

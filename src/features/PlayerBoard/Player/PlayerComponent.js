@@ -1,17 +1,17 @@
-'use strict'
 import React from 'react'
+import { isUndefined } from 'lodash'
 
 const PlayerComponent = ({
     playerName,
     avatar,
     rolePicture,
     voteBubbleStyle,
-    voteBubbleInfo
+    voteValue,
 }) => {
     return (
         <div className="player">
             <div>{playerName}</div>
-            {voteBubbleInfo && <div className={voteBubbleStyle}>{voteBubbleInfo.voteValue}</div>}
+            {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
             <img className="portrait" src={avatar} alt="Player image" />
             {rolePicture && <img className="role" src={rolePicture} alt="" />}
         </div>

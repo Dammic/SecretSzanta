@@ -21,7 +21,6 @@ export class VotingModal extends React.PureComponent {
     }
 
     render () {
-        console.info(this.props.playersDict)
         const chancellorCandidate = this.props.playersDict[this.props.chancellorCandidate];
         const president = find(this.props.playersDict, { role: PlayerRole.ROLE_PRESIDENT })
         return (

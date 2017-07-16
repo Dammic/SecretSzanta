@@ -1,5 +1,5 @@
 'use strict'
-const { values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash');
+const { findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash');
 const { GamePhases, PlayerRole, PlayerAffilications }  = require('../Dictionary')
 
 /**
@@ -26,7 +26,7 @@ const RoomsManager = function() {
                 maxPlayers,
                 password,
                 chancellorCandidateName: '',
-                votes: [],
+                votes: {},
                 gamePhase: GamePhases.GAME_PHASE_NEW,
             }
         },
@@ -35,11 +35,13 @@ const RoomsManager = function() {
             const { playersDict, chancellorCandidateName } = rooms_props[roomName]
 
             const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
-            if (previousChancellor) previousChancellor.role = null
-
+            if (previousChancellor) {
+                previousChancellor.role = null
+            }
             const currentChancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
-            if (currentChancellor) currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
-
+            if (currentChancellor) {
+                currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+            }
             const nextChancellor = playersDict[chancellorCandidateName]
             nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
         },
@@ -54,7 +56,7 @@ const RoomsManager = function() {
         getChancellorCandidateInfo: function(roomName) {
             const { playersDict, chancellorCandidateName } = rooms_props[roomName]
             const chancellorCandidate = playersDict[chancellorCandidateName]
-            
+           
             return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
         },
 
@@ -62,7 +64,7 @@ const RoomsManager = function() {
             const { playersDict } = rooms_props[roomName]
 
             const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
-            if (previousPresident) { 
+            if (previousPresident) {
                 previousPresident.role = null
             }
 
@@ -70,7 +72,7 @@ const RoomsManager = function() {
             if (currentPresident) {
                 currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             }
-            
+
             const nextPresident = playersDict[presidentName]
             nextPresident.role = PlayerRole.ROLE_PRESIDENT
         },
@@ -78,17 +80,19 @@ const RoomsManager = function() {
         getPresident: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
-            
+           
             return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
         },
 
         chooseNextPresident: function(roomName) {
             const { playersDict } = rooms_props[roomName]
-            const lastPresidentSlotNumber = get(find(playersDict, { role: PlayerRole.ROLE_PRESIDENT }), 'slotNumber')
+            const sortedPlayers = sortBy(playersDict, 'slotNumber')
+            const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+
             // if no president has been choosen, we choose the first player on the list
-            const nextPresident = (lastPresidentSlotNumber 
-                ? find(playersDict, { slotNumber: (lastPresidentSlotNumber + 1) % size(playersDict) })
-                : find(playersDict, { slotNumber: 1 })
+            const nextPresident = (lastPresidentIndex >= 0
+                ? sortedPlayers[(lastPresidentIndex + 1) % size(sortedPlayers)]
+                : sortedPlayers[0]
             )
             this.setPresident(roomName, nextPresident.playerName)
         },
@@ -141,19 +145,18 @@ const RoomsManager = function() {
 
         initializeVoting: function(roomName, chancellorCandidateName) {
             const { playersDict } = rooms_props[roomName]
-            rooms_props[roomName].votes = mapValues(playersDict, player => ({ playerName: player.playerName, didVote: false, value: null }))
+            rooms_props[roomName].votes = {}
             rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
         },
 
         vote: function(roomName, playerName, value) {
             const { votes } = rooms_props[roomName]
-            votes[playerName].didVote = true
-            votes[playerName].value = value
+            votes[playerName] = value
         },
 
         didAllVote: function(roomName) {
-            const { votes } = rooms_props[roomName]
-            return !find(votes, { didVote: false })
+            const { votes, playersDict } = rooms_props[roomName]
+            return size(votes) === size(playersDict)
         },
 
         getVotes: function(roomName) {
@@ -162,7 +165,7 @@ const RoomsManager = function() {
 
         getVotingResult: function(roomName) {
             const { votes } = rooms_props[roomName]
-            const votesCount = countBy(votes, 'value')
+            const votesCount = countBy(votes)
             return ((votesCount[true] > votesCount[false]) || !votesCount[false])
         },
 
@@ -225,7 +228,7 @@ const RoomsManager = function() {
             const player = playersDict[playerName] 
             
             if (player) {
-                freeSlots.push(player.slotNumber) 
+                freeSlots.unshift(player.slotNumber)
                 delete playersDict[playerName]
             }
         },

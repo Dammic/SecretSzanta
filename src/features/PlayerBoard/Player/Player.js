@@ -1,40 +1,24 @@
-'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
-import _find from 'lodash/find'
+import { isUndefined, includes, get } from 'lodash'
 import PlayerComponent from './PlayerComponent'
-import {PlayerDirection, PlayerRole, SocketEvents} from '../../../../Dictionary'
-import {socket} from '../../../utils/socket'
+import { PlayerDirection, PlayerRole } from '../../../../Dictionary'
 
-export default class Player extends React.PureComponent {
+export class Player extends React.PureComponent {
+    static propTypes = {
+        // parent
+        player: PropTypes.objectOf(PropTypes.any),
+        direction: PropTypes.string,
 
-    constructor (props) {
-        super(props)
-        this.state = {
-            voteBubbleInfo: null
-        }
-
-        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, () => {
-            this.setState({ voteBubbleInfo: null})
-        })
-
-        socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, ({ playerName }) => {
-            console.info(this.props.player.playerName)
-            if (playerName === this.props.player.playerName) {
-                this.setState({ voteBubbleInfo: {voteValue: ''} })
-            }
-        })
-
-        socket.on(SocketEvents.VOTING_PHASE_REVEAL, ({votes}) => {
-            const thisPlayerVote = _find(votes, (vote) => vote.playerName === this.props.player.playerName)
-            if (thisPlayerVote) {
-                this.setState({ voteBubbleInfo: {voteValue: thisPlayerVote.value ? 'JA' : 'NEIN'} })
-            }
-        })
+        // redux
+        votes: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.bool, PropTypes.string])),
     }
 
     getRolePicture = () => {
-        const {role} = this.props.player
+        const { role } = this.props.player
         switch (role) {
             case PlayerRole.ROLE_CHANCELLOR:
                 return require('../../../static/Chancellor.png')
@@ -50,29 +34,53 @@ export default class Player extends React.PureComponent {
     }
 
     getVoteBubbleStyle = () => {
+        const { votes } = this.props
+        const { playerName } = this.props.player
+        const hasPlayerVoted = !isUndefined(get(votes, playerName))
+
         switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames('bubble-left', {'active': !!this.state.voteBubbleInfo})
+                return classNames('bubble-left', { active: hasPlayerVoted })
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames('bubble-right', {'active': !!this.state.voteBubbleInfo})
+                return classNames('bubble-right', { active: hasPlayerVoted })
             default:
-                return classNames('bubble-top', {'active': !!this.state.voteBubbleInfo})
+                return classNames('bubble-top', { active: hasPlayerVoted })
         }
     }
 
-    render () {
-        const {playerName, avatarNumber} = this.props.player
-        const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
-
-        return (
-            <PlayerComponent
-                playerName = {playerName}
-                avatar = {avatarPicture}
-                rolePicture = {this.getRolePicture()}
-                voteBubbleStyle = {this.getVoteBubbleStyle()}
-                voteBubbleInfo = {this.state.voteBubbleInfo} />
-        )
+    getVoteValue = () => {
+        const { votes } = this.props
+        const { playerName } = this.props.player
+        const vote = get(votes, playerName)
+        
+        let voteValue
+        if (vote === '' || isUndefined(vote)) {
+            voteValue = vote
+        } else {
+            voteValue = (vote ? 'JA' : 'NEIN')    
+        }
+        return voteValue 
     }
 
+    render() {
+        const { playerName, avatarNumber } = this.props.player
+        const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
+
+        const voteValue = this.getVoteValue()
+        return (
+            <PlayerComponent
+                playerName={playerName}
+                avatar={avatarPicture}
+                rolePicture={this.getRolePicture()}
+                voteBubbleStyle={this.getVoteBubbleStyle()}
+                voteValue={voteValue}
+            />
+        )
+    }
 }
 
+const mapStateToProps = ({ room }) => ({
+    votes: room.votes,
+})
+
+export default connect(mapStateToProps)(Player)
