@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isUndefined } from 'lodash'
+import classNames from 'classnames'
+import { noop, isUndefined } from 'lodash'
 
 const PlayerComponent = ({
     playerName,
@@ -8,13 +9,17 @@ const PlayerComponent = ({
     rolePicture,
     voteBubbleStyle,
     voteValue,
+    isSelectable,
+    onChoiceModeSelect,
 }) => {
     return (
         <div className="player">
-            <div>{playerName}</div>
-            {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
-            <img className="portrait" src={avatar} alt="Player image" />
-            {rolePicture && <img className="role" src={rolePicture} alt="" />}
+            <div className={classNames('player-wrapper', { selectable: isSelectable })} data-playername={playerName} onClick={isSelectable ? onChoiceModeSelect : null}>
+                <div>{playerName}</div>
+                {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
+                <img className="portrait" src={avatar} alt="Player image" />
+                {rolePicture && <img className="role" src={rolePicture} alt="" />}
+            </div>
         </div>
     )
 }
@@ -25,5 +30,7 @@ PlayerComponent.propTypes = {
     rolePicture: PropTypes.string,
     voteBubbleStyle: PropTypes.string,
     voteValue: PropTypes.string,
+    isSelectable: PropTypes.bool,
+    onChoiceModeSelect: PropTypes.func,
 }
 export default PlayerComponent

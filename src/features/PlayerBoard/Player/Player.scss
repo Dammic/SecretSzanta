@@ -114,5 +114,22 @@ $player-bubble-activated-position: 100%;
     .role {
         max-width: $player-image-width;
     }
+
+    .player-wrapper {
+        width: 10vw;
+        text-align: center;
+        &.selectable {
+            z-index: 30;
+            cursor: pointer;
+            border: 1px yellow solid;
+            
+            &:hover {
+                opacity: .9; 
+            }
+        }
+        * {
+            pointer-events: none; 
+        }
+    }
 }
 

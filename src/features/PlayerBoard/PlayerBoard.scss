@@ -80,9 +80,8 @@ $elementsHeight: 100%;
             @extend .policy-card;
             left: 16%;
         }
-
     }
-
+    .choice-overlay {
+        z-index: 20; 
+    }
 }
-
-

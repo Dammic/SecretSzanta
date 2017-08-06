@@ -20,7 +20,7 @@ const ModalComponent = ({
                         {isCloseButton && <a className="modal-close-button" onClick={onHide}>✖</a>}
                         <div className="modal-body">{body}</div>
                     </Scrollbars>
-                    <a className="modal-overlay" onClick={clickOutside ? onHide : null} />
+                    <a className="overlay" onClick={clickOutside ? onHide : null} />
                 </div>
             </ReactCSSTransitionGroup>
         )

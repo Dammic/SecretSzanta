@@ -3,9 +3,11 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { map, reject, find, forEach } from 'lodash'
-import { PlayerRole } from '../../../Dictionary'
+import { PlayerRole, ChoiceModeContexts, SocketEvents } from '../../../Dictionary'
+import { socket } from '../../utils/SocketHandler'
 import PlayerBoardComponent from './PlayerBoardComponent'
-import { increasePolicyCount } from '../../ducks/roomDuck'
+import { increasePolicyCount, toggleChoiceMode } from '../../ducks/roomDuck'
+import { hideChoiceMode } from '../../ducks/playersDuck'
 
 export class PlayerBoard extends React.PureComponent {
     static propTypes = {
@@ -15,6 +17,11 @@ export class PlayerBoard extends React.PureComponent {
         userName: PropTypes.string,
         facistPoliciesCount: PropTypes.number,
         liberalPoliciesCount: PropTypes.number,
+        choiceMode: PropTypes.shape({
+            isVisible: PropTypes.bool,
+            selectablePlayers: PropTypes.arrayOf(PropTypes.string),
+            context: PropTypes.string,
+        }),
     }
 
     constructor(props) {
@@ -42,8 +49,23 @@ export class PlayerBoard extends React.PureComponent {
         }
     }
 
+    onChoiceModeSelect = (selection) => {
+        const { choiceMode: { context } } = this.props
+
+        console.info(selection)
+        switch (context) {
+            case ChoiceModeContexts.ChancellorChoice:
+                socket.emit(SocketEvents.VOTING_PHASE_START, { chancellorName: selection })
+                this.props.playersActions.hideChoiceMode()
+                break
+            default:
+                console.info('no action matches the specified context')
+        }
+    }
+
     render() {
-        const playersWithoutMe = reject(this.props.playersDict, { playerName: this.props.userName })
+        const { choiceMode, playersDict, userName, liberalPoliciesCount, facistPoliciesCount } = this.props
+        const playersWithoutMe = reject(playersDict, { playerName: userName })
         const players = map(playersWithoutMe, player => this.makePlayer(player))
         const left = []
         const center = []
@@ -58,26 +80,31 @@ export class PlayerBoard extends React.PureComponent {
                 center.push(player)
             }
         })
-
+        
         return (<PlayerBoardComponent
             playersLeft={left}
             playersMiddle={center}
             playersRight={right}
-            policiesLiberalCount={this.props.liberalPoliciesCount}
-            policiesFacistCount={this.props.facistPoliciesCount}
+            policiesLiberalCount={liberalPoliciesCount}
+            policiesFacistCount={facistPoliciesCount}
+            isChoiceModeVisible={choiceMode.isVisible}
+            onChoiceModeSelect={this.onChoiceModeSelect}
         />)
     }
 }
 
-const mapStateToProps = ({ user, room }) => ({
+const mapStateToProps = ({ user, room, players }) => ({
     userName: user.userName,
     playersDict: room.playersDict,
     facistPoliciesCount: room.facistPoliciesCount,
     liberalPoliciesCount: room.liberalPoliciesCount,
+    choiceModeContext: room.choiceModeContext,
+    choiceMode: players.choiceMode,
 })
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ increasePolicyCount }, dispatch),
+    roomActions: bindActionCreators({ increasePolicyCount, toggleChoiceMode }, dispatch),
+    playersActions: bindActionCreators({ hideChoiceMode }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerBoard)
