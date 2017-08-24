@@ -14,7 +14,7 @@ const PlayerComponent = ({
 }) => {
     return (
         <div className="player">
-            <div className={classNames('player-wrapper', { selectable: isSelectable })} data-playername={playerName} onClick={isSelectable ? onChoiceModeSelect : null}>
+            <div className={classNames('player-wrapper', { selectable: isSelectable, blurred: !isSelectable })} data-playername={playerName} onClick={isSelectable ? onChoiceModeSelect : null}>
                 <div>{playerName}</div>
                 {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
                 <img className="portrait" src={avatar} alt="Player image" />

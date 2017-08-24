@@ -12,3 +12,8 @@ html, body {
     background-color: rgba(6, 18, 20, 0.39);
     z-index: 40;
 }
+
+.blurred {
+	filter: blur(3px);
+}
+

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { times, map } from 'lodash'
 import { PlayerDirection } from '../../../Dictionary'
 import Player from './Player/Player'
+import classNames from 'classnames'
 
 const PlayerBoardComponent = ({
     playersLeft = [],
@@ -46,14 +47,14 @@ const PlayerBoardComponent = ({
             <div className="central-part">
                 {renderPlayers(playersMiddle, 'player-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
 
-                <div className="policy">
+                <div className={classNames('policy', { blurred: isChoiceModeVisible })} >
                     <img src={require('../../static/liberalpolicies.png')} />
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
                 </div>
 
-                <div className="policy">
+                <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
                     <img src={require('../../static/facistpolicies3.png')} />
                     <div className="policy-card-fascist">
                         {renderPolicies(policiesFacistCount, 'facist')}
@@ -62,8 +63,8 @@ const PlayerBoardComponent = ({
             </div>
 
             {renderPlayers(playersRight, 'players-container', PlayerDirection.PLAYER_DIRECTION_RIGHT)}
-        </div>
-    )
+	</div>
+)
 }
 
 PlayerBoardComponent.propTypes = {
