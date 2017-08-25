@@ -9,7 +9,7 @@ const LoginPageComponent = ({
     return (
         <div className="login-page">
             <div className="login-form">
-                <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange}/>
+                <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange} autofocus />
                 <button onClick={onSetNameClick}>Ok</button>
             </div>
         </div>
