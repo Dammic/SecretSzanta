@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
+import InformationPanel from '../InformationReporting/informationPanel'
 import { joinRoom } from '../../ducks/userDuck'
 import SocketHandler from '../../utils/SocketHandler'
 
@@ -61,6 +62,7 @@ export class GameList extends React.PureComponent {
         ]
         return (
             <div>
+                <InformationPanel />
                 <SocketHandler />
                 {roomName
                     ? <GameRoom />
