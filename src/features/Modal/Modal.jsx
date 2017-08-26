@@ -1,29 +1,62 @@
-'use strict'
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import ModalComponent from './ModalComponent'
+import * as modalActions from '../../ducks/modalDuck'
+
+import VotingModal from './VotingModal/VotingModal'
+
+const modalInnerComponents = {
+    VotingModal,
+}
 
 class Modal extends React.PureComponent {
-    render () {
-        const {children, show, onHide, customClass, clickOutside = true, isCloseButton = true} = this.props
-        return <ModalComponent
-            body={children}
-            show={show}
-            onHide={onHide}
-            customClass={customClass}
-            clickOutside={clickOutside}
-            isCloseButton={isCloseButton}
-        />
+    static propTypes = {
+        // redux
+        isVisible: PropTypes.bool,
+        title: PropTypes.string,
+        overlayClosesModal: PropTypes.bool,
+        isCloseButtonShown: PropTypes.bool,
+        componentName: PropTypes.string,
+        modalTmpData: PropTypes.objectOf(PropTypes.any),
+        modalActions: PropTypes.objectOf(PropTypes.func),
+    }
+
+    closeModal = () => {
+        this.props.modalActions.toggleModal(false)
+    }
+
+    render() {
+        const { isVisible, title, overlayClosesModal, isCloseButtonShown, componentName, modalTmpData } = this.props
+        const ModalInnerComponent = modalInnerComponents[componentName]
+        if (!ModalInnerComponent) {
+            return null
+        }
+        return (
+            <ModalComponent
+                isVisible={isVisible}
+                title={title}
+                overlayClosesModal={overlayClosesModal}
+                isCloseButtonShown={isCloseButtonShown}
+                closeModal={this.closeModal}
+                child={<ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} />}
+            >
+
+            </ModalComponent>
+        )
     }
 }
 
-const {object, bool, func, string, array, oneOfType} = React.PropTypes
-Modal.propTypes = {
-    children: oneOfType([object, array]).isRequired,
-    show: bool.isRequired,
-    onHide: func,
-    clickOutside: bool,
-    isCloseButton: bool,
-    customClass: string
-}
-
-export default Modal
+const mapStateToProps = ({ modal }) => ({
+    isVisible: modal.isVisible,
+    title: modal.title,
+    overlayClosesModal: modal.overlayClosesModal,
+    isCloseButtonShown: modal.isCloseButtonShown,
+    componentName: modal.componentName,
+    modalTmpData: modal.modalTmpData,
+})
+const mapDispatchToProps = dispatch => ({
+    modalActions: bindActionCreators(modalActions, dispatch),
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Modal)

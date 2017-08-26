@@ -10,6 +10,7 @@ import chat from './ducks/chatDuck'
 import user from './ducks/userDuck'
 import room from './ducks/roomDuck'
 import players from './ducks/playersDuck'
+import modal from './ducks/modalDuck'
 
 import LoginPage from './features/LoginPage/LoginPage'
 import NotFound from './features/NotFound/NotFound'
@@ -21,6 +22,7 @@ const store = createStore(
         user,
         room,
         players,
+        modal,
         routing: routerReducer
     }),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

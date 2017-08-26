@@ -7,8 +7,6 @@ const REMOVE_PLAYER = 'room/REMOVE_PLAYER'
 const CHANGE_GAME_PHASE = 'room/CHANGE_GAME_PHASE'
 const CHOOSE_NEW_CHANCELLOR = 'room/CHOOSE_NEW_CHANCELLOR'
 const CHOOSE_NEW_PRESIDENT = 'room/CHOOSE_NEW_PRESIDENT'
-const TOGGLE_CHANCELLOR_CHOICE_MODAL = 'room/TOGGLE_CHANCELLOR_CHOICE_MODAL'
-const TOGGLE_VOTING_MODAL = 'room/TOGGLE_VOTING_MODAL'
 const SYNC_ROOM_DATA = 'room/SYNC_ROOM_DATA'
 const INCREASE_POLICY_COUNT = 'room/INCREASE_POLICY_COUNT'
 const REVEAL_FACISTS = 'room/REVEAL_FACISTS'
@@ -18,10 +16,7 @@ const REVEAL_VOTES = 'room/REVEAL_VOTES'
 const initialState = {
     maxPlayers: 0,
     playersDict: {},
-    chancellorCandidate: null,
     gamePhase: '',
-    isChancellorChoiceModalShown: false,
-    isVotingModalShown: false,
     potentialChancellorsChoices: [],
     facistPoliciesCount: 0,
     liberalPoliciesCount: 0,
@@ -51,14 +46,13 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
         case SYNC_ROOM_DATA: {
-            const { maxPlayers, playersDict, gamePhase, chancellorCandidate } = action.payload
+            const { maxPlayers, playersDict, gamePhase} = action.payload
 
             return {
                 ...state,
                 maxPlayers,
                 playersDict,
                 gamePhase,
-                chancellorCandidate,
             }
         }
         case CHANGE_GAME_PHASE: {
@@ -110,22 +104,6 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 playersDict: newPlayersDict,
                 votes: null,
-            }
-        }
-        case TOGGLE_CHANCELLOR_CHOICE_MODAL: {
-            const { isVisible, potentialChancellorsChoices } = action.payload
-            return {
-                ...state,
-                isChancellorChoiceModalShown: isVisible,
-                potentialChancellorsChoices: (isVisible ? potentialChancellorsChoices : []),
-            }
-        }
-        case TOGGLE_VOTING_MODAL: {
-            const { isVisible, chancellorCandidate } = action.payload
-            return {
-                ...state,
-                isVotingModalShown: isVisible,
-                chancellorCandidate: (isVisible ? chancellorCandidate : null),
             }
         }
         case INCREASE_POLICY_COUNT: {
@@ -227,34 +205,13 @@ export function selectNewPresident(newPresident) {
     }
 }
 
-export function toggleChancellorChoiceModal(isVisible, potentialChancellorsChoices = null) {
-    return {
-        type: TOGGLE_CHANCELLOR_CHOICE_MODAL,
-        payload: {
-            isVisible,
-            potentialChancellorsChoices,
-        },
-    }
-}
-
-export function toggleVotingModal(isVisible, chancellorCandidate = null) {
-    return {
-        type: TOGGLE_VOTING_MODAL,
-        payload: {
-            isVisible,
-            chancellorCandidate,
-        },
-    }
-}
-
-export function syncRoomData(maxPlayers, playersDict, gamePhase, chancellorCandidate) {
+export function syncRoomData(maxPlayers, playersDict, gamePhase) {
     return {
         type: SYNC_ROOM_DATA,
         payload: {
             maxPlayers,
             playersDict,
             gamePhase,
-            chancellorCandidate,
         },
     }
 }

@@ -183,7 +183,6 @@ const RoomsManager = function() {
                 maxPlayers,
                 gamePhase,
                 playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'avatarNumber'])),
-                chancellorCandidate: this.getChancellorCandidateInfo(roomName),
             }
         },
 
