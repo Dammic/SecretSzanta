@@ -22,6 +22,7 @@ export class PlayerBoard extends React.PureComponent {
             selectablePlayers: PropTypes.arrayOf(PropTypes.string),
             context: PropTypes.string,
         }),
+        playersActions: PropTypes.objectOf(PropTypes.func),
     }
 
     constructor(props) {
@@ -51,8 +52,6 @@ export class PlayerBoard extends React.PureComponent {
 
     onChoiceModeSelect = (selection) => {
         const { choiceMode: { context } } = this.props
-
-        console.info(selection)
         switch (context) {
             case ChoiceModeContexts.ChancellorChoice:
                 socket.emit(SocketEvents.VOTING_PHASE_START, { chancellorName: selection })
@@ -80,7 +79,7 @@ export class PlayerBoard extends React.PureComponent {
                 center.push(player)
             }
         })
-        
+
         return (<PlayerBoardComponent
             playersLeft={left}
             playersMiddle={center}

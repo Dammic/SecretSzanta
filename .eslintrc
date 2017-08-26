@@ -5,8 +5,9 @@
         "semi": ["error", "never"],
         "linebreak-style": "off",
         "react/require-default-props": "off",
-        "lodash/import-scope": [2, "member"]
-
+        "lodash/import-scope": [2, "member"],
+        "react/jsx-indent-props": [2, 4],
+        "react/jsx-indent": [2, 4]
     },
     "plugins": [
         "react",

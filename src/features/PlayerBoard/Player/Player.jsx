@@ -69,17 +69,16 @@ export class Player extends React.PureComponent {
     isSelectable = () => {
         const { choiceMode } = this.props
         const { playerName } = this.props.player
-        
-        return choiceMode.isVisible && includes(choiceMode.selectablePlayers, playerName) 
+       
+        return choiceMode.isVisible && includes(choiceMode.selectablePlayers, playerName)
     }
 
     onPlayerClick = (event) => {
-        console.info(event.target)
         this.props.onChoiceModeSelect(event.target.getAttribute('data-playername'))
     }
 
     render() {
-        const { playerName, avatarNumber } = this.props.player
+        const { choiceMode: { isVisible }, player: { playerName, avatarNumber } } = this.props
         const isSelectable = this.isSelectable()
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
 
@@ -91,6 +90,7 @@ export class Player extends React.PureComponent {
                 rolePicture={this.getRolePicture()}
                 voteBubbleStyle={this.getVoteBubbleStyle()}
                 voteValue={voteValue}
+                isChoiceModeVisible={isVisible}
                 isSelectable={isSelectable}
                 onChoiceModeSelect={this.onPlayerClick}
             />

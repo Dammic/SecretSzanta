@@ -118,13 +118,42 @@ $player-bubble-activated-position: 100%;
     .player-wrapper {
         width: 10vw;
         text-align: center;
+        position: relative;
         &.selectable {
             z-index: 30;
             cursor: pointer;
             border: 1px yellow solid;
-            
+            transition: 0.3s filter linear; 
+
+            &:before,
+            &:after {
+              position: absolute;
+              content: "";
+              transition: all .25s;
+              width: 10%;
+              height: 33%;
+            }
+
+            &:before {
+              border-bottom: 2px solid yellow;
+              border-left: 2px solid yellow;
+              left: -10px;
+              bottom: -10px;
+            }
+
+            &:after {
+              border-top: 2px solid yellow;
+              border-right: 2px solid yellow;
+              top: -10px;
+              right: -10px;
+            }
+
             &:hover {
-                opacity: .9; 
+                filter: brightness(1.2);
+                &:before, &:after {
+                    width: 112%;
+                    height: 120%;
+                }
             }
         }
         * {
@@ -132,4 +161,5 @@ $player-bubble-activated-position: 100%;
         }
     }
 }
+
 
