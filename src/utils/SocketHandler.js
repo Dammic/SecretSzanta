@@ -8,6 +8,7 @@ import {
     toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote,
     revealVotes,
 } from '../ducks/roomDuck'
+import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
 
@@ -17,8 +18,8 @@ export class SocketHandler extends React.PureComponent {
     componentDidMount() {
         socket = IO()
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
-            const { maxPlayers, playersDict, gamePhase, chancellorCandidate } = payload.data
-            this.props.roomActions.syncRoomData(maxPlayers, playersDict, gamePhase, chancellorCandidate)
+            const { maxPlayers, playersDict, gamePhase } = payload.data
+            this.props.roomActions.syncRoomData(maxPlayers, playersDict, gamePhase)
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
@@ -36,7 +37,13 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.VOTING_PHASE_START, (payload) => {
             const { chancellorCandidate } = payload.data
-            this.props.roomActions.toggleVotingModal(true, chancellorCandidate)
+            this.props.modalActions.setModal({
+                title: 'Vote for your parliment!',
+                initialData: {
+                    chancellorCandidate,
+                },
+                componentName: 'VotingModal',
+            })
         })
         socket.on(SocketEvents.START_GAME, () => {
             this.props.roomActions.changeGamePhase(GamePhases.START_GAME)
@@ -53,7 +60,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.selectNewPresident(presidentName)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_CHANCELLOR_CHOICE)
             if (presidentName === this.props.userName) {
-                //this.props.roomActions.toggleChancellorChoiceModal(true, playersChoices)
                 this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.ChancellorChoice, playersChoices)
             }
         })
@@ -87,6 +93,7 @@ const mapDispatchToProps = (dispatch) => {
             toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote, revealVotes }, dispatch),
         chatActions: bindActionCreators({ addMessage }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode }, dispatch),
+        modalActions: bindActionCreators(modalActions, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)

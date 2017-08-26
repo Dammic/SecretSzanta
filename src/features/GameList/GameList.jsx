@@ -6,6 +6,7 @@ import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
 import { joinRoom } from '../../ducks/userDuck'
 import SocketHandler from '../../utils/SocketHandler'
+import Modal from '../Modal/Modal'
 
 export class GameList extends React.PureComponent {
     static propTypes = {
@@ -62,6 +63,7 @@ export class GameList extends React.PureComponent {
         return (
             <div>
                 <SocketHandler />
+                <Modal />
                 {roomName
                     ? <GameRoom />
                     : <GameListComponent userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
