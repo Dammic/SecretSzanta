@@ -9,7 +9,7 @@ const ChatComponent = ({
 }) => {
     return (
         <div className="chat-form">
-            <input value={typedMessage} onChange={changeMessageText} onKeyPress={handleFormKeyPress} />
+            <input value={typedMessage} onChange={changeMessageText} onKeyPress={handleFormKeyPress} autoFocus />
             <div className="send-button" onClick={sendMessage} />
         </div>
     )
