@@ -67,9 +67,7 @@ export class Player extends React.PureComponent {
     }
 
     isSelectable = () => {
-        const { choiceMode } = this.props
-        const { playerName } = this.props.player
-       
+        const { choiceMode, player: { playerName } } = this.props
         return choiceMode.isVisible && includes(choiceMode.selectablePlayers, playerName)
     }
 

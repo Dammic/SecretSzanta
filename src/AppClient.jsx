@@ -11,9 +11,7 @@ import user from './ducks/userDuck'
 import room from './ducks/roomDuck'
 import players from './ducks/playersDuck'
 
-import GameRoom from './features/GameRoom/GameRoom'
 import LoginPage from './features/LoginPage/LoginPage'
-import GameList from './features/GameList/GameList'
 import NotFound from './features/NotFound/NotFound'
 
 /* eslint-disable no-underscore-dangle */
