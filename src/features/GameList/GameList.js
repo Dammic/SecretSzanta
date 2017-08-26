@@ -6,6 +6,7 @@ import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
 import InformationPanel from '../InformationReporting/informationPanel'
 import { joinRoom } from '../../ducks/userDuck'
+import * as infoTreeActions from '../../ducks/informationReportingDuck'
 import SocketHandler from '../../utils/SocketHandler'
 
 export class GameList extends React.PureComponent {
@@ -19,6 +20,10 @@ export class GameList extends React.PureComponent {
     setRoomName = (event) => {
         const roomID = event.target.attributes.getNamedItem('data-roomid').value
         this.props.userActions.joinRoom(roomID)
+    }
+
+    componentDidMount = () => {
+        this.props.messageActions.addInformation('Ha! Działa :)')
     }
 
     render() {
@@ -62,7 +67,7 @@ export class GameList extends React.PureComponent {
         ]
         return (
             <div>
-                <InformationPanel />
+                <InformationPanel infos={['Informacja!']}/>
                 <SocketHandler />
                 {roomName
                     ? <GameRoom />
@@ -79,5 +84,6 @@ const mapStateToProps = ({ user }) => ({
 })
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ joinRoom }, dispatch),
+    messageActions: bindActionCreators(infoTreeActions, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)
