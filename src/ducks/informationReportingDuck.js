@@ -1,12 +1,9 @@
+import { MessagesTypes } from '../../Dictionary.js'
 import { reject } from 'lodash'
 
 // Actions
 const ADD_NOTIFICATION = 'info/ADD_NOTIFICATION'
 const DELETE_NOTIFICATION = 'info/DELETE_NOTIFICATION'
-
-// Types
-const ERROR_NOTIFICATION = 'info/ERROR_NOTIFICATION'
-const INFO_NOTIFICATION = 'info/INFO_NOTIFICATION'
 
 const initialState = {
     currentID: 0,
@@ -47,7 +44,7 @@ export function addInformation(info) {
     return {
         type: ADD_NOTIFICATION,
         payload: {
-            type: INFO_NOTIFICATION,
+            type: MessagesTypes.INFO_NOTIFICATION,
             message: info,
         },
     }
@@ -57,7 +54,7 @@ export function addError(error) {
     return {
         type: ADD_NOTIFICATION,
         payload: {
-            type: ERROR_NOTIFICATION,
+            type: MessagesTypes.ERROR_NOTIFICATION,
             message: error,
         },
     }

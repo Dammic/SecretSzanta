@@ -24,6 +24,7 @@ export class GameList extends React.PureComponent {
 
     componentDidMount = () => {
         this.props.messageActions.addInformation('Ha! Działa :)')
+        this.props.messageActions.addError('Ohh! NO! An Error!')
     }
 
     render() {
