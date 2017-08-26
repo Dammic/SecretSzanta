@@ -2,10 +2,13 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases } from '../../Dictionary'
-import { addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
+import { SocketEvents, GamePhases, ChoiceModeContexts } from '../../Dictionary'
+import {
+    addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
     toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote,
-    revealVotes } from '../ducks/roomDuck'
+    revealVotes,
+} from '../ducks/roomDuck'
+import { setChoiceMode } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
 
 export let socket
@@ -50,12 +53,13 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.selectNewPresident(presidentName)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_CHANCELLOR_CHOICE)
             if (presidentName === this.props.userName) {
-                this.props.roomActions.toggleChancellorChoiceModal(true, playersChoices);
+                //this.props.roomActions.toggleChancellorChoiceModal(true, playersChoices)
+                this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.ChancellorChoice, playersChoices)
             }
         })
         socket.on(SocketEvents.BECOME_FACIST, (payload) => {
             const { facists } = payload.data
-            this.props.roomActions.revealFacists(facists);
+            this.props.roomActions.revealFacists(facists)
         })
         socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, (payload) => {
             const { playerName } = payload.data
@@ -82,6 +86,7 @@ const mapDispatchToProps = (dispatch) => {
         roomActions: bindActionCreators({ addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
             toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote, revealVotes }, dispatch),
         chatActions: bindActionCreators({ addMessage }, dispatch),
+        playersActions: bindActionCreators({ setChoiceMode }, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)

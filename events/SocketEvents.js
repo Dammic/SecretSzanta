@@ -84,9 +84,9 @@ module.exports = function(io, RoomsManager) {
     }
 
     const startChancellorChoicePhase = (socket) => {
+        RoomsManager.startChancellorChoicePhase(socket.currentRoom)
         const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
 
-        RoomsManager.startChancellorChoicePhase(socket.currentRoom)
         io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
             data: {
                 playersChoices,

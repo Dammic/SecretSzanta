@@ -1,5 +1,3 @@
-@import './Player/Player.scss';
-
 $elementsWidth: 80%;
 $elementsHeight: 100%;
 
@@ -80,9 +78,10 @@ $elementsHeight: 100%;
             @extend .policy-card;
             left: 16%;
         }
-
     }
-
+    .choice-overlay {
+        z-index: 20;
+        filter: blur(100px);
+    }
 }
-
 

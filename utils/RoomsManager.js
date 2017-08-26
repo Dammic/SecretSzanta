@@ -1,6 +1,5 @@
-'use strict'
-const { findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash');
-const { GamePhases, PlayerRole, PlayerAffilications }  = require('../Dictionary')
+const { findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash')
+const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -99,7 +98,7 @@ const RoomsManager = function() {
 
         startGame: function(roomName) {
             const { playersDict } = rooms_props[roomName]
-            rooms_props[roomName].gamePhase = GamePhases.START_GAME;
+            rooms_props[roomName].gamePhase = GamePhases.START_GAME
 
             const liberalCount = Math.floor(size(playersDict) / 2) + 1
             const facistCount = size(playersDict) - liberalCount;
@@ -132,11 +131,11 @@ const RoomsManager = function() {
 
         getChancellorChoices: function(roomName) {
             const { playersDict } = rooms_props[roomName]
-            let chancellorChoices = []
+            const chancellorChoices = []
             forEach(playersDict, (player) => {
                 if (isNil(player.role)) {
-                    chancellorChoices.push(pick(player, [ 'playerName', 'avatarNumber' ]))
-                } 
+                    chancellorChoices.push(player.playerName)
+                }
             })
             return chancellorChoices
         },
