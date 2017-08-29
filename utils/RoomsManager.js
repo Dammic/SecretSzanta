@@ -253,7 +253,12 @@ const RoomsManager = function() {
         getPlayersCount: function(roomName) {
             const { playersDict } = rooms_props[roomName]
             return size(playersDict)
-        }
+        },
+
+
+        startGamePhase: function(roomName, phase) {
+            rooms_props[roomName].gamePhase = phase
+        },
     }
 }
 

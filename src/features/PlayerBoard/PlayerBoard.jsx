@@ -57,6 +57,10 @@ export class PlayerBoard extends React.PureComponent {
                 socket.emit(SocketEvents.VOTING_PHASE_START, { chancellorName: selection })
                 this.props.playersActions.hideChoiceMode()
                 break
+            case ChoiceModeContexts.KillChoice:
+                socket.emit(SocketEvents.KillVictimSelected, { player: selection })
+                this.props.playersActions.hideChoiceMode()
+                break
             default:
                 console.info('no action matches the specified context')
         }

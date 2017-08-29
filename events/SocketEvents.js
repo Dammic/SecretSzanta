@@ -1,5 +1,5 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents } = require('../Dictionary')
+const { SocketEvents, GamePhases } = require('../Dictionary')
 const { forEach } = require('lodash')
 
 module.exports = function(io, RoomsManager) {
@@ -124,6 +124,15 @@ module.exports = function(io, RoomsManager) {
         }
     }
 
+    const testStartKillPhase = (socket) => {
+        RoomsManager.startGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER),
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
+            data: {
+                presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
+            },
+        })
+    }
+
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
         socket.currentRoom = ''
@@ -139,6 +148,7 @@ module.exports = function(io, RoomsManager) {
             vote: vote.bind(null, socket),
             startGame: startGame.bind(null, socket),
             startChancellorChoicePhase: startChancellorChoicePhase.bind(null, socket),
+            testStartKillPhase: testStartKillPhase.bind(null, socket),
         }
 
         socket.on('disconnect', bindedFunctions.disconnect)
@@ -149,5 +159,6 @@ module.exports = function(io, RoomsManager) {
         socket.on(SocketEvents.CLIENT_VOTE, bindedFunctions.vote)
         socket.on(SocketEvents.START_GAME, bindedFunctions.startGame)
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, bindedFunctions.startChancellorChoicePhase)
+        socket.on(SocketEvents.TEST_START_KILL_PHASE, bindedFunctions.testStartKillPhase)
     })
 }
