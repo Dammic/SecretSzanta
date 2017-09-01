@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents } = require('../Dictionary')
-const { forEach, mapValues } = require('lodash')
+const { forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const socketEvents = {
@@ -131,16 +131,16 @@ module.exports = function (io, RoomsManager) {
         socket.currentRoom = ''
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
-        // we need a way to pass socket object into those functions and we do it by passing it as *this*
-        const bindedFunctions = mapValues(socketEvents, func => func.bind(null, socket))
+        // we need a way to pass socket object into those functions
+        const partialFunctions = mapValues(socketEvents, func => partial(func, socket))
 
-        socket.on('disconnect', bindedFunctions.disconnect)
-        socket.on(SocketEvents.CLIENT_CREATE_ROOM, bindedFunctions.createRoom)
-        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, bindedFunctions.sendMessage)
-        socket.on(SocketEvents.CLIENT_JOIN_ROOM, bindedFunctions.joinRoom)
-        socket.on(SocketEvents.VOTING_PHASE_START, bindedFunctions.startVotingPhaseVote)
-        socket.on(SocketEvents.CLIENT_VOTE, bindedFunctions.vote)
-        socket.on(SocketEvents.START_GAME, bindedFunctions.startGame)
-        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, bindedFunctions.startChancellorChoicePhase)
+        socket.on('disconnect', partialFunctions.disconnect)
+        socket.on(SocketEvents.CLIENT_CREATE_ROOM, partialFunctions.createRoom)
+        socket.on(SocketEvents.CLIENT_SEND_MESSAGE, partialFunctions.sendMessage)
+        socket.on(SocketEvents.CLIENT_JOIN_ROOM, partialFunctions.joinRoom)
+        socket.on(SocketEvents.VOTING_PHASE_START, partialFunctions.startVotingPhaseVote)
+        socket.on(SocketEvents.CLIENT_VOTE, partialFunctions.vote)
+        socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
+        socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
     })
 }
