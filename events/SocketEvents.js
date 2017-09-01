@@ -71,7 +71,12 @@ module.exports = function(io, RoomsManager) {
                 },
             })
         })
-        io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME)
+        io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
+            data: {
+                playerName: socket.currentPlayerName,
+                timestamp: getCurrentTimestamp(),
+            },
+        })
     }
 
     const startVotingPhaseVote = (socket, { chancellorName }) => {
@@ -91,6 +96,7 @@ module.exports = function(io, RoomsManager) {
             data: {
                 playersChoices,
                 presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
+                timestamp: getCurrentTimestamp(),
             },
         })
     }
