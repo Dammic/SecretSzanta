@@ -9,7 +9,7 @@ import {
     revealVotes,
 } from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
-import { setChoiceMode } from '../ducks/playersDuck'
+import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
 
 export let socket
@@ -39,6 +39,7 @@ export class SocketHandler extends React.PureComponent {
             const { chancellorCandidate, timestamp } = payload.data
             this.props.chatActions.addMessage(timestamp, `The president has nominated ${chancellorCandidate} for chancellor.`)
             this.props.chatActions.addMessage(timestamp, `Voting phase has begun - vote for the new parliment!`)
+            this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_VOTING)
             this.props.modalActions.setModal({
                 title: 'Vote for your parliment!',
                 initialData: {
@@ -65,6 +66,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(timestamp, `${presidentName} has become the new president!`)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_CHANCELLOR_CHOICE)
             this.props.chatActions.addMessage(timestamp, `${presidentName} is now choosing a new chancellor...`)
+            this.props.playersActions.setChooserPlayer(presidentName)
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.ChancellorChoice, playersChoices)
             }
@@ -104,7 +106,7 @@ const mapDispatchToProps = (dispatch) => {
         roomActions: bindActionCreators({ addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
             toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote, revealVotes }, dispatch),
         chatActions: bindActionCreators({ addMessage }, dispatch),
-        playersActions: bindActionCreators({ setChoiceMode }, dispatch),
+        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
     }
 }

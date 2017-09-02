@@ -19,7 +19,7 @@ const PlayerComponent = ({
             <div className={classNames('player-wrapper', { selectable: isSelectable, blurred: isChoiceModeVisible && !isSelectable })} data-playername={playerName} onClick={isSelectable ? onChoiceModeSelect : null}>
                 <div>{playerName}</div>
                 {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
-                <div>
+                <div className="avatar-wrapper">
                     {isPlayerWaitedFor && <i className="fa fa-clock-o selecting-wait-icon" aria-hidden="true" />}
                     <img className="portrait" src={avatar} alt="Player avatar" />
                 </div>
