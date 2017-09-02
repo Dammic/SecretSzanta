@@ -84,6 +84,7 @@ module.exports = function(io, RoomsManager) {
         io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
             data: {
                 chancellorCandidate: chancellorName,
+                timestamp: getCurrentTimestamp(),
             },
         })
     }

@@ -36,7 +36,9 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(timestamp, content, author)
         })
         socket.on(SocketEvents.VOTING_PHASE_START, (payload) => {
-            const { chancellorCandidate } = payload.data
+            const { chancellorCandidate, timestamp } = payload.data
+            this.props.chatActions.addMessage(timestamp, `The president has nominated ${chancellorCandidate} for chancellor.`)
+            this.props.chatActions.addMessage(timestamp, `Voting phase has begun - vote for the new parliment!`)
             this.props.modalActions.setModal({
                 title: 'Vote for your parliment!',
                 initialData: {
@@ -62,7 +64,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.selectNewPresident(presidentName)
             this.props.chatActions.addMessage(timestamp, `${presidentName} has become the new president!`)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_CHANCELLOR_CHOICE)
-            this.props.chatActions.addMessage(timestamp, `${presidentName} is now choosing his chancellor...`)
+            this.props.chatActions.addMessage(timestamp, `${presidentName} is now choosing a new chancellor...`)
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.ChancellorChoice, playersChoices)
             }
