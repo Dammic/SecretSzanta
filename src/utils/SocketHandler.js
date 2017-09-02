@@ -74,12 +74,18 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.revealFacists(facists)
         })
         socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, (payload) => {
-            const { playerName } = payload.data
+            const { playerName, remaining, timestamp } = payload.data
             this.props.roomActions.registerVote(playerName)
+            this.props.chatActions.addMessage(timestamp, `${playerName} has voted. ${remaining} ${remaining > 1 ? 'votes' : 'vote'} left...`)
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
-            const { votes } = payload.data
+            const { votes, timestamp, newChancellor } = payload.data
             this.props.roomActions.revealVotes(votes)
+            const votingResultMessage = (newChancellor
+                ? `${newChancellor} has become the new chancellor!`
+                : 'The proposal has been rejected! The new round beings in 3 seconds...'
+            )
+            this.props.chatActions.addMessage(timestamp, `Voting completed! ${votingResultMessage}`)
         })
     }
 

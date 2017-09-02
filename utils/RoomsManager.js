@@ -158,6 +158,11 @@ const RoomsManager = function() {
             return size(votes) === size(playersDict)
         },
 
+        getRemainingVotesCount: function(roomName) {
+            const { votes, playersDict } = rooms_props[roomName]
+            return size(playersDict) - size(votes)
+        },
+
         getVotes: function(roomName) {
             return rooms_props[roomName].votes
         },
