@@ -125,7 +125,6 @@ class RoomsManager {
     getFacists(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
-        console.info(playersDict)
         return map(
             filter(playersDict, player => includes(facistsDict, player.affiliation)),
             player => pick(player, ['playerName', 'affiliation', 'facistAvatar', 'emit']),
