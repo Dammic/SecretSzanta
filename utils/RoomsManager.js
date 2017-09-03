@@ -80,7 +80,7 @@ class RoomsManager {
     getPresident(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
-       
+
         return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
     }
 
@@ -96,7 +96,7 @@ class RoomsManager {
                 ? sortedPlayers[(lastPresidentIndex + 1) % size(sortedPlayers)]
                 : sortedPlayers[0]
             )
-            if(!nextPresident || nextPresident.isDead) {
+            if (!nextPresident || nextPresident.isDead) {
                 lastPresidentIndex += 1
             }
         }
@@ -113,7 +113,7 @@ class RoomsManager {
         // selecting random facists and hitler
         const shuffledPlayers = map(shuffle(values(playersDict)), 'playerName')
         const hitlerPlayerName = shuffledPlayers[0]
-        const selectedFacists = slice(shuffledPlayers, 1, facistCount - 1)
+        const selectedFacists = slice(shuffledPlayers, 1, facistCount)
         forEach(selectedFacists, (playerName) => {
             playersDict[playerName].affiliation = PlayerAffilications.FACIST_AFFILIATION
             playersDict[playerName].facistAvatar = random(21, 21)
@@ -125,9 +125,10 @@ class RoomsManager {
     getFacists(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
-        return filter(
-            pick(playersDict, ['playerName', 'affiliation', 'facistAvatar']),
-            player => includes(facistsDict, player.affiliation)
+        console.info(playersDict)
+        return map(
+            filter(playersDict, player => includes(facistsDict, player.affiliation)),
+            player => pick(player, ['playerName', 'affiliation', 'facistAvatar', 'emit']),
         )
     }
     getLiberals(roomName) {
@@ -158,7 +159,6 @@ class RoomsManager {
     /***********Voting***********/
 
     initializeVoting(roomName, chancellorCandidateName) {
-        const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].votes = {}
         this.rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
     }

@@ -72,6 +72,7 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.BECOME_FACIST, (payload) => {
             const { facists } = payload.data
+            console.info(facists)
             this.props.roomActions.revealFacists(facists)
         })
         socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, (payload) => {

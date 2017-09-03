@@ -47,6 +47,7 @@ export class PlayerBoard extends React.PureComponent {
             playerName: player.playerName,
             role,
             avatarNumber: player.avatarNumber,
+            facistAvatar: player.facistAvatar,
             isDead: player.isDead,
         }
     }

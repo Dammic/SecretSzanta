@@ -135,8 +135,9 @@ export default function reducer(state = initialState, action = {}) {
         }
         case REVEAL_FACISTS: {
             const { facists } = action.payload
+            console.info('reveal!', facists)
 
-            const newPlayersDict = { ...state.playersDict }
+            const newPlayersDict = cloneDeep(state.playersDict)
             forEach(facists, (facist) => {
                 const player = newPlayersDict[facist.playerName]
                 if (player) {

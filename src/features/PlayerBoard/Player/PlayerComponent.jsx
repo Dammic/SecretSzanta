@@ -5,7 +5,8 @@ import { isUndefined } from 'lodash'
 
 const PlayerComponent = ({
     playerName,
-    avatar,
+    liberalAvatar,
+    facistAvatar,
     rolePicture,
     voteBubbleStyle,
     voteValue,
@@ -26,7 +27,8 @@ const PlayerComponent = ({
                 {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
                 <div className={classNames('avatar-wrapper', { dead: isDead })}>
                     {isPlayerWaitedFor && <i className="fa fa-clock-o selecting-wait-icon" aria-hidden="true" />}
-                    <img className="portrait" src={avatar} alt="Player avatar" />
+                    <img className="portrait" src={facistAvatar} alt="Player facist avatar" />
+                    <img className="portrait" src={liberalAvatar} alt="Player liberal avatar" />
                 </div>
                 {rolePicture && <img className="role" src={rolePicture} alt="" />}
             </div>
@@ -36,7 +38,8 @@ const PlayerComponent = ({
 
 PlayerComponent.propTypes = {
     playerName: PropTypes.string,
-    avatar: PropTypes.string,
+    liberalAvatar: PropTypes.string,
+    facistAvatar: PropTypes.string,
     rolePicture: PropTypes.string,
     voteBubbleStyle: PropTypes.string,
     voteValue: PropTypes.string,
