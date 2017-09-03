@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases } = require('../Dictionary')
-const { map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { SocketEvents, GamePhases, PlayerAffilications } = require('../Dictionary')
+const { filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const socketEvents = {
@@ -65,9 +65,14 @@ module.exports = function (io, RoomsManager) {
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
             forEach(facists, (player) => {
+                // just filtering out emit functions
+                const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
                 player.emit(SocketEvents.BECOME_FACIST, {
                     data: {
-                        facists: map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar'])),
+                        facists: (player.affiliation === PlayerAffilications.HITLER_AFFILIATION
+                            ? filter(passedFacists, { playerName: player.playerName })
+                            : passedFacists
+                        ),
                     },
                 })
             })
