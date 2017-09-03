@@ -7,7 +7,7 @@ const DELETE_NOTIFICATION = 'info/DELETE_NOTIFICATION'
 
 const initialState = {
     currentID: 0,
-    information: [],
+    notifications: [],
 }
 
 export default function reducer(state = initialState, action = {}) {
@@ -17,8 +17,8 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 currentID: newID,
-                information: [
-                    ...state.information,
+                notifications: [
+                    ...state.notifications,
                     {
                         ...action.payload,
                         id: newID,
@@ -27,10 +27,10 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
         case DELETE_NOTIFICATION: {
-            const newInformation = reject(state.information, ['id', action.payload.id])
+            const newNotifications = reject(state.notifications, ['id', action.payload.id])
             return {
                 ...state,
-                information: newInformation,
+                notifications: newNotifications,
             }
         }
         default:
@@ -60,7 +60,7 @@ export function addError(error) {
     }
 }
 
-export function deleteInformation(id) {
+export function deleteNotification(id) {
     return {
         type: DELETE_NOTIFICATION,
         payload: {

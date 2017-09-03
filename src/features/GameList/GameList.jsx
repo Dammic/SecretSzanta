@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
-import InformationPanels from '../InformationReporting/informationPanel'
+import Notifications from '../Notifications/Notifications'
 import { joinRoom } from '../../ducks/userDuck'
-import * as infoTreeActions from '../../ducks/informationReportingDuck'
+import * as notification from '../../ducks/notificationsDuck'
 import SocketHandler from '../../utils/SocketHandler'
 import Modal from '../Modal/Modal'
 
@@ -21,11 +21,6 @@ export class GameList extends React.PureComponent {
     setRoomName = (event) => {
         const roomID = event.target.attributes.getNamedItem('data-roomid').value
         this.props.userActions.joinRoom(roomID)
-    }
-
-    componentDidMount = () => {
-        this.props.messageActions.addInformation('Ha! Działa :)')
-        this.props.messageActions.addError('Ohh! NO! An Error!')
     }
 
     render() {
@@ -69,7 +64,7 @@ export class GameList extends React.PureComponent {
         ]
         return (
             <div>
-                <InformationPanels infos={['Informacja!']}/>
+                <Notifications />
                 <SocketHandler />
                 <Modal />
                 {roomName
@@ -87,6 +82,6 @@ const mapStateToProps = ({ user }) => ({
 })
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ joinRoom }, dispatch),
-    messageActions: bindActionCreators(infoTreeActions, dispatch),
+    notificationsActions: bindActionCreators(notification, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)

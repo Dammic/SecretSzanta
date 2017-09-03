@@ -1,6 +1,5 @@
 .notifications {
-    z-index: 1;
-
+    z-index: 60;
     position: fixed;
 }
 
@@ -11,12 +10,12 @@
 
     height: 30px;
 
-    border: 1px solid #0D47A1;
+    border: 1px solid $notification-border-color;
     border-radius: 5px;
-    background-color: #42A5F5;
+    background-color: $notification-information-color;
 
     &.error {
-        background-color: red;
+        background-color: $notification-error-color;
     }
 
     &-exit {
@@ -26,13 +25,11 @@
 
         width: 25px;
         height: 25px;
-
         color: black;
-
         text-align: center;
 
-        border: 1px solid #0D47A1;
+        border: 1px solid $notification-close-border-color;
         border-radius: 10px;
-        background: #1E88E5;
+        background: $notification-close-color;
     }
 }

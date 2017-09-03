@@ -9,7 +9,7 @@ import thunk from 'redux-thunk'
 import chat from './ducks/chatDuck'
 import user from './ducks/userDuck'
 import room from './ducks/roomDuck'
-import infoTree from './ducks/informationReportingDuck'
+import notification from './ducks/notificationsDuck'
 import players from './ducks/playersDuck'
 import modal from './ducks/modalDuck'
 
@@ -22,7 +22,7 @@ const store = createStore(
         chat,
         user,
         room,
-        infoTree,
+        notification,
         players,
         modal,
         routing: routerReducer
