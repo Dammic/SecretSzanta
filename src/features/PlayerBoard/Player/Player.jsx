@@ -80,7 +80,7 @@ export class Player extends React.PureComponent {
         const isSelectable = this.isSelectable()
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
         const isPlayerWaitedFor = (
-            (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName))) ||
+            (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName)) && !isDead) ||
             chooserPlayerName === playerName
         )
 

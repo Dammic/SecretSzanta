@@ -87,13 +87,19 @@ class RoomsManager {
     chooseNextPresident(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(playersDict, 'slotNumber')
-        const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+        let lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
 
-        // if no president has been choosen, we choose the first player on the list
-        const nextPresident = (lastPresidentIndex >= 0
-            ? sortedPlayers[(lastPresidentIndex + 1) % size(sortedPlayers)]
-            : sortedPlayers[0]
-        )
+        let nextPresident
+        while (!nextPresident || nextPresident.isDead) {
+            // if no president has been choosen, we choose the first player on the list
+            nextPresident = (lastPresidentIndex >= 0
+                ? sortedPlayers[(lastPresidentIndex + 1) % size(sortedPlayers)]
+                : sortedPlayers[0]
+            )
+            if(!nextPresident || nextPresident.isDead) {
+                lastPresidentIndex += 1
+            }
+        }
         this.setPresident(roomName, nextPresident.playerName)
     }
 
@@ -102,7 +108,7 @@ class RoomsManager {
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
-        const facistCount = size(playersDict) - liberalCount;
+        const facistCount = size(playersDict) - liberalCount
 
         // selecting random facists and hitler
         const shuffledPlayers = map(shuffle(values(playersDict)), 'playerName')
@@ -142,7 +148,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         const chancellorChoices = []
         forEach(playersDict, (player) => {
-            if (isNil(player.role)) {
+            if (isNil(player.role) && !player.isDead) {
                 chancellorChoices.push(player.playerName)
             }
         })
@@ -158,18 +164,22 @@ class RoomsManager {
     }
 
     vote(roomName, playerName, value) {
-        const { votes } = this.rooms_props[roomName]
-        votes[playerName] = value
+        const { playersDict, votes } = this.rooms_props[roomName]
+        if (!playersDict[playerName].isDead) {
+            votes[playerName] = value
+        }
     }
 
     didAllVote(roomName) {
         const { votes, playersDict } = this.rooms_props[roomName]
-        return size(votes) === size(playersDict)
+        const votingPlayers = reject(playersDict, { isDead: true })
+        return size(votes) === size(votingPlayers)
     }
 
     getRemainingVotesCount(roomName) {
         const { votes, playersDict } = this.rooms_props[roomName]
-        return size(playersDict) - size(votes)
+        const votingPlayers = reject(playersDict, { isDead: true })
+        return size(votingPlayers) - size(votes)
     }
 
     getVotes(roomName) {

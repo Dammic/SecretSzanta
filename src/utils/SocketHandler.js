@@ -37,13 +37,15 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(timestamp, `Voting phase has begun - vote for the new parliment!`)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_VOTING)
             this.props.playersActions.setChooserPlayer('')
-            this.props.modalActions.setModal({
-                title: 'Vote for your parliment!',
-                initialData: {
-                    chancellorCandidate,
-                },
-                componentName: 'VotingModal',
-            })
+            if (!this.props.playersDict[this.props.userName].isDead) {
+                this.props.modalActions.setModal({
+                    title: 'Vote for your parliment!',
+                    initialData: {
+                        chancellorCandidate,
+                    },
+                    componentName: 'VotingModal',
+                })
+            }
         })
         socket.on(SocketEvents.START_GAME, (payload) => {
             const { playerName, timestamp } = payload.data
@@ -117,9 +119,10 @@ export class SocketHandler extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({ user }) => {
+const mapStateToProps = ({ user, room }) => {
     return {
         userName: user.userName,
+        playersDict: room.playersDict,
     }
 }
 const mapDispatchToProps = (dispatch) => {
