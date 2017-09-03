@@ -40,6 +40,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(timestamp, `The president has nominated ${chancellorCandidate} for chancellor.`)
             this.props.chatActions.addMessage(timestamp, `Voting phase has begun - vote for the new parliment!`)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_VOTING)
+            this.props.playersActions.setChooserPlayer('')
             this.props.modalActions.setModal({
                 title: 'Vote for your parliment!',
                 initialData: {
