@@ -167,11 +167,12 @@ module.exports = function (io, RoomsManager) {
                 const facists = RoomsManager.getFacists(socket.currentRoom)
                 const liberals = RoomsManager.getLiberals(socket.currentRoom)
 
+                const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
                 forEach(facists, (player) => {
                     player.emit(SocketEvents.GameFinished, {
                         data: {
                             isSuccess: false,
-                            facists,
+                            facists: passedFacists,
                         },
                     })
                 })
@@ -179,7 +180,7 @@ module.exports = function (io, RoomsManager) {
                     player.emit(SocketEvents.GameFinished, {
                         data: {
                             isSuccess: true,
-                            facists,
+                            facists: passedFacists,
                         },
                     })
                 })
