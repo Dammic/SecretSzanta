@@ -115,7 +115,7 @@ class RoomsManager {
         playersDict[hitlerPlayerName].affiliation = PlayerAffilications.HITLER_AFFILIATION
         playersDict[hitlerPlayerName].facistAvatar = 50
     }
-
+    
     getFacists(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
@@ -123,6 +123,14 @@ class RoomsManager {
             pick(playersDict, ['playerName', 'affiliation', 'facistAvatar']),
             player => includes(facistsDict, player.affiliation)
         )
+    }
+    getLiberals(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        return filter(playersDict, { affiliation === PlayerAffilications.LIBERAL_AFFILIATION })
+    }
+    getHitler(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        return find(playersDict, { affiliation: PlayerAffilications.HITLER_AFFILIATION })
     }
 
     startChancellorChoicePhase(roomName) {
@@ -209,7 +217,8 @@ class RoomsManager {
                 avatarNumber: random(1, 5),
                 facistAvatar: null,
                 affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
-                slotNumber: nextEmptySlot, 
+                slotNumber: nextEmptySlot,
+                isDead: false,
                 emit: socket.emit.bind(socket),
             }
             playersDict[playerName] = newPlayer
@@ -254,6 +263,25 @@ class RoomsManager {
     getPlayersCount(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         return size(playersDict)
+    }
+    
+    startGamePhase(roomName, newPhase) {
+        this.rooms_props[roomName].gamePhase = newPhase
+    }
+
+    getKillablePlayers(roomName, currentPlayerName) {
+        const { playersDict } = this.rooms_props[roomName]
+        const playersChoices = filter(playersDict, player => player.isDead || player.playerName === currentPlayerName)
+        return playersChoices
+    }
+
+    killPlayer(roomName, playerName) {
+        const { playersDict } = this.rooms_props[roomName]
+
+        const player = find(playersDict, { playerName })
+        if (player) {
+            player.isDead = true
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases } = require('../Dictionary')
-const { forEach, mapValues, partial } = require('lodash')
+const { get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const socketEvents = {
@@ -127,11 +127,49 @@ module.exports = function (io, RoomsManager) {
 
         testStartKillPhase: (socket) => {
             RoomsManager.startGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
+            const playersChoices = RoomsManager.getKillablePlayers(socket.currentRoom, socket.currentPlayerName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
                 data: {
-                    presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
+                    presidentName: get(RoomsManager.getPresident(socket.currentRoom), 'playerName'),
+                    timestamp: getCurrentTimestamp(),
+                    playersChoices,
                 },
             })
+        },
+
+        killPlayer: (socket, { playerName }) => {
+            RoomsManager.killPlayer(socket.currentRoom, playerName) {
+            const hitler = RoomsManager.getHitler()
+            const wasHitler = hitler.playerName === playerName
+            
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
+                data: {
+                    wasHitler,
+                    playerName,
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
+            if (wasHitler) {
+                const facists = RoomsManager.getFacists()
+                const liberals = RoomsManager.getLiberals()
+
+                forEach(facists, (player) => {
+                    player.emit(SocketEvents.GameFinished, {
+                        data: {
+                            isSuccess: false,
+                            facists,
+                        },
+                    })
+                })
+                forEach(liberals, (player) => {
+                    player.emit(SocketEvents.GameFinished, {
+                        data: {
+                            isSuccess: true,
+                            facists,
+                        },
+                    })
+                })
+            }
         },
     }
 

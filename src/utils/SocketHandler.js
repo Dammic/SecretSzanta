@@ -75,6 +75,29 @@ export class SocketHandler extends React.PureComponent {
             const { votes } = payload.data
             this.props.roomActions.revealVotes(votes)
         })
+        socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
+            const { presidentName, playersChoices, timestamp } = payload
+            this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_SUPERPOWER)
+            this.props.chatActions.addMessage(timestamp, `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...`)
+            if (presidentName === this.props.userName) {
+                this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.KillChoice, playersChoices)
+            }
+        })
+
+        socket.on(SocketEvents. PlayerKilled, (payload) => {
+            const { playerName, wasHitler, timestamp } = payload
+            const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'The killed foe was not Hitler, unfortunately.')
+            this.props.chatActions.addMessage(timestamp, `The president has killed ${playerName}... ${killStatusMessage}`)
+            if (!wasHitler) {
+                this.props.chatActions.addMessage(timestamp, 'The next round will begin in 3 seconds...')
+            }
+        })
+
+        socket.on(SocketEvents.GameFinished, (payload) => {
+            const { isSuccess, facists } = payload.data
+            this.props.roomActions.revealFacists(facists)
+            console.info(isSuccess ? 'you won!!' : 'you lose!!!') 
+        })
     }
 
     render() {
