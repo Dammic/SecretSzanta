@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { times, map } from 'lodash'
 import { PlayerDirection } from '../../../Dictionary'
 import Player from './Player/Player'
+import classNames from 'classnames'
 
 const PlayerBoardComponent = ({
     playersLeft = [],
@@ -10,6 +11,8 @@ const PlayerBoardComponent = ({
     playersRight = [],
     policiesLiberalCount = 0,
     policiesFacistCount = 0,
+    isChoiceModeVisible,
+    onChoiceModeSelect,
 }) => {
     const renderPolicies = (count, cardType) => {
         const result = []
@@ -22,37 +25,36 @@ const PlayerBoardComponent = ({
         return result
     }
 
-    return (
-        <div className="player-board">
-            <div className="players-container">
-                {map(playersLeft, player =>
+    const renderPlayers = (playersList, containerClass, direction) => {
+        return (
+            <div className={containerClass}>
+                {map(playersList, player =>
                     <Player
                         key={player.playerName}
                         player={player}
-                        direction={PlayerDirection.PLAYER_DIRECTION_LEFT}
+                        direction={direction}
+                        onChoiceModeSelect={onChoiceModeSelect}
                     />,
-                 )}
+                )}
             </div>
+        )
+    }
 
+    return (
+        <div className="player-board">
+            {isChoiceModeVisible && <div className="overlay choice-overlay" />}
+            {renderPlayers(playersLeft, 'players-container', PlayerDirection.PLAYER_DIRECTION_LEFT)}
             <div className="central-part">
-                <div className="players-container-middle">
-                    {map(playersMiddle, player =>
-                        <Player
-                            key={player.playerName}
-                            player={player}
-                            direction={PlayerDirection.PLAYER_DIRECTION_UP}
-                        />,
-                    )}
-                </div>
+                {renderPlayers(playersMiddle, 'player-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
 
-                <div className="policy">
+                <div className={classNames('policy', { blurred: isChoiceModeVisible })} >
                     <img src={require('../../static/liberalpolicies.png')} />
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
                 </div>
 
-                <div className="policy">
+                <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
                     <img src={require('../../static/facistpolicies3.png')} />
                     <div className="policy-card-fascist">
                         {renderPolicies(policiesFacistCount, 'facist')}
@@ -60,17 +62,9 @@ const PlayerBoardComponent = ({
                 </div>
             </div>
 
-            <div className="players-container">
-                {map(playersRight, player =>
-                    <Player
-                        key={player.playerName}
-                        player={player}
-                        direction={PlayerDirection.PLAYER_DIRECTION_RIGHT}
-                    />,
-                )}
-            </div>
-        </div>
-    )
+            {renderPlayers(playersRight, 'players-container', PlayerDirection.PLAYER_DIRECTION_RIGHT)}
+	</div>
+)
 }
 
 PlayerBoardComponent.propTypes = {
@@ -79,5 +73,7 @@ PlayerBoardComponent.propTypes = {
     playersMiddle: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
     policiesLiberalCount: PropTypes.number,
     policiesFacistCount: PropTypes.number,
+    isChoiceModeVisible: PropTypes.bool,
+    onChoiceModeSelect: PropTypes.func,
 }
 export default PlayerBoardComponent

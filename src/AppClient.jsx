@@ -1,4 +1,3 @@
-'use strict'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -11,10 +10,10 @@ import chat from './ducks/chatDuck'
 import user from './ducks/userDuck'
 import room from './ducks/roomDuck'
 import infoTree from './ducks/informationReportingDuck'
+import players from './ducks/playersDuck'
+import modal from './ducks/modalDuck'
 
-import GameRoom from './features/GameRoom/GameRoom'
 import LoginPage from './features/LoginPage/LoginPage'
-import GameList from './features/GameList/GameList'
 import NotFound from './features/NotFound/NotFound'
 
 /* eslint-disable no-underscore-dangle */
@@ -24,6 +23,8 @@ const store = createStore(
         user,
         room,
         infoTree,
+        players,
+        modal,
         routing: routerReducer
     }),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

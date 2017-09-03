@@ -5,6 +5,7 @@ const swig = require('swig')
 const Express = require('express')
 const SocketEvents = require('./events/SocketEvents')
 const roomsRoute = require('./routes/rooms')
+const RoomsManager = require('./utils/RoomsManager')
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
@@ -14,21 +15,20 @@ const server = new Server(app)
 
 
 // view engine setup
-app.engine('html', swig.renderFile);
-app.set('view engine', 'html');
+app.engine('html', swig.renderFile)
+app.set('view engine', 'html')
 app.set('views', path.join(__dirname, 'views'))
 app.use(Express.static(__dirname + '/public'))
 
 // socket.io
 const io = require('socket.io')(server)
-const RoomsManager = require('./utils/RoomsManager')()
-SocketEvents(io, RoomsManager)
+const RoomsManagerInstance = new RoomsManager()
+
+SocketEvents(io, RoomsManagerInstance)
 
 // universal routing and rendering
-app.get('/', (req, res) => {
-    return res.render('index')
-})
-app.use('/rooms', roomsRoute(RoomsManager))
+app.get('/', (req, res) => res.render('index'))
+app.use('/rooms', roomsRoute(RoomsManagerInstance))
 
 app.use('*', (req, res, next) => {
     res.status(404)
@@ -44,7 +44,6 @@ const env = process.env.NODE_ENV || 'production'
 server.listen(port, err => {
     if (err) {
         return console.error(err)
-    } else {
-        console.info(`Server running on http://localhost:${port} [${env}]`)
     }
+    console.info(`Server running on http://localhost:${port} [${env}]`)
 })

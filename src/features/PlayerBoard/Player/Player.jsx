@@ -2,18 +2,23 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
-import { isUndefined, get } from 'lodash'
+import { isUndefined, get, includes } from 'lodash'
 import PlayerComponent from './PlayerComponent'
-import { PlayerDirection, PlayerRole } from '../../../../Dictionary'
+import { PlayerDirection, PlayerRole, GamePhases } from '../../../../Dictionary'
 
 export class Player extends React.PureComponent {
     static propTypes = {
         // parent
         player: PropTypes.objectOf(PropTypes.any),
         direction: PropTypes.string,
+        onChoiceModeSelect: PropTypes.func,
 
         // redux
         votes: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.bool, PropTypes.string])),
+        choiceMode: PropTypes.shape({
+            isVisible: PropTypes.bool,
+            selectablePlayers: PropTypes.arrayOf(PropTypes.string),
+        }),
     }
 
     getRolePicture = () => {
@@ -61,9 +66,23 @@ export class Player extends React.PureComponent {
         return voteValue
     }
 
+    isSelectable = () => {
+        const { choiceMode, player: { playerName } } = this.props
+        return choiceMode.isVisible && includes(choiceMode.selectablePlayers, playerName)
+    }
+
+    onPlayerClick = (event) => {
+        this.props.onChoiceModeSelect(event.target.getAttribute('data-playername'))
+    }
+
     render() {
-        const { playerName, avatarNumber } = this.props.player
+        const { gamePhase, votes, choiceMode: { isVisible, chooserPlayerName }, player: { playerName, avatarNumber } } = this.props
+        const isSelectable = this.isSelectable()
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
+        const isPlayerWaitedFor = (
+            (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName))) ||
+            chooserPlayerName === playerName
+        )
 
         const voteValue = this.getVoteValue()
         return (
@@ -73,13 +92,19 @@ export class Player extends React.PureComponent {
                 rolePicture={this.getRolePicture()}
                 voteBubbleStyle={this.getVoteBubbleStyle()}
                 voteValue={voteValue}
+                isChoiceModeVisible={isVisible}
+                isSelectable={isSelectable}
+                onChoiceModeSelect={this.onPlayerClick}
+                isPlayerWaitedFor={isPlayerWaitedFor}
             />
         )
     }
 }
 
-const mapStateToProps = ({ room }) => ({
+const mapStateToProps = ({ room, players }) => ({
     votes: room.votes,
+    gamePhase: room.gamePhase,
+    choiceMode: players.choiceMode,
 })
 
 export default connect(mapStateToProps)(Player)

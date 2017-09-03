@@ -11,7 +11,7 @@ module.exports = {
         ignored: /node_modules/
     },
     entry: {
-        app: path.join(__dirname, 'src', 'AppClient.js')
+        app: path.join(__dirname, 'src', 'AppClient.jsx')
     },
     output: {
         path: path.join(__dirname, 'public'),
@@ -30,15 +30,25 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js?$/,
+                test: /\.js$/,
                 loader: 'babel',
                 include: [
                     path.join(__dirname, 'src') //important for performance!
                 ],
                 query: {
                     cacheDirectory: true, //important for performance
-                    presets: ['react', 'es2015', 'stage-3', 'stage-1']
+                    presets: ['es2015', 'stage-3', 'stage-1'],
                 }
+            }, {
+                test: /\.jsx$/,
+                loader: 'babel',
+                include: [
+                    path.join(__dirname, 'src'), //important for performance!
+                ],
+                query: {
+                    cacheDirectory: true,
+                    presets: ['react', 'es2015', 'stage-3', 'stage-1'],
+                },
             }, {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'url-loader?limit=10000&minetype=application/font-woff'
@@ -59,7 +69,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['', '.js'],
+        extensions: ['', '.js', '.jsx'],
         root: path.resolve(__dirname, 'src'),
         modulesDirectories: ['node_modules']
     }
