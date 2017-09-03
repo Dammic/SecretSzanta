@@ -114,7 +114,6 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 playersDict: newPlayersDict,
-
                 votes: null,
             }
         }
