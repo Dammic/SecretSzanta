@@ -4,13 +4,16 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
+import Notifications from '../Notifications/Notifications'
 import { joinRoom } from '../../ducks/userDuck'
+import * as notificationsActions from '../../ducks/notificationsDuck'
 import SocketHandler from '../../utils/SocketHandler'
 import Modal from '../Modal/Modal'
 
 export class GameList extends React.PureComponent {
     static propTypes = {
         // redux
+        notificationsActions: PropTypes.objectOf(PropTypes.func),
         userActions: PropTypes.objectOf(PropTypes.func),
         roomName: PropTypes.string,
         userName: PropTypes.string,
@@ -62,6 +65,7 @@ export class GameList extends React.PureComponent {
         ]
         return (
             <div>
+                <Notifications />
                 <SocketHandler />
                 <Modal />
                 {roomName
@@ -79,5 +83,6 @@ const mapStateToProps = ({ user }) => ({
 })
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ joinRoom }, dispatch),
+    notificationsActions: bindActionCreators(notificationsActions, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)

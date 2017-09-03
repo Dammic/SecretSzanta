@@ -11,6 +11,7 @@ import {
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
+import { addInformation, addError } from '../ducks/notificationsDuck'
 
 export let socket
 
@@ -90,6 +91,10 @@ export class SocketHandler extends React.PureComponent {
             )
             this.props.chatActions.addMessage(timestamp, `Voting completed! ${votingResultMessage}`)
         })
+        socket.on(SocketEvents.CLIENT_ERROR, (payload) => {
+            const { error } = payload
+            this.props.notificationsActions.addError(error)
+        })
     }
 
     render() {
@@ -109,6 +114,7 @@ const mapDispatchToProps = (dispatch) => {
         chatActions: bindActionCreators({ addMessage }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
+        notificationsActions: bindActionCreators({ addInformation, addError }, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)
