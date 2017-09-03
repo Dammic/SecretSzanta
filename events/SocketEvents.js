@@ -138,8 +138,8 @@ module.exports = function (io, RoomsManager) {
         },
 
         killPlayer: (socket, { playerName }) => {
-            RoomsManager.killPlayer(socket.currentRoom, playerName) {
-            const hitler = RoomsManager.getHitler()
+            RoomsManager.killPlayer(socket.currentRoom, playerName)
+            const hitler = RoomsManager.getHitler(socket.currentRoom)
             const wasHitler = hitler.playerName === playerName
             
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
@@ -150,8 +150,8 @@ module.exports = function (io, RoomsManager) {
                 },
             })
             if (wasHitler) {
-                const facists = RoomsManager.getFacists()
-                const liberals = RoomsManager.getLiberals()
+                const facists = RoomsManager.getFacists(socket.currentRoom)
+                const liberals = RoomsManager.getLiberals(socket.currentRoom)
 
                 forEach(facists, (player) => {
                     player.emit(SocketEvents.GameFinished, {
@@ -169,6 +169,10 @@ module.exports = function (io, RoomsManager) {
                         },
                     })
                 })
+            } else {
+                 setTimeout(() => {
+                    socketEvents.startChancellorChoicePhase(socket)
+                }, 3000)
             }
         },
     }
@@ -190,5 +194,6 @@ module.exports = function (io, RoomsManager) {
         socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
         socket.on(SocketEvents.TEST_START_KILL_PHASE, partialFunctions.testStartKillPhase)
+        socket.on(SocketEvents.PlayerKilled, partialFunctions.killPlayer)
     })
 }

@@ -47,6 +47,7 @@ export class PlayerBoard extends React.PureComponent {
             playerName: player.playerName,
             role,
             avatarNumber: player.avatarNumber,
+            isDead: player.isDead,
         }
     }
 
@@ -58,7 +59,7 @@ export class PlayerBoard extends React.PureComponent {
                 this.props.playersActions.hideChoiceMode()
                 break
             case ChoiceModeContexts.KillChoice:
-                socket.emit(SocketEvents.KillVictimSelected, { player: selection })
+                socket.emit(SocketEvents.PlayerKilled, { playerName: selection })
                 this.props.playersActions.hideChoiceMode()
                 break
             default:

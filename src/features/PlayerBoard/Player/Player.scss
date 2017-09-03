@@ -118,6 +118,8 @@ $player-bubble-activated-position: 100%;
     .player-wrapper {
         text-align: center;
         position: relative;
+        max-width: $player-image-width;
+        overflow: hidden;
         &.selectable {
             z-index: 30;
             cursor: pointer;
@@ -158,5 +160,25 @@ $player-bubble-activated-position: 100%;
         * {
             pointer-events: none; 
         }
-    }
+        .dead {
+            position: relative;
+            &:before, &:after {
+                position: absolute;
+                content: '';
+                background: red;
+                display: block;
+                width: 100%;
+                height: 5px;
+                transform: rotate(-49deg);
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+            &:after {
+                transform: rotate(49deg);
+            }
+        }
+    } 
 }

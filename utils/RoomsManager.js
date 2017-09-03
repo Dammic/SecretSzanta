@@ -1,4 +1,4 @@
-const { findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash')
+const { reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
 /**
@@ -126,7 +126,7 @@ class RoomsManager {
     }
     getLiberals(roomName) {
         const { playersDict } = this.rooms_props[roomName]
-        return filter(playersDict, { affiliation === PlayerAffilications.LIBERAL_AFFILIATION })
+        return filter(playersDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
     }
     getHitler(roomName) {
         const { playersDict } = this.rooms_props[roomName]
@@ -271,7 +271,7 @@ class RoomsManager {
 
     getKillablePlayers(roomName, currentPlayerName) {
         const { playersDict } = this.rooms_props[roomName]
-        const playersChoices = filter(playersDict, player => player.isDead || player.playerName === currentPlayerName)
+        const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
         return playersChoices
     }
 

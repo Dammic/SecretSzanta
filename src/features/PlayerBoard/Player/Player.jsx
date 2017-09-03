@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import { isUndefined, get, includes } from 'lodash'
 import PlayerComponent from './PlayerComponent'
-import { PlayerDirection, PlayerRole } from '../../../../Dictionary'
+import { PlayerDirection, PlayerRole, GamePhases } from '../../../../Dictionary'
 
 export class Player extends React.PureComponent {
     static propTypes = {
@@ -38,17 +38,17 @@ export class Player extends React.PureComponent {
     }
 
     getVoteBubbleStyle = () => {
-        const { votes } = this.props
+        const { votes, gamePhase } = this.props
         const { playerName } = this.props.player
-        const hasPlayerVoted = !isUndefined(get(votes, playerName))
+        const isBubbleActive = !isUndefined(get(votes, playerName)) && gamePhase === GamePhases.GAME_PHASE_VOTING
 
         switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames('bubble-left', { active: hasPlayerVoted })
+                return classNames('bubble-left', { active: isBubbleActive })
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames('bubble-right', { active: hasPlayerVoted })
+                return classNames('bubble-right', { active: isBubbleActive })
             default:
-                return classNames('bubble-top', { active: hasPlayerVoted })
+                return classNames('bubble-top', { active: isBubbleActive })
         }
     }
 
@@ -76,7 +76,7 @@ export class Player extends React.PureComponent {
     }
 
     render() {
-        const { choiceMode: { isVisible }, player: { playerName, avatarNumber } } = this.props
+        const { choiceMode: { isVisible }, player: { playerName, avatarNumber, isDead } } = this.props
         const isSelectable = this.isSelectable()
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
 
@@ -89,7 +89,8 @@ export class Player extends React.PureComponent {
                 voteBubbleStyle={this.getVoteBubbleStyle()}
                 voteValue={voteValue}
                 isChoiceModeVisible={isVisible}
-                isSelectable={isSelectable}
+                isSelectable={isSelectable && !isDead}
+                isDead={isDead}
                 onChoiceModeSelect={this.onPlayerClick}
             />
         )
@@ -99,6 +100,7 @@ export class Player extends React.PureComponent {
 const mapStateToProps = ({ room, players }) => ({
     votes: room.votes,
     choiceMode: players.choiceMode,
+    gamePhase: room.gamePhase,
 })
 
 export default connect(mapStateToProps)(Player)

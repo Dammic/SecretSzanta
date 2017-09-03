@@ -3,11 +3,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { SocketEvents, GamePhases, ChoiceModeContexts } from '../../Dictionary'
-import {
-    addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
-    toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote,
-    revealVotes,
-} from '../ducks/roomDuck'
+import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
@@ -76,7 +72,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.revealVotes(votes)
         })
         socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
-            const { presidentName, playersChoices, timestamp } = payload
+            const { presidentName, playersChoices, timestamp } = payload.data
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_SUPERPOWER)
             this.props.chatActions.addMessage(timestamp, `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...`)
             if (presidentName === this.props.userName) {
@@ -84,10 +80,11 @@ export class SocketHandler extends React.PureComponent {
             }
         })
 
-        socket.on(SocketEvents. PlayerKilled, (payload) => {
-            const { playerName, wasHitler, timestamp } = payload
-            const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'The killed foe was not Hitler, unfortunately.')
+        socket.on(SocketEvents.PlayerKilled, (payload) => {
+            const { playerName, wasHitler, timestamp } = payload.data
+            const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'It turned out the killed foe was not Hitler, unfortunately.')
             this.props.chatActions.addMessage(timestamp, `The president has killed ${playerName}... ${killStatusMessage}`)
+            this.props.roomActions.killPlayer(playerName)
             if (!wasHitler) {
                 this.props.chatActions.addMessage(timestamp, 'The next round will begin in 3 seconds...')
             }
@@ -112,8 +109,7 @@ const mapStateToProps = ({ user }) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        roomActions: bindActionCreators({ addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
-            toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote, revealVotes }, dispatch),
+        roomActions: bindActionCreators(roomActions, dispatch),
         chatActions: bindActionCreators({ addMessage }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
