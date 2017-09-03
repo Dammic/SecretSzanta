@@ -72,7 +72,6 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.BECOME_FACIST, (payload) => {
             const { facists } = payload.data
-            console.info(facists)
             this.props.roomActions.revealFacists(facists)
         })
         socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, (payload) => {
@@ -111,7 +110,7 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { isSuccess, facists } = payload.data
             this.props.roomActions.revealFacists(facists)
-            console.info(isSuccess ? 'you won!!' : 'you lose!!!') 
+            console.info(isSuccess ? 'you won!!' : 'you lose!!!')
         })
     }
 
