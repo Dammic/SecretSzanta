@@ -6,7 +6,7 @@ import GameListComponent from './GameListComponent'
 import GameRoom from '../GameRoom/GameRoom'
 import Notifications from '../Notifications/Notifications'
 import { joinRoom } from '../../ducks/userDuck'
-import * as notification from '../../ducks/notificationsDuck'
+import * as notificationsActions from '../../ducks/notificationsDuck'
 import SocketHandler from '../../utils/SocketHandler'
 import Modal from '../Modal/Modal'
 
@@ -83,6 +83,6 @@ const mapStateToProps = ({ user }) => ({
 })
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ joinRoom }, dispatch),
-    notificationsActions: bindActionCreators(notification, dispatch),
+    notificationsActions: bindActionCreators(notificationsActions, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)
