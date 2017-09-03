@@ -24,6 +24,9 @@ module.exports = function (io, RoomsManager) {
                 RoomsManager.initializeRoom(roomName, maxPlayers, password)
             } else {
                 console.error('selected room is already present! Cannot create a duplicate!')
+                socket.emit(SocketEvents.CLIENT_ERROR, {
+                    error: 'You cannot create duplicate of this room!',
+                })
             }
         },
 
@@ -55,7 +58,7 @@ module.exports = function (io, RoomsManager) {
                 })
             } else {
                 console.error('Why is the room gone!')
-                socket.emit(SocketEvents.CLIENT_JOIN_ROOM, {
+                socket.emit(SocketEvents.CLIENT_ERROR, {
                     error: 'Error - WHY IS THE ROOM GONE?!',
                 })
             }
