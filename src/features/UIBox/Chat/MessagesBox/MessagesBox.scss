@@ -3,10 +3,14 @@
     height: 100%;
     max-height: 100%;
     overflow-y: auto;
-    background-color: yellow;
+	background-color: $chat-box-background;
+	border: 2px solid $border-color;
+	border-bottom: none;
+	border-right: none;
 
     .message {
-
+        font-size: 14px;
+        color: $chat-message-font;
     }
 
     .server-message {

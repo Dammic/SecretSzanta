@@ -107,10 +107,6 @@ $player-bubble-activated-position: 100%;
         }
     }
 
-    .portrait {
-        max-width: $player-image-width;
-    }
-
     .role {
         max-width: $player-image-width;
     }
@@ -119,7 +115,6 @@ $player-bubble-activated-position: 100%;
         text-align: center;
         position: relative;
         max-width: $player-image-width;
-        overflow: hidden;
         &.selectable {
             z-index: 30;
             cursor: pointer;
@@ -160,25 +155,43 @@ $player-bubble-activated-position: 100%;
         * {
             pointer-events: none; 
         }
-        .dead {
+
+        .avatar-wrapper {
             position: relative;
-            &:before, &:after {
+            .selecting-wait-icon {
+                color: $selecting-wait-icon-color;
                 position: absolute;
-                content: '';
-                background: red;
-                display: block;
-                width: 100%;
-                height: 5px;
-                transform: rotate(-49deg);
-                left: 0;
-                right: 0;
-                top: 0;
-                bottom: 0;
-                margin: auto;
+                right: 5px;
+                bottom: 5px;
+                font-size: 1.5em;
+                animation: breathing 3s ease-out infinite normal;
             }
-            &:after {
-                transform: rotate(49deg);
+            &.dead {
+                &:before, &:after {
+                    position: absolute;
+                    content: '';
+                    background: $player-cross;
+                    display: block;
+                    width: 133%;
+                    height: 5px;
+                    transform: rotate(-49deg);
+                    left: -17%;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
+                    z-index: 1;
+                }
+                &:after {
+                    transform: rotate(49deg);
+                }
+                .portrait {
+                    opacity: 0.6; 
+                }
             }
         }
-    } 
+        .portrait {
+            max-width: $player-image-width;
+        }
+    }
 }

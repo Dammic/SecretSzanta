@@ -1,15 +1,16 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import UIBoxComponent from './UIBoxComponent'
 import { SocketEvents } from '../../../Dictionary'
 import { socket } from '../../utils/SocketHandler'
 
-export default class UIBox extends React.PureComponent {
+export class UIBox extends React.PureComponent {
     onStartVote = () => {
         socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE)
     }
 
     onStartGame = () => {
-        socket.emit(SocketEvents.START_GAME)
+        socket.emit(SocketEvents.START_GAME, { playerName: this.props.userName })
     }
 
     onKillClick = () => {
@@ -26,3 +27,9 @@ export default class UIBox extends React.PureComponent {
         )
     }
 }
+
+const mapStateToProps = ({ user }) => ({
+    userName: user.userName,
+})
+
+export default connect(mapStateToProps)(UIBox)

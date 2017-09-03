@@ -33,7 +33,7 @@ export default function reducer(state = initialState, action = {}) {
  */
 export function addMessage(timestamp, content, author = null) {
     const newMessage = {
-        time: moment.unix(timestamp).format('MM/DD/YYYY/HH:mm:ss'),
+        time: moment.unix(timestamp).format('HH:mm'),
         content,
         author: author || '',
     }
