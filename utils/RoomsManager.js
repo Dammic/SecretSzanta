@@ -159,6 +159,11 @@ class RoomsManager {
         return size(votes) === size(playersDict)
     }
 
+    getRemainingVotesCount(roomName) {
+        const { votes, playersDict } = this.rooms_props[roomName]
+        return size(playersDict) - size(votes)
+    }
+
     getVotes(roomName) {
         return this.rooms_props[roomName].votes
     }

@@ -1,7 +1,9 @@
 .chat {
     width: 350px;
-    height: 250px;
+    height: 200px;
     display: flex;
     flex-direction: column;
-    float: right;
+    right: 2px;
+    position: absolute;
+    top: 0;
 }

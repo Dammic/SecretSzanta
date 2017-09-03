@@ -107,10 +107,6 @@ $player-bubble-activated-position: 100%;
         }
     }
 
-    .portrait {
-        max-width: $player-image-width;
-    }
-
     .role {
         max-width: $player-image-width;
     }
@@ -157,6 +153,21 @@ $player-bubble-activated-position: 100%;
         }
         * {
             pointer-events: none; 
+        }
+        
+        .avatar-wrapper {
+            position: relative;
+            .selecting-wait-icon {
+                color: $selecting-wait-icon-color;
+                position: absolute;
+                right: 5px;
+                bottom: 5px;
+                font-size: 1.5em;
+                animation: breathing 3s ease-out infinite normal;
+            }
+        }
+        .portrait {
+            max-width: $player-image-width;
         }
     }
 }

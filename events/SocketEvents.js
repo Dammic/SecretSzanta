@@ -72,7 +72,12 @@ module.exports = function (io, RoomsManager) {
                     },
                 })
             })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
+                data: {
+                    playerName: socket.currentPlayerName,
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
         },
 
         startVotingPhaseVote: (socket, { chancellorName }) => {
@@ -80,6 +85,7 @@ module.exports = function (io, RoomsManager) {
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
                 data: {
                     chancellorCandidate: chancellorName,
+                    timestamp: getCurrentTimestamp(),
                 },
             })
         },
@@ -92,6 +98,7 @@ module.exports = function (io, RoomsManager) {
                 data: {
                     playersChoices,
                     presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
+                    timestamp: getCurrentTimestamp(),
                 },
             })
         },
@@ -104,12 +111,13 @@ module.exports = function (io, RoomsManager) {
                     RoomsManager.setChancellor(socket.currentRoom)
                 } else {
                     setTimeout(() => {
-                        startChancellorChoicePhase(socket)
+                        socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
                 }
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
                     data: {
                         votes: RoomsManager.getVotes(socket.currentRoom),
+                        timestamp: getCurrentTimestamp(),
                         newChancellor: (votingResult
                             ? RoomsManager.getChancellor(socket.currentRoom).playerName
                             : null
@@ -120,10 +128,12 @@ module.exports = function (io, RoomsManager) {
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
                     data: {
                         playerName: socket.currentPlayerName,
+                        remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
+                        timestamp: getCurrentTimestamp(),
                     },
                 })
             }
-        },
+        }
     }
 
     io.on('connection', (socket) => {

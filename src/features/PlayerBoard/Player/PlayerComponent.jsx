@@ -12,13 +12,17 @@ const PlayerComponent = ({
     isSelectable,
     onChoiceModeSelect,
     isChoiceModeVisible,
+    isPlayerWaitedFor,
 }) => {
     return (
         <div className="player">
             <div className={classNames('player-wrapper', { selectable: isSelectable, blurred: isChoiceModeVisible && !isSelectable })} data-playername={playerName} onClick={isSelectable ? onChoiceModeSelect : null}>
                 <div>{playerName}</div>
                 {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
-                <img className="portrait" src={avatar} alt="Player avatar" />
+                <div className="avatar-wrapper">
+                    {isPlayerWaitedFor && <i className="fa fa-clock-o selecting-wait-icon" aria-hidden="true" />}
+                    <img className="portrait" src={avatar} alt="Player avatar" />
+                </div>
                 {rolePicture && <img className="role" src={rolePicture} alt="" />}
             </div>
         </div>
@@ -34,5 +38,6 @@ PlayerComponent.propTypes = {
     isSelectable: PropTypes.bool,
     onChoiceModeSelect: PropTypes.func,
     isChoiceModeVisible: PropTypes.bool,
+    isPlayerWaitedFor: PropTypes.bool,
 }
 export default PlayerComponent

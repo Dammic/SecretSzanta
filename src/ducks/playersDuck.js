@@ -1,12 +1,14 @@
 // Actions
-const SET_CHOICE_MODE = 'room/SET_CHOICE_MODE'
-const HIDE_CHOICE_MODE = 'room/HIDE_CHOICE_MODE'
+const SET_CHOICE_MODE = 'players/SET_CHOICE_MODE'
+const HIDE_CHOICE_MODE = 'players/HIDE_CHOICE_MODE'
+const SET_CHOOSER_PLAYER = 'players/SET_CHOOSER_PLAYER'
 
 const initialState = {
     choiceMode: {
         isVisible: false,
         context: '',
         selectablePlayers: [],
+        chooserPlayerName: '',
     },
 }
 
@@ -27,6 +29,20 @@ export default function reducer(state = initialState, action = {}) {
                 },
             }
         }
+
+        case SET_CHOOSER_PLAYER: {
+            const { choiceMode } = state
+            const { playerName } = action.payload
+
+            return {
+                ...state,
+                choiceMode: {
+                    ...choiceMode,
+                    chooserPlayerName: playerName,
+                },
+            }
+        }
+
         case HIDE_CHOICE_MODE: {
             return {
                 ...state,
@@ -55,4 +71,12 @@ export function hideChoiceMode() {
         type: HIDE_CHOICE_MODE,
         payload: {},
     }
+}
+
+export function setChooserPlayer(playerName) {
+    return {
+        type: SET_CHOOSER_PLAYER,
+        payload: { playerName },
+    }
+
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import { isUndefined, get, includes } from 'lodash'
 import PlayerComponent from './PlayerComponent'
-import { PlayerDirection, PlayerRole } from '../../../../Dictionary'
+import { PlayerDirection, PlayerRole, GamePhases } from '../../../../Dictionary'
 
 export class Player extends React.PureComponent {
     static propTypes = {
@@ -76,9 +76,13 @@ export class Player extends React.PureComponent {
     }
 
     render() {
-        const { choiceMode: { isVisible }, player: { playerName, avatarNumber } } = this.props
+        const { gamePhase, votes, choiceMode: { isVisible, chooserPlayerName }, player: { playerName, avatarNumber } } = this.props
         const isSelectable = this.isSelectable()
         const avatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
+        const isPlayerWaitedFor = (
+            (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName))) ||
+            chooserPlayerName === playerName
+        )
 
         const voteValue = this.getVoteValue()
         return (
@@ -91,6 +95,7 @@ export class Player extends React.PureComponent {
                 isChoiceModeVisible={isVisible}
                 isSelectable={isSelectable}
                 onChoiceModeSelect={this.onPlayerClick}
+                isPlayerWaitedFor={isPlayerWaitedFor}
             />
         )
     }
@@ -98,6 +103,7 @@ export class Player extends React.PureComponent {
 
 const mapStateToProps = ({ room, players }) => ({
     votes: room.votes,
+    gamePhase: room.gamePhase,
     choiceMode: players.choiceMode,
 })
 
