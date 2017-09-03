@@ -49,7 +49,7 @@ class RoomsManager {
     getChancellor(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const chancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
-        
+
         return (chancellor ? pick(chancellor, ['playerName', 'avatarNumber']) : null)
     }
 

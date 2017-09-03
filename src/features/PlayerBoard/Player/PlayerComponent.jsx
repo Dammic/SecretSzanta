@@ -12,7 +12,7 @@ const PlayerComponent = ({
     isSelectable,
     onChoiceModeSelect,
     isChoiceModeVisible,
-	isPlayerWaitedFor,
+    isPlayerWaitedFor,
 }) => {
     return (
         <div className="player">
@@ -38,5 +38,6 @@ PlayerComponent.propTypes = {
     isSelectable: PropTypes.bool,
     onChoiceModeSelect: PropTypes.func,
     isChoiceModeVisible: PropTypes.bool,
+    isPlayerWaitedFor: PropTypes.bool,
 }
 export default PlayerComponent
