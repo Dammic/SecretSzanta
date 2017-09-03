@@ -13,6 +13,7 @@ import Modal from '../Modal/Modal'
 export class GameList extends React.PureComponent {
     static propTypes = {
         // redux
+        notificationsActions: PropTypes.objectOf(PropTypes.func),
         userActions: PropTypes.objectOf(PropTypes.func),
         roomName: PropTypes.string,
         userName: PropTypes.string,

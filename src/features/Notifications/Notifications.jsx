@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { map, takeRight, reverse } from 'lodash'
-import { NotificationPanel } from './NotificationPanel'
+import NotificationPanel from './NotificationPanel'
 import { MessagesTypes } from '../../../Dictionary'
 import * as notificationsActions from '../../ducks/notificationsDuck'
 
 export class Notifications extends React.PureComponent {
     static propTypes = {
         notifications: PropTypes.arrayOf(PropTypes.object),
-        notificationsActions: PropTypes.arrayOf(PropTypes.func),
+        notificationsActions: PropTypes.objectOf(PropTypes.func),
     }
     render() {
         const panels = map(reverse(takeRight(this.props.notifications, 3)), (info) => {
