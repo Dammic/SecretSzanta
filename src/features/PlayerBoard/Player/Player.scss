@@ -107,7 +107,8 @@ $player-bubble-activated-position: 100%;
     }
 
     .role {
-        max-width: $player-image-width;
+        width: $player-image-width;
+        max-width: 130px;
     }
 
     .player-wrapper {
@@ -198,7 +199,9 @@ $player-bubble-activated-position: 100%;
                 }
             }
             .portrait {
-                max-width: $player-image-width;
+
+                width: $player-image-width;
+                max-width: 130px;
                 &.facist-portrait {
                     position: absolute;
                     height: 100%;
