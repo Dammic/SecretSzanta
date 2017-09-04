@@ -70,9 +70,11 @@ module.exports = function (io, RoomsManager) {
             forEach(facists, (player) => {
                 // just filtering out emit functions
                 const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
+                const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
+
                 player.emit(SocketEvents.BECOME_FACIST, {
                     data: {
-                        facists: (player.affiliation === PlayerAffilications.HITLER_AFFILIATION
+                        facists: (player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
                             ? filter(passedFacists, { playerName: player.playerName })
                             : passedFacists
                         ),
