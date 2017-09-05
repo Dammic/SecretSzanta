@@ -28,8 +28,9 @@ $elementsHeight: 80%;
         .players-container-middle {
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
+            width: 100%;
         }
 
         .policy {

@@ -165,6 +165,7 @@ $player-bubble-activated-position: 100%;
                 right: 5px;
                 bottom: 5px;
                 font-size: 1.5em;
+                z-index: 20;
                 animation: breathing 3s ease-out infinite normal;
             }
             &.dead {

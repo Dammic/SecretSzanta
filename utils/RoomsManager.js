@@ -1,4 +1,8 @@
-const { reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash')
+const {
+    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
+    filter, includes, forEach, random, slice, times, map,
+    find, pick, shuffle, size,
+} = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
 /**
@@ -86,20 +90,14 @@ class RoomsManager {
 
     chooseNextPresident(roomName) {
         const { playersDict } = this.rooms_props[roomName]
-        const sortedPlayers = sortBy(playersDict, 'slotNumber')
-        let lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
-
-        let nextPresident
-        while (!nextPresident || nextPresident.isDead) {
-            // if no president has been choosen, we choose the first player on the list
-            nextPresident = (lastPresidentIndex >= 0
-                ? sortedPlayers[(lastPresidentIndex + 1) % size(sortedPlayers)]
-                : sortedPlayers[0]
-            )
-            if (!nextPresident || nextPresident.isDead) {
-                lastPresidentIndex += 1
-            }
+        const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
+        const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+        let nextPresidentIndex = 0
+        if (lastPresidentIndex >= 0 && lastPresidentIndex < size(sortedPlayers) - 1) {
+            nextPresidentIndex = lastPresidentIndex + 1
         }
+
+        const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
     }
 
@@ -279,11 +277,11 @@ class RoomsManager {
         return size(playersDict)
     }
     
-    startGamePhase(roomName, newPhase) {
+    setGamePhase(roomName, newPhase) {
         this.rooms_props[roomName].gamePhase = newPhase
     }
 
-    getKillablePlayers(roomName, currentPlayerName) {
+    getOtherAlivePlayers(roomName, currentPlayerName) {
         const { playersDict } = this.rooms_props[roomName]
         const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
         return playersChoices

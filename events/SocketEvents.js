@@ -67,14 +67,16 @@ module.exports = function (io, RoomsManager) {
         startGame: (socket) => {
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
-            forEach(facists, (player) => {
-                // just filtering out emit functions
-                const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-                const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
 
+            // just filtering out emit functions
+            const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
+            const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
+
+            forEach(facists, (player) => {
+                const shouldHideOtherFacists = player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
                 player.emit(SocketEvents.BECOME_FACIST, {
                     data: {
-                        facists: (player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
+                        facists: (shouldHideOtherFacists
                             ? filter(passedFacists, { playerName: player.playerName })
                             : passedFacists
                         ),
@@ -145,8 +147,8 @@ module.exports = function (io, RoomsManager) {
         },
 
         testStartKillPhase: (socket) => {
-            RoomsManager.startGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
-            const playersChoices = RoomsManager.getKillablePlayers(socket.currentRoom, socket.currentPlayerName)
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, socket.currentPlayerName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
                 data: {
                     presidentName: get(RoomsManager.getPresident(socket.currentRoom), 'playerName'),
