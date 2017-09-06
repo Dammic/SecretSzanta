@@ -1,4 +1,4 @@
-import { forEach, find } from 'lodash'
+import { cloneDeep, forEach, find } from 'lodash'
 import { PlayerRole } from '../../Dictionary'
 
 // Actions
@@ -12,6 +12,7 @@ const INCREASE_POLICY_COUNT = 'room/INCREASE_POLICY_COUNT'
 const REVEAL_FACISTS = 'room/REVEAL_FACISTS'
 const REGISTER_VOTE = 'room/REGISTER_VOTE'
 const REVEAL_VOTES = 'room/REVEAL_VOTES'
+const KILL_PLAYER = 'room/KILL_PLAYER'
 
 const initialState = {
     maxPlayers: 0,
@@ -100,6 +101,16 @@ export default function reducer(state = initialState, action = {}) {
             const nextPresident = newPlayersDict[newPresident]
             nextPresident.role = PlayerRole.ROLE_PRESIDENT
 
+            const previousChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
+            if (previousChancellor) {
+                previousChancellor.role = null
+            }
+
+            const currentChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_CHANCELLOR })
+            if (currentChancellor) {
+                currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+            }
+
             return {
                 ...state,
                 playersDict: newPlayersDict,
@@ -124,7 +135,7 @@ export default function reducer(state = initialState, action = {}) {
         case REVEAL_FACISTS: {
             const { facists } = action.payload
 
-            const newPlayersDict = { ...state.playersDict }
+            const newPlayersDict = cloneDeep(state.playersDict)
             forEach(facists, (facist) => {
                 const player = newPlayersDict[facist.playerName]
                 if (player) {
@@ -154,6 +165,16 @@ export default function reducer(state = initialState, action = {}) {
                 votes: newVotes,
             }
         }
+        case KILL_PLAYER: {
+            const { playerName } = action.payload 
+            
+            const newPlayersDict = cloneDeep(state.playersDict)
+            newPlayersDict[playerName].isDead = true
+            return {
+                ...state,
+                playersDict: newPlayersDict,
+            }
+        }
         default:
             return state
     }
@@ -172,6 +193,15 @@ export function addPlayer(player) {
 export function removePlayer(playerName) {
     return {
         type: REMOVE_PLAYER,
+        payload: {
+            playerName,
+        },
+    }
+}
+
+export function killPlayer(playerName) {
+    return {
+        type: KILL_PLAYER,
         payload: {
             playerName,
         },

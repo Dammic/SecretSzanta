@@ -1,4 +1,8 @@
-const { findIndex, sortBy, values, tail, countBy, mapValues, isNil, filter, includes, forEach, random, slice, get, times, map, find, pick, shuffle, size } = require('lodash')
+const {
+    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
+    filter, includes, forEach, random, slice, times, map,
+    find, pick, shuffle, size,
+} = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
 /**
@@ -80,20 +84,20 @@ class RoomsManager {
     getPresident(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
-       
+
         return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
     }
 
     chooseNextPresident(roomName) {
         const { playersDict } = this.rooms_props[roomName]
-        const sortedPlayers = sortBy(playersDict, 'slotNumber')
+        const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
         const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+        let nextPresidentIndex = 0
+        if (lastPresidentIndex >= 0 && lastPresidentIndex < size(sortedPlayers) - 1) {
+            nextPresidentIndex = lastPresidentIndex + 1
+        }
 
-        // if no president has been choosen, we choose the first player on the list
-        const nextPresident = (lastPresidentIndex >= 0
-            ? sortedPlayers[(lastPresidentIndex + 1) % size(sortedPlayers)]
-            : sortedPlayers[0]
-        )
+        const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
     }
 
@@ -102,12 +106,12 @@ class RoomsManager {
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
-        const facistCount = size(playersDict) - liberalCount;
+        const facistCount = size(playersDict) - liberalCount
 
         // selecting random facists and hitler
         const shuffledPlayers = map(shuffle(values(playersDict)), 'playerName')
         const hitlerPlayerName = shuffledPlayers[0]
-        const selectedFacists = slice(shuffledPlayers, 1, facistCount - 1)
+        const selectedFacists = slice(shuffledPlayers, 1, facistCount)
         forEach(selectedFacists, (playerName) => {
             playersDict[playerName].affiliation = PlayerAffilications.FACIST_AFFILIATION
             playersDict[playerName].facistAvatar = random(21, 21)
@@ -115,14 +119,22 @@ class RoomsManager {
         playersDict[hitlerPlayerName].affiliation = PlayerAffilications.HITLER_AFFILIATION
         playersDict[hitlerPlayerName].facistAvatar = 50
     }
-
+    
     getFacists(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
-        return filter(
-            pick(playersDict, ['playerName', 'affiliation', 'facistAvatar']),
-            player => includes(facistsDict, player.affiliation)
+        return map(
+            filter(playersDict, player => includes(facistsDict, player.affiliation)),
+            player => pick(player, ['playerName', 'affiliation', 'facistAvatar', 'emit']),
         )
+    }
+    getLiberals(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        return filter(playersDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
+    }
+    getHitler(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        return find(playersDict, { affiliation: PlayerAffilications.HITLER_AFFILIATION })
     }
 
     startChancellorChoicePhase(roomName) {
@@ -134,7 +146,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         const chancellorChoices = []
         forEach(playersDict, (player) => {
-            if (isNil(player.role)) {
+            if (isNil(player.role) && !player.isDead) {
                 chancellorChoices.push(player.playerName)
             }
         })
@@ -144,24 +156,27 @@ class RoomsManager {
     /***********Voting***********/
 
     initializeVoting(roomName, chancellorCandidateName) {
-        const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].votes = {}
         this.rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
     }
 
     vote(roomName, playerName, value) {
-        const { votes } = this.rooms_props[roomName]
-        votes[playerName] = value
+        const { playersDict, votes } = this.rooms_props[roomName]
+        if (!playersDict[playerName].isDead) {
+            votes[playerName] = value
+        }
     }
 
     didAllVote(roomName) {
         const { votes, playersDict } = this.rooms_props[roomName]
-        return size(votes) === size(playersDict)
+        const votingPlayers = reject(playersDict, { isDead: true })
+        return size(votes) === size(votingPlayers)
     }
 
     getRemainingVotesCount(roomName) {
         const { votes, playersDict } = this.rooms_props[roomName]
-        return size(playersDict) - size(votes)
+        const votingPlayers = reject(playersDict, { isDead: true })
+        return size(votingPlayers) - size(votes)
     }
 
     getVotes(roomName) {
@@ -214,7 +229,8 @@ class RoomsManager {
                 avatarNumber: random(1, 5),
                 facistAvatar: null,
                 affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
-                slotNumber: nextEmptySlot, 
+                slotNumber: nextEmptySlot,
+                isDead: false,
                 emit: socket.emit.bind(socket),
             }
             playersDict[playerName] = newPlayer
@@ -259,6 +275,25 @@ class RoomsManager {
     getPlayersCount(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         return size(playersDict)
+    }
+    
+    setGamePhase(roomName, newPhase) {
+        this.rooms_props[roomName].gamePhase = newPhase
+    }
+
+    getOtherAlivePlayers(roomName, currentPlayerName) {
+        const { playersDict } = this.rooms_props[roomName]
+        const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
+        return playersChoices
+    }
+
+    killPlayer(roomName, playerName) {
+        const { playersDict } = this.rooms_props[roomName]
+
+        const player = find(playersDict, { playerName })
+        if (player) {
+            player.isDead = true
+        }
     }
 }
 

@@ -7,7 +7,6 @@ $player-bubble-original-position: 85%;
 $player-bubble-activated-position: 100%;
 
 .player {
-
     position: relative;
     display: flex;
     flex-direction: column;
@@ -108,12 +107,14 @@ $player-bubble-activated-position: 100%;
     }
 
     .role {
-        max-width: $player-image-width;
+        width: $player-image-width;
+        max-width: 130px;
     }
 
     .player-wrapper {
         text-align: center;
         position: relative;
+        max-width: $player-image-width;
         &.selectable {
             z-index: 30;
             cursor: pointer;
@@ -150,11 +151,12 @@ $player-bubble-activated-position: 100%;
                     height: 120%;
                 }
             }
+
+            * {
+                pointer-events: none; 
+            }
         }
-        * {
-            pointer-events: none; 
-        }
-        
+
         .avatar-wrapper {
             position: relative;
             .selecting-wait-icon {
@@ -163,11 +165,51 @@ $player-bubble-activated-position: 100%;
                 right: 5px;
                 bottom: 5px;
                 font-size: 1.5em;
+                z-index: 20;
                 animation: breathing 3s ease-out infinite normal;
             }
-        }
-        .portrait {
-            max-width: $player-image-width;
+            &.dead {
+                &:before, &:after {
+                    position: absolute;
+                    content: '';
+                    background: $player-cross;
+                    display: block;
+                    width: 133%;
+                    height: 5px;
+                    transform: rotate(-49deg);
+                    left: -17%;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
+                    z-index: 1;
+                }
+                &:after {
+                    transform: rotate(49deg);
+                }
+                .portrait {
+                    opacity: 0.6; 
+                }
+            }
+
+            &:hover {
+                .portrait {
+                    &.facist-portrait {
+                        width: 0; 
+                    }
+                }
+            }
+            .portrait {
+
+                width: $player-image-width;
+                max-width: 130px;
+                &.facist-portrait {
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    transition: width 0.6s;
+                }
+            }
         }
     }
 }

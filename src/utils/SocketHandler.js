@@ -3,11 +3,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { SocketEvents, GamePhases, ChoiceModeContexts } from '../../Dictionary'
-import {
-    addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
-    toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote,
-    revealVotes,
-} from '../ducks/roomDuck'
+import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
@@ -42,13 +38,15 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(timestamp, `Voting phase has begun - vote for the new parliment!`)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_VOTING)
             this.props.playersActions.setChooserPlayer('')
-            this.props.modalActions.setModal({
-                title: 'Vote for your parliment!',
-                initialData: {
-                    chancellorCandidate,
-                },
-                componentName: 'VotingModal',
-            })
+            if (!this.props.playersDict[this.props.userName].isDead) {
+                this.props.modalActions.setModal({
+                    title: 'Vote for your parliment!',
+                    initialData: {
+                        chancellorCandidate,
+                    },
+                    componentName: 'VotingModal',
+                })
+            }
         })
         socket.on(SocketEvents.START_GAME, (payload) => {
             const { playerName, timestamp } = payload.data
@@ -91,6 +89,32 @@ export class SocketHandler extends React.PureComponent {
             )
             this.props.chatActions.addMessage(timestamp, `Voting completed! ${votingResultMessage}`)
         })
+
+        socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
+            const { presidentName, playersChoices, timestamp } = payload.data
+            this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_SUPERPOWER)
+            this.props.chatActions.addMessage(timestamp, `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...`)
+            if (presidentName === this.props.userName) {
+                this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.KillChoice, playersChoices)
+            }
+        })
+
+        socket.on(SocketEvents.PlayerKilled, (payload) => {
+            const { playerName, wasHitler, timestamp } = payload.data
+            const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'It turned out the killed foe was not Hitler, unfortunately.')
+            this.props.chatActions.addMessage(timestamp, `The president has killed ${playerName}... ${killStatusMessage}`)
+            this.props.roomActions.killPlayer(playerName)
+            if (!wasHitler) {
+                this.props.chatActions.addMessage(timestamp, 'The next round will begin in 3 seconds...')
+            }
+        })
+
+        socket.on(SocketEvents.GameFinished, (payload) => {
+            const { isSuccess, facists } = payload.data
+            this.props.roomActions.revealFacists(facists)
+            console.info(isSuccess ? 'you won!!' : 'you lose!!!')
+        })
+
         socket.on(SocketEvents.CLIENT_ERROR, (payload) => {
             const { error } = payload
             this.props.notificationsActions.addError(error)
@@ -102,15 +126,15 @@ export class SocketHandler extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({ user }) => {
+const mapStateToProps = ({ user, room }) => {
     return {
         userName: user.userName,
+        playersDict: room.playersDict,
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        roomActions: bindActionCreators({ addPlayer, removePlayer, changeGamePhase, chooseNewChancellor, selectNewPresident,
-            toggleChancellorChoiceModal, toggleVotingModal, syncRoomData, revealFacists, registerVote, revealVotes }, dispatch),
+        roomActions: bindActionCreators(roomActions, dispatch),
         chatActions: bindActionCreators({ addMessage }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),

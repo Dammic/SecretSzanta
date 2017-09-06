@@ -13,9 +13,17 @@ export class UIBox extends React.PureComponent {
         socket.emit(SocketEvents.START_GAME, { playerName: this.props.userName })
     }
 
+    onKillClick = () => {
+        socket.emit(SocketEvents.TEST_START_KILL_PHASE)
+    }
+
     render() {
         return (
-            <UIBoxComponent onStartVote={this.onStartVote} onStartGame={this.onStartGame}/>
+            <UIBoxComponent
+                onStartVote={this.onStartVote}
+                onStartGame={this.onStartGame}
+                onKillClick={this.onKillClick}
+            />
         )
     }
 }

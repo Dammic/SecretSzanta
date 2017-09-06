@@ -45,7 +45,7 @@ const PlayerBoardComponent = ({
             {isChoiceModeVisible && <div className="overlay choice-overlay" />}
             {renderPlayers(playersLeft, 'players-container', PlayerDirection.PLAYER_DIRECTION_LEFT)}
             <div className="central-part">
-                {renderPlayers(playersMiddle, 'player-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
+                {renderPlayers(playersMiddle, 'players-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })} >
                     <img src={require('../../static/liberalpolicies.png')} />
