@@ -1,18 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Chat from './Chat/Chat'
+import classNames from 'classnames'
 
 const UIBoxComponent = ({
     onStartVote,
     onStartGame,
     onKillClick,
+    onShowAffiliationClick,
+    isAffiliationHidden,
 }) => {
     return (
         <div className="ui-box">
-            <button onClick={onStartVote}>voting (test)</button>
-            <button onClick={onStartGame}>start game (test)</button>
-            <button onClick={onKillClick}>start kill (test - use only after vote success)</button>
-            <Chat />
+            <div className="game-controls">
+                <div className="buttons">
+                    <a className="btn" onClick={onStartGame}>start</a>
+                    <a className="btn" onClick={onStartVote}>voting</a>
+                    <a className="btn" onClick={onKillClick}>kill</a>
+                </div>
+                <div className="side-buttons">
+                    <span onClick={onShowAffiliationClick}>hai</span>
+
+                </div>
+            </div>
+
+            <div className={classNames('affiliation-cards', { hidden: isAffiliationHidden })}>
+                hi
+
+            </div>
         </div>
     )
 }
@@ -20,5 +34,6 @@ const UIBoxComponent = ({
 UIBoxComponent.propTypes = {
     onStartVote: PropTypes.func,
     onStartGame: PropTypes.func,
+    onKillClick: PropTypes.func,
 }
 export default UIBoxComponent
