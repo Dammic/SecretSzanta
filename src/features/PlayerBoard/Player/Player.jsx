@@ -78,8 +78,6 @@ export class Player extends React.PureComponent {
     render() {
         const { gamePhase, votes, choiceMode: { isVisible, chooserPlayerName }, player: { playerName, facistAvatar, avatarNumber, isDead } } = this.props
         const isSelectable = this.isSelectable()
-        const liberalAvatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
-        const facistAvatarPicture = facistAvatar ? require(`../../../static/Avatar${facistAvatar}.png`) : '';
         const isPlayerWaitedFor = (
             (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName)) && !isDead) ||
             chooserPlayerName === playerName
@@ -89,8 +87,8 @@ export class Player extends React.PureComponent {
         return (
             <PlayerComponent
                 playerName={playerName}
-                liberalAvatar={liberalAvatarPicture}
-                facistAvatar={facistAvatarPicture}
+                liberalAvatar={avatarNumber}
+                facistAvatar={facistAvatar}
                 rolePicture={this.getRolePicture()}
                 voteBubbleStyle={this.getVoteBubbleStyle()}
                 voteValue={voteValue}
