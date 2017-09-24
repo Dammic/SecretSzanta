@@ -11,7 +11,7 @@ import { toggleVotingModal } from '../../../ducks/roomDuck'
 export class VotingModal extends React.PureComponent {
     static propTypes = {
         data: PropTypes.object,
-        playersDict: PropTypes.arrayOf(PropTypes.object),
+        playersDict: PropTypes.object,
         closeModal: PropTypes.func,
     };
 
