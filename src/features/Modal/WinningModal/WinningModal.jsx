@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { filter, reject } from 'lodash'
 import PropTypes from 'prop-types'
 import WinningModalComponent from './WinningModalComponent'
-import PlayerAffilications from '../../../../Dictionary'
+import { PlayerAffilications } from '../../../../Dictionary'
 
 class WinningModal extends PureComponent {
     static propTypes = {
@@ -12,8 +12,8 @@ class WinningModal extends PureComponent {
     }
     render() {
         const liberalsWon = this.props.data.whoWon === PlayerAffilications.LIBERAL_AFFILIATION
-        const liberals = filter(this.playerDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
-        const fascist = reject(this.playerDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
+        const liberals = filter(this.props.playersDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
+        const fascist = reject(this.props.playersDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
         const winners = liberalsWon ? liberals : fascist
         const losers = liberalsWon ? fascist : liberals
         return (

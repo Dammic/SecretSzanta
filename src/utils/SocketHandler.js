@@ -2,7 +2,7 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases, ChoiceModeContexts } from '../../Dictionary'
+import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
@@ -21,6 +21,7 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
             this.props.chatActions.addMessage(timestamp, `${player.playerName} has joined the room!`)
+            player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
             this.props.roomActions.addPlayer(player)
         })
         socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (payload) => {
