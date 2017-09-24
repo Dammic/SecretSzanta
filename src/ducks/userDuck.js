@@ -1,10 +1,12 @@
 // Actions
 const SELECT_NAME = 'user/SELECT_NAME'
 const JOIN_ROOM = 'user/JOIN_ROOM'
+const TOGGLE_AFFILIATION_MENU = 'user/TOGGLE_AFFILIATION_MENU'
 
 const initialState = {
     userName: '',
     roomName: '',
+    isAffiliationHidden: false,
 }
 
 // Reducer
@@ -22,6 +24,13 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 roomName,
+            }
+        }
+        case TOGGLE_AFFILIATION_MENU: {
+            const { isAffiliationHidden } = state
+            return {
+                ...state,
+                isAffiliationHidden: !isAffiliationHidden,
             }
         }
         default:
@@ -45,5 +54,11 @@ export function joinRoom(roomName) {
         payload: {
             roomName,
         },
+    }
+}
+
+export function toggleAffiliationMenu() {
+    return {
+        type: TOGGLE_AFFILIATION_MENU,
     }
 }

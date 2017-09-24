@@ -1,18 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { get } from 'lodash'
 import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
 import { SocketEvents } from '../../../Dictionary'
+import { toggleAffiliationMenu } from '../../ducks/userDuck';
 import { socket } from '../../utils/SocketHandler'
 
 export class UIBox extends React.PureComponent {
-    constructor() {
-        super()
-        this.state = {
-            isAffiliationHidden: false,
-        }
-    }
     onStartVote = () => {
         socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE)
     }
@@ -26,7 +22,7 @@ export class UIBox extends React.PureComponent {
     }
     
     toggleShow = () => {
-        this.setState({ isAffiliationHidden: !this.state.isAffiliationHidden })
+        this.props.userActions.toggleAffiliationMenu()
     }
 
     getPlayerCard = () => {
@@ -41,7 +37,7 @@ export class UIBox extends React.PureComponent {
 
 
     render() {
-        const { affiliation, role } = this.props
+        const { affiliation, role, isAffiliationHidden } = this.props
         return (
             <UIBoxComponent
                 onStartVote={this.onStartVote}
@@ -51,7 +47,7 @@ export class UIBox extends React.PureComponent {
                 affiliation={affiliation}
                 role={role}
                 getPlayerCard={this.getPlayerCard}
-                isAffiliationHidden={this.state.isAffiliationHidden}
+                isAffiliationHidden={isAffiliationHidden}
             />
         )
     }
@@ -61,6 +57,7 @@ const mapStateToProps = ({ user, room }) => {
     const player = get(room.playersDict, `${user.userName}`)
     return {
         userName: user.userName,
+        isAffiliationHidden: user.isAffiliationHidden,
         affiliation: get(player, 'affiliation'),
         facistAvatar: get(player, 'facistAvatar'),
         liberalAvatar: get(player, 'avatarNumber'),
@@ -68,4 +65,7 @@ const mapStateToProps = ({ user, room }) => {
     }
 }
 
-export default connect(mapStateToProps)(UIBox)
+const mapDispatchToProps = dispatch => ({
+    userActions: bindActionCreators({ toggleAffiliationMenu }, dispatch),
+})
+export default connect(mapStateToProps, mapDispatchToProps)(UIBox)

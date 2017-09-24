@@ -20,9 +20,6 @@
   }
 }
 
-
-
-
 .btn {
     background-color: $button-primary-bg;
     display: inline-flex;
@@ -30,8 +27,6 @@
     justify-content: center;
     color: $button-primary-font-color;
     transition: .05s ease-in;
-
-
 
     &:hover {
         background-color: $button-primary-bg-hover;
@@ -46,9 +41,6 @@
         }
     }
 }
-
-
-
 
 a.btn {
 	color: $button-default-font-color;
