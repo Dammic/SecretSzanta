@@ -41,9 +41,7 @@ class Modal extends React.PureComponent {
                 isCloseButtonShown={isCloseButtonShown}
                 closeModal={this.closeModal}
                 child={<ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} />}
-            >
-
-            </ModalComponent>
+            />
         )
     }
 }
@@ -60,3 +58,4 @@ const mapDispatchToProps = dispatch => ({
     modalActions: bindActionCreators(modalActions, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)
+
