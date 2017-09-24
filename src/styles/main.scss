@@ -15,6 +15,8 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import './utils/utils.scss';
 
 // components
+@import '../features/PlayerBoard/Player/PlayerAvatar/PlayerAvatar.scss';
+@import '../features/PlayerBoard/Player/PlayerRole/PlayerRole.scss';
 @import '../features/GameRoom/GameRoom';
 @import '../features/NotFound/NotFound.scss';
 @import "../features/UIBox/UIBox.scss";

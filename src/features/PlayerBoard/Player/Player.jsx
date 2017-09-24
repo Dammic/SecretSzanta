@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import { isUndefined, get, includes } from 'lodash'
 import PlayerComponent from './PlayerComponent'
-import { PlayerDirection, PlayerRole, GamePhases } from '../../../../Dictionary'
+import { PlayerDirection, GamePhases } from '../../../../Dictionary'
 
 export class Player extends React.PureComponent {
     static propTypes = {
@@ -19,22 +19,6 @@ export class Player extends React.PureComponent {
             isVisible: PropTypes.bool,
             selectablePlayers: PropTypes.arrayOf(PropTypes.string),
         }),
-    }
-
-    getRolePicture = () => {
-        const { role } = this.props.player
-        switch (role) {
-            case PlayerRole.ROLE_CHANCELLOR:
-                return require('../../../static/Chancellor.png')
-            case PlayerRole.ROLE_PRESIDENT:
-                return require('../../../static/President.png')
-            case PlayerRole.ROLE_PREVIOUS_CHANCELLOR:
-                return require('../../../static/PreviousChancelor.png')
-            case PlayerRole.ROLE_PREVIOUS_PRESIDENT:
-                return require('../../../static/PreviousPresident.png')
-            default:
-                return null
-        }
     }
 
     getVoteBubbleStyle = () => {
@@ -76,10 +60,8 @@ export class Player extends React.PureComponent {
     }
 
     render() {
-        const { gamePhase, votes, choiceMode: { isVisible, chooserPlayerName }, player: { playerName, facistAvatar, avatarNumber, isDead } } = this.props
+        const { gamePhase, votes, choiceMode: { isVisible, chooserPlayerName }, player: { playerName, facistAvatar, avatarNumber, isDead, role } } = this.props
         const isSelectable = this.isSelectable()
-        const liberalAvatarPicture = require(`../../../static/Avatar${avatarNumber}.png`)
-        const facistAvatarPicture = facistAvatar ? require(`../../../static/Avatar${facistAvatar}.png`) : '';
         const isPlayerWaitedFor = (
             (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName)) && !isDead) ||
             chooserPlayerName === playerName
@@ -89,9 +71,9 @@ export class Player extends React.PureComponent {
         return (
             <PlayerComponent
                 playerName={playerName}
-                liberalAvatar={liberalAvatarPicture}
-                facistAvatar={facistAvatarPicture}
-                rolePicture={this.getRolePicture()}
+                liberalAvatar={avatarNumber}
+                facistAvatar={facistAvatar}
+                role={role}
                 voteBubbleStyle={this.getVoteBubbleStyle()}
                 voteValue={voteValue}
                 isChoiceModeVisible={isVisible}
