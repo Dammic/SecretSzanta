@@ -20,3 +20,51 @@
   }
 }
 
+
+
+
+.btn {
+    background-color: $button-primary-bg;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $button-primary-font-color;
+    transition: .05s ease-in;
+
+
+
+    &:hover {
+        background-color: $button-primary-bg-hover;
+        cursor: pointer;
+    }
+
+    &.default {
+        color: $button-default-font-color;
+        background-color: $button-default-bg;
+        &:hover {
+            background-color: $button-default-bg-hover;
+        }
+    }
+}
+
+
+
+
+a.btn {
+	color: $button-default-font-color;
+	background-color: $button-default-bg;
+	font-size: 14px;
+	padding: 2px 5px;
+	border-radius: 0;
+	border: 1px solid $button-default-border;
+
+	&:hover {
+		background-color: $button-default-bg-hover;
+		border-color: $button-default-border-hover;
+	}
+
+	&:active {
+		background-color: $button-default-bg-active;
+		border-color: $button-default-border-active;
+	}
+}
