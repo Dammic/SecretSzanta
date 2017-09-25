@@ -17,11 +17,11 @@
 }
 
 @keyframes dance {
-    0% { transform: rotate(0deg) scale(1, 1); left: 0px; top:0px; }
-    25% { transform: rotate(20deg) scale(1.1, 1.1); left: 4%; top: -8%; }
-    50% { transform: rotate(0deg) scale(1.2, 1.2); left: 8%; top: -10%; }
-    75% { transform: rotate(-20deg) scale(1.1, 1.1); left: 12%; top: -8%; }
-    100% { transform: rotate(0deg) scale(1, 1); left: 16%; top: 0px; }
+    0% { transform: rotate(0deg) scale(1, 1); left: -8%; top:0px; }
+    25% { transform: rotate(20deg) scale(1.1, 1.1); left: -4%; top: -8%; }
+    50% { transform: rotate(0deg) scale(1.2, 1.2); left: 0px; top: -10%; }
+    75% { transform: rotate(-20deg) scale(1.1, 1.1); left: 4%; top: -8%; }
+    100% { transform: rotate(0deg) scale(1, 1); left: 8%; top: 0px; }
 }
 
 @keyframes sorrow {
