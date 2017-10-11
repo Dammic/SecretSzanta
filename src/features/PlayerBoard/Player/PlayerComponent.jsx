@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { isUndefined } from 'lodash'
 import PlayerAvatarComponent from './PlayerAvatar/PlayerAvatarComponent'
+import PlayerRoleComponent from './PlayerRole/PlayerRoleComponent'
 
 const PlayerComponent = ({
     playerName,
     liberalAvatar,
     facistAvatar,
-    rolePicture,
+    role,
     voteBubbleStyle,
     voteValue,
     isSelectable,
@@ -32,7 +33,7 @@ const PlayerComponent = ({
                     isDead={isDead}
                     isPlayerWaitedFor={isPlayerWaitedFor}
                 />
-                {rolePicture && <img className="role" src={rolePicture} alt="" />}
+                <PlayerRoleComponent role={role} />
             </div>
         </div>
     )
@@ -42,7 +43,7 @@ PlayerComponent.propTypes = {
     playerName: PropTypes.string,
     liberalAvatar: PropTypes.number,
     facistAvatar: PropTypes.number,
-    rolePicture: PropTypes.string,
+    role: PropTypes.string,
     voteBubbleStyle: PropTypes.string,
     voteValue: PropTypes.string,
     isSelectable: PropTypes.bool,

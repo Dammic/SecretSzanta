@@ -125,6 +125,14 @@ module.exports = function (io, RoomsManager) {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
                 }
+
+                io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
+                    data: {
+                        playerName: socket.currentPlayerName,
+                        remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
+                        timestamp: getCurrentTimestamp(),
+                    },
+                })
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
                     data: {
                         votes: RoomsManager.getVotes(socket.currentRoom),

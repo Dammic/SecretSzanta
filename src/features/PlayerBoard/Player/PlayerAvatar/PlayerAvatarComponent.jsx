@@ -22,6 +22,10 @@ const PlayerAvatarComponent = ({
 }
 
 PlayerAvatarComponent.propTypes = {
-
+    liberalAvatar: PropTypes.number,
+    facistAvatar: PropTypes.number,
+    isDead: PropTypes.bool,
+    isPlayerWaitedFor: PropTypes.bool,
+    className: PropTypes.string,
 }
 export default PlayerAvatarComponent
