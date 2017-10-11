@@ -8,7 +8,6 @@ import { socket } from '../../../utils/SocketHandler'
 import { toggleVotingModal } from '../../../ducks/roomDuck'
 
 export class VotingModal extends React.PureComponent {
-
     onYesVote = () => {
         socket.emit(SocketEvents.CLIENT_VOTE, { value: true })
         this.props.closeModal()
@@ -19,7 +18,7 @@ export class VotingModal extends React.PureComponent {
         this.props.closeModal()
     }
 
-    render () {
+    render() {
         const chancellorCandidate = this.props.playersDict[this.props.data.chancellorCandidate]
         const president = find(this.props.playersDict, { role: PlayerRole.ROLE_PRESIDENT })
         return (
@@ -27,7 +26,8 @@ export class VotingModal extends React.PureComponent {
                 onYesVote={this.onYesVote}
                 onNoVote={this.onNoVote}
                 president={president}
-                chancellorCandidate={chancellorCandidate} />
+                chancellorCandidate={chancellorCandidate}
+            />
         )
     }
 }
@@ -35,12 +35,12 @@ export class VotingModal extends React.PureComponent {
 const mapStateToProps = ({ room }) => {
     return {
         playersDict: room.playersDict,
-        isVotingModalShown: room.isVotingModalShown
+        isVotingModalShown: room.isVotingModalShown,
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        roomActions: bindActionCreators({ toggleVotingModal }, dispatch)
+        roomActions: bindActionCreators({ toggleVotingModal }, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(VotingModal)

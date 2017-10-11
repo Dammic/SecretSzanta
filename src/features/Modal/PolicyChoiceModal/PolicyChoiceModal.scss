@@ -1,0 +1,17 @@
+.policy-choice-modal {
+	height: 800px;
+    .policy-introduction {
+        width: 100%;
+        text-align: center;
+    }
+    .policy-list {
+        display: flex;
+        justify-content: space-evenly;
+        padding-top: 40px;
+        padding-left: 0;
+        img {
+            max-height: 250px;
+            max-width: 100px;
+        }
+    }
+}

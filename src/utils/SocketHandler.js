@@ -2,7 +2,7 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases, ChoiceModeContexts } from '../../Dictionary'
+import { SocketEvents, GamePhases, ChoiceModeContexts, PolicyCards } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
@@ -118,6 +118,32 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_ERROR, (payload) => {
             const { error } = payload
             this.props.notificationsActions.addError(error)
+        })
+        
+        socket.on(SocketEvents.RejectPolicy, ({ policyCards }) => {
+            this.props.modalActions.setModal({
+                title: 'Discard one policy and pass them to the chancellor',
+                initialData: {
+                    policies: policyCards,
+                },
+                componentName: 'PolicyChoiceModal',
+            })
+        })
+
+        socket.on(SocketEvents.PresidentChoosePolicy, ({ timestamp, presidentName }) => {
+            this.props.chatActions.addMessage(timestamp, 'The president is now discarding one policy out of three...')
+            this.props.playersActions.setChooserPlayer(presidentName)
+        })
+
+        socket.on(SocketEvents.ChancellorChoosePolicy, ({ timestamp, chancellorName }) => {
+            this.props.chatActions.addMessage(timestamp, 'The president has discarded one policy. Now the chancellor will enact one of two remaining policies...')
+            this.props.playersActions.setChooserPlayer(chancellorName)
+        })
+
+        socket.on(SocketEvents.NewPolicy, ({ timestamp, policy }) => {
+            this.props.playersActions.setChooserPlayer('')
+            this.props.chatActions.addMessage(timestamp, `A ${policy === PolicyCards.FacistPolicy ? 'facist' : 'liberal'} policy has been enacted!`)
+            this.props.chatActions.addMessage(timestamp, 'The next round will begin in 4 seconds...')
         })
     }
 

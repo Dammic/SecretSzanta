@@ -6,9 +6,11 @@ import ModalComponent from './ModalComponent'
 import * as modalActions from '../../ducks/modalDuck'
 
 import VotingModal from './VotingModal/VotingModal'
+import PolicyChoiceModal from './PolicyChoiceModal/PolicyChoiceModal'
 
 const modalInnerComponents = {
     VotingModal,
+    PolicyChoiceModal,
 }
 
 class Modal extends React.PureComponent {
