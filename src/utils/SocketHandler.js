@@ -120,9 +120,9 @@ export class SocketHandler extends React.PureComponent {
             this.props.notificationsActions.addError(error)
         })
         
-        socket.on(SocketEvents.RejectPolicy, ({ policyCards }) => {
+        socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title } }) => {
             this.props.modalActions.setModal({
-                title: 'Discard one policy and pass them to the chancellor',
+                title,
                 initialData: {
                     policies: policyCards,
                 },
@@ -130,17 +130,17 @@ export class SocketHandler extends React.PureComponent {
             })
         })
 
-        socket.on(SocketEvents.PresidentChoosePolicy, ({ timestamp, presidentName }) => {
+        socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName } }) => {
             this.props.chatActions.addMessage(timestamp, 'The president is now discarding one policy out of three...')
             this.props.playersActions.setChooserPlayer(presidentName)
         })
 
-        socket.on(SocketEvents.ChancellorChoosePolicy, ({ timestamp, chancellorName }) => {
+        socket.on(SocketEvents.ChancellorChoosePolicy, ({ data: { timestamp, chancellorName } }) => {
             this.props.chatActions.addMessage(timestamp, 'The president has discarded one policy. Now the chancellor will enact one of two remaining policies...')
             this.props.playersActions.setChooserPlayer(chancellorName)
         })
 
-        socket.on(SocketEvents.NewPolicy, ({ timestamp, policy }) => {
+        socket.on(SocketEvents.NewPolicy, ({ data: { timestamp, policy } }) => {
             this.props.playersActions.setChooserPlayer('')
             this.props.chatActions.addMessage(timestamp, `A ${policy === PolicyCards.FacistPolicy ? 'facist' : 'liberal'} policy has been enacted!`)
             this.props.chatActions.addMessage(timestamp, 'The next round will begin in 4 seconds...')

@@ -14,7 +14,7 @@ const PolicyChoiceModalComponent = ({
         <div className="policy-choice-modal">
             <ul className="policy-list" onClick={onClick}>
                 {map(policies, (choice, index) => {
-                    const policy = (choice === PolicyCards.LIBERAL_POLICY) ? liberalPolicy : fascistPolicy
+                    const policy = (choice === PolicyCards.LiberalPolicy) ? liberalPolicy : fascistPolicy
                     return (
                         <img key={index} className="policy" src={policy} data-index={index} />
                     )

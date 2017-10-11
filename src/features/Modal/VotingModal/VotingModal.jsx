@@ -5,7 +5,6 @@ import { find } from 'lodash'
 import VotingModalComponent from './VotingModalComponent'
 import { SocketEvents, PlayerRole } from '../../../../Dictionary'
 import { socket } from '../../../utils/SocketHandler'
-import { toggleVotingModal } from '../../../ducks/roomDuck'
 
 export class VotingModal extends React.PureComponent {
     onYesVote = () => {
@@ -38,9 +37,4 @@ const mapStateToProps = ({ room }) => {
         isVotingModalShown: room.isVotingModalShown,
     }
 }
-const mapDispatchToProps = (dispatch) => {
-    return {
-        roomActions: bindActionCreators({ toggleVotingModal }, dispatch),
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(VotingModal)
+export default connect(mapStateToProps)(VotingModal)

@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, PlayerRole } = require('../Dictionary')
-const { includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { pullAt, indexOf, includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const socketEvents = {
@@ -166,9 +166,10 @@ module.exports = function (io, RoomsManager) {
                     presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
                 },
             })
-            presidentEmit(SocketEvents.RejectPolicy, {
+            presidentEmit(SocketEvents.ChoosePolicy, {
                 data: {
                     policyCards: RoomsManager.getChoicePolicyCards(socket.currentRoom),
+                    title: 'Discard one policy and pass the to the chancellor',
                 },
             })
         },
@@ -178,9 +179,9 @@ module.exports = function (io, RoomsManager) {
             let drawnCards = RoomsManager.getDrawnCards(socket.currentRoom)
             if (includes(drawnCards, choice)) {
                 const president = RoomsManager.getPresident(socket.currentRoom)
-                const chancellor = RoomsManaget.getChancellor(socket.currentRoom)
+                const chancellor = RoomsManager.getChancellor(socket.currentRoom)
                 if (gamePhase === GamePhases.GamePhasePresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
-                    RoomsManager.setGamePhase(socket.currentRoom, GamePhaseChancellorPolicyChoice)
+                    RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GamePhaseChancellorPolicyChoice)
                     const chancellorEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.ChancellorChoosePolicy, {
                         data: {
@@ -190,10 +191,10 @@ module.exports = function (io, RoomsManager) {
                     })
                     RoomsManager.discardPolicy(socket.currentRoom, choice)
                     drawnCards = RoomsManager.getDrawnCards(socket.currentRoom)
-                    chancellorEmit(SocketEvents.RejectPolicy, {
+                    chancellorEmit(SocketEvents.ChoosePolicy, {
                         data: {
                             policyCards: drawnCards,
-                            timestamp: getCurrentTimestamp(),
+                            title: 'Choose policy to enact',
                         },
                     })
                 } else if (gamePhase === GamePhases.GamePhaseChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {

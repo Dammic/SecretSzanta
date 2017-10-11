@@ -1,20 +1,17 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PolicyChoiceModalComponent from './PolicyChoiceModalComponent'
 import { SocketEvents } from '../../../../Dictionary'
 import { socket } from '../../../utils/SocketHandler'
-import { toggleVotingModal } from '../../../ducks/roomDuck'
 
 export class PolicyChoiceModal extends React.PureComponent {
     static propTypes = {
         // parent
         data: PropTypes.shape({
-            policies: PropTypes.arrayOf(PropTypes.string).required,
+            policies: PropTypes.arrayOf(PropTypes.string).isRequired,
         }),
-
-        // redux
-        toggleVotingModal: PropTypes.func.required,
     }
 
     onPolicyChoice = (event) => {
@@ -22,7 +19,7 @@ export class PolicyChoiceModal extends React.PureComponent {
         const index = event.target.getAttribute('data-index')
         const choice = policies[index]
         socket.emit(SocketEvents.ChoosePolicy, { choice })
-        this.props.toggleVotingModal()
+        this.props.closeModal()
     }
 
     render() {
@@ -39,8 +36,5 @@ export class PolicyChoiceModal extends React.PureComponent {
 const mapStateToProps = ({ room }) => ({
     policies: room.policies,
 })
-const mapDispatchToProps = dispatch => ({
-    toggleVotingModal: () => dispatch(toggleVotingModal),
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(PolicyChoiceModal)
+export default connect(mapStateToProps)(PolicyChoiceModal)
