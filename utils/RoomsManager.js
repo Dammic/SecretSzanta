@@ -219,7 +219,6 @@ class RoomsManager {
         const nextEmptySlot = freeSlots[0]
 
         if (!nextEmptySlot) {
-
             console.error("The rum is full!") 
         } else if (playersDict[playerName]) {
             console.error("The rum has player with the same name as you!")
