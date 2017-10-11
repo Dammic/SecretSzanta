@@ -259,7 +259,7 @@ class RoomsManager {
         const player = playersDict[playerName]
 
         return (player
-            ? pick(player, ['playerName', 'role', 'avatarNumber', 'slotNumber'])
+            ? pick(player, ['playerName', 'role', 'affiliation', 'avatarNumber', 'slotNumber'])
             : null 
         )
     }
