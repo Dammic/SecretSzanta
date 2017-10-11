@@ -47,6 +47,15 @@ $elementsHeight: 80%;
 
         }
 
+        .tracker {
+            position: absolute;
+            top: 67%;
+
+            border-style: solid;
+            border-width: 10px;
+            border-radius: 50%;
+        }
+
         .policy-card {
             position: absolute;
             display: flex;
