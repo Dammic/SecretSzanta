@@ -30,6 +30,7 @@ class RoomsManager {
             maxPlayers,
             password,
             chancellorCandidateName: '',
+            failedElections: 0,
             votes: {},
             gamePhase: GamePhases.GAME_PHASE_NEW,
         }
@@ -187,6 +188,16 @@ class RoomsManager {
         const { votes } = this.rooms_props[roomName]
         const votesCount = countBy(votes)
         return ((votesCount[true] > votesCount[false]) || !votesCount[false])
+    }
+
+    failElection(roomName) {
+        const room = this.rooms_props[roomName]
+        if (room.failElection === 3) {
+            room.failedElections = 0
+            return true
+        }
+        room.failedElections += 1
+        return false
     }
 
     /****************************/
