@@ -3,8 +3,9 @@ const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages } = require
 const { filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
+
+    const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
     const socketEvents = {
-        const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
 
         sendError: (socket, errorMessage) => {
             socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
@@ -38,7 +39,14 @@ module.exports = function (io, RoomsManager) {
                         const playersCount = RoomsManager.getPlayersCount(socket.currentRoom)
                         const fascists = RoomsManager.getFacists(socket.currentRoom)
                         const passedFacists = map(fascists, fascist => pick(fascist, facistSubproperties))
-                        SocketEvents.sendBecomeFascist(newOwner, playerCount, passedFacists)
+                        SocketEvents.sendBecomeFascist(newOwner, playersCount, passedFacists)
+                        newOwner.emit(SocketEvents.CLIENT_SEND_MESSAGE, {
+                            data: {
+                                content: 'You have become the new owner of this room!',
+                                author: null,
+                                timestamp: getCurrentTimestamp(),
+                            },
+                        })
                     }
                 }
 
