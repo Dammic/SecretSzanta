@@ -170,7 +170,7 @@ module.exports = function (io, RoomsManager) {
             RoomsManager.killPlayer(socket.currentRoom, playerName)
             const hitler = RoomsManager.getHitler(socket.currentRoom)
             const wasHitler = hitler.playerName === playerName
-            
+
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
                 data: {
                     wasHitler,
@@ -180,27 +180,16 @@ module.exports = function (io, RoomsManager) {
             })
             if (wasHitler) {
                 const facists = RoomsManager.getFacists(socket.currentRoom)
-                const liberals = RoomsManager.getLiberals(socket.currentRoom)
 
                 const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-                forEach(facists, (player) => {
-                    player.emit(SocketEvents.GameFinished, {
-                        data: {
-                            isSuccess: false,
-                            facists: passedFacists,
-                        },
-                    })
-                })
-                forEach(liberals, (player) => {
-                    player.emit(SocketEvents.GameFinished, {
-                        data: {
-                            isSuccess: true,
-                            facists: passedFacists,
-                        },
-                    })
+                io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
+                    data: {
+                        whoWon: PlayerAffilications.LIBERAL_AFFILIATION,
+                        facists: passedFacists,
+                    },
                 })
             } else {
-                 setTimeout(() => {
+                setTimeout(() => {
                     socketEvents.startChancellorChoicePhase(socket)
                 }, 3000)
             }
