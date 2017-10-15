@@ -34,7 +34,7 @@ export class LoginPage extends React.PureComponent {
 
     setName = () => {
         const name = this.inputRef.value
-        this.props.userActions.selectName(name)
+        this.props.userActions.selectName({ userName: name })
     }
 
     render() {

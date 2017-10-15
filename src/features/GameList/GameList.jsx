@@ -21,7 +21,7 @@ export class GameList extends React.PureComponent {
 
     setRoomName = (event) => {
         const roomID = event.target.attributes.getNamedItem('data-roomid').value
-        this.props.userActions.joinRoom(roomID)
+        this.props.userActions.joinRoom({ roomName: roomID })
     }
 
     render() {
