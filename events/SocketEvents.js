@@ -4,6 +4,10 @@ const { filter, map, pick, get, forEach, mapValues, partial } = require('lodash'
 
 module.exports = function (io, RoomsManager) {
     const socketEvents = {
+        sendError: (socket, errorMessage) => {
+            socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
+        },
+
         disconnect: (socket) => {
             if (socket.currentRoom && RoomsManager.isRoomPresent(socket.currentRoom)) {
                 RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
@@ -65,17 +69,11 @@ module.exports = function (io, RoomsManager) {
             }
         },
 
-        authenticatedRoomOwner: (socket, error) => {
-            const ownerName = RoomsManager.getRoomOwner(socket.currentRoom).playerName
-            if (socket.currentPlayerName !== ownerName) {
-                socket.emit(SocketEvents.CLIENT_ERROR, { error })
-                return false
-            }
-            return true
-        },
-
         startGame: (socket) => {
-            if (!socketEvents.authenticatedRoomOwner(socket, 'Operation prohibited! You are not the owner!')) return
+            if (!RoomsManager.isRoomOwner(socket.currentPlayerName)) {
+                socketEvents.sendError(socket, 'Operation prohibited! You are not the owner!')
+                return
+            }
 
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
@@ -167,7 +165,10 @@ module.exports = function (io, RoomsManager) {
         },
 
         testStartKillPhase: (socket) => {
-            if (!socketEvents.authenticatedRoomOwner(socket, 'You are not the owner!')) return
+            if (!RoomsManager.isRoomOwner(socket.currentPlayerName)) {
+                socketEvents.sendError(socket, 'You are not the owner!')
+                return
+            }
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
             const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
             const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)

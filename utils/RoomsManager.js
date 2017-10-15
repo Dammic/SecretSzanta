@@ -217,7 +217,7 @@ class RoomsManager {
      * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
      */
     addPlayer(roomName, playerName, socket) {
-        const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]     
+        const { playersDict, freeSlots } = this.rooms_props[roomName]     
         const nextEmptySlot = freeSlots[0]
 
         if (!nextEmptySlot) {
@@ -237,7 +237,6 @@ class RoomsManager {
             }
             playersDict[playerName] = newPlayer
             this.rooms_props[roomName].freeSlots = tail(freeSlots)
-            if (playerName === ownerName) this.rooms_props[roomName].owner = newPlayer
         }
     }
 
@@ -276,7 +275,12 @@ class RoomsManager {
     }
 
     getRoomOwner(roomName) {
-        return this.rooms_props[roomName].owner
+        const room = this.rooms_props[roomName]
+        return room.playersDict[room.ownerName]
+    }
+
+    isRoomOwner(roomName, playerName) {
+        return playerName === this.rooms_props[roomName].ownerName
     }
 
     getPlayersCount(roomName) {
