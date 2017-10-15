@@ -114,9 +114,9 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
             this.props.roomActions.revealFacists(facists)
-            console.info(whoWon + ' won!');
+            const wonText = whoWon === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals won!' : 'Fascist won!'
             this.props.modalActions.setModal({
-                title: 'You won!',
+                title: wonText,
                 componentName: 'WinningModal',
                 initialData: { whoWon },
             })

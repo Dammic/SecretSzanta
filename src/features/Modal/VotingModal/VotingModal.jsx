@@ -13,6 +13,7 @@ export class VotingModal extends React.PureComponent {
         data: PropTypes.object,
         playersDict: PropTypes.object,
         closeModal: PropTypes.func,
+        roomActions: PropTypes.objectOf(PropTypes.any),
     };
 
     onYesVote = () => {
