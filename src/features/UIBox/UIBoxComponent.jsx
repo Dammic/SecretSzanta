@@ -8,7 +8,6 @@ import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComp
 const UIBoxComponent = ({
     onStartVote,
     onStartGame,
-    onKillClick,
     onShowAffiliationClick,
     isAffiliationHidden,
     affiliation,
@@ -30,7 +29,6 @@ const UIBoxComponent = ({
                     </a>
                     <a className="btn" onClick={onStartGame}>start</a>
                     <a className="btn" onClick={onStartVote}>voting</a>
-                    <a className="btn" onClick={onKillClick}>kill</a>
                 </div>
             </div>
             <div className={classNames('submenu', { hidden: isAffiliationHidden })}>

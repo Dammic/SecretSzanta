@@ -25,12 +25,6 @@ export class PlayerBoard extends React.PureComponent {
         playersActions: PropTypes.objectOf(PropTypes.func),
     }
 
-    constructor(props) {
-        super(props)
-        props.roomActions.increasePolicyCount(true)
-        props.roomActions.increasePolicyCount(false)
-    }
-
     makePlayer = (player) => {
         const currentPresident = find(this.props.playersDict, { role: PlayerRole.ROLE_PRESIDENT })
         const currentChancellor = find(this.props.playersDict, { role: PlayerRole.ROLE_CHANCELLOR })

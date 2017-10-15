@@ -1,5 +1,5 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications, PlayerRole } = require('../Dictionary')
+const { SocketEvents, GamePhases, PlayerAffilications, PlayerRole, PolicyCards } = require('../Dictionary')
 const { pullAt, indexOf, includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
@@ -207,9 +207,14 @@ module.exports = function (io, RoomsManager) {
                             timestamp: getCurrentTimestamp(),
                         },
                     })
-                    setTimeout(() => {
-                        socketEvents.startChancellorChoicePhase(socket)
-                    }, 4000)
+                    const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
+                    if ((fascistPolicyCount === 4 || fascistPolicyCount === 5) && choice === PolicyCards.FacistPolicy) {
+                        socketEvents.startKillPhase(socket)
+                    } else {
+                        setTimeout(() => {
+                            socketEvents.startChancellorChoicePhase(socket)
+                        }, 4000)
+                    }
                 } else {
                     console.error('Cheater!')
                     // cheating (bad role tried to choose)? 
@@ -219,8 +224,8 @@ module.exports = function (io, RoomsManager) {
                 // cheating (sent card was not in collection)! 
             }
         },
-
-        testStartKillPhase: (socket) => {
+        
+        startKillPhase: (socket) => {
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
             const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, socket.currentPlayerName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
@@ -236,7 +241,7 @@ module.exports = function (io, RoomsManager) {
             RoomsManager.killPlayer(socket.currentRoom, playerName)
             const hitler = RoomsManager.getHitler(socket.currentRoom)
             const wasHitler = hitler.playerName === playerName
-            
+
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
                 data: {
                     wasHitler,
@@ -246,27 +251,16 @@ module.exports = function (io, RoomsManager) {
             })
             if (wasHitler) {
                 const facists = RoomsManager.getFacists(socket.currentRoom)
-                const liberals = RoomsManager.getLiberals(socket.currentRoom)
 
                 const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-                forEach(facists, (player) => {
-                    player.emit(SocketEvents.GameFinished, {
-                        data: {
-                            isSuccess: false,
-                            facists: passedFacists,
-                        },
-                    })
-                })
-                forEach(liberals, (player) => {
-                    player.emit(SocketEvents.GameFinished, {
-                        data: {
-                            isSuccess: true,
-                            facists: passedFacists,
-                        },
-                    })
+                io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
+                    data: {
+                        whoWon: PlayerAffilications.LIBERAL_AFFILIATION,
+                        facists: passedFacists,
+                    },
                 })
             } else {
-                 setTimeout(() => {
+                setTimeout(() => {
                     socketEvents.startChancellorChoicePhase(socket)
                 }, 3000)
             }
@@ -289,7 +283,6 @@ module.exports = function (io, RoomsManager) {
         socket.on(SocketEvents.CLIENT_VOTE, partialFunctions.vote)
         socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
-        socket.on(SocketEvents.TEST_START_KILL_PHASE, partialFunctions.testStartKillPhase)
         socket.on(SocketEvents.PlayerKilled, partialFunctions.killPlayer)
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
     })

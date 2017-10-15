@@ -14,7 +14,6 @@ module.exports = {
         CHANCELLOR_CHOICE_PHASE: 'CHANCELLOR_CHOICE_PHASE',
         BECOME_FACIST: 'BECOME_FACIST',
         KillSuperpowerUsed: 'KILL_SUPERPOWER_USED',
-        TEST_START_KILL_PHASE: 'TEST_START_KILL_PHASE',
         PlayerKilled: 'PLAYER_KILLED',
         GameFinished: 'GAME_FINISHED',
         PresidentChoosePolicy: 'PRESIDENT_CHOOSE_POLICY',

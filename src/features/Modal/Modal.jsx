@@ -4,13 +4,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ModalComponent from './ModalComponent'
 import * as modalActions from '../../ducks/modalDuck'
-
+import WinningModal from './WinningModal/WinningModal'
 import VotingModal from './VotingModal/VotingModal'
 import PolicyChoiceModal from './PolicyChoiceModal/PolicyChoiceModal'
 
 const modalInnerComponents = {
     VotingModal,
     PolicyChoiceModal,
+    WinningModal,
 }
 
 class Modal extends React.PureComponent {
@@ -43,9 +44,7 @@ class Modal extends React.PureComponent {
                 isCloseButtonShown={isCloseButtonShown}
                 closeModal={this.closeModal}
                 child={<ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} />}
-            >
-
-            </ModalComponent>
+            />
         )
     }
 }

@@ -220,7 +220,7 @@ class RoomsManager {
         return {
             maxPlayers,
             gamePhase,
-            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'avatarNumber'])),
+            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
         }
     }
 
@@ -275,7 +275,7 @@ class RoomsManager {
         const player = playersDict[playerName]
 
         return (player
-            ? pick(player, ['playerName', 'role', 'avatarNumber', 'slotNumber'])
+            ? pick(player, ['playerName', 'role', 'affiliation', 'avatarNumber', 'slotNumber'])
             : null 
         )
     }
@@ -348,6 +348,10 @@ class RoomsManager {
         this.rooms_props[roomName].drawPile = drop(tmpDrawPile, 3)
         this.rooms_props[roomName].drawnCards = policies
         return policies
+    }
+    getPolicyCardsCount(roomName, policyType) {
+        const { liberalPoliciesOnTheTable, fascistPoliciesOnTheTable } = this.rooms_props[roomName]
+        return (policyType === PolicyCards.FacistPolicy ? fascistPoliciesOnTheTable : liberalPoliciesOnTheTable)
     }
 }
 
