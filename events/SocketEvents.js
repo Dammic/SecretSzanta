@@ -121,11 +121,11 @@ module.exports = function (io, RoomsManager) {
                 if (votingResult) {
                     RoomsManager.setChancellor(socket.currentRoom)
                 } else {
-                    const threeFailed = RoomsManager.failElection(socket.currentRoom)
+                    const threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
                     setTimeout(() => {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
-                    // if (threeFailed) enactFasictPolicy, When policies code done
+                    // if (threeVotesFailed) enactRandomPolicy, When policies code is done
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
