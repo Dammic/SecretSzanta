@@ -63,6 +63,7 @@ export class SocketHandler extends React.PureComponent {
             const { presidentName, playersChoices, timestamp } = payload.data
 
             this.props.roomActions.selectNewPresident(presidentName)
+            this.props.roomActions.resetVotes()
             this.props.chatActions.addMessage(timestamp, `${presidentName} has become the new president!`)
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_CHANCELLOR_CHOICE)
             this.props.chatActions.addMessage(timestamp, `${presidentName} is now choosing a new chancellor...`)
@@ -133,6 +134,7 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName } }) => {
             this.props.chatActions.addMessage(timestamp, 'The president is now discarding one policy out of three...')
             this.props.playersActions.setChooserPlayer(presidentName)
+            this.props.roomActions.resetVotes()
         })
 
         socket.on(SocketEvents.ChancellorChoosePolicy, ({ data: { timestamp, chancellorName } }) => {
@@ -141,8 +143,10 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.NewPolicy, ({ data: { timestamp, policy } }) => {
+            const isFacist = policy === PolicyCards.FacistPolicy
             this.props.playersActions.setChooserPlayer('')
-            this.props.chatActions.addMessage(timestamp, `A ${policy === PolicyCards.FacistPolicy ? 'facist' : 'liberal'} policy has been enacted!`)
+            this.props.chatActions.addMessage(timestamp, `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!`)
+            this.props.roomActions.increasePolicyCount(isFacist)
             this.props.chatActions.addMessage(timestamp, 'The next round will begin in 4 seconds...')
         })
     }

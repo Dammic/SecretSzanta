@@ -24,9 +24,6 @@ class RoomsManager {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
 
-        const fascistCards = fill(Array(11), PolicyCards.FacistPolicy)
-        const liberalCards = fill(Array(6), PolicyCards.LiberalPolicy)
-
         this.rooms_props[roomName] = {
             freeSlots,
             playersDict: {},
@@ -35,7 +32,7 @@ class RoomsManager {
             chancellorCandidateName: '',
             votes: {},
             gamePhase: GamePhases.GAME_PHASE_NEW,
-            drawPile: shuffle(concat(fascistCards, liberalCards)),
+            drawPile: [],
             drawnCards: [],
             discardPile: [],
             liberalPoliciesOnTheTable: 0,
@@ -126,6 +123,18 @@ class RoomsManager {
         })
         playersDict[hitlerPlayerName].affiliation = PlayerAffilications.HITLER_AFFILIATION
         playersDict[hitlerPlayerName].facistAvatar = 50
+
+        // creating policy cards
+        const fascistCards = fill(Array(11), PolicyCards.FacistPolicy)
+        const liberalCards = fill(Array(6), PolicyCards.LiberalPolicy)
+        this.rooms_props[roomName] = {
+            ...this.rooms_props[roomName],
+            drawPile: shuffle(concat(fascistCards, liberalCards)),
+            drawnCards: [],
+            discardPile: [],
+            liberalPoliciesOnTheTable: 0,
+            fascistPoliciesOnTheTable: 0,
+        }
     }
     
     getFacists(roomName) {
@@ -325,10 +334,18 @@ class RoomsManager {
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
+
     getChoicePolicyCards(roomName) {
-        const { drawPile } = this.rooms_props[roomName]
-        const policies = take(drawPile, 3)
-        this.rooms_props[roomName].drawPile = drop(drawPile, 3)
+        const { drawPile, discardPile } = this.rooms_props[roomName]
+
+        let tmpDrawPile = drawPile
+        if (size(drawPile) < 3) {
+            tmpDrawPile = shuffle(concat(drawPile, discardPile))
+            this.rooms_props[roomName].drawPile = tmpDrawPile
+            this.rooms_props[roomName].discardPile = []
+        }
+        const policies = take(tmpDrawPile, 3)
+        this.rooms_props[roomName].drawPile = drop(tmpDrawPile, 3)
         this.rooms_props[roomName].drawnCards = policies
         return policies
     }
