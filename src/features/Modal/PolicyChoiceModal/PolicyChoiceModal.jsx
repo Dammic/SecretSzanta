@@ -1,5 +1,4 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import PolicyChoiceModalComponent from './PolicyChoiceModalComponent'
@@ -12,6 +11,7 @@ export class PolicyChoiceModal extends React.PureComponent {
         data: PropTypes.shape({
             policies: PropTypes.arrayOf(PropTypes.string).isRequired,
         }),
+        closeModal: PropTypes.func.isRequired,
     }
 
     onPolicyChoice = (event) => {
@@ -33,8 +33,8 @@ export class PolicyChoiceModal extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({ room }) => ({
-    policies: room.policies,
+const mapStateToProps = ({ room: { policies } }) => ({
+    policies,
 })
 
 export default connect(mapStateToProps)(PolicyChoiceModal)

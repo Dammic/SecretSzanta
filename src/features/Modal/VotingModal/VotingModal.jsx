@@ -31,10 +31,10 @@ export class VotingModal extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({ room }) => {
+const mapStateToProps = ({ room: { playersDict, isVotingModalShown } }) => {
     return {
-        playersDict: room.playersDict,
-        isVotingModalShown: room.isVotingModalShown,
+        playersDict,
+        isVotingModalShown,
     }
 }
 export default connect(mapStateToProps)(VotingModal)
