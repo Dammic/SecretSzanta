@@ -1,3 +1,4 @@
+import { handleActions, createAction } from 'redux-actions'
 import { cloneDeep, forEach, find } from 'lodash'
 import { PlayerRole } from '../../Dictionary'
 
@@ -14,6 +15,18 @@ const REGISTER_VOTE = 'room/REGISTER_VOTE'
 const REVEAL_VOTES = 'room/REVEAL_VOTES'
 const KILL_PLAYER = 'room/KILL_PLAYER'
 
+const addPlayer = createAction(ADD_PLAYER)
+const removePlayer = createAction(REMOVE_PLAYER)
+const changeGamePhase = createAction(CHANGE_GAME_PHASE)
+const chooseNewChancellor = createAction(CHOOSE_NEW_CHANCELLOR)
+const chooseNewPresident = createAction(CHOOSE_NEW_PRESIDENT)
+const syncRoomData = createAction(SYNC_ROOM_DATA)
+const increasePolicyCount = createAction(INCREASE_POLICY_COUNT)
+const revealFacists = createAction(REVEAL_FACISTS)
+const registerVote = createAction(REGISTER_VOTE)
+const revealVotes = createAction(REVEAL_VOTES)
+const killPlayer = createAction(KILL_PLAYER)
+
 const initialState = {
     maxPlayers: 0,
     playersDict: {},
@@ -24,260 +37,160 @@ const initialState = {
     votes: null,
 }
 
-// Reducer
-export default function reducer(state = initialState, action = {}) {
-    switch (action.type) {
-        case ADD_PLAYER: {
-            const { player } = action.payload
-            const { playersDict } = state
+const actions = {
+    [ADD_PLAYER]: (state, action) => {
+        const { player } = action.payload
+        const { playersDict } = state
 
-            return {
-                ...state,
-                playersDict: { ...playersDict, [player.playerName]: player },
-            }
+        return {
+            ...state,
+            playersDict: { ...playersDict, [player.playerName]: player },
         }
-        case REMOVE_PLAYER: {
-            const { playerName } = action.payload
-            const newPlayersDict = { ...state.playersDict }
-            delete newPlayersDict[playerName]
+    },
+    [REMOVE_PLAYER]: (state, action) => {
+        const { playerName } = action.payload
+        const newPlayersDict = { ...state.playersDict }
+        delete newPlayersDict[playerName]
 
-            return {
-                ...state,
-                playersDict: newPlayersDict,
-            }
+        return {
+            ...state,
+            playersDict: newPlayersDict,
         }
-        case SYNC_ROOM_DATA: {
-            const { maxPlayers, playersDict, gamePhase} = action.payload
+    },
+    [SYNC_ROOM_DATA]: (state, action) => {
+        const { maxPlayers, playersDict, gamePhase } = action.payload
 
-            return {
-                ...state,
-                maxPlayers,
-                playersDict,
-                gamePhase,
-            }
-        }
-        case CHANGE_GAME_PHASE: {
-            const { gamePhase } = action.payload
-
-            return {
-                ...state,
-                gamePhase,
-            }
-        }
-        case CHOOSE_NEW_CHANCELLOR: {
-            const { newChancellor } = action.payload
-            const newPlayersDict = { ...state.playersDict }
-
-            const previousChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
-            if (previousChancellor) {
-                previousChancellor.role = null
-            }
-            const currentChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_CHANCELLOR })
-            if (currentChancellor) {
-                currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
-            }
-            const nextChancellor = newPlayersDict[newChancellor]
-            nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
-
-            return {
-                ...state,
-                playersDict: newPlayersDict,
-            }
-        }
-        case CHOOSE_NEW_PRESIDENT: {
-            const { newPresident } = action.payload
-            const newPlayersDict = { ...state.playersDict }
-
-            const previousPresident = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
-            if (previousPresident) {
-                previousPresident.role = null
-            }
-
-            const currentPresident = find(newPlayersDict, { role: PlayerRole.ROLE_PRESIDENT })
-            if (currentPresident) {
-                currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
-            }
-
-            const nextPresident = newPlayersDict[newPresident]
-            nextPresident.role = PlayerRole.ROLE_PRESIDENT
-
-            const previousChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
-            if (previousChancellor) {
-                previousChancellor.role = null
-            }
-
-            const currentChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_CHANCELLOR })
-            if (currentChancellor) {
-                currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
-            }
-
-            return {
-                ...state,
-                playersDict: newPlayersDict,
-                votes: null,
-            }
-        }
-        case INCREASE_POLICY_COUNT: {
-            const { facistPoliciesCount, liberalPoliciesCount } = state
-            const { isFacist } = action.payload
-
-            if (isFacist) {
-                return {
-                    ...state,
-                    facistPoliciesCount: facistPoliciesCount + 1,
-                }
-            }
-            return {
-                ...state,
-                liberalPoliciesCount: liberalPoliciesCount + 1,
-            }
-        }
-        case REVEAL_FACISTS: {
-            const { facists } = action.payload
-
-            const newPlayersDict = cloneDeep(state.playersDict)
-            forEach(facists, (facist) => {
-                const player = newPlayersDict[facist.playerName]
-                if (player) {
-                    player.affiliation = facist.affiliation
-                    player.facistAvatar = facist.facistAvatar
-                }
-            })
-            return {
-                ...state,
-                playersDict: newPlayersDict,
-            }
-        }
-        case REGISTER_VOTE: {
-            const { votes } = state
-            const { playerName } = action.payload
-
-            return {
-                ...state,
-                votes: { ...votes, [playerName]: '' },
-            }
-        }
-        case REVEAL_VOTES: {
-            const { newVotes } = action.payload
-
-            return {
-                ...state,
-                votes: newVotes,
-            }
-        }
-        case KILL_PLAYER: {
-            const { playerName } = action.payload 
-            
-            const newPlayersDict = cloneDeep(state.playersDict)
-            newPlayersDict[playerName].isDead = true
-            return {
-                ...state,
-                playersDict: newPlayersDict,
-            }
-        }
-        default:
-            return state
-    }
-}
-
-// Action Creators
-export function addPlayer(player) {
-    return {
-        type: ADD_PLAYER,
-        payload: {
-            player,
-        },
-    }
-}
-
-export function removePlayer(playerName) {
-    return {
-        type: REMOVE_PLAYER,
-        payload: {
-            playerName,
-        },
-    }
-}
-
-export function killPlayer(playerName) {
-    return {
-        type: KILL_PLAYER,
-        payload: {
-            playerName,
-        },
-    }
-}
-
-export function changeGamePhase(gamePhase) {
-    return {
-        type: CHANGE_GAME_PHASE,
-        payload: {
-            gamePhase,
-        },
-    }
-}
-
-export function chooseNewChancellor(newChancellor) {
-    return {
-        type: CHOOSE_NEW_CHANCELLOR,
-        payload: {
-            newChancellor,
-        },
-    }
-}
-
-export function selectNewPresident(newPresident) {
-    return {
-        type: CHOOSE_NEW_PRESIDENT,
-        payload: {
-            newPresident,
-        },
-    }
-}
-
-export function syncRoomData(maxPlayers, playersDict, gamePhase) {
-    return {
-        type: SYNC_ROOM_DATA,
-        payload: {
+        return {
+            ...state,
             maxPlayers,
             playersDict,
             gamePhase,
-        },
-    }
+        }
+    },
+    [CHANGE_GAME_PHASE]: (state, action) => {
+        const { gamePhase } = action.payload
+
+        return {
+            ...state,
+            gamePhase,
+        }
+    },
+    [CHOOSE_NEW_CHANCELLOR]: (state, action) => {
+        const { newChancellor } = action.payload
+        const newPlayersDict = { ...state.playersDict }
+
+        const previousChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
+        if (previousChancellor) {
+            previousChancellor.role = null
+        }
+        const currentChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_CHANCELLOR })
+        if (currentChancellor) {
+            currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+        }
+        const nextChancellor = newPlayersDict[newChancellor]
+        nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
+
+        return {
+            ...state,
+            playersDict: newPlayersDict,
+        }
+    },
+    [CHOOSE_NEW_PRESIDENT]: (state, action) => {
+        const { newPresident } = action.payload
+        const newPlayersDict = { ...state.playersDict }
+
+        const previousPresident = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
+        if (previousPresident) {
+            previousPresident.role = null
+        }
+
+        const currentPresident = find(newPlayersDict, { role: PlayerRole.ROLE_PRESIDENT })
+        if (currentPresident) {
+            currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
+        }
+
+        const nextPresident = newPlayersDict[newPresident]
+        nextPresident.role = PlayerRole.ROLE_PRESIDENT
+
+        const previousChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
+        if (previousChancellor) {
+            previousChancellor.role = null
+        }
+
+        const currentChancellor = find(newPlayersDict, { role: PlayerRole.ROLE_CHANCELLOR })
+        if (currentChancellor) {
+            currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+        }
+
+        return {
+            ...state,
+            playersDict: newPlayersDict,
+            votes: null,
+        }
+    },
+    [INCREASE_POLICY_COUNT]: (state, action) => {
+        const { facistPoliciesCount, liberalPoliciesCount } = state
+        const { isFacist } = action.payload
+
+        if (isFacist) {
+            return {
+                ...state,
+                facistPoliciesCount: facistPoliciesCount + 1,
+            }
+        }
+        return {
+            ...state,
+            liberalPoliciesCount: liberalPoliciesCount + 1,
+        }
+    },
+    [REVEAL_FACISTS]: (state, action) => {
+        const { facists } = action.payload
+
+        const newPlayersDict = cloneDeep(state.playersDict)
+        forEach(facists, (facist) => {
+            const player = newPlayersDict[facist.playerName]
+            if (player) {
+                player.affiliation = facist.affiliation
+                player.facistAvatar = facist.facistAvatar
+            }
+        })
+        return {
+            ...state,
+            playersDict: newPlayersDict,
+        }
+    },
+    [REGISTER_VOTE]: (state, action) => {
+        const { votes } = state
+        const { playerName } = action.payload
+
+        return {
+            ...state,
+            votes: { ...votes, [playerName]: '' },
+        }
+    },
+    [REVEAL_VOTES]: (state, action) => {
+        const { newVotes } = action.payload
+
+        return {
+            ...state,
+            votes: newVotes,
+        }
+    },
+    [KILL_PLAYER]: (state, action) => {
+        const { playerName } = action.payload
+
+        const newPlayersDict = cloneDeep(state.playersDict)
+        newPlayersDict[playerName].isDead = true
+        return {
+            ...state,
+            playersDict: newPlayersDict,
+        }
+    },
+}
+export {
+    addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
+    chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
+    registerVote, revealVotes, killPlayer,
 }
 
-export function increasePolicyCount(isFacist) {
-    return {
-        type: INCREASE_POLICY_COUNT,
-        payload: {
-            isFacist,
-        },
-    }
-}
-
-export function revealFacists(facists) {
-    return {
-        type: REVEAL_FACISTS,
-        payload: {
-            facists,
-        },
-    }
-}
-
-export function registerVote(playerName) {
-    return {
-        type: REGISTER_VOTE,
-        payload: {
-            playerName,
-        },
-    }
-}
-
-export function revealVotes(votes) {
-    return {
-        type: REVEAL_VOTES,
-        payload: {
-            newVotes: votes,
-        },
-    }
-}
+export default handleActions(actions, initialState)

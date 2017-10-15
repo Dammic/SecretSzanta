@@ -27,8 +27,8 @@ export class PlayerBoard extends React.PureComponent {
 
     constructor(props) {
         super(props)
-        props.roomActions.increasePolicyCount(true)
-        props.roomActions.increasePolicyCount(false)
+        props.roomActions.increasePolicyCount({ isFacist: true })
+        props.roomActions.increasePolicyCount({ isFacist: false })
     }
 
     makePlayer = (player) => {
