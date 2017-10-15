@@ -275,8 +275,8 @@ class RoomsManager {
     }
 
     getRoomOwner(roomName) {
-        const room = this.rooms_props[roomName]
-        return room.playersDict[room.ownerName]
+        const { playersDict, ownerName } = this.rooms_props[roomName]
+        return playersDict[ownerName]
     }
 
     isRoomOwner(roomName, playerName) {
