@@ -70,7 +70,7 @@ module.exports = function (io, RoomsManager) {
         },
 
         startGame: (socket) => {
-            if (!RoomsManager.isRoomOwner(socket.currentPlayerName)) {
+            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
                 socketEvents.sendError(socket, ErrorMessages.notOwner)
                 return
             }
@@ -165,7 +165,7 @@ module.exports = function (io, RoomsManager) {
         },
 
         testStartKillPhase: (socket) => {
-            if (!RoomsManager.isRoomOwner(socket.currentPlayerName)) {
+            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
                 socketEvents.sendError(socket, ErrorMessages.notOwner)
                 return
             }
