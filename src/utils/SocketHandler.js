@@ -38,7 +38,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `The president has nominated ${chancellorCandidate} for chancellor.` })
             this.props.chatActions.addMessage({ timestamp, content: `Voting phase has begun - vote for the new parliment!` })
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_VOTING)
-            this.props.playersActions.setChooserPlayer('')
+            this.props.playersActions.setChooserPlayer({ playerName: '' })
             if (!this.props.playersDict[this.props.userName].isDead) {
                 this.props.modalActions.setModal({
                     title: 'Vote for your parliment!',
@@ -67,9 +67,13 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `${presidentName} has become the new president!` })
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_CHANCELLOR_CHOICE)
             this.props.chatActions.addMessage({ timestamp, content: `${presidentName} is now choosing a new chancellor...` })
-            this.props.playersActions.setChooserPlayer(presidentName)
+            this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
-                this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.ChancellorChoice, playersChoices)
+                this.props.playersActions.setChoiceMode({
+                    isVisible: true,
+                    context: ChoiceModeContexts.ChancellorChoice,
+                    selectablePlayers: playersChoices,
+                })
             }
         })
         socket.on(SocketEvents.BECOME_FACIST, (payload) => {
@@ -96,7 +100,11 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.changeGamePhase(GamePhases.GAME_PHASE_SUPERPOWER)
             this.props.chatActions.addMessage({ timestamp, content: `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...` })
             if (presidentName === this.props.userName) {
-                this.props.playersActions.setChoiceMode(true, ChoiceModeContexts.KillChoice, playersChoices)
+                this.props.playersActions.setChoiceMode({
+                    isVisible: true,
+                    context: ChoiceModeContexts.KillChoice,
+                    selectablePlayers: playersChoices,
+                })
             }
         })
 

@@ -1,7 +1,13 @@
+import { handleActions, createAction } from 'redux-actions'
+
 // Actions
 const SET_CHOICE_MODE = 'players/SET_CHOICE_MODE'
-const HIDE_CHOICE_MODE = 'players/HIDE_CHOICE_MODE'
 const SET_CHOOSER_PLAYER = 'players/SET_CHOOSER_PLAYER'
+const HIDE_CHOICE_MODE = 'players/HIDE_CHOICE_MODE'
+
+const setChoiceMode = createAction(SET_CHOICE_MODE)
+const setChooserPlayer = createAction(SET_CHOOSER_PLAYER)
+const hideChoiceMode = createAction(HIDE_CHOICE_MODE)
 
 const initialState = {
     choiceMode: {
@@ -12,71 +18,37 @@ const initialState = {
     },
 }
 
-// Reducer
-export default function reducer(state = initialState, action = {}) {
-    switch (action.type) {
-        case SET_CHOICE_MODE: {
-            const { choiceMode } = state
-            const { isVisible, context, selectablePlayers } = action.payload
-
-            return {
-                ...state,
-                choiceMode: {
-                    ...choiceMode,
-                    isVisible,
-                    context,
-                    selectablePlayers,
-                },
-            }
+const actions = {
+    [SET_CHOICE_MODE]: (state, action) => {
+        const { choiceMode } = state
+        const { isVisible, context, selectablePlayers } = action.payload
+        return {
+            ...state,
+            choiceMode: {
+                ...choiceMode,
+                isVisible,
+                context,
+                selectablePlayers,
+            },
         }
+    },
+    [SET_CHOOSER_PLAYER]: (state, action) => {
+        const { choiceMode } = state
+        const { playerName } = action.payload
 
-        case SET_CHOOSER_PLAYER: {
-            const { choiceMode } = state
-            const { playerName } = action.payload
-
-            return {
-                ...state,
-                choiceMode: {
-                    ...choiceMode,
-                    chooserPlayerName: playerName,
-                },
-            }
+        return {
+            ...state,
+            choiceMode: {
+                ...choiceMode,
+                chooserPlayerName: playerName,
+            },
         }
-
-        case HIDE_CHOICE_MODE: {
-            return {
-                ...state,
-                choiceMode: initialState.choiceMode,
-            }
-        }
-
-        default:
-            return state
-    }
+    },
+    [HIDE_CHOICE_MODE]: state => ({
+        ...state,
+        choiceMode: initialState.choiceMode,
+    }),
 }
 
-export function setChoiceMode(isVisible, context, selectablePlayers) {
-    return {
-        type: SET_CHOICE_MODE,
-        payload: {
-            isVisible,
-            context,
-            selectablePlayers,
-        },
-    }
-}
-
-export function hideChoiceMode() {
-    return {
-        type: HIDE_CHOICE_MODE,
-        payload: {},
-    }
-}
-
-export function setChooserPlayer(playerName) {
-    return {
-        type: SET_CHOOSER_PLAYER,
-        payload: { playerName },
-    }
-
-}
+export { setChoiceMode, setChooserPlayer, hideChoiceMode }
+export default handleActions(actions, initialState)
