@@ -1,6 +1,5 @@
 import moment from 'moment'
 import { handleActions, createAction } from 'redux-actions'
-import { List, Record } from 'immutable'
 
 // Actions
 const ADD_MESSAGE = 'chat/ADD_MESSAGE'

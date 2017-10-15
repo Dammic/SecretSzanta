@@ -1,5 +1,4 @@
 import { handleActions, createAction } from 'redux-actions'
-import { List, Record } from 'immutable'
 import { reject } from 'lodash'
 
 // Actions
