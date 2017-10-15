@@ -1,8 +1,11 @@
+import { handleActions, createAction } from 'redux-actions'
 
 // Actions
 const SET_MODAL = 'modal/SET_MODAL'
 const TOGGLE_MODAL = 'modal/TOGGLE_MODAL'
 
+const setModal = createAction(SET_MODAL)
+const toggleModal = createAction(TOGGLE_MODAL)
 
 const initialState = {
     isVisible: false,
@@ -13,52 +16,26 @@ const initialState = {
     modalTmpData: {},
 }
 
-// Reducer
-export default function reducer(state = initialState, action = {}) {
-    switch (action.type) {
-        case SET_MODAL: {
-            const { isVisible = true, title, overlayClosesModal = false, isCloseButtonShown = false, componentName, initialData } = action.payload
-            return {
-                isVisible,
-                title,
-                overlayClosesModal,
-                isCloseButtonShown,
-                componentName,
-                modalTmpData: initialData,
-            }
-        }
-        case TOGGLE_MODAL: {
-            const { value } = action.payload
-            return {
-                ...state,
-                isVisible: value,
-            }
-        }
-
-        default:
-            return state
-    }
-}
-
-export function setModal({ isVisible, title, overlayClosesModal, isCloseButtonShown, initialData, componentName }) {
-    return {
-        type: SET_MODAL,
-        payload: {
+const actions = {
+    [SET_MODAL]: (state, action) => {
+        const { isVisible = true, title, overlayClosesModal = false, isCloseButtonShown = false, componentName, initialData } = action.payload
+        return {
             isVisible,
             title,
             overlayClosesModal,
             isCloseButtonShown,
-            initialData,
             componentName,
-        },
-    }
+            modalTmpData: initialData,
+        }
+    },
+    [TOGGLE_MODAL]: (state, action) => {
+        const { value } = action.payload
+        return {
+            ...state,
+            isVisible: value,
+        }
+    },
 }
 
-export function toggleModal(value) {
-    return {
-        type: TOGGLE_MODAL,
-        payload: {
-            value,
-        },
-    }
-}
+export { setModal, toggleModal }
+export default handleActions(actions, initialState)

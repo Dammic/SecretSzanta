@@ -12,7 +12,6 @@ const initialState = {
 
 const actions = {
     [ADD_MESSAGE]: (state, action) => {
-        console.info(state, action)
         const { messages } = state
         const { timestamp, content, author } = action.payload
         const newMessage = {
