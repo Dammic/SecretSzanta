@@ -65,15 +65,18 @@ module.exports = function (io, RoomsManager) {
             }
         },
 
-        startGame: (socket) => {
+        authenticatedRoomOwner: (socket, error) => {
             const ownerName = RoomsManager.getRoomOwner(socket.currentRoom).playerName
             if (socket.currentPlayerName !== ownerName) {
-                socket.emit(SocketEvents.CLIENT_ERROR, {
-                    error: 'Operation prohibited! You are not the owner!',
-                })
-                return
+                socket.emit(SocketEvents.CLIENT_ERROR, { error })
+                return false
             }
-        
+            return true
+        },
+
+        startGame: (socket) => {
+            if (!this.authenticatedRoomOwner(socket, 'Operation prohibited! You are not the owner!')) return
+
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
 
@@ -164,11 +167,13 @@ module.exports = function (io, RoomsManager) {
         },
 
         testStartKillPhase: (socket) => {
+            if (!this.authenticatedRoomOwner(socket, 'You are not the owner!')) return
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
-            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, socket.currentPlayerName)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
                 data: {
-                    presidentName: get(RoomsManager.getPresident(socket.currentRoom), 'playerName'),
+                    presidentName,
                     timestamp: getCurrentTimestamp(),
                     playersChoices,
                 },
