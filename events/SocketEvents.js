@@ -1,5 +1,5 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications } = require('../Dictionary')
+const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages } = require('../Dictionary')
 const { filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
@@ -71,7 +71,7 @@ module.exports = function (io, RoomsManager) {
 
         startGame: (socket) => {
             if (!RoomsManager.isRoomOwner(socket.currentPlayerName)) {
-                socketEvents.sendError(socket, 'Operation prohibited! You are not the owner!')
+                socketEvents.sendError(socket, ErrorMessages.notOwner)
                 return
             }
 
@@ -166,7 +166,7 @@ module.exports = function (io, RoomsManager) {
 
         testStartKillPhase: (socket) => {
             if (!RoomsManager.isRoomOwner(socket.currentPlayerName)) {
-                socketEvents.sendError(socket, 'You are not the owner!')
+                socketEvents.sendError(socket, ErrorMessages.notOwner)
                 return
             }
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
