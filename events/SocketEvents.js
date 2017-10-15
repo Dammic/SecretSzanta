@@ -22,7 +22,7 @@ module.exports = function (io, RoomsManager) {
             // if the room does not exist, create it
             if (roomName && !RoomsManager.isRoomPresent(roomName)) {
                 RoomsManager.initializeRoom(roomName, playerName, maxPlayers, password)
-                this.joinRoom(socket, { roomName, playerName })
+                socketEvents.joinRoom(socket, { roomName, playerName })
             } else {
                 console.error('selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
@@ -75,7 +75,7 @@ module.exports = function (io, RoomsManager) {
         },
 
         startGame: (socket) => {
-            if (!this.authenticatedRoomOwner(socket, 'Operation prohibited! You are not the owner!')) return
+            if (!socketEvents.authenticatedRoomOwner(socket, 'Operation prohibited! You are not the owner!')) return
 
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
@@ -167,7 +167,7 @@ module.exports = function (io, RoomsManager) {
         },
 
         testStartKillPhase: (socket) => {
-            if (!this.authenticatedRoomOwner(socket, 'You are not the owner!')) return
+            if (!socketEvents.authenticatedRoomOwner(socket, 'You are not the owner!')) return
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
             const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
             const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)

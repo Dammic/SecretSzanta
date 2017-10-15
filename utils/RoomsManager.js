@@ -200,10 +200,11 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, maxPlayers, gamePhase } = this.rooms_props[roomName]
+        const { playersDict, ownerName, maxPlayers, gamePhase } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
+            ownerName,
             playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
         }
     }

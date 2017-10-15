@@ -16,6 +16,7 @@ const KILL_PLAYER = 'room/KILL_PLAYER'
 
 const initialState = {
     maxPlayers: 0,
+    ownerName: '',
     playersDict: {},
     gamePhase: '',
     potentialChancellorsChoices: [],
@@ -47,13 +48,14 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
         case SYNC_ROOM_DATA: {
-            const { maxPlayers, playersDict, gamePhase} = action.payload
+            const { maxPlayers, ownerName, playersDict, gamePhase} = action.payload
 
             return {
                 ...state,
                 maxPlayers,
                 playersDict,
                 gamePhase,
+                ownerName,
             }
         }
         case CHANGE_GAME_PHASE: {
@@ -235,13 +237,14 @@ export function selectNewPresident(newPresident) {
     }
 }
 
-export function syncRoomData(maxPlayers, playersDict, gamePhase) {
+export function syncRoomData(maxPlayers, ownerName, playersDict, gamePhase) {
     return {
         type: SYNC_ROOM_DATA,
         payload: {
             maxPlayers,
             playersDict,
             gamePhase,
+            ownerName,
         },
     }
 }
