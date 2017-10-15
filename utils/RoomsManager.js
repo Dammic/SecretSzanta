@@ -274,6 +274,10 @@ class RoomsManager {
         return !isNil(this.rooms_props[roomName])
     }
 
+    getRoomOwner(roomName) {
+        return this.rooms_props[roomName].owner
+    }
+
     getPlayersCount(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         return size(playersDict)

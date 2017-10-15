@@ -66,6 +66,14 @@ module.exports = function (io, RoomsManager) {
         },
 
         startGame: (socket) => {
+            const ownerName = RoomsManager.getRoomOwner(socket.currentRoom).playerName
+            if (socket.currentPlayerName !== ownerName) {
+                socket.emit(SocketEvents.CLIENT_ERROR, {
+                    error: 'Operation prohibited! You are not the owner!',
+                })
+                return
+            }
+        
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
 
