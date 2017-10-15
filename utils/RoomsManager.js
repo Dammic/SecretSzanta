@@ -1,7 +1,7 @@
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
     filter, includes, forEach, random, slice, times, map,
-    find, pick, shuffle, size,
+    find, pick, shuffle, size, sample,
 } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
@@ -246,12 +246,15 @@ class RoomsManager {
      * @param {String} playerName - name of the player to be removed from the room
      */
     removePlayer(roomName, playerName) {
-        const { playersDict, freeSlots } = this.rooms_props[roomName]
+        const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]
         const player = playersDict[playerName] 
         
         if (player) {
             freeSlots.unshift(player.slotNumber)
             delete playersDict[playerName]
+            if (playerName === ownerName) {
+                this.rooms_props[roomName].ownerName = sample(playersDict).playerName
+            }
         }
     }
 
