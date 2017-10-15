@@ -8,8 +8,6 @@ const ModalComponent = ({
     title,
     overlayClosesModal,
     isCloseButtonShown,
-    componentName,
-    modalTmpData,
     closeModal,
     child,
 }) => {

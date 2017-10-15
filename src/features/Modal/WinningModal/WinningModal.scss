@@ -1,0 +1,70 @@
+.winning-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    &-list {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 50%;
+
+        .avatar-name {
+            width: 100%;
+            text-align: center;
+        }
+    }
+}
+
+@keyframes dance {
+    0% { transform: rotate(0deg) scale(1, 1); left: -8%; top:0px; }
+    25% { transform: rotate(20deg) scale(1.1, 1.1); left: -4%; top: -8%; }
+    50% { transform: rotate(0deg) scale(1.2, 1.2); left: 0px; top: -10%; }
+    75% { transform: rotate(-20deg) scale(1.1, 1.1); left: 4%; top: -8%; }
+    100% { transform: rotate(0deg) scale(1, 1); left: 8%; top: 0px; }
+}
+
+@keyframes sorrow {
+    0% { transform: scale(0.5, 0.45); }
+    100% { transform: scale(0.5, 0.5); }
+}
+
+@keyframes cry {
+    0% { transform: rotate(-45deg) translateY(0); opacity: 1; }
+    90% { transform: rotate(-45deg) translateY(9px); }
+    100% { transform: rotate(-45deg) translateY(10px); opacity: 0.0; }
+}
+
+.winner-dance {
+    animation-name: dance;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.loser-sorrow {
+    animation-name: sorrow;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.drop {
+    position: relative;
+    left: 54%;
+    top: -85px;
+    width: 1em;
+    height: 1em;
+    border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+    transform: rotate(-45deg);
+    background: #1133ee;
+
+    animation-name: cry;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}

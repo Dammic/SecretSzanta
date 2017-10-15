@@ -6,9 +6,11 @@ import ModalComponent from './ModalComponent'
 import * as modalActions from '../../ducks/modalDuck'
 
 import VotingModal from './VotingModal/VotingModal'
+import WinningModal from './WinningModal/WinningModal'
 
 const modalInnerComponents = {
     VotingModal,
+    WinningModal,
 }
 
 class Modal extends React.PureComponent {
@@ -41,9 +43,7 @@ class Modal extends React.PureComponent {
                 isCloseButtonShown={isCloseButtonShown}
                 closeModal={this.closeModal}
                 child={<ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} />}
-            >
-
-            </ModalComponent>
+            />
         )
     }
 }
@@ -60,3 +60,4 @@ const mapDispatchToProps = dispatch => ({
     modalActions: bindActionCreators(modalActions, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)
+

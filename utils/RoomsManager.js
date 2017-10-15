@@ -204,7 +204,7 @@ class RoomsManager {
         return {
             maxPlayers,
             gamePhase,
-            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'avatarNumber'])),
+            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
         }
     }
 
@@ -260,7 +260,7 @@ class RoomsManager {
         const player = playersDict[playerName]
 
         return (player
-            ? pick(player, ['playerName', 'role', 'avatarNumber', 'slotNumber'])
+            ? pick(player, ['playerName', 'role', 'affiliation', 'avatarNumber', 'slotNumber'])
             : null 
         )
     }
