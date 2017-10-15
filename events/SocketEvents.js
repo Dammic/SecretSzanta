@@ -1,12 +1,10 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages } = require('../Dictionary')
-const { filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { isNil, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
-
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
     const socketEvents = {
-
         sendError: (socket, errorMessage) => {
             socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
         },
@@ -16,8 +14,8 @@ module.exports = function (io, RoomsManager) {
             player.emit(SocketEvents.BECOME_FACIST, {
                 data: {
                     facists: (shouldHideOtherFacists
-                            ? pick(player, facistSubproperties)
-                            : passedFacists
+                        ? pick(player, facistSubproperties)
+                        : passedFacists
                     ),
                 },
             })
@@ -28,18 +26,26 @@ module.exports = function (io, RoomsManager) {
                 const roomOwnerName = RoomsManager.getRoomOwner(socket.currentRoom).playerName
 
                 RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
+                io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
+                    data: {
+                        timestamp: getCurrentTimestamp(),
+                        playerName: socket.currentPlayerName,
+                    },
+                })
 
                 if (socket.currentPlayerName === roomOwnerName) {
                     const newOwner = RoomsManager.findNewRoomOwner(socket.currentRoom)
-                    const roomDetails = RoomsManager.getRoomDetails(socket.currentRoom)
-                    newOwner.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+                    if (!isNil(newOwner)) {
+                        const roomDetails = RoomsManager.getRoomDetails(socket.currentRoom)
+                        newOwner.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
 
-                    if (newOwner.affiliation === PlayerAffilications.FACIST_AFFILIATION
-                        || newOwner.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
-                        const playersCount = RoomsManager.getPlayersCount(socket.currentRoom)
-                        const fascists = RoomsManager.getFacists(socket.currentRoom)
-                        const passedFacists = map(fascists, fascist => pick(fascist, facistSubproperties))
-                        SocketEvents.sendBecomeFascist(newOwner, playersCount, passedFacists)
+                        if (newOwner.affiliation === PlayerAffilications.FACIST_AFFILIATION
+                            || newOwner.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
+                            const playersCount = RoomsManager.getPlayersCount(socket.currentRoom)
+                            const fascists = RoomsManager.getFacists(socket.currentRoom)
+                            const passedFacists = map(fascists, fascist => pick(fascist, facistSubproperties))
+                            socketEvents.sendBecomeFascist(newOwner, playersCount, passedFacists)
+                        }
                         newOwner.emit(SocketEvents.CLIENT_SEND_MESSAGE, {
                             data: {
                                 content: 'You have become the new owner of this room!',
@@ -47,15 +53,12 @@ module.exports = function (io, RoomsManager) {
                                 timestamp: getCurrentTimestamp(),
                             },
                         })
+                    } else {
+                        RoomsManager.removeRoom(socket.currentRoom)
+                        console.log(`The room ${socket.currentRoom} was permanently removed!`)
                     }
                 }
 
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
-                    data: {
-                        timestamp: getCurrentTimestamp(),
-                        playerName: socket.currentPlayerName,
-                    },
-                })
                 socket.currentRoom = ''
             }
             socket.currentPlayerName = ''

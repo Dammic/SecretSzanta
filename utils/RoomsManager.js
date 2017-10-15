@@ -1,7 +1,7 @@
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
     filter, includes, forEach, random, slice, times, map,
-    find, pick, shuffle, size, sample,
+    find, pick, shuffle, size, sample, get,
 } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
@@ -290,7 +290,7 @@ class RoomsManager {
     findNewRoomOwner(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const newOwner = sample(playersDict)
-        this.rooms_props[roomName].ownerName = newOwner.playerName
+        this.rooms_props[roomName].ownerName = get(newOwner, 'playerName')
         return newOwner
     }
 
@@ -316,6 +316,10 @@ class RoomsManager {
         if (player) {
             player.isDead = true
         }
+    }
+
+    removeRoom(roomName) {
+        delete this.rooms_props[roomName]
     }
 }
 
