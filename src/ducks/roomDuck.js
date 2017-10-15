@@ -50,11 +50,12 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
         case SYNC_ROOM_DATA: {
-            const { maxPlayers, playersDict, gamePhase} = action.payload
+            const { maxPlayers, trackerPosition, playersDict, gamePhase} = action.payload
 
             return {
                 ...state,
                 maxPlayers,
+                trackerPosition,
                 playersDict,
                 gamePhase,
             }
@@ -251,14 +252,10 @@ export function selectNewPresident(newPresident) {
     }
 }
 
-export function syncRoomData(maxPlayers, playersDict, gamePhase) {
+export function syncRoomData(roomData) {
     return {
         type: SYNC_ROOM_DATA,
-        payload: {
-            maxPlayers,
-            playersDict,
-            gamePhase,
-        },
+        payload: roomData,
     }
 }
 

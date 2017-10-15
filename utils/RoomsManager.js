@@ -105,6 +105,7 @@ class RoomsManager {
     startGame(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
+        this.rooms_props[roomName].failedElections = 0
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount
@@ -192,7 +193,7 @@ class RoomsManager {
 
     failElection(roomName) {
         const room = this.rooms_props[roomName]
-        if (room.failedElection >= 3) {
+        if (room.failedElections >= 3) {
             room.failedElections = 0
             return true
         }
@@ -210,10 +211,11 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, maxPlayers, gamePhase } = this.rooms_props[roomName]
+        const { playersDict, failedElections, maxPlayers, gamePhase } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
+            trackerPosition: failedElections,
             playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
         }
     }
