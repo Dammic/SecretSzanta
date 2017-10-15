@@ -20,11 +20,12 @@ class RoomsManager {
      * @param {String} roomName - unique name of the modified room
      * @param {Number} [maxPlayers = 10] - max amount of players in the room
      */
-    initializeRoom(roomName, maxPlayers = 10, password) {
+    initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
 
         this.rooms_props[roomName] = {
+            ownerName,
             freeSlots,
             playersDict: {},
             maxPlayers,
@@ -215,7 +216,7 @@ class RoomsManager {
      * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
      */
     addPlayer(roomName, playerName, socket) {
-        const { playersDict, freeSlots } = this.rooms_props[roomName]     
+        const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]     
         const nextEmptySlot = freeSlots[0]
 
         if (!nextEmptySlot) {
@@ -235,6 +236,7 @@ class RoomsManager {
             }
             playersDict[playerName] = newPlayer
             this.rooms_props[roomName].freeSlots = tail(freeSlots)
+            if (playerName === ownerName) this.rooms_props[roomName].owner = newPlayer
         }
     }
 

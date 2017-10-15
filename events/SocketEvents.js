@@ -18,10 +18,11 @@ module.exports = function (io, RoomsManager) {
             socket.currentPlayerName = ''
         },
 
-        createRoom: (socket, { roomName, maxPlayers, password }) => {
+        createRoom: (socket, { roomName, playerName, maxPlayers, password }) => {
             // if the room does not exist, create it
             if (roomName && !RoomsManager.isRoomPresent(roomName)) {
-                RoomsManager.initializeRoom(roomName, maxPlayers, password)
+                RoomsManager.initializeRoom(roomName, playerName, maxPlayers, password)
+                this.joinRoom(socket, { roomName, playerName })
             } else {
                 console.error('selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
