@@ -159,7 +159,7 @@ module.exports = function (io, RoomsManager) {
         startPresidentPolicyChoice: (socket) => {
             const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
 
-            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GamePhasePresidentPolicyChoice)
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.PresidentPolicyChoice)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PresidentChoosePolicy, {
                 data: {
                     timestamp: getCurrentTimestamp(),
@@ -180,8 +180,8 @@ module.exports = function (io, RoomsManager) {
             if (includes(drawnCards, choice)) {
                 const president = RoomsManager.getPresident(socket.currentRoom)
                 const chancellor = RoomsManager.getChancellor(socket.currentRoom)
-                if (gamePhase === GamePhases.GamePhasePresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
-                    RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GamePhaseChancellorPolicyChoice)
+                if (gamePhase === GamePhases.PresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
+                    RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ChancellorPolicyChoice)
                     const chancellorEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.ChancellorChoosePolicy, {
                         data: {
@@ -197,7 +197,7 @@ module.exports = function (io, RoomsManager) {
                             title: 'Choose policy to enact',
                         },
                     })
-                } else if (gamePhase === GamePhases.GamePhaseChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
+                } else if (gamePhase === GamePhases.ChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
                     const discardedCard = get(pullAt(drawnCards, indexOf(drawnCards, choice)), '0')
                     RoomsManager.discardPolicy(socket.currentRoom, discardedCard)
                     RoomsManager.enactPolicy(socket.currentRoom, choice)

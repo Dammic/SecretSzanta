@@ -40,8 +40,8 @@ module.exports = {
         GAME_PHASE_VOTING: 'GAME_PHASE_VOTING',
         GAME_PHASE_SUPERPOWER: 'GAME_PHASE_SUPERPOWER',
         GAME_PHASE_FINISHED: 'GAME_PHASE_FINISHED',
-        GamePhasePresidentPolicyChoice: 'GAME_PHASE_PRESIDENT_POLICY_CHOICE',
-        GamePhaseChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
+        PresidentPolicyChoice: 'GAME_PHASE_PRESIDENT_POLICY_CHOICE',
+        ChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
