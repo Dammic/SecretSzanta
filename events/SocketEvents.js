@@ -4,13 +4,44 @@ const { filter, map, pick, get, forEach, mapValues, partial } = require('lodash'
 
 module.exports = function (io, RoomsManager) {
     const socketEvents = {
+        const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
+
         sendError: (socket, errorMessage) => {
             socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
         },
 
+        sendBecomeFascist: (player, playerCount, passedFacists) => {
+            const shouldHideOtherFacists = player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
+            player.emit(SocketEvents.BECOME_FACIST, {
+                data: {
+                    facists: (shouldHideOtherFacists
+                            ? pick(player, facistSubproperties)
+                            : passedFacists
+                    ),
+                },
+            })
+        },
+
         disconnect: (socket) => {
             if (socket.currentRoom && RoomsManager.isRoomPresent(socket.currentRoom)) {
+                const roomOwnerName = RoomsManager.getRoomOwner(socket.currentRoom).playerName
+
                 RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
+
+                if (socket.currentPlayerName === roomOwnerName) {
+                    const newOwner = RoomsManager.findNewRoomOwner(socket.currentRoom)
+                    const roomDetails = RoomsManager.getRoomDetails(socket.currentRoom)
+                    newOwner.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+
+                    if (newOwner.affiliation === PlayerAffilications.FACIST_AFFILIATION
+                        || newOwner.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
+                        const playersCount = RoomsManager.getPlayersCount(socket.currentRoom)
+                        const fascists = RoomsManager.getFacists(socket.currentRoom)
+                        const passedFacists = map(fascists, fascist => pick(fascist, facistSubproperties))
+                        SocketEvents.sendBecomeFascist(newOwner, playerCount, passedFacists)
+                    }
+                }
+
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
                     data: {
                         timestamp: getCurrentTimestamp(),
@@ -79,20 +110,10 @@ module.exports = function (io, RoomsManager) {
             const facists = RoomsManager.getFacists(socket.currentRoom)
 
             // just filtering out emit functions
-            const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
+            const passedFacists = map(facists, facist => pick(facist, facistSubproperties))
             const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
 
-            forEach(facists, (player) => {
-                const shouldHideOtherFacists = player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
-                player.emit(SocketEvents.BECOME_FACIST, {
-                    data: {
-                        facists: (shouldHideOtherFacists
-                            ? filter(passedFacists, { playerName: player.playerName })
-                            : passedFacists
-                        ),
-                    },
-                })
-            })
+            forEach(facists, player => socketEvents.sendBecomeFascist(player, playerCount, passedFacists))
             io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
                 data: {
                     playerName: socket.currentPlayerName,

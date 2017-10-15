@@ -205,7 +205,11 @@ class RoomsManager {
             maxPlayers,
             gamePhase,
             ownerName,
-            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
+            playersDict: mapValues(playersDict, (player) => {
+                let genericInfo = pick(player, ['playerName', 'avatarNumber'])
+                genericInfo.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
+                return genericInfo
+            }),
         }
     }
 
@@ -252,9 +256,6 @@ class RoomsManager {
         if (player) {
             freeSlots.unshift(player.slotNumber)
             delete playersDict[playerName]
-            if (playerName === ownerName) {
-                this.rooms_props[roomName].ownerName = sample(playersDict).playerName
-            }
         }
     }
 
@@ -284,6 +285,13 @@ class RoomsManager {
 
     isRoomOwner(roomName, playerName) {
         return playerName === this.rooms_props[roomName].ownerName
+    }
+
+    findNewRoomOwner(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        const newOwner = sample(playersDict)
+        this.rooms_props[roomName].ownerName = newOwner.playerName
+        return newOwner
     }
 
     getPlayersCount(roomName) {
