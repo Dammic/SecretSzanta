@@ -203,7 +203,7 @@ class RoomsManager {
         return {
             maxPlayers,
             gamePhase,
-            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'avatarNumber'])),
+            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
         }
     }
 
