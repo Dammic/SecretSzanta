@@ -5,7 +5,7 @@ import { MessagesTypes } from '../../../Dictionary.js'
 
 const NotificationsComponent = ({ notifications, deleteNotification }) => {
     const renderPanel = (info) => {
-        const isError = info.type === MessagesTypes.ERROR_NOTIFICATION
+        const isError = info.type === MessagesTypes.ERROR
 
         return (
             <NotificationPanel

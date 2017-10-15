@@ -2,12 +2,12 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications } from '../../Dictionary'
+import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, MessagesTypes } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
-import { addInformation, addError } from '../ducks/notificationsDuck'
+import { addNotification } from '../ducks/notificationsDuck'
 
 export let socket
 
@@ -123,7 +123,7 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.CLIENT_ERROR, (payload) => {
             const { error } = payload
-            this.props.notificationsActions.addError(error)
+            this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR,  message: error })
         })
     }
 
@@ -144,7 +144,7 @@ const mapDispatchToProps = (dispatch) => {
         chatActions: bindActionCreators({ addMessage }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
-        notificationsActions: bindActionCreators({ addInformation, addError }, dispatch),
+        notificationsActions: bindActionCreators({ addNotification }, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)

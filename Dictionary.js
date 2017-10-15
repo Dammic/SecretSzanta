@@ -43,8 +43,8 @@ module.exports = {
         HITLER_AFFILIATION: 'HITLER_AFFILIATION',
     },
     MessagesTypes: {
-        ERROR_NOTIFICATION: 'ERROR_NOTIFICATION',
-        INFO_NOTIFICATION: 'INFO_NOTIFICATION',
+        ERROR: 'ERROR',
+        INFO: 'INFO',
     },
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
