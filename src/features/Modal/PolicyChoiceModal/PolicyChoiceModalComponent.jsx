@@ -12,11 +12,11 @@ const PolicyChoiceModalComponent = ({
 }) => {
     return (
         <div className="policy-choice-modal">
-            <ul className="policy-list" onClick={onClick}>
+            <ul className="policy-list">
                 {map(policies, (choice, index) => {
                     const policy = (choice === PolicyCards.LiberalPolicy) ? liberalPolicy : fascistPolicy
                     return (
-                        <img key={index} className="policy" src={policy} data-index={index} />
+                        <img onClick={onClick} alt="policy_card" key={index} className="policy" src={policy} data-index={index} />
                     )
                 })}
             </ul>
