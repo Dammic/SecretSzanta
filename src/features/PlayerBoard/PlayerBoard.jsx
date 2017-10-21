@@ -28,8 +28,17 @@ export class PlayerBoard extends React.PureComponent {
 
     constructor(props) {
         super(props)
+        this.state = { trackerMoved: true }
         props.roomActions.increasePolicyCount(true)
         props.roomActions.increasePolicyCount(false)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.trackerPosition !== nextProps.trackerPosition) {
+            this.setState({ trackerMoved: true })
+        } else {
+            //this.setState({ trackerMoved: false })
+        }
     }
 
     makePlayer = (player) => {
@@ -98,6 +107,7 @@ export class PlayerBoard extends React.PureComponent {
             isChoiceModeVisible={choiceMode.isVisible}
             onChoiceModeSelect={this.onChoiceModeSelect}
             trackerPosition={trackerPosition}
+            trackerMoved={this.state.trackerMoved}
         />)
     }
 }
