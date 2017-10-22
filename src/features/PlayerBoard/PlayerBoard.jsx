@@ -28,7 +28,7 @@ export class PlayerBoard extends React.PureComponent {
 
     constructor(props) {
         super(props)
-        this.state = { trackerMoved: true }
+        this.state = { trackerMoved: false }
         props.roomActions.increasePolicyCount(true)
         props.roomActions.increasePolicyCount(false)
     }
@@ -37,7 +37,7 @@ export class PlayerBoard extends React.PureComponent {
         if (this.props.trackerPosition !== nextProps.trackerPosition) {
             this.setState({ trackerMoved: true })
         } else {
-            //this.setState({ trackerMoved: false })
+            this.setState({ trackerMoved: false })
         }
     }
 
