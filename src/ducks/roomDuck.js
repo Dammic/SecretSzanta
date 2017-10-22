@@ -51,7 +51,7 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
         case SYNC_ROOM_DATA: {
-            const { maxPlayers, trackerPosition, playersDict, gamePhase} = action.payload
+            const { maxPlayers, ownerName, trackerPosition, playersDict, gamePhase} = action.payload
 
             return {
                 ...state,
