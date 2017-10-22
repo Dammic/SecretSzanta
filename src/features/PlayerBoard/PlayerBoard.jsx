@@ -6,7 +6,7 @@ import { map, reject, find, forEach } from 'lodash'
 import { PlayerRole, ChoiceModeContexts, SocketEvents } from '../../../Dictionary'
 import { socket } from '../../utils/SocketHandler'
 import PlayerBoardComponent from './PlayerBoardComponent'
-import { increasePolicyCount, toggleChoiceMode } from '../../ducks/roomDuck'
+import { increasePolicyCount, toggleChoiceMode, increaseTracker, resetTracker } from '../../ducks/roomDuck'
 import { hideChoiceMode } from '../../ducks/playersDuck'
 
 export class PlayerBoard extends React.PureComponent {
@@ -17,12 +17,23 @@ export class PlayerBoard extends React.PureComponent {
         userName: PropTypes.string,
         facistPoliciesCount: PropTypes.number,
         liberalPoliciesCount: PropTypes.number,
+        trackerPosition: PropTypes.number,
         choiceMode: PropTypes.shape({
             isVisible: PropTypes.bool,
             selectablePlayers: PropTypes.arrayOf(PropTypes.string),
             context: PropTypes.string,
         }),
         playersActions: PropTypes.objectOf(PropTypes.func),
+    }
+
+    state = { trackerMoved: false }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.trackerPosition !== nextProps.trackerPosition) {
+            this.setState({ trackerMoved: true })
+        } else {
+            this.setState({ trackerMoved: false })
+        }
     }
 
     makePlayer = (player) => {
@@ -63,7 +74,7 @@ export class PlayerBoard extends React.PureComponent {
     }
 
     render() {
-        const { choiceMode, playersDict, userName, liberalPoliciesCount, facistPoliciesCount } = this.props
+        const { choiceMode, playersDict, userName, liberalPoliciesCount, facistPoliciesCount, trackerPosition } = this.props
         const playersWithoutMe = reject(playersDict, { playerName: userName })
         const players = map(playersWithoutMe, player => this.makePlayer(player))
         const left = []
@@ -80,6 +91,8 @@ export class PlayerBoard extends React.PureComponent {
             }
         })
 
+        if (trackerPosition >= 3) this.props.roomActions.resetTracker()
+
         return (<PlayerBoardComponent
             playersLeft={left}
             playersMiddle={center}
@@ -88,6 +101,8 @@ export class PlayerBoard extends React.PureComponent {
             policiesFacistCount={facistPoliciesCount}
             isChoiceModeVisible={choiceMode.isVisible}
             onChoiceModeSelect={this.onChoiceModeSelect}
+            trackerPosition={trackerPosition}
+            trackerMoved={this.state.trackerMoved}
         />)
     }
 }
@@ -97,12 +112,13 @@ const mapStateToProps = ({ user, room, players }) => ({
     playersDict: room.playersDict,
     facistPoliciesCount: room.facistPoliciesCount,
     liberalPoliciesCount: room.liberalPoliciesCount,
+    trackerPosition: room.trackerPosition,
     choiceModeContext: room.choiceModeContext,
     choiceMode: players.choiceMode,
 })
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ increasePolicyCount, toggleChoiceMode }, dispatch),
+    roomActions: bindActionCreators({ increasePolicyCount, increaseTracker, resetTracker, toggleChoiceMode }, dispatch),
     playersActions: bindActionCreators({ hideChoiceMode }, dispatch),
 })
 

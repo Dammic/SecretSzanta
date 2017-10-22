@@ -166,9 +166,11 @@ module.exports = function (io, RoomsManager) {
                         socketEvents.startPresidentPolicyChoice(socket)
                     }, 3000)
                 } else {
+                    const threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
                     setTimeout(() => {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
+                    // if (threeVotesFailed) enactRandomPolicy, When policies code is done
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {

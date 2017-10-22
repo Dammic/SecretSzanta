@@ -9,6 +9,8 @@ const CHOOSE_NEW_CHANCELLOR = 'room/CHOOSE_NEW_CHANCELLOR'
 const CHOOSE_NEW_PRESIDENT = 'room/CHOOSE_NEW_PRESIDENT'
 const SYNC_ROOM_DATA = 'room/SYNC_ROOM_DATA'
 const INCREASE_POLICY_COUNT = 'room/INCREASE_POLICY_COUNT'
+const INCREASE_TRACKER = 'room/INCREASE_TRACKER'
+const RESET_TRACKER = 'room/RESET_TRACKER'
 const REVEAL_FACISTS = 'room/REVEAL_FACISTS'
 const REGISTER_VOTE = 'room/REGISTER_VOTE'
 const REVEAL_VOTES = 'room/REVEAL_VOTES'
@@ -23,6 +25,7 @@ const initialState = {
     potentialChancellorsChoices: [],
     facistPoliciesCount: 0,
     liberalPoliciesCount: 0,
+    trackerPosition: 0,
     votes: null,
 }
 
@@ -49,11 +52,12 @@ export default function reducer(state = initialState, action = {}) {
             }
         }
         case SYNC_ROOM_DATA: {
-            const { maxPlayers, ownerName, playersDict, gamePhase} = action.payload
+            const { maxPlayers, ownerName, trackerPosition, playersDict, gamePhase} = action.payload
 
             return {
                 ...state,
                 maxPlayers,
+                trackerPosition,
                 playersDict,
                 gamePhase,
                 ownerName,
@@ -132,6 +136,19 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 liberalPoliciesCount: liberalPoliciesCount + 1,
+            }
+        }
+        case INCREASE_TRACKER: {
+            const position = state.trackerPosition
+            return {
+                ...state,
+                trackerPosition: position + 1,
+            }
+        }
+        case RESET_TRACKER: {
+            return {
+                ...state,
+                trackerPosition: 0,
             }
         }
         case REVEAL_FACISTS: {
@@ -243,15 +260,10 @@ export function selectNewPresident(newPresident) {
     }
 }
 
-export function syncRoomData(maxPlayers, ownerName, playersDict, gamePhase) {
+export function syncRoomData(roomData) {
     return {
         type: SYNC_ROOM_DATA,
-        payload: {
-            maxPlayers,
-            playersDict,
-            gamePhase,
-            ownerName,
-        },
+        payload: roomData,
     }
 }
 
@@ -261,6 +273,18 @@ export function increasePolicyCount(isFacist) {
         payload: {
             isFacist,
         },
+    }
+}
+
+export function increaseTracker() {
+    return {
+        type: INCREASE_TRACKER,
+    }
+}
+
+export function resetTracker() {
+    return {
+        type: RESET_TRACKER,
     }
 }
 

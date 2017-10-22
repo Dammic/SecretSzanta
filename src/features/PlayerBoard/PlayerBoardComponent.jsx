@@ -11,6 +11,8 @@ const PlayerBoardComponent = ({
     playersRight = [],
     policiesLiberalCount = 0,
     policiesFacistCount = 0,
+    trackerPosition,
+    trackerMoved,
     isChoiceModeVisible,
     onChoiceModeSelect,
 }) => {
@@ -40,6 +42,8 @@ const PlayerBoardComponent = ({
         )
     }
 
+    const trackerFromLeftStyle = { left: `${37 + trackerPosition * 8}%` }
+
     return (
         <div className="player-board">
             {isChoiceModeVisible && <div className="overlay choice-overlay" />}
@@ -52,6 +56,7 @@ const PlayerBoardComponent = ({
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
+                    <div className={classNames('tracker', { moving: trackerMoved })} style={trackerFromLeftStyle} />
                 </div>
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
@@ -63,8 +68,8 @@ const PlayerBoardComponent = ({
             </div>
 
             {renderPlayers(playersRight, 'players-container', PlayerDirection.PLAYER_DIRECTION_RIGHT)}
-	</div>
-)
+        </div>
+    )
 }
 
 PlayerBoardComponent.propTypes = {
@@ -73,6 +78,7 @@ PlayerBoardComponent.propTypes = {
     playersMiddle: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
     policiesLiberalCount: PropTypes.number,
     policiesFacistCount: PropTypes.number,
+    trackerPosition: PropTypes.number,
     isChoiceModeVisible: PropTypes.bool,
     onChoiceModeSelect: PropTypes.func,
 }
