@@ -350,7 +350,6 @@ class RoomsManager {
     discardPolicy(roomName, card) {
         const { drawnCards } = this.rooms_props[roomName]
         pullAt(drawnCards, indexOf(drawnCards, card))
-        this.rooms_props[roomName].drawnCards = drawnCards
         this.rooms_props[roomName].discardPile.push(card)
     }
     getDrawnCards(roomName) {
