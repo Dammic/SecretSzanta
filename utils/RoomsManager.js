@@ -31,6 +31,7 @@ class RoomsManager {
             maxPlayers,
             password,
             chancellorCandidateName: '',
+            failedElections: 0,
             votes: {},
             gamePhase: GamePhases.GAME_PHASE_NEW,
         }
@@ -105,6 +106,7 @@ class RoomsManager {
     startGame(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
+        this.rooms_props[roomName].failedElections = 0
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount
@@ -190,6 +192,16 @@ class RoomsManager {
         return ((votesCount[true] > votesCount[false]) || !votesCount[false])
     }
 
+    failElection(roomName) {
+        const room = this.rooms_props[roomName]
+        if (room.failedElections >= 3) {
+            room.failedElections = 0
+            return true
+        }
+        room.failedElections += 1
+        return false
+    }
+
     /****************************/
 
     getRoomsList() {
@@ -200,11 +212,12 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, ownerName, maxPlayers, gamePhase } = this.rooms_props[roomName]
+        const { playersDict, ownerName, maxPlayers, gamePhase, failedElections } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
             ownerName,
+            trackerPosition: failedElections,
             playersDict: mapValues(playersDict, (player) => {
                 let genericInfo = pick(player, ['playerName', 'avatarNumber'])
                 genericInfo.affiliation = PlayerAffilications.LIBERAL_AFFILIATION

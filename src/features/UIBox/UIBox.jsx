@@ -5,7 +5,8 @@ import { get } from 'lodash'
 import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
 import { SocketEvents } from '../../../Dictionary'
-import { toggleAffiliationMenu } from '../../ducks/userDuck';
+import { toggleAffiliationMenu } from '../../ducks/userDuck'
+import { resetTracker } from '../../ducks/roomDuck'
 import { socket } from '../../utils/SocketHandler'
 
 export class UIBox extends React.PureComponent {
@@ -15,6 +16,7 @@ export class UIBox extends React.PureComponent {
 
     onStartGame = () => {
         socket.emit(SocketEvents.START_GAME, { playerName: this.props.userName })
+        this.props.roomActions.resetTracker()
     }
 
     onKillClick = () => {
@@ -68,6 +70,7 @@ const mapStateToProps = ({ user, room }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
+    roomActions: bindActionCreators({ resetTracker }, dispatch),
     userActions: bindActionCreators({ toggleAffiliationMenu }, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(UIBox)

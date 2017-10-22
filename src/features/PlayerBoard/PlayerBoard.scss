@@ -47,6 +47,42 @@ $elementsHeight: 80%;
 
         }
 
+        .tracker {
+            position: absolute;
+            top: 67%;
+
+            border-style: solid;
+            border-color: transparent;
+            border-width: 10px;
+            border-radius: 50%;
+            background-clip: padding-box;
+
+            &:after {
+                content: '';
+                left: -10px;
+                top: -10px;
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                border-radius: 50%;
+                background-image: url("../static/Avatar.png");
+                background-size: 110%;
+                z-index: 0;
+            }
+
+            @keyframes move-tracker {
+                0% { transform: scale(1, 1) }
+                10% { transform: scale(2, 2) }
+                100% { transform: scale(1, 1) }
+            }
+
+            &.moving {
+                transition: left 3s;
+                animation-name: move-tracker;
+                animation-duration: 3s;
+            }
+        }
+
         .policy-card {
             position: absolute;
             display: flex;
