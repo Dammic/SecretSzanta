@@ -1,0 +1,19 @@
+.policy-choice-modal {
+    .policy-list {
+        display: flex;
+        justify-content: space-evenly;
+        padding-top: 40px;
+        padding-left: 0;
+        .policy {
+            max-height: 250px;
+            max-width: 100px;
+            padding-bottom: 20px;
+            transition: all 0.5s;
+            &:hover {
+                cursor: pointer;
+                filter: brightness(1.2);
+                padding-bottom: 0;
+            }
+        }
+    }
+}

@@ -2,7 +2,7 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, MessagesTypes } from '../../Dictionary'
+import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
@@ -15,8 +15,7 @@ export class SocketHandler extends React.PureComponent {
     componentDidMount() {
         socket = IO()
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
-            const { maxPlayers, ownerName, playersDict, gamePhase } = payload.data
-            this.props.roomActions.syncRoomData({ maxPlayers, ownerName, playersDict, gamePhase })
+            this.props.roomActions.syncRoomData(payload.data)
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
@@ -30,8 +29,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.removePlayer({ playerName })
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
-            const { timestamp, content, author } = payload.data
-            this.props.chatActions.addMessage({ timestamp, content, author })
+            this.props.chatActions.addMessage(payload.data)
         })
         socket.on(SocketEvents.VOTING_PHASE_START, (payload) => {
             const { chancellorCandidate, timestamp } = payload.data
@@ -64,6 +62,7 @@ export class SocketHandler extends React.PureComponent {
             const { presidentName, playersChoices, timestamp } = payload.data
 
             this.props.roomActions.chooseNewPresident({ newPresident: presidentName })
+            this.props.roomActions.resetVotes()
             this.props.chatActions.addMessage({ timestamp, content: `${presidentName} has become the new president!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_CHANCELLOR_CHOICE })
             this.props.chatActions.addMessage({ timestamp, content: `${presidentName} is now choosing a new chancellor...` })
@@ -92,6 +91,10 @@ export class SocketHandler extends React.PureComponent {
                 ? `${newChancellor} has become the new chancellor!`
                 : 'The proposal has been rejected! The new round beings in 3 seconds...'
             )
+            if (!newChancellor) {
+                this.props.roomActions.increaseTracker()
+                this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
+            }
             this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
         })
 
@@ -132,6 +135,36 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_ERROR, (payload) => {
             const { error } = payload
             this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR,  message: error })
+        })
+
+        socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
+            this.props.modalActions.setModal({
+                title,
+                initialData: {
+                    policies: policyCards,
+                    role,
+                },
+                componentName: 'PolicyChoiceModal',
+            })
+        })
+
+        socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName } }) => {
+            this.props.chatActions.addMessage({ timestamp, content: 'The president is now discarding one policy out of three...' })
+            this.props.playersActions.setChooserPlayer({ playerName: presidentName })
+            this.props.roomActions.resetVotes()
+        })
+
+        socket.on(SocketEvents.ChancellorChoosePolicy, ({ data: { timestamp, chancellorName } }) => {
+            this.props.chatActions.addMessage({ timestamp, content: 'The president has discarded one policy. Now the chancellor will enact one of two remaining policies...' })
+            this.props.playersActions.setChooserPlayer({ playerName: chancellorName })
+        })
+
+        socket.on(SocketEvents.NewPolicy, ({ data: { timestamp, policy } }) => {
+            const isFacist = policy === PolicyCards.FacistPolicy
+            this.props.playersActions.setChooserPlayer({ playerName: '' })
+            this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
+            this.props.roomActions.increasePolicyCount({ isFacist })
+            this.props.chatActions.addMessage({ timestamp, content: 'The next round will begin in 4 seconds...' })
         })
     }
 

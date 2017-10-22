@@ -10,8 +10,11 @@ const chooseNewChancellor = createAction('room/CHOOSE_NEW_CHANCELLOR')
 const chooseNewPresident = createAction('room/CHOOSE_NEW_PRESIDENT')
 const syncRoomData = createAction('room/SYNC_ROOM_DATA')
 const increasePolicyCount = createAction('room/INCREASE_POLICY_COUNT')
+const increaseTracker = createAction('room/INCREASE_TRACKER')
+const resetTracker = createAction('room/RESET_TRACKER')
 const revealFacists = createAction('room/REVEAL_FACISTS')
 const registerVote = createAction('room/REGISTER_VOTE')
+const resetVotes = createAction('room/RESET_VOTES')
 const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
 
@@ -23,6 +26,7 @@ const initialState = {
     potentialChancellorsChoices: [],
     facistPoliciesCount: 0,
     liberalPoliciesCount: 0,
+    trackerPosition: 0,
     votes: null,
 }
 
@@ -47,11 +51,12 @@ const actions = {
         }
     },
     [syncRoomData]: (state, action) => {
-        const { maxPlayers, ownerName, playersDict, gamePhase } = action.payload
+        const { maxPlayers, ownerName, trackerPosition, playersDict, gamePhase } = action.payload
 
         return {
             ...state,
             maxPlayers,
+            trackerPosition,
             playersDict,
             gamePhase,
             ownerName,
@@ -115,9 +120,23 @@ const actions = {
         return {
             ...state,
             playersDict: newPlayersDict,
-            votes: null,
         }
     },
+
+    [increaseTracker]: (state, action) => {
+        const position = state.trackerPosition
+        return {
+            ...state,
+            trackerPosition: position + 1,
+        }
+    },
+    [resetTracker]: (state, action) => {
+        return {
+            ...state,
+            trackerPosition: 0,
+        }
+    },
+
     [increasePolicyCount]: (state, action) => {
         const { facistPoliciesCount, liberalPoliciesCount } = state
         const { isFacist } = action.payload
@@ -175,11 +194,18 @@ const actions = {
             playersDict: newPlayersDict,
         }
     },
+    [resetVotes]: state => {
+        return {
+            ...state,
+            votes: null,
+        }
+    },
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
-    registerVote, revealVotes, killPlayer,
+    registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
+    resetVotes,
 }
 
 export default handleActions(actions, initialState)

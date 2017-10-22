@@ -1,9 +1,9 @@
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
     filter, includes, forEach, random, slice, times, map,
-    find, pick, shuffle, size, sample, get,
+    find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf,
 } = require('lodash')
-const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
+const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards } = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -31,8 +31,14 @@ class RoomsManager {
             maxPlayers,
             password,
             chancellorCandidateName: '',
+            failedElections: 0,
             votes: {},
             gamePhase: GamePhases.GAME_PHASE_NEW,
+            drawPile: [],
+            drawnCards: [],
+            discardPile: [],
+            liberalPoliciesOnTheTable: 0,
+            fascistPoliciesOnTheTable: 0,
         }
     }
 
@@ -105,6 +111,7 @@ class RoomsManager {
     startGame(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
+        this.rooms_props[roomName].failedElections = 0
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount
@@ -119,6 +126,18 @@ class RoomsManager {
         })
         playersDict[hitlerPlayerName].affiliation = PlayerAffilications.HITLER_AFFILIATION
         playersDict[hitlerPlayerName].facistAvatar = 50
+
+        // creating policy cards
+        const fascistCards = fill(Array(11), PolicyCards.FacistPolicy)
+        const liberalCards = fill(Array(6), PolicyCards.LiberalPolicy)
+        this.rooms_props[roomName] = {
+            ...this.rooms_props[roomName],
+            drawPile: shuffle(concat(fascistCards, liberalCards)),
+            drawnCards: [],
+            discardPile: [],
+            liberalPoliciesOnTheTable: 0,
+            fascistPoliciesOnTheTable: 0,
+        }
     }
     
     getFacists(roomName) {
@@ -190,6 +209,16 @@ class RoomsManager {
         return ((votesCount[true] > votesCount[false]) || !votesCount[false])
     }
 
+    failElection(roomName) {
+        const room = this.rooms_props[roomName]
+        if (room.failedElections >= 3) {
+            room.failedElections = 0
+            return true
+        }
+        room.failedElections += 1
+        return false
+    }
+
     /****************************/
 
     getRoomsList() {
@@ -200,11 +229,12 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, ownerName, maxPlayers, gamePhase } = this.rooms_props[roomName]
+        const { playersDict, ownerName, maxPlayers, gamePhase, failedElections } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
             ownerName,
+            trackerPosition: failedElections,
             playersDict: mapValues(playersDict, (player) => {
                 let genericInfo = pick(player, ['playerName', 'avatarNumber'])
                 genericInfo.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
@@ -303,6 +333,11 @@ class RoomsManager {
         this.rooms_props[roomName].gamePhase = newPhase
     }
 
+    getRoleSocket(roomName, role) {
+        const { playersDict } = this.rooms_props[roomName]
+        return find(playersDict, { role }).emit
+    }
+
     getOtherAlivePlayers(roomName, currentPlayerName) {
         const { playersDict } = this.rooms_props[roomName]
         const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
@@ -316,6 +351,40 @@ class RoomsManager {
         if (player) {
             player.isDead = true
         }
+    }
+    enactPolicy(roomName, card) {
+        if (card === PolicyCards.LiberalPolicy) {
+            this.rooms_props[roomName].liberalPoliciesOnTheTable += 1
+        } else {
+            this.rooms_props[roomName].fascistPoliciesOnTheTable += 1
+        }
+        this.rooms_props[roomName].drawnCards = []
+    }
+    discardPolicy(roomName, card) {
+        const { drawnCards } = this.rooms_props[roomName]
+        pullAt(drawnCards, indexOf(drawnCards, card))
+        this.rooms_props[roomName].discardPile.push(card)
+    }
+    getDrawnCards(roomName) {
+        return this.rooms_props[roomName].drawnCards
+    }
+
+    getChoicePolicyCards(roomName) {
+        const { drawPile, discardPile } = this.rooms_props[roomName]
+
+        let tmpDrawPile = drawPile
+        if (size(drawPile) < 3) {
+            tmpDrawPile = shuffle(concat(drawPile, discardPile))
+            this.rooms_props[roomName].discardPile = []
+        }
+        const policies = take(tmpDrawPile, 3)
+        this.rooms_props[roomName].drawPile = drop(tmpDrawPile, 3)
+        this.rooms_props[roomName].drawnCards = policies
+        return policies
+    }
+    getPolicyCardsCount(roomName, policyType) {
+        const { liberalPoliciesOnTheTable, fascistPoliciesOnTheTable } = this.rooms_props[roomName]
+        return (policyType === PolicyCards.FacistPolicy ? fascistPoliciesOnTheTable : liberalPoliciesOnTheTable)
     }
 
     removeRoom(roomName) {

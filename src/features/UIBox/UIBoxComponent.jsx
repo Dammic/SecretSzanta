@@ -8,7 +8,6 @@ import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComp
 const UIBoxComponent = ({
     onStartVote,
     onStartGame,
-    onKillClick,
     onShowAffiliationClick,
     isOwner,
     isAffiliationHidden,
@@ -25,7 +24,6 @@ const UIBoxComponent = ({
     const ownersButtons = [
         <a key="startGame" role="button" tabIndex="0" className="btn" onClick={onStartGame}>start</a>,
         <a key="startVote" role="button" tabIndex="0" className="btn" onClick={onStartVote}>voting</a>,
-        <a key="killClick" role="button" tabIndex="0" className="btn" onClick={onKillClick}>kill</a>,
     ];
     return (
         <div className="ui-box">
@@ -55,7 +53,6 @@ const UIBoxComponent = ({
 UIBoxComponent.propTypes = {
     onStartVote: PropTypes.func,
     onStartGame: PropTypes.func,
-    onKillClick: PropTypes.func,
     affiliation: PropTypes.string,
     isAffiliationHidden: PropTypes.bool,
     onShowAffiliationClick: PropTypes.func,

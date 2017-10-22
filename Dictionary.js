@@ -14,9 +14,12 @@ module.exports = {
         CHANCELLOR_CHOICE_PHASE: 'CHANCELLOR_CHOICE_PHASE',
         BECOME_FACIST: 'BECOME_FACIST',
         KillSuperpowerUsed: 'KILL_SUPERPOWER_USED',
-        TEST_START_KILL_PHASE: 'TEST_START_KILL_PHASE',
         PlayerKilled: 'PLAYER_KILLED',
         GameFinished: 'GAME_FINISHED',
+        PresidentChoosePolicy: 'PRESIDENT_CHOOSE_POLICY',
+        ChancellorChoosePolicy: 'CHANCELLOR_CHOOSE_POLICY',
+        ChoosePolicy: 'CHOOSE_POLICY',
+        NewPolicy: 'NEW_POLICY',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',
@@ -36,6 +39,8 @@ module.exports = {
         GAME_PHASE_VOTING: 'GAME_PHASE_VOTING',
         GAME_PHASE_SUPERPOWER: 'GAME_PHASE_SUPERPOWER',
         GAME_PHASE_FINISHED: 'GAME_PHASE_FINISHED',
+        PresidentPolicyChoice: 'GAME_PHASE_PRESIDENT_POLICY_CHOICE',
+        ChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
@@ -52,5 +57,9 @@ module.exports = {
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
         KillChoice: 'CONTEXT_KILL_CHOICE',
+    },
+    PolicyCards: {
+        FacistPolicy: 'FACIST_POLICY',
+        LiberalPolicy: 'LIBERAL_POLICY',
     },
 }
