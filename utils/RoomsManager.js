@@ -1,7 +1,7 @@
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
     filter, includes, forEach, random, slice, times, map,
-    find, pick, shuffle, size,
+    find, pick, shuffle, size, sample, get,
 } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications } = require('../Dictionary')
 
@@ -20,11 +20,12 @@ class RoomsManager {
      * @param {String} roomName - unique name of the modified room
      * @param {Number} [maxPlayers = 10] - max amount of players in the room
      */
-    initializeRoom(roomName, maxPlayers = 10, password) {
+    initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
 
         this.rooms_props[roomName] = {
+            ownerName,
             freeSlots,
             playersDict: {},
             maxPlayers,
@@ -211,12 +212,17 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, failedElections, maxPlayers, gamePhase } = this.rooms_props[roomName]
+        const { playersDict, ownerName, maxPlayers, gamePhase, failedElections } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
+            ownerName,
             trackerPosition: failedElections,
-            playersDict: mapValues(playersDict, player => pick(player, ['playerName', 'affiliation', 'avatarNumber'])),
+            playersDict: mapValues(playersDict, (player) => {
+                let genericInfo = pick(player, ['playerName', 'avatarNumber'])
+                genericInfo.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
+                return genericInfo
+            }),
         }
     }
 
@@ -257,7 +263,7 @@ class RoomsManager {
      * @param {String} playerName - name of the player to be removed from the room
      */
     removePlayer(roomName, playerName) {
-        const { playersDict, freeSlots } = this.rooms_props[roomName]
+        const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]
         const player = playersDict[playerName] 
         
         if (player) {
@@ -285,6 +291,22 @@ class RoomsManager {
         return !isNil(this.rooms_props[roomName])
     }
 
+    getRoomOwner(roomName) {
+        const { playersDict, ownerName } = this.rooms_props[roomName]
+        return playersDict[ownerName]
+    }
+
+    isRoomOwner(roomName, playerName) {
+        return playerName === this.rooms_props[roomName].ownerName
+    }
+
+    findNewRoomOwner(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        const newOwner = sample(playersDict)
+        this.rooms_props[roomName].ownerName = get(newOwner, 'playerName')
+        return newOwner
+    }
+
     getPlayersCount(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         return size(playersDict)
@@ -307,6 +329,10 @@ class RoomsManager {
         if (player) {
             player.isDead = true
         }
+    }
+
+    removeRoom(roomName) {
+        delete this.rooms_props[roomName]
     }
 }
 

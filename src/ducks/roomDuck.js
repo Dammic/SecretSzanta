@@ -18,6 +18,7 @@ const KILL_PLAYER = 'room/KILL_PLAYER'
 
 const initialState = {
     maxPlayers: 0,
+    ownerName: '',
     playersDict: {},
     gamePhase: '',
     potentialChancellorsChoices: [],
@@ -58,6 +59,7 @@ export default function reducer(state = initialState, action = {}) {
                 trackerPosition,
                 playersDict,
                 gamePhase,
+                ownerName,
             }
         }
         case CHANGE_GAME_PHASE: {
