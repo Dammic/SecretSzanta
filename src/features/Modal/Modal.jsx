@@ -4,12 +4,13 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ModalComponent from './ModalComponent'
 import * as modalActions from '../../ducks/modalDuck'
-
-import VotingModal from './VotingModal/VotingModal'
 import WinningModal from './WinningModal/WinningModal'
+import VotingModal from './VotingModal/VotingModal'
+import PolicyChoiceModal from './PolicyChoiceModal/PolicyChoiceModal'
 
 const modalInnerComponents = {
     VotingModal,
+    PolicyChoiceModal,
     WinningModal,
 }
 
@@ -60,4 +61,3 @@ const mapDispatchToProps = dispatch => ({
     modalActions: bindActionCreators(modalActions, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)
-

@@ -19,10 +19,6 @@ export class UIBox extends React.PureComponent {
         this.props.roomActions.resetTracker()
     }
 
-    onKillClick = () => {
-        socket.emit(SocketEvents.TEST_START_KILL_PHASE)
-    }
-    
     toggleShow = () => {
         this.props.userActions.toggleAffiliationMenu()
     }
@@ -44,7 +40,6 @@ export class UIBox extends React.PureComponent {
             <UIBoxComponent
                 onStartVote={this.onStartVote}
                 onStartGame={this.onStartGame}
-                onKillClick={this.onKillClick}
                 onShowAffiliationClick={this.toggleShow}
                 isOwner={isOwner}
                 affiliation={affiliation}

@@ -14,6 +14,7 @@ const RESET_TRACKER = 'room/RESET_TRACKER'
 const REVEAL_FACISTS = 'room/REVEAL_FACISTS'
 const REGISTER_VOTE = 'room/REGISTER_VOTE'
 const REVEAL_VOTES = 'room/REVEAL_VOTES'
+const RESET_VOTES = 'room/RESET_VOTES'
 const KILL_PLAYER = 'room/KILL_PLAYER'
 
 const initialState = {
@@ -120,7 +121,6 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 playersDict: newPlayersDict,
-                votes: null,
             }
         }
         case INCREASE_POLICY_COUNT: {
@@ -182,6 +182,12 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 votes: newVotes,
+            }
+        }
+        case RESET_VOTES: {
+            return {
+                ...state,
+                votes: null,
             }
         }
         case KILL_PLAYER: {
@@ -306,5 +312,11 @@ export function revealVotes(votes) {
         payload: {
             newVotes: votes,
         },
+    }
+}
+
+export function resetVotes() {
+    return {
+        type: RESET_VOTES,
     }
 }

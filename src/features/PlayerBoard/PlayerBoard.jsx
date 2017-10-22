@@ -26,12 +26,7 @@ export class PlayerBoard extends React.PureComponent {
         playersActions: PropTypes.objectOf(PropTypes.func),
     }
 
-    constructor(props) {
-        super(props)
-        this.state = { trackerMoved: false }
-        props.roomActions.increasePolicyCount(true)
-        props.roomActions.increasePolicyCount(false)
-    }
+    state = { trackerMoved: false }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.trackerPosition !== nextProps.trackerPosition) {
