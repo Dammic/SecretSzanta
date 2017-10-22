@@ -29,6 +29,7 @@ const killPlayer = createAction(KILL_PLAYER)
 
 const initialState = {
     maxPlayers: 0,
+    ownerName: '',
     playersDict: {},
     gamePhase: '',
     potentialChancellorsChoices: [],
@@ -58,13 +59,14 @@ const actions = {
         }
     },
     [SYNC_ROOM_DATA]: (state, action) => {
-        const { maxPlayers, playersDict, gamePhase } = action.payload
+        const { maxPlayers, ownerName, playersDict, gamePhase } = action.payload
 
         return {
             ...state,
             maxPlayers,
             playersDict,
             gamePhase,
+            ownerName,
         }
     },
     [CHANGE_GAME_PHASE]: (state, action) => {
@@ -170,7 +172,6 @@ const actions = {
     },
     [REVEAL_VOTES]: (state, action) => {
         const { newVotes } = action.payload
-
         return {
             ...state,
             votes: newVotes,

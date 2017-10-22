@@ -15,8 +15,8 @@ export class SocketHandler extends React.PureComponent {
     componentDidMount() {
         socket = IO()
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
-            const { maxPlayers, playersDict, gamePhase } = payload.data
-            this.props.roomActions.syncRoomData({ maxPlayers, playersDict, gamePhase })
+            const { maxPlayers, ownerName, playersDict, gamePhase } = payload.data
+            this.props.roomActions.syncRoomData({ maxPlayers, ownerName, playersDict, gamePhase })
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data

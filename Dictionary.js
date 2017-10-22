@@ -46,6 +46,9 @@ module.exports = {
         ERROR: 'ERROR',
         INFO: 'INFO',
     },
+    ErrorMessages: {
+        notOwner: 'This action is forbidden! You are not the owner!',
+    },
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
         KillChoice: 'CONTEXT_KILL_CHOICE',
