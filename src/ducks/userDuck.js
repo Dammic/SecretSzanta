@@ -1,13 +1,9 @@
 import { handleActions, createAction } from 'redux-actions'
 
 // Actions
-const SELECT_NAME = 'user/SELECT_NAME'
-const JOIN_ROOM = 'user/JOIN_ROOM'
-const TOGGLE_AFFILIATION_MENU = 'user/TOGGLE_AFFILIATION_MENU'
-
-const selectName = createAction(SELECT_NAME)
-const joinRoom = createAction(JOIN_ROOM)
-const toggleAffiliationMenu = createAction(TOGGLE_AFFILIATION_MENU)
+const selectName = createAction('user/SELECT_NAME')
+const joinRoom = createAction('user/JOIN_ROOM')
+const toggleAffiliationMenu = createAction('user/TOGGLE_AFFILIATION_MENU')
 
 const initialState = {
     userName: '',
@@ -17,21 +13,21 @@ const initialState = {
 
 
 const actions = {
-    [SELECT_NAME]: (state, action) => {
+    [selectName]: (state, action) => {
         const { userName } = action.payload
         return {
             ...state,
             userName,
         }
     },
-    [JOIN_ROOM]: (state, action) => {
+    [joinRoom]: (state, action) => {
         const { roomName } = action.payload
         return {
             ...state,
             roomName,
         }
     },
-    [TOGGLE_AFFILIATION_MENU]: (state) => {
+    [toggleAffiliationMenu]: (state) => {
         const { isAffiliationHidden } = state
         return {
             ...state,

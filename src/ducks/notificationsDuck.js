@@ -2,11 +2,8 @@ import { handleActions, createAction } from 'redux-actions'
 import { reject } from 'lodash'
 
 // Actions
-const ADD_NOTIFICATION = 'info/ADD_NOTIFICATION'
-const DELETE_NOTIFICATION = 'info/DELETE_NOTIFICATION'
-
-const addNotification = createAction(ADD_NOTIFICATION)
-const deleteNotification = createAction(DELETE_NOTIFICATION)
+const addNotification = createAction('info/ADD_NOTIFICATION')
+const deleteNotification = createAction('info/DELETE_NOTIFICATION')
 
 const initialState = {
     currentID: 0,
@@ -14,7 +11,7 @@ const initialState = {
 }
 
 const actions = {
-    [ADD_NOTIFICATION]: (state, action) => {
+    [addNotification]: (state, action) => {
         const { notifications, currentID } = state
         const { type, message } = action.payload
         const newID = currentID + 1
@@ -31,7 +28,7 @@ const actions = {
             ],
         }
     },
-    [DELETE_NOTIFICATION]: (state, action) => {
+    [deleteNotification]: (state, action) => {
         const { notifications } = state
         const { id } = action.payload
         const newNotifications = reject(notifications, ['id', id])

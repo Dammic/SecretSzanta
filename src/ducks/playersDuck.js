@@ -1,13 +1,9 @@
 import { handleActions, createAction } from 'redux-actions'
 
 // Actions
-const SET_CHOICE_MODE = 'players/SET_CHOICE_MODE'
-const SET_CHOOSER_PLAYER = 'players/SET_CHOOSER_PLAYER'
-const HIDE_CHOICE_MODE = 'players/HIDE_CHOICE_MODE'
-
-const setChoiceMode = createAction(SET_CHOICE_MODE)
-const setChooserPlayer = createAction(SET_CHOOSER_PLAYER)
-const hideChoiceMode = createAction(HIDE_CHOICE_MODE)
+const setChoiceMode = createAction('players/SET_CHOICE_MODE')
+const setChooserPlayer = createAction('players/SET_CHOOSER_PLAYER')
+const hideChoiceMode = createAction('players/HIDE_CHOICE_MODE')
 
 const initialState = {
     choiceMode: {
@@ -19,7 +15,7 @@ const initialState = {
 }
 
 const actions = {
-    [SET_CHOICE_MODE]: (state, action) => {
+    [setChoiceMode]: (state, action) => {
         const { choiceMode } = state
         const { isVisible, context, selectablePlayers } = action.payload
         return {
@@ -32,7 +28,7 @@ const actions = {
             },
         }
     },
-    [SET_CHOOSER_PLAYER]: (state, action) => {
+    [setChooserPlayer]: (state, action) => {
         const { choiceMode } = state
         const { playerName } = action.payload
 
@@ -44,7 +40,7 @@ const actions = {
             },
         }
     },
-    [HIDE_CHOICE_MODE]: state => ({
+    [hideChoiceMode]: state => ({
         ...state,
         choiceMode: initialState.choiceMode,
     }),

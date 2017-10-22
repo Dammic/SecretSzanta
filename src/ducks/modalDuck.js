@@ -1,11 +1,8 @@
 import { handleActions, createAction } from 'redux-actions'
 
 // Actions
-const SET_MODAL = 'modal/SET_MODAL'
-const TOGGLE_MODAL = 'modal/TOGGLE_MODAL'
-
-const setModal = createAction(SET_MODAL)
-const toggleModal = createAction(TOGGLE_MODAL)
+const setModal = createAction('modal/SET_MODAL')
+const toggleModal = createAction('modal/TOGGLE_MODAL')
 
 const initialState = {
     isVisible: false,
@@ -17,7 +14,7 @@ const initialState = {
 }
 
 const actions = {
-    [SET_MODAL]: (state, action) => {
+    [setModal]: (state, action) => {
         const { isVisible = true, title, overlayClosesModal = false, isCloseButtonShown = false, componentName, initialData } = action.payload
         return {
             isVisible,
@@ -28,7 +25,7 @@ const actions = {
             modalTmpData: initialData,
         }
     },
-    [TOGGLE_MODAL]: (state, action) => {
+    [toggleModal]: (state, action) => {
         const { value } = action.payload
         return {
             ...state,
