@@ -27,7 +27,7 @@ class Modal extends React.PureComponent {
     }
 
     closeModal = () => {
-        this.props.modalActions.toggleModal(false)
+        this.props.modalActions.toggleModal({ value: false })
     }
 
     render() {

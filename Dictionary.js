@@ -48,8 +48,8 @@ module.exports = {
         HITLER_AFFILIATION: 'HITLER_AFFILIATION',
     },
     MessagesTypes: {
-        ERROR_NOTIFICATION: 'ERROR_NOTIFICATION',
-        INFO_NOTIFICATION: 'INFO_NOTIFICATION',
+        ERROR: 'ERROR',
+        INFO: 'INFO',
     },
     ErrorMessages: {
         notOwner: 'This action is forbidden! You are not the owner!',
