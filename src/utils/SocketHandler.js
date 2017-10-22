@@ -89,7 +89,7 @@ export class SocketHandler extends React.PureComponent {
             )
             if (!newChancellor) {
                 this.props.roomActions.increaseTracker()
-                this,props.chatActions.addMessage(timestamp, "Tracker has advanced!")
+                this.props.chatActions.addMessage(timestamp, 'The failed elections tracker has advanced!')
             }
             this.props.chatActions.addMessage(timestamp, `Voting completed! ${votingResultMessage}`)
         })
