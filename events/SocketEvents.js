@@ -1,11 +1,30 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications, PlayerRole, PolicyCards } = require('../Dictionary')
-const { pullAt, indexOf, includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards } = require('../Dictionary')
+const { pullAt, isNil, indexOf, includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
+    const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
     const socketEvents = {
+        sendError: (socket, errorMessage) => {
+            socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
+        },
+
+        sendBecomeFascist: (player, playerCount, passedFacists) => {
+            const shouldHideOtherFacists = player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
+            player.emit(SocketEvents.BECOME_FACIST, {
+                data: {
+                    facists: (shouldHideOtherFacists
+                        ? pick(player, facistSubproperties)
+                        : passedFacists
+                    ),
+                },
+            })
+        },
+
         disconnect: (socket) => {
             if (socket.currentRoom && RoomsManager.isRoomPresent(socket.currentRoom)) {
+                const roomOwnerName = RoomsManager.getRoomOwner(socket.currentRoom).playerName
+
                 RoomsManager.removePlayer(socket.currentRoom, socket.currentPlayerName)
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
                     data: {
@@ -13,15 +32,43 @@ module.exports = function (io, RoomsManager) {
                         playerName: socket.currentPlayerName,
                     },
                 })
+
+                if (socket.currentPlayerName === roomOwnerName) {
+                    const newOwner = RoomsManager.findNewRoomOwner(socket.currentRoom)
+                    if (!isNil(newOwner)) {
+                        const roomDetails = RoomsManager.getRoomDetails(socket.currentRoom)
+                        newOwner.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+
+                        if (newOwner.affiliation === PlayerAffilications.FACIST_AFFILIATION
+                            || newOwner.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
+                            const playersCount = RoomsManager.getPlayersCount(socket.currentRoom)
+                            const fascists = RoomsManager.getFacists(socket.currentRoom)
+                            const passedFacists = map(fascists, fascist => pick(fascist, facistSubproperties))
+                            socketEvents.sendBecomeFascist(newOwner, playersCount, passedFacists)
+                        }
+                        newOwner.emit(SocketEvents.CLIENT_SEND_MESSAGE, {
+                            data: {
+                                content: 'You have become the new owner of this room!',
+                                author: null,
+                                timestamp: getCurrentTimestamp(),
+                            },
+                        })
+                    } else {
+                        RoomsManager.removeRoom(socket.currentRoom)
+                        console.log(`The room ${socket.currentRoom} was permanently removed!`)
+                    }
+                }
+
                 socket.currentRoom = ''
             }
             socket.currentPlayerName = ''
         },
 
-        createRoom: (socket, { roomName, maxPlayers, password }) => {
+        createRoom: (socket, { roomName, playerName, maxPlayers, password }) => {
             // if the room does not exist, create it
             if (roomName && !RoomsManager.isRoomPresent(roomName)) {
-                RoomsManager.initializeRoom(roomName, maxPlayers, password)
+                RoomsManager.initializeRoom(roomName, playerName, maxPlayers, password)
+                socketEvents.joinRoom(socket, { roomName, playerName })
             } else {
                 console.error('selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
@@ -65,24 +112,19 @@ module.exports = function (io, RoomsManager) {
         },
 
         startGame: (socket) => {
+            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
+                socketEvents.sendError(socket, ErrorMessages.notOwner)
+                return
+            }
+
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
 
             // just filtering out emit functions
-            const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
+            const passedFacists = map(facists, facist => pick(facist, facistSubproperties))
             const playerCount = RoomsManager.getPlayersCount(socket.currentRoom)
 
-            forEach(facists, (player) => {
-                const shouldHideOtherFacists = player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
-                player.emit(SocketEvents.BECOME_FACIST, {
-                    data: {
-                        facists: (shouldHideOtherFacists
-                            ? filter(passedFacists, { playerName: player.playerName })
-                            : passedFacists
-                        ),
-                    },
-                })
-            })
+            forEach(facists, player => socketEvents.sendBecomeFascist(player, playerCount, passedFacists))
             io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
                 data: {
                     playerName: socket.currentPlayerName,
@@ -169,7 +211,8 @@ module.exports = function (io, RoomsManager) {
             presidentEmit(SocketEvents.ChoosePolicy, {
                 data: {
                     policyCards: RoomsManager.getChoicePolicyCards(socket.currentRoom),
-                    title: 'Discard one policy and pass the to the chancellor',
+                    title: 'Discard one policy and pass the rest to the chancellor',
+                    role: PlayerRole.ROLE_PRESIDENT,
                 },
             })
         },
@@ -186,29 +229,29 @@ module.exports = function (io, RoomsManager) {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.ChancellorChoosePolicy, {
                         data: {
                             timestamp: getCurrentTimestamp(),
-                            chancellorName: RoomsManager.getChancellor(socket.currentRoom).playerName,
+                            chancellorName: chancellor.playerName,
                         },
                     })
                     RoomsManager.discardPolicy(socket.currentRoom, choice)
-                    drawnCards = RoomsManager.getDrawnCards(socket.currentRoom)
                     chancellorEmit(SocketEvents.ChoosePolicy, {
                         data: {
                             policyCards: drawnCards,
                             title: 'Choose policy to enact',
+                            role: PlayerRole.ROLE_CHANCELLOR,
                         },
                     })
                 } else if (gamePhase === GamePhases.ChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
-                    const discardedCard = get(pullAt(drawnCards, indexOf(drawnCards, choice)), '0')
-                    RoomsManager.discardPolicy(socket.currentRoom, discardedCard)
-                    RoomsManager.enactPolicy(socket.currentRoom, choice)
+                    RoomsManager.discardPolicy(socket.currentRoom, choice)
+                    const enactedPolicy = drawnCards[0]
+                    RoomsManager.enactPolicy(socket.currentRoom, enactedPolicy) 
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
                         data: {
-                            policy: choice,
+                            policy: enactedPolicy,
                             timestamp: getCurrentTimestamp(),
                         },
                     })
                     const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
-                    if ((fascistPolicyCount === 4 || fascistPolicyCount === 5) && choice === PolicyCards.FacistPolicy) {
+                    if ((fascistPolicyCount === 4 || fascistPolicyCount === 5) && enactedPolicy === PolicyCards.FacistPolicy) {
                         socketEvents.startKillPhase(socket)
                     } else {
                         setTimeout(() => {
@@ -224,13 +267,14 @@ module.exports = function (io, RoomsManager) {
                 // cheating (sent card was not in collection)! 
             }
         },
-        
+
         startKillPhase: (socket) => {
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
-            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, socket.currentPlayerName)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
                 data: {
-                    presidentName: get(RoomsManager.getPresident(socket.currentRoom), 'playerName'),
+                    presidentName,
                     timestamp: getCurrentTimestamp(),
                     playersChoices,
                 },

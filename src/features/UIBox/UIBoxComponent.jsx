@@ -9,6 +9,7 @@ const UIBoxComponent = ({
     onStartVote,
     onStartGame,
     onShowAffiliationClick,
+    isOwner,
     isAffiliationHidden,
     affiliation,
     getPlayerCard,
@@ -20,6 +21,10 @@ const UIBoxComponent = ({
         : 'liberal'
     )
 
+    const ownersButtons = [
+        <a key="startGame" role="button" tabIndex="0" className="btn" onClick={onStartGame}>start</a>,
+        <a key="startVote" role="button" tabIndex="0" className="btn" onClick={onStartVote}>voting</a>,
+    ];
     return (
         <div className="ui-box">
             <div className="game-controls">
@@ -27,8 +32,7 @@ const UIBoxComponent = ({
                     <a className="btn" onClick={onShowAffiliationClick}>
                         roles<i className={classNames('fa fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} aria-hidden="true" />
                     </a>
-                    <a className="btn" onClick={onStartGame}>start</a>
-                    <a className="btn" onClick={onStartVote}>voting</a>
+                    {isOwner && ownersButtons}
                 </div>
             </div>
             <div className={classNames('submenu', { hidden: isAffiliationHidden })}>
@@ -49,7 +53,6 @@ const UIBoxComponent = ({
 UIBoxComponent.propTypes = {
     onStartVote: PropTypes.func,
     onStartGame: PropTypes.func,
-    onKillClick: PropTypes.func,
     affiliation: PropTypes.string,
     isAffiliationHidden: PropTypes.bool,
     onShowAffiliationClick: PropTypes.func,
