@@ -94,6 +94,9 @@ export class SocketHandler extends React.PureComponent {
             if (!newChancellor) {
                 this.props.roomActions.increaseTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
+            } else {
+                this.props.roomActions.resetTracker()
+                this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has been reset!'})
             }
             this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
         })
@@ -165,6 +168,8 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             this.props.roomActions.increasePolicyCount({ isFacist })
             this.props.chatActions.addMessage({ timestamp, content: 'The next round will begin in 4 seconds...' })
+            this.props.roomActions.resetTracker()
+            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
         })
     }
 
