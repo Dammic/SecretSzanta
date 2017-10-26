@@ -167,10 +167,19 @@ module.exports = function (io, RoomsManager) {
                     }, 3000)
                 } else {
                     const threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
+                    if (threeVotesFailed) {
+			const topCard = RoomsManager.getTopPolicy(socket.currentRoom)
+			RoomsManager.enactPolicy(socket.currentRoom, topCard)
+			io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
+			    data: {
+				policy: topCard,
+				timestamp: getCurrentTimestamp(),
+			    },
+			})
+		    }
                     setTimeout(() => {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
-                    // if (threeVotesFailed) enactRandomPolicy, When policies code is done
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {

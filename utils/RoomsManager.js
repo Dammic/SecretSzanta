@@ -1,10 +1,10 @@
 const {
-    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
-    filter, includes, forEach, random, slice, times, map,
+    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
+    filter, includes, forEach, random, slice, times, map, head,
     find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf,
 } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards } = require('../Dictionary')
-
+//go to [policies]
 /**
  * This function contains methods to manage rooms variables and rooms.
  * @returns {Object} - set of functions for maintaining rooms variables
@@ -352,6 +352,10 @@ class RoomsManager {
             player.isDead = true
         }
     }
+    /*********************************************/
+    /**************policies***********************/
+    /*********************************************/
+
     enactPolicy(roomName, card) {
         if (card === PolicyCards.LiberalPolicy) {
             this.rooms_props[roomName].liberalPoliciesOnTheTable += 1
@@ -368,7 +372,16 @@ class RoomsManager {
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
-
+    getTopPolicy(roomName) {
+        const { drawPile, discardPile } = this.rooms_props[roomName]
+        if (isEmpty(drawPile)) {
+            if (isEmpty(discardPile)) console.log('Both piles are empty!')
+            this.rooms_props[roomName].drawPile = shuffle(discardPile)
+        }
+        const topCard = head(drawPile)
+        this.rooms_props[roomName].drawPile = drop(drawPile, 1)
+        return topCard
+    }
     getChoicePolicyCards(roomName) {
         const { drawPile, discardPile } = this.rooms_props[roomName]
 
