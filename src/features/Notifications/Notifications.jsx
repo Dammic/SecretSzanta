@@ -13,13 +13,16 @@ export class Notifications extends React.PureComponent {
         notifications: PropTypes.arrayOf(PropTypes.object),
         notificationsActions: PropTypes.objectOf(PropTypes.func),
     }
+
+    deleteNotificationRightWay = id => this.props.notificationsActions.deleteNotification({ id })
+
     render() {
         const selectedNotifications = reverse(takeRight(this.props.notifications, 3))
 
         return (
             <NotificationsComponent 
                 notifications={selectedNotifications}
-                deleteNotification={this.props.notificationsActions.deleteNotification}
+                deleteNotification={this.props.notificationsActions.deleteNotificationRightWay}
             />
         )
     }
