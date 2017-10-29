@@ -168,8 +168,10 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             this.props.roomActions.increasePolicyCount({ isFacist })
             this.props.chatActions.addMessage({ timestamp, content: 'The next round will begin in 4 seconds...' })
-            this.props.roomActions.resetTracker()
-            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
+            if (this.props.trackerPosition > 0) {
+                this.props.roomActions.resetTracker()
+                this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
+            }
         })
     }
 
@@ -182,6 +184,7 @@ const mapStateToProps = ({ user, room }) => {
     return {
         userName: user.userName,
         playersDict: room.playersDict,
+        trackerPosition: room.trackerPosition,
     }
 }
 const mapDispatchToProps = (dispatch) => {
