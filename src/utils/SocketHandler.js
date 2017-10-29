@@ -91,6 +91,7 @@ export class SocketHandler extends React.PureComponent {
                 ? `${newChancellor} has become the new chancellor!`
                 : 'The proposal has been rejected! The new round beings in 3 seconds...'
             )
+            this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
             if (!newChancellor) {
                 this.props.roomActions.increaseTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
@@ -98,7 +99,6 @@ export class SocketHandler extends React.PureComponent {
                 this.props.roomActions.resetTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has been reset!'})
             }
-            this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
         })
 
         socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
