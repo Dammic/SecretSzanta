@@ -22,7 +22,7 @@ export class Notifications extends React.PureComponent {
         return (
             <NotificationsComponent 
                 notifications={selectedNotifications}
-                deleteNotification={this.props.notificationsActions.deleteNotificationRightWay}
+                deleteNotification={this.deleteNotificationRightWay}
             />
         )
     }
