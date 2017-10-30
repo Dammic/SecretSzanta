@@ -203,6 +203,10 @@ class RoomsManager {
         return this.rooms_props[roomName].votes
     }
 
+    getFailedElections(roomName) {
+        return this.rooms_props[roomName].failedElections
+    }
+
     getVotingResult(roomName) {
         const { votes } = this.rooms_props[roomName]
         const votesCount = countBy(votes)

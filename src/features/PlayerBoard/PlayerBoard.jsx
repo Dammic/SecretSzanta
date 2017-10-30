@@ -91,7 +91,7 @@ export class PlayerBoard extends React.PureComponent {
             }
         })
 
-        if (trackerPosition >= 3) this.props.roomActions.resetTracker()
+        if (trackerPosition > 3) this.props.roomActions.resetTracker()
 
         return (<PlayerBoardComponent
             playersLeft={left}

@@ -185,7 +185,7 @@ module.exports = function (io, RoomsManager) {
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
                     data: {
                         playerName: socket.currentPlayerName,
-                        remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
+                        remaining: 0,
                         timestamp: getCurrentTimestamp(),
                     },
                 })
@@ -193,6 +193,7 @@ module.exports = function (io, RoomsManager) {
                     data: {
                         votes: RoomsManager.getVotes(socket.currentRoom),
                         timestamp: getCurrentTimestamp(),
+                        failedElections: RoomsManager.getFailedElections(socket.currentRoom),
                         newChancellor: (votingResult
                             ? RoomsManager.getChancellor(socket.currentRoom).playerName
                             : null
