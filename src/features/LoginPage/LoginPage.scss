@@ -22,6 +22,26 @@
         background-color: #C0C3A2;
         height: 1000px;
     }
+    .home-image-large {
+        position: absolute;
+        top: 195px;
+        max-height: 400px;
+        max-width: 300px;
+        right: 100px;
+        transform: rotate(-16deg);
+        z-index: 1;
+        box-shadow: -10px 10px 5px 0px rgba(0,0,0,0.75);
+    }
+    .home-image-small {
+	position: absolute;
+	top: 400px;
+	max-height: 300px;
+	max-width: 200px;
+	right: 250px;
+	-webkit-transform: rotate(-16deg);
+	transform: rotate(-16deg);
+	box-shadow: -10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    }
 }
 
 

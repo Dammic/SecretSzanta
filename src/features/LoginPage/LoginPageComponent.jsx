@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Avatar2 from '../../static/Avatar2.png'
+import Avatar1 from '../../static/Avatar1.png'
 
 const LoginPageComponent = ({
     onSetNameClick,
@@ -16,6 +18,8 @@ const LoginPageComponent = ({
                     </div>
                 </div>
             </div>
+            <img src={Avatar2} alt="avatar" className="home-image-large" />
+            <img src={Avatar1} alt="avatar" className="home-image-small" />
             <div className="home-content">
 
             </div>
