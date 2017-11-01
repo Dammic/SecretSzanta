@@ -14,7 +14,6 @@ const initialState = {
     currentView: null,
 }
 
-
 const actions = {
     [selectName]: (state, action) => {
         const { userName } = action.payload

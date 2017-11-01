@@ -9,6 +9,9 @@ import GameList from '../GameList/GameList'
 import SocketHandler from '../../utils/SocketHandler'
 import Modal from '../Modal/Modal'
 import Notifications from '../Notifications/Notifications'
+import News from './StaticPages/News/News'
+import HowToPlayComponent from './StaticPages/HowToPlay/HowToPlayComponent'
+import AboutComponent from './StaticPages/About/AboutComponent'
 
 require('../../styles/main.scss')
 
@@ -20,16 +23,15 @@ export class LandingPage extends React.PureComponent {
     getCurrentView = () => {
         const { currentView } = this.props
         if (currentView === Views.HowToPlay) {
-            return <div>How to play</div>
+            return <HowToPlayComponent />
         } else if (currentView === Views.News) {
-            return <div>news</div>
+            return <News />
         } else if (currentView === Views.About) {
-            return <div>about</div>
+            return <AboutComponent />
         } else if (currentView === Views.Lobby) {
             return <GameList />
-        } else {
-            return <LoginPage />
         }
+        return <LoginPage />
     }
 
     render() {
