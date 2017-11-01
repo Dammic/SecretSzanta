@@ -1,0 +1,32 @@
+.header {
+    position: sticky;
+    top: 1px;
+    height: 50px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 900px;
+    z-index: 40;
+
+    .app-name {
+       letter-spacing: -1px;
+       font-weight: 700;
+       font-size: 18px;
+    }
+    .header-navigation > span {
+        margin: 0 15px;
+        transition: all .3s;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+
+        &:hover {
+            color:$header-navigation-font-hover;
+            border-color: $header-navigation-font-hover;
+        }
+    }
+}

@@ -2,18 +2,13 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Views } from '../../../Dictionary'
 import GameListComponent from './GameListComponent'
-import GameRoom from '../GameRoom/GameRoom'
-import Notifications from '../Notifications/Notifications'
-import { joinRoom } from '../../ducks/userDuck'
-import * as notificationsActions from '../../ducks/notificationsDuck'
-import SocketHandler from '../../utils/SocketHandler'
-import Modal from '../Modal/Modal'
+import { joinRoom, setView } from '../../ducks/userDuck'
 
 export class GameList extends React.PureComponent {
     static propTypes = {
         // redux
-        notificationsActions: PropTypes.objectOf(PropTypes.func),
         userActions: PropTypes.objectOf(PropTypes.func),
         roomName: PropTypes.string,
         userName: PropTypes.string,
@@ -22,6 +17,7 @@ export class GameList extends React.PureComponent {
     setRoomName = (event) => {
         const roomID = event.target.attributes.getNamedItem('data-roomid').value
         this.props.userActions.joinRoom({ roomName: roomID })
+        this.props.userActions.setView({ viewName: Views.Game })
     }
 
     render() {
@@ -64,15 +60,11 @@ export class GameList extends React.PureComponent {
             },
         ]
         return (
-            <div>
-                <Notifications />
-                <SocketHandler />
-                <Modal />
-                {roomName
-                    ? <GameRoom />
-                    : <GameListComponent userName={userName} rooms={this.rooms} onClick={this.setRoomName} />
-                }
-            </div>
+            <GameListComponent
+                userName={userName}
+                rooms={this.rooms}
+                onClick={this.setRoomName}
+            />
         )
     }
 }
@@ -82,7 +74,6 @@ const mapStateToProps = ({ user }) => ({
     roomName: user.roomName,
 })
 const mapDispatchToProps = dispatch => ({
-    userActions: bindActionCreators({ joinRoom }, dispatch),
-    notificationsActions: bindActionCreators(notificationsActions, dispatch),
+    userActions: bindActionCreators({ joinRoom, setView }, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)

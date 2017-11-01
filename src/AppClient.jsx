@@ -13,7 +13,7 @@ import notification from './ducks/notificationsDuck'
 import players from './ducks/playersDuck'
 import modal from './ducks/modalDuck'
 
-import LoginPage from './features/LoginPage/LoginPage'
+import LandingPage from './features/LandingPage/LandingPage'
 import NotFound from './features/NotFound/NotFound'
 
 /* eslint-disable no-underscore-dangle */
@@ -40,7 +40,7 @@ const history = syncHistoryWithStore(browserHistory, store)
 render(
     <Provider store={store}>
         <Router history={history}>
-            <Route path="/" component={LoginPage} />
+            <Route path="/" component={LandingPage} />
             <Route path="*" component={NotFound} />
         </Router>
     </Provider>,
