@@ -9,6 +9,7 @@ import { selectName, setView } from '../../ducks/userDuck'
 export class LoginPage extends React.PureComponent {
     static propTypes = {
         // redux
+        userName: PropTypes.string,
         userActions: PropTypes.objectOf(PropTypes.func),
     }
 
@@ -30,6 +31,10 @@ export class LoginPage extends React.PureComponent {
         this.inputRef = inpRef
     }
 
+    resetName = () => {
+        this.props.userActions.selectName({ userName: '' })
+    }
+
     setName = () => {
         const name = this.inputRef.value
         this.props.userActions.selectName({ userName: name })
@@ -37,17 +42,22 @@ export class LoginPage extends React.PureComponent {
     }
 
     render() {
+        const { userName } = this.props
         return (
             <LoginPageComponent
                 onSetNameClick={this.setName}
                 setInputRef={this.setInputRef}
                 onInputChange={this.onInputChange}
+                userName={userName}
+                onNameReset={this.resetName}
             />
         )
     }
 }
-
+const mapStateToProps = ({ user: { userName } }) => ({
+    userName,
+})
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ selectName, setView }, dispatch),
 })
-export default connect(null, mapDispatchToProps)(LoginPage)
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

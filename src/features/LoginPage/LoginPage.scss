@@ -15,8 +15,26 @@
             .login-input-group {
                 display: flex; 
             }
+
+	    .form-text {
+		max-width: 300px;
+	    }
+
+            .user-name {
+                font-weight: 700; 
+            }
+            .change-nickname {
+                cursor: pointer;
+                color:#8A8ADB;
+                transition: all .3s;
+                &:hover {
+                    color: #ABABE3;
+                }
+            }
+
         }
     }
+
 
     .home-content {
         background-color: #C0C3A2;
