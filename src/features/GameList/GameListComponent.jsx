@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { map } from 'lodash'
 import GameListItemComponent from './GameListItemComponent'
 import TopNavbar from './TopNavbar/TopNavbar'
+import PlayersList from './PlayersList/PlayersList'
 
 const GameListComponent = ({
     userName,
@@ -12,18 +14,23 @@ const GameListComponent = ({
         <div className="game-room">
             <TopNavbar />
             Hello {userName}!
-            <div className="game-list">
-                {rooms.map((room) => {
-                    return (
-                        <GameListItemComponent
-                            key={room.roomID}
-                            roomID={room.roomID}
-                            roomName={room.roomName}
-                            playerCount={room.playerCount}
-                            onClick={onClick}
-                        />
-                    )
-                })}
+            <div className="game-list-container">
+                <div className="first-column">
+                    <div className="game-list">
+                        {_.map(rooms, (room) => {
+                            return (
+                                <GameListItemComponent
+                                    key={room.roomID}
+                                    roomID={room.roomID}
+                                    roomName={room.roomName}
+                                    playerCount={room.playerCount}
+                                    onClick={onClick}
+                                />
+                            )
+                        })}
+                    </div>
+                </div>
+                <PlayersList />
             </div>
         </div>
     )

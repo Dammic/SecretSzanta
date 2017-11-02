@@ -1,19 +1,30 @@
-.game-list {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 50% 50%;
-    grid-template-rows: auto;
+.game-list-container {
+    display: flex;
+    .first-column {
+        width: 70%; 
+        .game-list {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-template-rows: auto;
 
-    .game-list-element {
-        height: 60px;
-        border: 1px solid $game-list-elements-separator;
-        padding: 10px;
-        margin: 5px;
-        .game-element-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
+            .game-list-element {
+                height: 60px;
+                border: 1px solid $game-list-elements-separator;
+                padding: 10px;
+                margin: 5px;
+                background-color: #C0C3A2;
+
+                .game-element-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    height: 100%;
+                    border: 1px solid #8d8282;
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    color: #000000;
+                }
+            }
         }
     }
 }
