@@ -17,13 +17,13 @@ class PlayersList extends PureComponent {
                 avatarNumber: 1,
             },
             {
+                playerName: 'testplayer3',
+                avatarNumber: 3,
+            },
+            {
                 playerName: 'testplayer2',
                 currentRoom: 'testroom2',
                 avatarNumber: 2,
-            },
-            {
-                playerName: 'testplayer3',
-                avatarNumber: 3,
             },
         ]
         return (

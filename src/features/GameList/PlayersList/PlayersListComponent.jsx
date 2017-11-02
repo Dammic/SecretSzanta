@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
+import { map, filter, reject } from 'lodash'
 import PlayersListRow from './PlayersListRow'
 
 const PlayersListComponent = ({ players }) => {
@@ -9,10 +9,20 @@ const PlayersListComponent = ({ players }) => {
             <div className="category">
                 <span>Currently logged players: <b>0</b></span>
             </div>
-            {map(players, player => (
+            {map(filter(players, player => !!player.currentRoom), player => (
                 <PlayersListRow
                     key={player.playerName}
-                
+                    playerName={player.playerName}
+                    avatarNumber={player.avatarNumber}
+                    currentRoom={player.currentRoom}
+                />
+            ))}
+            {map(reject(players, player => !!player.currentRoom), player => (
+                <PlayersListRow
+                    key={player.playerName}
+                    playerName={player.playerName}
+                    avatarNumber={player.avatarNumber}
+                    currentRoom={player.currentRoom}
                 />
             ))}
         </div>

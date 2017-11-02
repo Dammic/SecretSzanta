@@ -21,4 +21,25 @@
             font-size: 13px;
         }
     }
+    .player-row {
+        display: flex;
+        align-items: center;
+        padding: 3px;
+        border-bottom: 1px solid #999999;
+        .avatar {
+            height: 30px;
+            width: 30px;
+            border-radius: 50px; 
+        }
+        > span {
+            margin-left: 10px; 
+        }
+        .room-name {
+            position: absolute;
+            right: 30px;
+            .small-font {
+                font-size: 12px; 
+            }
+        }
+    }
 }
