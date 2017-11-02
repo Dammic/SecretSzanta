@@ -10,8 +10,26 @@ class PlayersList extends PureComponent {
     }
 
     render() {
+        const fakePlayers = [
+            {
+                playerName: 'testplayer1',
+                currentRoom: 'testroom1',
+                avatarNumber: 1,
+            },
+            {
+                playerName: 'testplayer2',
+                currentRoom: 'testroom2',
+                avatarNumber: 2,
+            },
+            {
+                playerName: 'testplayer3',
+                avatarNumber: 3,
+            },
+        ]
         return (
-            <PlayersListComponent />
+            <PlayersListComponent
+                players={fakePlayers}
+            />
         )
     }
 }

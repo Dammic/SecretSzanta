@@ -17,17 +17,15 @@ const GameListComponent = ({
             <div className="game-list-container">
                 <div className="first-column">
                     <div className="game-list">
-                        {_.map(rooms, (room) => {
-                            return (
-                                <GameListItemComponent
-                                    key={room.roomID}
-                                    roomID={room.roomID}
-                                    roomName={room.roomName}
-                                    playerCount={room.playerCount}
-                                    onClick={onClick}
-                                />
-                            )
-                        })}
+                        {map(rooms, room => (
+                            <GameListItemComponent
+                                key={room.roomID}
+                                roomID={room.roomID}
+                                roomName={room.roomName}
+                                playerCount={room.playerCount}
+                                onClick={onClick}
+                            />
+                        ))}
                     </div>
                 </div>
                 <PlayersList />
