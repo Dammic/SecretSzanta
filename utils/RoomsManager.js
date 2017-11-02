@@ -23,11 +23,14 @@ class RoomsManager {
     initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
+        console.log('new room: ',roomName)
+        console.log('created by: ', ownerName)
 
         this.rooms_props[roomName] = {
             ownerName,
             freeSlots,
             playersDict: {},
+            blackList: [],
             maxPlayers,
             password,
             chancellorCandidateName: '',
@@ -40,6 +43,11 @@ class RoomsManager {
             liberalPoliciesOnTheTable: 0,
             fascistPoliciesOnTheTable: 0,
         }
+    }
+
+    isInBlackList(roomName, playerName) {
+        const { blackList } = this.rooms_props[roomName]
+        return includes(blackList, playerName)
     }
 
     setChancellor(roomName) {
@@ -351,6 +359,16 @@ class RoomsManager {
         if (player) {
             player.isDead = true
         }
+    }
+    kickPlayer(roomName, playerName, banned) {
+        const { playersDict } = this.rooms_props[roomName]
+
+        if (banned) {
+            this.rooms_props[roomName].blackList.push(playerName)
+        }
+
+        const restPlayers = reject(playersDict, { playerName })
+        this.rooms_props[roomName].playersDict = restPlayers
     }
     enactPolicy(roomName, card) {
         if (card === PolicyCards.LiberalPolicy) {

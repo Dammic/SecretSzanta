@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
+import * as userActions from '../ducks/userDuck' 
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
 import { addMessage } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
@@ -120,6 +121,19 @@ export class SocketHandler extends React.PureComponent {
                 this.props.chatActions.addMessage({ timestamp, content: 'The next round will begin in 3 seconds...' })
             }
         })
+        socket.on(SocketEvents.PlayerKicked, (payload) => {
+            const { playerName, banned, timestamp } = payload.data
+
+            if (this.props.userName === playerName) {
+                this.props.userActions.joinRoom({ roomName: '' })
+                const message = `You have been ${banned ? 'banned' : 'kicked'} by the owner of the room!`
+                this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
+                return
+            }
+            const message = `${playerName} has been ${banned ? 'banned' : 'kicked'} by the owner`
+            this.props.chatActions.addMessage({ timestamp, content: message })
+            this.props.roomActions.removePlayer({ playerName })
+        })
 
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
@@ -182,6 +196,7 @@ const mapStateToProps = ({ user, room }) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         roomActions: bindActionCreators(roomActions, dispatch),
+        userActions: bindActionCreators(userActions, dispatch),
         chatActions: bindActionCreators({ addMessage }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),

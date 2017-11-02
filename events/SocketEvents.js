@@ -59,6 +59,7 @@ module.exports = function (io, RoomsManager) {
                     }
                 }
 
+                socket.leave(socket.currentRoom)
                 socket.currentRoom = ''
             }
             socket.currentPlayerName = ''
@@ -89,6 +90,14 @@ module.exports = function (io, RoomsManager) {
 
         joinRoom: (socket, { playerName, roomName }) => {
             if (roomName && !socket.currentRoom && RoomsManager.isRoomPresent(roomName)) {
+                if (RoomsManager.isInBlackList(roomName, playerName)) {
+                    console.log(`INFO - Banned player ${playerName} tried to enter room ${roomName}!`)
+                    socket.emit(SocketEvents.CLIENT_ERROR, {
+                        error: 'You are BANNED in this room by the owner!',
+                    })
+                    return
+                }
+
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
                 socket.join(roomName)
                 socket.currentPlayerName = playerName
@@ -104,7 +113,7 @@ module.exports = function (io, RoomsManager) {
                     },
                 })
             } else {
-                console.error('Why is the room gone!')
+                console.error(`ERROR - Why is the room gone!, Player ${playerName} tried to enter nonexistent room ${roomName}!`)
                 socket.emit(SocketEvents.CLIENT_ERROR, {
                     error: 'Error - WHY IS THE ROOM GONE?!',
                 })
@@ -133,7 +142,7 @@ module.exports = function (io, RoomsManager) {
             })
         },
 
-        startVotingPhaseVote: (socket, { chancellorName }) => {
+        startVotingPhaseVote: (socket, { playerName: chancellorName }) => {
             RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
                 data: {
@@ -311,6 +320,35 @@ module.exports = function (io, RoomsManager) {
                 }, 3000)
             }
         },
+        kickPlayer: (socket, { playerName }) => {
+            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
+                socketEvents.sendError(socket, ErrorMessages.notOwner)
+                return
+            }
+            RoomsManager.kickPlayer(socket.currentRoom, playerName, false)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
+                data: {
+                    playerName,
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
+            socket.leave(socket.currentRoom)
+        },
+        banPlayer: (socket, { playerName }) => {
+            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
+                socketEvents.sendError(socket, ErrorMessages.notOwner)
+                return
+            }
+            RoomsManager.kickPlayer(socket.currentRoom, playerName, true)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
+                data: {
+                    playerName,
+                    banned: true,
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
+            socket.leave(socket.currentRoom)
+        }
     }
 
     io.on('connection', (socket) => {
@@ -330,6 +368,8 @@ module.exports = function (io, RoomsManager) {
         socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
         socket.on(SocketEvents.PlayerKilled, partialFunctions.killPlayer)
+        socket.on(SocketEvents.PlayerBanned, partialFunctions.banPlayer) 
+        socket.on(SocketEvents.PlayerKicked, partialFunctions.kickPlayer)
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
     })
 }

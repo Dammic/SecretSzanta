@@ -15,6 +15,8 @@ module.exports = {
         BECOME_FACIST: 'BECOME_FACIST',
         KillSuperpowerUsed: 'KILL_SUPERPOWER_USED',
         PlayerKilled: 'PLAYER_KILLED',
+        PlayerKicked: 'PLAYER_KICKED',
+        PlayerBanned: 'PLAYER_BANNED',
         GameFinished: 'GAME_FINISHED',
         PresidentChoosePolicy: 'PRESIDENT_CHOOSE_POLICY',
         ChancellorChoosePolicy: 'CHANCELLOR_CHOOSE_POLICY',
@@ -57,6 +59,8 @@ module.exports = {
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
         KillChoice: 'CONTEXT_KILL_CHOICE',
+        KickChoice: 'CONTEXT_KICK_CHOICE',
+        BanChoice: 'CONTEXT_BAN_CHOICE',
     },
     PolicyCards: {
         FacistPolicy: 'FACIST_POLICY',

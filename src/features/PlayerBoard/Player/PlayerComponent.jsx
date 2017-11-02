@@ -17,6 +17,7 @@ const PlayerComponent = ({
     isChoiceModeVisible,
     isDead,
     isPlayerWaitedFor,
+    isOwner,
 }) => {
     return (
         <div className="player">
@@ -32,6 +33,7 @@ const PlayerComponent = ({
                     facistAvatar={facistAvatar}
                     isDead={isDead}
                     isPlayerWaitedFor={isPlayerWaitedFor}
+                    isOwner={isOwner}
                 />
                 <PlayerRoleComponent role={role} />
             </div>
@@ -51,5 +53,6 @@ PlayerComponent.propTypes = {
     isChoiceModeVisible: PropTypes.bool,
     isDead: PropTypes.bool,
     isPlayerWaitedFor: PropTypes.bool,
+    isOwner: PropTypes.bool,
 }
 export default PlayerComponent

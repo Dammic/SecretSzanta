@@ -9,6 +9,14 @@
         z-index: 20;
         animation: breathing 3s ease-out infinite normal;
     }
+    .owner-icon {
+        position: absolute;
+        top: -3%;
+        left: 9%;
+        transform: scale(2.5, 2.5);
+
+        color: #c51b06;
+    }
     &.dead {
         &:before, &:after {
             position: absolute;
