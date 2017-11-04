@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards } = require('../Dictionary')
-const { pullAt, isNil, indexOf, includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
@@ -55,7 +55,7 @@ module.exports = function (io, RoomsManager) {
                         })
                     } else {
                         RoomsManager.removeRoom(socket.currentRoom)
-                        console.log(`The room ${socket.currentRoom} was permanently removed!`)
+                        console.log(`The room "${socket.currentRoom}" was permanently removed!`)
                     }
                 }
 
@@ -332,7 +332,8 @@ module.exports = function (io, RoomsManager) {
                     timestamp: getCurrentTimestamp(),
                 },
             })
-            socket.leave(socket.currentRoom)
+            const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
+            kickedSocket.leave(socket.currentRoom)
         },
         banPlayer: (socket, { playerName }) => {
             if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
@@ -347,7 +348,6 @@ module.exports = function (io, RoomsManager) {
                     timestamp: getCurrentTimestamp(),
                 },
             })
-            socket.leave(socket.currentRoom)
         }
     }
 

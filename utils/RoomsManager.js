@@ -367,8 +367,7 @@ class RoomsManager {
             this.rooms_props[roomName].blackList.push(playerName)
         }
 
-        const restPlayers = reject(playersDict, { playerName })
-        this.rooms_props[roomName].playersDict = restPlayers
+        delete playersDict[playerName]
     }
     enactPolicy(roomName, card) {
         if (card === PolicyCards.LiberalPolicy) {
