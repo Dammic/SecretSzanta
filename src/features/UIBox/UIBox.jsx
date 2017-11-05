@@ -17,7 +17,6 @@ export class UIBox extends React.PureComponent {
 
     onKickPlayer = () => {
         this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
-        console.log(this.props.playersWithoutMe)
         this.props.playersActions.setChoiceMode({
             isVisible: true,
             context: ChoiceModeContexts.KickChoice,

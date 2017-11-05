@@ -16,7 +16,7 @@
         transform: scale(2.5, 2.5);
         z-index: 20;
 
-        color: #c51b06;
+        color: $player-avatar-owner-icon;
     }
     &.dead {
         &:before, &:after {
