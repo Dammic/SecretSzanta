@@ -168,7 +168,7 @@ module.exports = function (io, RoomsManager) {
                 } else {
                     const threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
                     if (threeVotesFailed) {
-                        const topCard = RoomsManager.getTopPolicy(socket.currentRoom)
+                        const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
                         RoomsManager.enactPolicy(socket.currentRoom, topCard)
                         io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
                             data: {
@@ -222,7 +222,7 @@ module.exports = function (io, RoomsManager) {
             })
             presidentEmit(SocketEvents.ChoosePolicy, {
                 data: {
-                    policyCards: RoomsManager.getChoicePolicyCards(socket.currentRoom),
+                    policyCards: RoomsManager.takeChoicePolicyCards(socket.currentRoom, 3),
                     title: 'Discard one policy and pass the rest to the chancellor',
                     role: PlayerRole.ROLE_PRESIDENT,
                 },
