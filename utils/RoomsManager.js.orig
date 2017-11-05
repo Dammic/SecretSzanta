@@ -366,6 +366,7 @@ class RoomsManager {
             player.isDead = true
         }
     }
+<<<<<<< HEAD
     kickPlayer(roomName, playerName, banned) {
         const { playersDict } = this.rooms_props[roomName]
 
@@ -375,11 +376,13 @@ class RoomsManager {
 
         delete playersDict[playerName]
     }
-    
+||||||| merged common ancestors
+=======
     /**********************************************/
     /*******************policies*******************/
     /**********************************************/
 
+>>>>>>> master
     enactPolicy(roomName, card) {
         if (card === PolicyCards.LiberalPolicy) {
             this.rooms_props[roomName].liberalPoliciesOnTheTable += 1

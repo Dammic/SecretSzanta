@@ -2,6 +2,7 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { delay } from 'lodash'
 import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
@@ -86,17 +87,17 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `${playerName} has voted. ${remaining} ${remaining === 1 ? 'vote' : 'votes'} left...` })
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
-            const { votes, timestamp, newChancellor } = payload.data
+            const { votes, failedElectionsCount, timestamp, newChancellor } = payload.data
             this.props.roomActions.revealVotes({ newVotes: votes })
             const votingResultMessage = (newChancellor
                 ? `${newChancellor} has become the new chancellor!`
-                : 'The proposal has been rejected! The new round beings in 3 seconds...'
+                : 'The proposal has been rejected!' 
             )
-            if (!newChancellor) {
+            this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
+            if (!newChancellor && failedElectionsCount !== 0) {
                 this.props.roomActions.increaseTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
             }
-            this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
         })
 
         socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
@@ -151,6 +152,17 @@ export class SocketHandler extends React.PureComponent {
             this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR,  message: error })
         })
 
+        socket.on(SocketEvents.ResetTracker, (payload) => {
+            const { timestamp } = payload.data
+            this.props.roomActions.increaseTracker()
+            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker will be reset!' })
+            delay(() => {
+                this.props.roomActions.resetTracker()
+                this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
+            }, 4000)
+            // time of delay must be greater that time of an animation of tracker beeing moved
+        })
+
         socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
             this.props.modalActions.setModal({
                 title,
@@ -178,7 +190,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.playersActions.setChooserPlayer({ playerName: '' })
             this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             this.props.roomActions.increasePolicyCount({ isFacist })
-            this.props.chatActions.addMessage({ timestamp, content: 'The next round will begin in 4 seconds...' })
         })
     }
 
@@ -191,6 +202,7 @@ const mapStateToProps = ({ user, room }) => {
     return {
         userName: user.userName,
         playersDict: room.playersDict,
+        trackerPosition: room.trackerPosition,
     }
 }
 const mapDispatchToProps = (dispatch) => {

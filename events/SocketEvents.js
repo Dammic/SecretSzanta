@@ -167,46 +167,62 @@ module.exports = function (io, RoomsManager) {
 
         vote: (socket, { value }) => {
             RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
+                data: {
+                    playerName: socket.currentPlayerName,
+                    remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
             if (RoomsManager.didAllVote(socket.currentRoom)) {
-                const votingResult = RoomsManager.getVotingResult(socket.currentRoom)
-                if (votingResult) {
+                const hasVotingSucceed = RoomsManager.getVotingResult(socket.currentRoom)
+                let threeVotesFailed = false
+                let topCard
+                if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
                     setTimeout(() => {
                         socketEvents.startPresidentPolicyChoice(socket)
                     }, 3000)
                 } else {
-                    const threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
+                    threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
+                    if (threeVotesFailed) {
+                        topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
+                        RoomsManager.enactPolicy(socket.currentRoom, topCard)
+                    }
                     setTimeout(() => {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
-                    // if (threeVotesFailed) enactRandomPolicy, When policies code is done
                 }
 
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
-                    data: {
-                        playerName: socket.currentPlayerName,
-                        remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
-                        timestamp: getCurrentTimestamp(),
-                    },
-                })
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
                     data: {
                         votes: RoomsManager.getVotes(socket.currentRoom),
                         timestamp: getCurrentTimestamp(),
-                        newChancellor: (votingResult
+                        failedElectionsCount: RoomsManager.getFailedElections(socket.currentRoom),
+                        newChancellor: (hasVotingSucceed
                             ? RoomsManager.getChancellor(socket.currentRoom).playerName
                             : null
                         ),
                     },
                 })
-            } else {
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
-                    data: {
-                        playerName: socket.currentPlayerName,
-                        remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
-                        timestamp: getCurrentTimestamp(),
-                    },
-                })
+                if (hasVotingSucceed || threeVotesFailed) {
+                    io.sockets.in(socket.currentRoom).emit(SocketEvents.ResetTracker, {
+                        data: {
+                            timestamp: getCurrentTimestamp(),
+                        }
+                    })
+                }
+                if (threeVotesFailed) {
+                    io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
+                        data: {
+                            policy: topCard,
+                            timestamp: getCurrentTimestamp(),
+                        },
+                    })
+                }
+                if (!hasVotingSucceed || threeVotesFailed) {
+                    socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
+                }
             }
         },
         startPresidentPolicyChoice: (socket) => {
@@ -221,7 +237,7 @@ module.exports = function (io, RoomsManager) {
             })
             presidentEmit(SocketEvents.ChoosePolicy, {
                 data: {
-                    policyCards: RoomsManager.getChoicePolicyCards(socket.currentRoom),
+                    policyCards: RoomsManager.takeChoicePolicyCards(socket.currentRoom, 3),
                     title: 'Discard one policy and pass the rest to the chancellor',
                     role: PlayerRole.ROLE_PRESIDENT,
                 },
@@ -268,6 +284,7 @@ module.exports = function (io, RoomsManager) {
                         setTimeout(() => {
                             socketEvents.startChancellorChoicePhase(socket)
                         }, 4000)
+                        socketEvents.sendMessage(socket, { content: 'Next turn will begin in 4 seconds!' })
                     }
                 } else {
                     console.error('Cheater!')
@@ -318,6 +335,7 @@ module.exports = function (io, RoomsManager) {
                 setTimeout(() => {
                     socketEvents.startChancellorChoicePhase(socket)
                 }, 3000)
+                socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
             }
         },
         kickPlayer: (socket, { playerName }) => {
