@@ -123,15 +123,15 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {
-            const { playerName, banned, timestamp } = payload.data
+            const { playerName, wasBanned, timestamp } = payload.data
 
             if (this.props.userName === playerName) {
                 this.props.userActions.joinRoom({ roomName: '' })
-                const message = `You have been ${banned ? 'banned' : 'kicked'} by the owner of the room!`
+                const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
                 return
             }
-            const message = `${playerName} has been ${banned ? 'banned' : 'kicked'} by the owner`
+            const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
             this.props.chatActions.addMessage({ timestamp, content: message })
             this.props.roomActions.removePlayer({ playerName })
         })

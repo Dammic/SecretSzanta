@@ -23,8 +23,7 @@ class RoomsManager {
     initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
-        console.log('new room: ',roomName)
-        console.log('created by: ', ownerName)
+        console.log(`INFO - New room "${roomName}" was created by: ${ownerName}`)
 
         this.rooms_props[roomName] = {
             ownerName,
@@ -367,10 +366,10 @@ class RoomsManager {
         }
     }
     kickPlayer(roomName, playerName, banned) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict, blackList } = this.rooms_props[roomName]
 
         if (banned) {
-            this.rooms_props[roomName].blackList.push(playerName)
+            blackList.push(playerName)
         }
 
         delete playersDict[playerName]

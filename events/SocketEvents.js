@@ -348,6 +348,7 @@ module.exports = function (io, RoomsManager) {
                 data: {
                     playerName,
                     timestamp: getCurrentTimestamp(),
+                    wasBanned: permanently,
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
