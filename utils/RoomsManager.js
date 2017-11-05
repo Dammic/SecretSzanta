@@ -45,6 +45,8 @@ class RoomsManager {
     setChancellor(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
 
+        this.rooms_props[roomName].failedElections = 0
+
         const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
         if (previousChancellor) {
             previousChancellor.role = null
