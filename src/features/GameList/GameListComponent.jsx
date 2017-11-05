@@ -4,6 +4,7 @@ import { map } from 'lodash'
 import GameListItemComponent from './GameListItemComponent'
 import TopNavbar from './TopNavbar/TopNavbar'
 import PlayersList from './PlayersList/PlayersList'
+import Chat from '../UIBox/Chat/Chat'
 
 const GameListComponent = ({
     userName,
@@ -12,8 +13,6 @@ const GameListComponent = ({
 }) => {
     return (
         <div className="game-room">
-            <TopNavbar />
-            Hello {userName}!
             <div className="game-list-container">
                 <div className="first-column">
                     <div className="game-list">
@@ -28,7 +27,14 @@ const GameListComponent = ({
                         ))}
                     </div>
                 </div>
-                <PlayersList />
+                <div className="second-column">
+                    <div className="utils-row">
+                        <span>Logged as <b>{userName}</b>!</span>
+                        <TopNavbar />
+                    </div>
+                    <PlayersList />
+                    <Chat />
+                </div>
             </div>
         </div>
     )
