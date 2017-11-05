@@ -36,6 +36,10 @@ export class PlayerBoard extends React.PureComponent {
         }
     }
 
+    componentDidUpdate() {
+        if (this.props.trackerPosition >= 3) this.props.roomActions.resetTracker()
+    }
+
     makePlayer = (player) => {
         const currentPresident = find(this.props.playersDict, { role: PlayerRole.ROLE_PRESIDENT })
         const currentChancellor = find(this.props.playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
@@ -90,8 +94,6 @@ export class PlayerBoard extends React.PureComponent {
                 center.push(player)
             }
         })
-
-        if (trackerPosition > 3) this.props.roomActions.resetTracker()
 
         return (<PlayerBoardComponent
             playersLeft={left}
