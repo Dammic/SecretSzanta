@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards } = require('../Dictionary')
-const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
@@ -338,12 +338,12 @@ module.exports = function (io, RoomsManager) {
                 socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
             }
         },
-        kickPlayer: (socket, { playerName }) => {
+        kickPlayer: (socket, { playerName }, permanently = false) => {
             if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
                 socketEvents.sendError(socket, ErrorMessages.notOwner)
                 return
             }
-            RoomsManager.kickPlayer(socket.currentRoom, playerName, false)
+            RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
                 data: {
                     playerName,
@@ -353,20 +353,6 @@ module.exports = function (io, RoomsManager) {
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
             kickedSocket.leave(socket.currentRoom)
         },
-        banPlayer: (socket, { playerName }) => {
-            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
-                socketEvents.sendError(socket, ErrorMessages.notOwner)
-                return
-            }
-            RoomsManager.kickPlayer(socket.currentRoom, playerName, true)
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
-                data: {
-                    playerName,
-                    banned: true,
-                    timestamp: getCurrentTimestamp(),
-                },
-            })
-        }
     }
 
     io.on('connection', (socket) => {
@@ -376,6 +362,7 @@ module.exports = function (io, RoomsManager) {
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions
         const partialFunctions = mapValues(socketEvents, func => partial(func, socket))
+        partialFunctions['banPlayer'] = partialRight(partialFunctions.kickPlayer, true)
 
         socket.on('disconnect', partialFunctions.disconnect)
         socket.on(SocketEvents.CLIENT_CREATE_ROOM, partialFunctions.createRoom)
