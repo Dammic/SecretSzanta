@@ -5,14 +5,13 @@
     z-index: 30;
     height: 20%;
     max-height: 200px;
-    background-color: $uibox-background;
 
     .game-controls {
         display: flex;
         width: 75px;
         height: 100%;
         z-index: 20;
-        background-color: #E1F2F1;
+        background-color: $uibox-background;
         position: absolute;
         .buttons {
             display: flex;

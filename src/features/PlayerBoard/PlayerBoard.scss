@@ -43,6 +43,7 @@ $elementsHeight: 80%;
             img {
                 width: $elementsWidth;
                 height: $elementsHeight;
+                filter: brightness(0.8);
             }
 
         }
@@ -120,6 +121,8 @@ $elementsHeight: 80%;
     .choice-overlay {
         z-index: 20;
         filter: blur(100px);
+	background-color: #FFFFFF;
+	opacity: .1;
     }
 }
 
