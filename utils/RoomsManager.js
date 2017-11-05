@@ -31,7 +31,7 @@ class RoomsManager {
             maxPlayers,
             password,
             chancellorCandidateName: '',
-            failedElections: 0,
+            failedElectionsCount: 0,
             votes: {},
             gamePhase: GamePhases.GAME_PHASE_NEW,
             drawPile: [],
@@ -45,7 +45,7 @@ class RoomsManager {
     setChancellor(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
 
-        this.rooms_props[roomName].failedElections = 0
+        this.rooms_props[roomName].failedElectionsCount = 0
 
         const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
         if (previousChancellor) {
@@ -113,7 +113,7 @@ class RoomsManager {
     startGame(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
-        this.rooms_props[roomName].failedElections = 0
+        this.rooms_props[roomName].failedElectionsCount = 0
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount
@@ -206,7 +206,7 @@ class RoomsManager {
     }
 
     getFailedElections(roomName) {
-        return this.rooms_props[roomName].failedElections
+        return this.rooms_props[roomName].failedElectionsCount
     }
 
     getVotingResult(roomName) {
@@ -217,9 +217,9 @@ class RoomsManager {
 
     failElection(roomName) {
         const room = this.rooms_props[roomName]
-        room.failedElections += 1
-        if (room.failedElections >= 3) {
-            room.failedElections = 0
+        room.failedElectionsCount += 1
+        if (room.failedElectionsCount >= 3) {
+            room.failedElectionsCount = 0
             return true
         }
         return false
@@ -235,12 +235,12 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, ownerName, maxPlayers, gamePhase, failedElections } = this.rooms_props[roomName]
+        const { playersDict, ownerName, maxPlayers, gamePhase, failedElectionsCount } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
             ownerName,
-            trackerPosition: failedElections,
+            trackerPosition: failedElectionsCount,
             playersDict: mapValues(playersDict, (player) => {
                 let genericInfo = pick(player, ['playerName', 'avatarNumber'])
                 genericInfo.affiliation = PlayerAffilications.LIBERAL_AFFILIATION

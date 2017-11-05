@@ -36,8 +36,10 @@ export class PlayerBoard extends React.PureComponent {
         }
     }
 
-    componentDidUpdate() {
-        if (this.props.trackerPosition >= 3) delay(this.props.roomActions.resetTracker, 1000)
+    componentDidUpdate(prevProps) {
+        if (this.props.trackerPosition >= 3 && (prevProps.trackerPosition !== this.props.trackerPosition)) {
+            delay(this.props.roomActions.resetTracker, 1000)
+        }
     }
 
     makePlayer = (player) => {

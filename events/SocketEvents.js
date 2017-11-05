@@ -198,7 +198,9 @@ module.exports = function (io, RoomsManager) {
                 })
                 if (hasVotingSucceed || threeVotesFailed) {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.ResetTracker, {
-                        timestamp: getCurrentTimestamp(),
+                        data: {
+                            timestamp: getCurrentTimestamp(),
+                        }
                     })
                 }
                 if (threeVotesFailed) {
@@ -324,7 +326,7 @@ module.exports = function (io, RoomsManager) {
                 setTimeout(() => {
                     socketEvents.startChancellorChoicePhase(socket)
                 }, 3000)
-                    socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
+                socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
             }
         },
     }
