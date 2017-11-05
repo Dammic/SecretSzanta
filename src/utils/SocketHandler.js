@@ -89,15 +89,12 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.revealVotes({ newVotes: votes })
             const votingResultMessage = (newChancellor
                 ? `${newChancellor} has become the new chancellor!`
-                : 'The proposal has been rejected! The new round beings in 3 seconds...'
+                : 'The proposal has been rejected!' 
             )
             this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
             if (!newChancellor && failedElectionsCount !== 0) {
                 this.props.roomActions.increaseTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
-            } else {
-                this.props.roomActions.resetTracker()
-                this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has been reset!'})
             }
         })
 
@@ -140,6 +137,12 @@ export class SocketHandler extends React.PureComponent {
             this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR,  message: error })
         })
 
+        socket.on(SocketEvents.ResetTracker, (payload) => {
+            const { timestamp } = payload
+            this.props.roomActions.resetTracker();
+            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has advanced!' })
+        })
+
         socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
             this.props.modalActions.setModal({
                 title,
@@ -167,11 +170,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.playersActions.setChooserPlayer({ playerName: '' })
             this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             this.props.roomActions.increasePolicyCount({ isFacist })
-            this.props.chatActions.addMessage({ timestamp, content: 'The next round will begin in 4 seconds...' })
-            if (this.props.trackerPosition > 0) {
-                this.props.roomActions.resetTracker()
-                this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
-            }
         })
     }
 

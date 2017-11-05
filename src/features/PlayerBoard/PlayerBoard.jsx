@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { map, reject, find, forEach } from 'lodash'
+import { delay, map, reject, find, forEach } from 'lodash'
 import { PlayerRole, ChoiceModeContexts, SocketEvents } from '../../../Dictionary'
 import { socket } from '../../utils/SocketHandler'
 import PlayerBoardComponent from './PlayerBoardComponent'
@@ -37,7 +37,7 @@ export class PlayerBoard extends React.PureComponent {
     }
 
     componentDidUpdate() {
-        if (this.props.trackerPosition >= 3) this.props.roomActions.resetTracker()
+        if (this.props.trackerPosition >= 3) delay(this.props.roomActions.resetTracker, 1000)
     }
 
     makePlayer = (player) => {
