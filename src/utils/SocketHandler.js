@@ -140,10 +140,12 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
             const { timestamp } = payload
+            this.props.roomActions.increaseTracker()
             delay(() => {
                 this.props.roomActions.resetTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
-            }, 1000)
+            }, 4000)
+            // time of delay must be greater that time of an animation of tracker beeing moved
         })
 
         socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
