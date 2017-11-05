@@ -139,8 +139,9 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
-            const { timestamp } = payload
+            const { timestamp } = payload.data
             this.props.roomActions.increaseTracker()
+            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker will be reset!' })
             delay(() => {
                 this.props.roomActions.resetTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
