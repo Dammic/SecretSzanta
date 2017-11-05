@@ -217,11 +217,11 @@ class RoomsManager {
 
     failElection(roomName) {
         const room = this.rooms_props[roomName]
+        room.failedElections += 1
         if (room.failedElections >= 3) {
             room.failedElections = 0
             return true
         }
-        room.failedElections += 1
         return false
     }
 
