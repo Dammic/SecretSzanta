@@ -168,15 +168,15 @@ module.exports = function (io, RoomsManager) {
                 } else {
                     const threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
                     if (threeVotesFailed) {
-			const topCard = RoomsManager.getTopPolicy(socket.currentRoom)
-			RoomsManager.enactPolicy(socket.currentRoom, topCard)
-			io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
-			    data: {
-				policy: topCard,
-				timestamp: getCurrentTimestamp(),
-			    },
-			})
-		    }
+                        const topCard = RoomsManager.getTopPolicy(socket.currentRoom)
+                        RoomsManager.enactPolicy(socket.currentRoom, topCard)
+                        io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
+                            data: {
+                                policy: topCard,
+                                timestamp: getCurrentTimestamp(),
+                            },
+                        })
+                    }
                     setTimeout(() => {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
@@ -193,7 +193,7 @@ module.exports = function (io, RoomsManager) {
                     data: {
                         votes: RoomsManager.getVotes(socket.currentRoom),
                         timestamp: getCurrentTimestamp(),
-                        failedElections: RoomsManager.getFailedElections(socket.currentRoom),
+                        failedElectionsCount: RoomsManager.getFailedElections(socket.currentRoom),
                         newChancellor: (votingResult
                             ? RoomsManager.getChancellor(socket.currentRoom).playerName
                             : null

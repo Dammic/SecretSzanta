@@ -85,14 +85,14 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `${playerName} has voted. ${remaining} ${remaining === 1 ? 'vote' : 'votes'} left...` })
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
-            const { votes, failedElections, timestamp, newChancellor } = payload.data
+            const { votes, failedElectionsCount, timestamp, newChancellor } = payload.data
             this.props.roomActions.revealVotes({ newVotes: votes })
             const votingResultMessage = (newChancellor
                 ? `${newChancellor} has become the new chancellor!`
                 : 'The proposal has been rejected! The new round beings in 3 seconds...'
             )
             this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
-            if (!newChancellor && failedElections !== 0) {
+            if (!newChancellor && failedElectionsCount !== 0) {
                 this.props.roomActions.increaseTracker()
                 this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
             } else {
