@@ -8,13 +8,6 @@ module.exports = function (io, RoomsManager) {
         sendError: (socket, errorMessage) => {
             socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
         },
-        sendAllChatMessage: (socket, chatMessage) => {
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_SEND_MESSAGE, {
-                timestamp: getCurrentTimestamp(),
-                author: null,
-                content: chatMessage,
-            })
-        },
 
         sendBecomeFascist: (player, playerCount, passedFacists) => {
             const shouldHideOtherFacists = player.affiliation === PlayerAffilications.HITLER_AFFILIATION && playerCount > 6
@@ -165,9 +158,17 @@ module.exports = function (io, RoomsManager) {
 
         vote: (socket, { value }) => {
             RoomsManager.vote(socket.currentRoom, socket.currentPlayerName, value)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
+                data: {
+                    playerName: socket.currentPlayerName,
+                    remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
             if (RoomsManager.didAllVote(socket.currentRoom)) {
                 const hasVotingSucceed = RoomsManager.getVotingResult(socket.currentRoom)
                 let threeVotesFailed = false
+                let topCard
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
                     setTimeout(() => {
@@ -176,27 +177,14 @@ module.exports = function (io, RoomsManager) {
                 } else {
                     threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
                     if (threeVotesFailed) {
-                        const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
+                        topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
                         RoomsManager.enactPolicy(socket.currentRoom, topCard)
-                        io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
-                            data: {
-                                policy: topCard,
-                                timestamp: getCurrentTimestamp(),
-                            },
-                        })
                     }
                     setTimeout(() => {
                         socketEvents.startChancellorChoicePhase(socket)
                     }, 3000)
                 }
 
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
-                    data: {
-                        playerName: socket.currentPlayerName,
-                        remaining: 0,
-                        timestamp: getCurrentTimestamp(),
-                    },
-                })
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
                     data: {
                         votes: RoomsManager.getVotes(socket.currentRoom),
@@ -208,22 +196,22 @@ module.exports = function (io, RoomsManager) {
                         ),
                     },
                 })
-                if (!hasVotingSucceed || threeVotesFailed) {
-                    socketEvents.sendAllChatMessage(socket, 'Next turn will begin in 3 seconds!')
-                }
                 if (hasVotingSucceed || threeVotesFailed) {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.ResetTracker, {
                         timestamp: getCurrentTimestamp(),
                     })
                 }
-            } else {
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
-                    data: {
-                        playerName: socket.currentPlayerName,
-                        remaining: RoomsManager.getRemainingVotesCount(socket.currentRoom),
-                        timestamp: getCurrentTimestamp(),
-                    },
-                })
+                if (threeVotesFailed) {
+                    io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
+                        data: {
+                            policy: topCard,
+                            timestamp: getCurrentTimestamp(),
+                        },
+                    })
+                }
+                if (!hasVotingSucceed || threeVotesFailed) {
+                    socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
+                }
             }
         },
         startPresidentPolicyChoice: (socket) => {
@@ -285,7 +273,7 @@ module.exports = function (io, RoomsManager) {
                         setTimeout(() => {
                             socketEvents.startChancellorChoicePhase(socket)
                         }, 4000)
-                        socketEvents.sendAllChatMessage(socket, 'Next turn will begin in 4 seconds!')
+                        socketEvents.sendMessage(socket, { content: 'Next turn will begin in 4 seconds!' })
                     }
                 } else {
                     console.error('Cheater!')
@@ -336,7 +324,7 @@ module.exports = function (io, RoomsManager) {
                 setTimeout(() => {
                     socketEvents.startChancellorChoicePhase(socket)
                 }, 3000)
-                    socketEvents.sendAllChatMessage(socket, 'Next turn will begin in 3 seconds!')
+                    socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
             }
         },
     }
