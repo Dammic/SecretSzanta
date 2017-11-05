@@ -2,6 +2,7 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { delay } from 'lodash'
 import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
@@ -139,8 +140,10 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
             const { timestamp } = payload
-            this.props.roomActions.resetTracker();
-            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has advanced!' })
+            delay(() => {
+                this.props.roomActions.resetTracker()
+                this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
+            }, 1000)
         })
 
         socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
