@@ -20,6 +20,7 @@ module.exports = {
         ChancellorChoosePolicy: 'CHANCELLOR_CHOOSE_POLICY',
         ChoosePolicy: 'CHOOSE_POLICY',
         NewPolicy: 'NEW_POLICY',
+        ResetTracker: 'RESET_TRACKER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',
