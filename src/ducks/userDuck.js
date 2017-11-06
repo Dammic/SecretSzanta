@@ -41,9 +41,7 @@ const actions = {
         const { userName, roomName } = state
 
         let newView = viewName
-        if (viewName === Views.Lobby && !userName) {
-            newView = Views.Home
-        } else if (viewName === Views.Game && !roomName) {
+        if ((viewName === Views.Lobby && !userName) || (viewName === Views.Game && !roomName)) {
             newView = Views.Home
         }
 

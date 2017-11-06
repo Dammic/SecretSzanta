@@ -1,14 +1,14 @@
 .login-page {
-    background-color: #C0C3A2;
+    background-color: $login-page-bg;
     .login-form-container {
         height: 700px;
-        background: radial-gradient(#302D2D, #201d1d);
-	clip-path: polygon(
+        background: radial-gradient($login-page-form-start-bg, $login-page-form-end-bg);
+        clip-path: polygon(
 	    0 0, /* left top */
 	    100% 0, /* right top */ 
 	    100% 45%, /* right bottom */
 	    0 100% /* left bottom */
-	);
+        );
         .login-form {
             margin-left: 20%;
             padding-top: 150px;
@@ -25,19 +25,18 @@
             }
             .change-nickname {
                 cursor: pointer;
-                color:#8A8ADB;
+                color: $login-page-change-name-font;
                 transition: all .3s;
                 &:hover {
-                    color: #ABABE3;
+                    color: $login-page-change-name-font-hover;
                 }
             }
 
         }
     }
 
-
     .home-content {
-        background-color: #C0C3A2;
+        background-color: $login-page-content-bg;
         height: 1000px;
     }
     .home-image-large {

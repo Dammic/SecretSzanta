@@ -2,6 +2,8 @@
 *       Colors      *
 *********************/
 $game-room-font: #191418;
+$game-room-start-bg: #3C3838;
+$game-room-end-bg: #201D1D;
 $chat-server-message-font: #AB9F9F;
 $chat-message-font: #423B3B;
 $chat-box-background: #D8D9D0;
@@ -10,12 +12,32 @@ $player-bubble-color: #446677;
 $player-cross: #753838;
 $player-avatar-owner-icon: #C51B06;
 
+$landing-page-bg: #272222;
+
+$login-page-bg: #C0C3A2;
+$login-page-form-start-bg: #302D2D;
+$login-page-form-end-bg: #201D1D;
+$login-page-change-name-font: #8A8ADB;
+$login-page-change-name-font-hover: #ABABE3;
+$login-page-content-bg: #C0C3A2;
+
 $modal-background: #D8D9D0;
 $modal-close-mark: #3C3939;
 $modal-font: #474242;
 $modal-title: #C8C9BE;
+
 $game-list-elements-separator: #999999;
-$top-navbar-background: #6495ED;
+$game-list-first-column-bg: #3F3A3A;
+$game-list-element-bg: #D3D5BD;
+$game-list-element-border: #8D8282;
+$game-list-element-font: #000;
+
+$players-list-bg: #D8D9D0;
+$players-list-font: #000;
+$players-list-element-border: #999999;
+$players-list-category-bg: #D3D5BD;
+
+$choice-overlay-bg: #FFFFFF;
 
 $uibox-background: #D8D9D0;
 $uibox-underbackground: #BFC0B5;

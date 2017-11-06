@@ -1,18 +1,18 @@
 .players-list {
     height: 500px;
-    background-color: #D8D9D0;
+    background-color: $players-list-bg;
     margin-top: 5px;
     padding: 0 10px 10px 10px;
-    color: #000000;
+    color: $players-list-font;
 
     .category {
         text-align: right;
         height: 20px;
-        border-bottom: 1px solid #999999;
+        border-bottom: 1px solid $players-list-element-border;
         margin-left: -10px;
         margin-right: -10px;
         padding-top: 5px;
-        background-color: #D3D5BD;
+        background-color: $players-list-category-bg;
 
         > span {
             margin-right: 5px;
@@ -23,7 +23,7 @@
         display: flex;
         align-items: center;
         padding: 3px;
-        border-bottom: 1px solid #999999;
+        border-bottom: 1px solid $players-list-element-border;
         .avatar {
             height: 30px;
             width: 30px;

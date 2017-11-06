@@ -1,14 +1,7 @@
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import PlayersListComponent from './PlayersListComponent'
 
 class PlayersList extends PureComponent {
-    static propTypes = {
-  
-   
-    }
-
     render() {
         const fakePlayers = [
             {
@@ -34,8 +27,4 @@ class PlayersList extends PureComponent {
     }
 }
 
-const mapStateToProps = () => ({
-
-})
-
-export default connect(mapStateToProps)(PlayersList)
+export default PlayersList

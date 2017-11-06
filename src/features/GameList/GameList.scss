@@ -1,7 +1,7 @@
 .game-list-container {
     display: flex;
     .first-column {
-        background-color: #3F3A3A;
+        background-color: $game-list-first-column-bg;
         max-height: 90vh;
         overflow: auto;
         width: 70%;
@@ -17,17 +17,17 @@
                 border: 1px solid $game-list-elements-separator;
                 padding: 10px;
                 margin: 5px;
-                background-color: #D3D5BD;
+                background-color: $game-list-element-bg;
 
                 .game-element-container {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     height: 100%;
-                    border: 1px solid #8d8282;
+                    border: 1px solid $game-list-element-border;
                     padding-left: 5px;
                     padding-right: 5px;
-                    color: #000000;
+                    color: $game-list-element-font;
                 }
             }
         }

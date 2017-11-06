@@ -1,6 +1,6 @@
 .game-room {
     position: relative;
-    background: radial-gradient(#3C3838, #201D1D);
+    background: radial-gradient($game-room-start-bg, $game-room-end-bg);
 
     .name {
         color: $game-room-font;

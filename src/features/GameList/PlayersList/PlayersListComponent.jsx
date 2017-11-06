@@ -31,7 +31,6 @@ const PlayersListComponent = ({ players }) => {
 
 PlayersListComponent.propTypes = {
     players: PropTypes.arrayOf(PropTypes.object),
-
 }
 
 export default PlayersListComponent

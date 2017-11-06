@@ -16,17 +16,22 @@ const LoginPageComponent = ({
                 <div className="login-form">
                     {!userName && <div>
                         <div className="login-input-group">
-                            <input ref={setInputRef} type="text" name="firstname" placeholder="" onKeyPress={onInputChange} autoFocus />
+                            <input
+                                ref={setInputRef}
+                                type="text"
+                                name="firstname"
+                                placeholder=""
+                                onKeyPress={onInputChange}
+                                autoFocus
+                            />
                             <button onClick={onSetNameClick}>Ok</button>
                         </div>
-                        <div className="form-text">
-                            <p>
-                                Get right in the game by typing in your desired nickname.
-                            </p>
-                        </div>
+                        <p className="form-text">
+                            Get right in the game by typing in your desired nickname.
+                        </p>
                     </div>}
                     {userName && <div className="form-text">
-                        <div>You are currently logged as<span className="user-name">{' '}{userName}</span></div>
+                        <div>You are currently logged as<span className="user-name">{` ${userName}`}</span></div>
                         <div>Click <span className="change-nickname" onClick={onNameReset}>here</span> to change nickname</div>
                     </div>}
                     
