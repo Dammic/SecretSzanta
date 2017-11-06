@@ -13,6 +13,7 @@ export class Notifications extends React.PureComponent {
         notifications: PropTypes.arrayOf(PropTypes.object),
         notificationsActions: PropTypes.objectOf(PropTypes.func),
     }
+
     render() {
         const selectedNotifications = reverse(takeRight(this.props.notifications, 3))
 

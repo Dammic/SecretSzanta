@@ -30,7 +30,7 @@ const actions = {
     },
     [deleteNotification]: (state, action) => {
         const { notifications } = state
-        const { id } = action.payload
+        const id = action.payload
         const newNotifications = reject(notifications, ['id', id])
         return {
             ...state,

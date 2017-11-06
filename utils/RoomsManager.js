@@ -1,6 +1,6 @@
 const {
-    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil,
-    filter, includes, forEach, random, slice, times, map,
+    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
+    filter, includes, forEach, random, slice, times, map, head,
     find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf,
 } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards } = require('../Dictionary')
@@ -23,15 +23,17 @@ class RoomsManager {
     initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
+        console.log(`INFO - New room "${roomName}" was created by: ${ownerName}`)
 
         this.rooms_props[roomName] = {
             ownerName,
             freeSlots,
             playersDict: {},
+            blackList: [],
             maxPlayers,
             password,
             chancellorCandidateName: '',
-            failedElections: 0,
+            failedElectionsCount: 0,
             votes: {},
             gamePhase: GamePhases.GAME_PHASE_NEW,
             drawPile: [],
@@ -42,8 +44,15 @@ class RoomsManager {
         }
     }
 
+    isInBlackList(roomName, playerName) {
+        const { blackList } = this.rooms_props[roomName]
+        return includes(blackList, playerName)
+    }
+
     setChancellor(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
+
+        this.rooms_props[roomName].failedElectionsCount = 0
 
         const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
         if (previousChancellor) {
@@ -111,7 +120,7 @@ class RoomsManager {
     startGame(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
-        this.rooms_props[roomName].failedElections = 0
+        this.rooms_props[roomName].failedElectionsCount = 0
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount
@@ -203,6 +212,10 @@ class RoomsManager {
         return this.rooms_props[roomName].votes
     }
 
+    getFailedElections(roomName) {
+        return this.rooms_props[roomName].failedElectionsCount
+    }
+
     getVotingResult(roomName) {
         const { votes } = this.rooms_props[roomName]
         const votesCount = countBy(votes)
@@ -211,11 +224,11 @@ class RoomsManager {
 
     failElection(roomName) {
         const room = this.rooms_props[roomName]
-        if (room.failedElections >= 3) {
-            room.failedElections = 0
+        room.failedElectionsCount += 1
+        if (room.failedElectionsCount >= 3) {
+            room.failedElectionsCount = 0
             return true
         }
-        room.failedElections += 1
         return false
     }
 
@@ -229,12 +242,12 @@ class RoomsManager {
         }))
     }
     getRoomDetails(roomName) {
-        const { playersDict, ownerName, maxPlayers, gamePhase, failedElections } = this.rooms_props[roomName]
+        const { playersDict, ownerName, maxPlayers, gamePhase, failedElectionsCount } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
             ownerName,
-            trackerPosition: failedElections,
+            trackerPosition: failedElectionsCount,
             playersDict: mapValues(playersDict, (player) => {
                 let genericInfo = pick(player, ['playerName', 'avatarNumber'])
                 genericInfo.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
@@ -352,6 +365,20 @@ class RoomsManager {
             player.isDead = true
         }
     }
+    kickPlayer(roomName, playerName, banned) {
+        const { playersDict, blackList } = this.rooms_props[roomName]
+
+        if (banned) {
+            blackList.push(playerName)
+        }
+
+        delete playersDict[playerName]
+    }
+    
+    /**********************************************/
+    /*******************policies*******************/
+    /**********************************************/
+
     enactPolicy(roomName, card) {
         if (card === PolicyCards.LiberalPolicy) {
             this.rooms_props[roomName].liberalPoliciesOnTheTable += 1
@@ -368,17 +395,16 @@ class RoomsManager {
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
-
-    getChoicePolicyCards(roomName) {
+    takeChoicePolicyCards(roomName, amount) {
         const { drawPile, discardPile } = this.rooms_props[roomName]
 
         let tmpDrawPile = drawPile
-        if (size(drawPile) < 3) {
+        if (size(drawPile) < amount) {
             tmpDrawPile = shuffle(concat(drawPile, discardPile))
             this.rooms_props[roomName].discardPile = []
         }
-        const policies = take(tmpDrawPile, 3)
-        this.rooms_props[roomName].drawPile = drop(tmpDrawPile, 3)
+        const policies = take(tmpDrawPile, amount)
+        this.rooms_props[roomName].drawPile = drop(tmpDrawPile, amount)
         this.rooms_props[roomName].drawnCards = policies
         return policies
     }
