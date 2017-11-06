@@ -6,7 +6,7 @@ import { delay, map, reject, find, forEach } from 'lodash'
 import { PlayerRole, ChoiceModeContexts, SocketEvents } from '../../../Dictionary'
 import { socket } from '../../utils/SocketHandler'
 import PlayerBoardComponent from './PlayerBoardComponent'
-import { increasePolicyCount, toggleChoiceMode, increaseTracker, resetTracker } from '../../ducks/roomDuck'
+import { increasePolicyCount, increaseTracker, resetTracker } from '../../ducks/roomDuck'
 import { hideChoiceMode } from '../../ducks/playersDuck'
 
 export class PlayerBoard extends React.PureComponent {
@@ -65,18 +65,27 @@ export class PlayerBoard extends React.PureComponent {
 
     onChoiceModeSelect = (selection) => {
         const { choiceMode: { context } } = this.props
+        let hideChoice = true
+        let socketEvent = null
         switch (context) {
             case ChoiceModeContexts.ChancellorChoice:
-                socket.emit(SocketEvents.VOTING_PHASE_START, { chancellorName: selection })
-                this.props.playersActions.hideChoiceMode()
+                socketEvent = SocketEvents.VOTING_PHASE_START
                 break
             case ChoiceModeContexts.KillChoice:
-                socket.emit(SocketEvents.PlayerKilled, { playerName: selection })
-                this.props.playersActions.hideChoiceMode()
+                socketEvent = SocketEvents.PlayerKilled
+                break
+            case ChoiceModeContexts.KickChoice:
+                socketEvent = SocketEvents.PlayerKicked
+                break
+            case ChoiceModeContexts.BanChoice:
+                socketEvent = SocketEvents.PlayerBanned
                 break
             default:
+                hideChoice = false
                 console.info('no action matches the specified context')
         }
+        if (socketEvent) socket.emit(socketEvent, { playerName: selection })
+        if (hideChoice) this.props.playersActions.hideChoiceMode()
     }
 
     render() {
@@ -122,7 +131,7 @@ const mapStateToProps = ({ user, room, players }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ increasePolicyCount, increaseTracker, resetTracker, toggleChoiceMode }, dispatch),
+    roomActions: bindActionCreators({ increasePolicyCount, increaseTracker, resetTracker }, dispatch),
     playersActions: bindActionCreators({ hideChoiceMode }, dispatch),
 })
 

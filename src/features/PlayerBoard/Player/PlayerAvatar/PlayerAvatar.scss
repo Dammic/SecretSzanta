@@ -9,6 +9,15 @@
         z-index: 20;
         animation: breathing 3s ease-out infinite normal;
     }
+    .owner-icon {
+        position: absolute;
+        top: -3%;
+        left: 9%;
+        transform: scale(2.5, 2.5);
+        z-index: 20;
+
+        color: $player-avatar-owner-icon;
+    }
     &.dead {
         &:before, &:after {
             position: absolute;

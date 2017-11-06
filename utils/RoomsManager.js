@@ -23,11 +23,13 @@ class RoomsManager {
     initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
+        console.log(`INFO - New room "${roomName}" was created by: ${ownerName}`)
 
         this.rooms_props[roomName] = {
             ownerName,
             freeSlots,
             playersDict: {},
+            blackList: [],
             maxPlayers,
             password,
             chancellorCandidateName: '',
@@ -40,6 +42,11 @@ class RoomsManager {
             liberalPoliciesOnTheTable: 0,
             fascistPoliciesOnTheTable: 0,
         }
+    }
+
+    isInBlackList(roomName, playerName) {
+        const { blackList } = this.rooms_props[roomName]
+        return includes(blackList, playerName)
     }
 
     setChancellor(roomName) {
@@ -358,6 +365,16 @@ class RoomsManager {
             player.isDead = true
         }
     }
+    kickPlayer(roomName, playerName, banned) {
+        const { playersDict, blackList } = this.rooms_props[roomName]
+
+        if (banned) {
+            blackList.push(playerName)
+        }
+
+        delete playersDict[playerName]
+    }
+    
     /**********************************************/
     /*******************policies*******************/
     /**********************************************/

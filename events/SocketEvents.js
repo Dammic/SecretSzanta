@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards } = require('../Dictionary')
-const { pullAt, isNil, indexOf, includes, filter, map, pick, get, forEach, mapValues, partial } = require('lodash')
+const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
@@ -55,10 +55,11 @@ module.exports = function (io, RoomsManager) {
                         })
                     } else {
                         RoomsManager.removeRoom(socket.currentRoom)
-                        console.log(`The room ${socket.currentRoom} was permanently removed!`)
+                        console.log(`The room "${socket.currentRoom}" was permanently removed!`)
                     }
                 }
 
+                socket.leave(socket.currentRoom)
                 socket.currentRoom = ''
             }
             socket.currentPlayerName = ''
@@ -89,6 +90,14 @@ module.exports = function (io, RoomsManager) {
 
         joinRoom: (socket, { playerName, roomName }) => {
             if (roomName && !socket.currentRoom && RoomsManager.isRoomPresent(roomName)) {
+                if (RoomsManager.isInBlackList(roomName, playerName)) {
+                    console.log(`INFO - Banned player ${playerName} tried to enter room ${roomName}!`)
+                    socket.emit(SocketEvents.CLIENT_ERROR, {
+                        error: 'You are BANNED in this room by the owner!',
+                    })
+                    return
+                }
+
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
                 socket.join(roomName)
                 socket.currentPlayerName = playerName
@@ -104,7 +113,7 @@ module.exports = function (io, RoomsManager) {
                     },
                 })
             } else {
-                console.error('Why is the room gone!')
+                console.error(`ERROR - Why is the room gone!, Player ${playerName} tried to enter nonexistent room ${roomName}!`)
                 socket.emit(SocketEvents.CLIENT_ERROR, {
                     error: 'Error - WHY IS THE ROOM GONE?!',
                 })
@@ -133,7 +142,7 @@ module.exports = function (io, RoomsManager) {
             })
         },
 
-        startVotingPhaseVote: (socket, { chancellorName }) => {
+        startVotingPhaseVote: (socket, { playerName: chancellorName }) => {
             RoomsManager.initializeVoting(socket.currentRoom, chancellorName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
                 data: {
@@ -329,6 +338,22 @@ module.exports = function (io, RoomsManager) {
                 socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
             }
         },
+        kickPlayer: (socket, { playerName }, permanently = false) => {
+            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
+                socketEvents.sendError(socket, ErrorMessages.notOwner)
+                return
+            }
+            RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
+                data: {
+                    playerName,
+                    timestamp: getCurrentTimestamp(),
+                    wasBanned: permanently,
+                },
+            })
+            const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
+            kickedSocket.leave(socket.currentRoom)
+        },
     }
 
     io.on('connection', (socket) => {
@@ -338,6 +363,7 @@ module.exports = function (io, RoomsManager) {
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions
         const partialFunctions = mapValues(socketEvents, func => partial(func, socket))
+        partialFunctions['banPlayer'] = partialRight(partialFunctions.kickPlayer, true)
 
         socket.on('disconnect', partialFunctions.disconnect)
         socket.on(SocketEvents.CLIENT_CREATE_ROOM, partialFunctions.createRoom)
@@ -348,6 +374,8 @@ module.exports = function (io, RoomsManager) {
         socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
         socket.on(SocketEvents.PlayerKilled, partialFunctions.killPlayer)
+        socket.on(SocketEvents.PlayerBanned, partialFunctions.banPlayer) 
+        socket.on(SocketEvents.PlayerKicked, partialFunctions.kickPlayer)
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
     })
 }

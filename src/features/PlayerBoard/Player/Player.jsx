@@ -60,7 +60,8 @@ export class Player extends React.PureComponent {
     }
 
     render() {
-        const { gamePhase, votes, choiceMode: { isVisible, chooserPlayerName }, player: { playerName, facistAvatar, avatarNumber, isDead, role } } = this.props
+        const { gamePhase, votes, roomOwnerName, choiceMode: { isVisible, chooserPlayerName },
+            player: { playerName, facistAvatar, avatarNumber, isDead, role } } = this.props
         const isSelectable = this.isSelectable()
         const isPlayerWaitedFor = (
             (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName)) && !isDead) ||
@@ -81,6 +82,7 @@ export class Player extends React.PureComponent {
                 isDead={isDead}
                 onChoiceModeSelect={this.onPlayerClick}
                 isPlayerWaitedFor={isPlayerWaitedFor}
+                isOwner={playerName === roomOwnerName}
             />
         )
     }
@@ -89,6 +91,7 @@ export class Player extends React.PureComponent {
 const mapStateToProps = ({ room, players }) => ({
     votes: room.votes,
     gamePhase: room.gamePhase,
+    roomOwnerName: room.ownerName,
     choiceMode: players.choiceMode,
 })
 

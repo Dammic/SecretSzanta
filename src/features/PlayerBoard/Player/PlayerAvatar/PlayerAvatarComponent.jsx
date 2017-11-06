@@ -7,6 +7,7 @@ const PlayerAvatarComponent = ({
     facistAvatar,
     isDead,
     isPlayerWaitedFor,
+    isOwner,
     className,
 }) => {
     const liberalAvatarPicture = require(`../../../../static/Avatar${liberalAvatar}.png`)
@@ -14,6 +15,7 @@ const PlayerAvatarComponent = ({
 
     return (
         <div className={classNames('avatar-wrapper', className, { dead: isDead })}>
+            {isOwner && <i className="fa fa-bolt owner-icon" aria-hidden="true" />}
             {isPlayerWaitedFor && <i className="fa fa-clock-o selecting-wait-icon" aria-hidden="true" />}
             {facistAvatar && <img className="portrait facist-portrait" src={facistAvatarPicture} alt="Player facist avatar" />}
             <img className="portrait" src={liberalAvatarPicture} alt="Player liberal avatar" />
@@ -26,6 +28,7 @@ PlayerAvatarComponent.propTypes = {
     facistAvatar: PropTypes.number,
     isDead: PropTypes.bool,
     isPlayerWaitedFor: PropTypes.bool,
+    isOwner: PropTypes.bool,
     className: PropTypes.string,
 }
 export default PlayerAvatarComponent

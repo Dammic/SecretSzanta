@@ -8,6 +8,8 @@ import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComp
 const UIBoxComponent = ({
     onStartVote,
     onStartGame,
+    onKickPlayer,
+    onBanPlayer,
     onShowAffiliationClick,
     isOwner,
     isAffiliationHidden,
@@ -24,6 +26,8 @@ const UIBoxComponent = ({
     const ownersButtons = [
         <a key="startGame" role="button" tabIndex="0" className="btn" onClick={onStartGame}>start</a>,
         <a key="startVote" role="button" tabIndex="0" className="btn" onClick={onStartVote}>voting</a>,
+        <a key="kickPlayer" role="button" tabIndex="0" className="btn" onClick={onKickPlayer}>kick</a>, 
+        <a key="banPlayer" role="button" tabIndex="0" className="btn" onClick={onBanPlayer}>ban</a>,
     ];
     return (
         <div className="ui-box">
