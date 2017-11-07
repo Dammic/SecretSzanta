@@ -10,7 +10,7 @@ const TopNavbarComponent = ({
 }) => {
     return (
         <div className="top-bar">
-            <button onClick={showModal}>Create</button>
+            <button onClick={showModal}>New room</button>
             <CreateGameModal showModal={isModalShown} onHide={onHide} onCreate={onCreate}/>
         </div>
     )

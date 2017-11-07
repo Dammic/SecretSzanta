@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { getAvatar } from '../../../../utils/avatarsHelper'
 
 const PlayerAvatarComponent = ({
     liberalAvatar,
@@ -10,8 +11,8 @@ const PlayerAvatarComponent = ({
     isOwner,
     className,
 }) => {
-    const liberalAvatarPicture = require(`../../../../static/Avatar${liberalAvatar}.png`)
-    const facistAvatarPicture = facistAvatar ? require(`../../../../static/Avatar${facistAvatar}.png`) : ''
+    const liberalAvatarPicture = getAvatar(`liberal-${liberalAvatar}`)
+    const facistAvatarPicture = getAvatar(`fascist-${facistAvatar}`)
 
     return (
         <div className={classNames('avatar-wrapper', className, { dead: isDead })}>

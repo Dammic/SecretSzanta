@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { map } from 'lodash'
 import GameListItemComponent from './GameListItemComponent'
 import TopNavbar from './TopNavbar/TopNavbar'
+import PlayersList from './PlayersList/PlayersList'
+import Chat from '../UIBox/Chat/Chat'
 
 const GameListComponent = ({
     userName,
@@ -10,20 +13,28 @@ const GameListComponent = ({
 }) => {
     return (
         <div className="game-room">
-            <TopNavbar />
-            Hello {userName}!
-            <div className="game-list">
-                {rooms.map((room) => {
-                    return (
-                        <GameListItemComponent
-                            key={room.roomID}
-                            roomID={room.roomID}
-                            roomName={room.roomName}
-                            playerCount={room.playerCount}
-                            onClick={onClick}
-                        />
-                    )
-                })}
+            <div className="game-list-container">
+                <div className="first-column">
+                    <div className="game-list">
+                        {map(rooms, room => (
+                            <GameListItemComponent
+                                key={room.roomID}
+                                roomID={room.roomID}
+                                roomName={room.roomName}
+                                playerCount={room.playerCount}
+                                onClick={onClick}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <div className="second-column">
+                    <div className="utils-row">
+                        <span>Logged as <b>{userName}</b>!</span>
+                        <TopNavbar />
+                    </div>
+                    <PlayersList />
+                    <Chat />
+                </div>
             </div>
         </div>
     )

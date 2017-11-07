@@ -1,6 +1,7 @@
 // external
 $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
+@import "../../node_modules/normalize.css/normalize.css";
 
 // variables
 @import './variables/variables.scss';
@@ -25,6 +26,7 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import '../features/UIBox/Chat/ChatForm/ChatForm.scss';
 @import "../features/LoginPage/LoginPage.scss";
 @import "../features/GameList/GameList.scss";
+@import "../features/GameList/PlayersList/PlayersList.scss";
 @import '../features/PlayerBoard/PlayerBoard.scss';
 @import '../features/PlayerBoard/Player/Player.scss';
 @import '../features/Modal/Modal.scss';
@@ -33,4 +35,8 @@ $fa-font-path: "../../node_modules/font-awesome/fonts";
 @import "../features/Modal/VotingModal/VotingModal.scss";
 @import "../features/Modal/PolicyChoiceModal/PolicyChoiceModal.scss";
 @import '../features/Modal/WinningModal/WinningModal.scss';
-
+@import "../features/Header/Header.scss";
+@import "../features/LandingPage/LandingPage.scss";
+@import "../features/LandingPage/StaticPages/About/About.scss";
+@import "../features/LandingPage/StaticPages/HowToPlay/HowToPlay.scss";
+@import "../features/LandingPage/StaticPages/News/News.scss";

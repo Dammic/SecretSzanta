@@ -6,8 +6,6 @@ import GameRoomComponent from './GameRoomComponent'
 import { SocketEvents } from '../../../Dictionary'
 import { socket } from '../../utils/SocketHandler'
 
-require('../../styles/main.scss')
-
 export class GameRoom extends React.PureComponent {
     static propTypes = {
         // redux

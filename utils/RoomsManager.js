@@ -275,7 +275,7 @@ class RoomsManager {
             const newPlayer = {
                 playerName,
                 role: null,
-                avatarNumber: random(1, 5),
+                avatarNumber: random(1, 6),
                 facistAvatar: null,
                 affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
                 slotNumber: nextEmptySlot,

@@ -22,11 +22,12 @@
         overflow-y: auto;
         box-shadow: 0 5px 15px rgba(0, 0, 0, .25);
         background-color: $modal-background;
+        color: $modal-font;
         
         .modal-title {
             text-align: center;
             padding: 5px 10px 5px 10px;
-            background-color: #E4E4E4;
+            background-color: $modal-title;
             width: 100%;
         
         }

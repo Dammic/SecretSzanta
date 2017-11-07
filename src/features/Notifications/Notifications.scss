@@ -7,29 +7,23 @@
     position: relative;
     width: 50vw;
     left: 25vw;
-
     height: 30px;
-
-    border: 1px solid $notification-border-color;
     border-radius: 5px;
     background-color: $notification-information-color;
+    padding-left: 10px;
+    padding-top: 10px;
 
     &.error {
         background-color: $notification-error-color;
+        color: $notification-font;
     }
 
     &-exit {
         position: absolute;
-        top: 0px;
+        top: 25%;
         right: 5px;
 
-        width: 25px;
-        height: 25px;
         color: black;
         text-align: center;
-
-        border: 1px solid $notification-close-border-color;
-        border-radius: 10px;
-        background: $notification-close-color;
     }
 }

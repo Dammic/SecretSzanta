@@ -1,0 +1,47 @@
+.players-list {
+    height: 500px;
+    background-color: $players-list-bg;
+    margin-top: 5px;
+    padding: 0 10px 10px 10px;
+    color: $players-list-font;
+
+    .category {
+        text-align: right;
+        height: 20px;
+        border-bottom: 1px solid $players-list-element-border;
+        margin-left: -10px;
+        margin-right: -10px;
+        padding-top: 5px;
+        background-color: $players-list-category-bg;
+
+        > span {
+            margin-right: 5px;
+            font-size: 13px;
+        }
+    }
+    .player-row {
+        display: flex;
+        align-items: center;
+        padding: 3px;
+        border-bottom: 1px solid $players-list-element-border;
+        .avatar {
+            height: 30px;
+            width: 30px;
+            border-radius: 50px;
+            display: none;
+            @include respond-to(medium) { 
+                display: initial; 
+            }
+        }
+        > span {
+            margin-left: 10px; 
+        }
+        .room-name {
+            position: absolute;
+            right: 30px;
+            .small-font {
+                font-size: 12px; 
+            }
+        }
+    }
+}

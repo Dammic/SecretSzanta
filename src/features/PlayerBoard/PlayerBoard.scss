@@ -43,6 +43,7 @@ $elementsHeight: 80%;
             img {
                 width: $elementsWidth;
                 height: $elementsHeight;
+                filter: brightness(0.8);
             }
 
         }
@@ -65,7 +66,7 @@ $elementsHeight: 80%;
                 height: 20px;
                 position: absolute;
                 border-radius: 50%;
-                background-image: url("../static/Avatar.png");
+                background-image: url("../static/Avatar1.png");
                 background-size: 110%;
                 z-index: 0;
             }
@@ -120,6 +121,8 @@ $elementsHeight: 80%;
     .choice-overlay {
         z-index: 20;
         filter: blur(100px);
+        background-color: $choice-overlay-bg;
+        opacity: .1;
     }
 }
 

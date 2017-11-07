@@ -67,4 +67,12 @@ module.exports = {
         FacistPolicy: 'FACIST_POLICY',
         LiberalPolicy: 'LIBERAL_POLICY',
     },
+    Views: {
+        Home: 'HOME',
+        Lobby: 'LOBBY',
+        HowToPlay: 'HOW_TO_PLAY',
+        News: 'NEWS',
+        About: 'ABOUT',
+        Game: 'GAME',
+    },
 }
