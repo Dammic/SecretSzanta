@@ -20,36 +20,41 @@ export class LandingPage extends React.PureComponent {
         currentView: PropTypes.string,
     }
 
-    getCurrentView = () => {
+    renderCurrentView = () => {
         const { currentView } = this.props
-        if (currentView === Views.HowToPlay) {
-            return <HowToPlayComponent />
-        } else if (currentView === Views.News) {
-            return <News />
-        } else if (currentView === Views.About) {
-            return <AboutComponent />
-        } else if (currentView === Views.Lobby) {
-            return <GameList />
+
+        if (currentView === Views.Game) {
+            return <GameRoom />
         }
-        return <LoginPage />
+
+        let returnedView
+        if (currentView === Views.HowToPlay) {
+            returnedView = <HowToPlayComponent />
+        } else if (currentView === Views.News) {
+            returnedView = <News />
+        } else if (currentView === Views.About) {
+            returnedView = <AboutComponent />
+        } else if (currentView === Views.Lobby) {
+            returnedView = <GameList />
+        } else {
+            returnedView = <LoginPage />
+        }
+
+        return (
+            <div>
+                <Header />
+                {returnedView}
+            </div>
+        )
     }
 
     render() {
-        const { currentView } = this.props
-        const viewComponent = (currentView === Views.Game
-            ? <GameRoom />
-            : (<div>
-                <Header />
-                {this.getCurrentView()}
-            </div>)
-        )
-
         return (
             <div className="landing-page">
                 <Notifications />
                 <SocketHandler />
                 <Modal />
-                {viewComponent}
+                {this.renderCurrentView()}
             </div>
         )
     }

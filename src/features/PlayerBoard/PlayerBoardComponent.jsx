@@ -4,6 +4,10 @@ import { times, map } from 'lodash'
 import { PlayerDirection } from '../../../Dictionary'
 import Player from './Player/Player'
 import classNames from 'classnames'
+import liberalCard from '../../static/liberalcard.png'
+import facistCard from '../../static/facistcard.png'
+import liberalPolicies from '../../static/liberalpolicies.png'
+import facistPolicies from '../../static/facistpolicies3.png'
 
 const PlayerBoardComponent = ({
     playersLeft = [],
@@ -18,7 +22,7 @@ const PlayerBoardComponent = ({
 }) => {
     const renderPolicies = (count, cardType) => {
         const result = []
-        const cardPicture = (cardType === 'liberal') ? require('../../static/liberalcard.png') : require('../../static/facistcard.png')
+        const cardPicture = (cardType === 'liberal' ? liberalCard : facistCard)
 
         times(count, (index) => {
             result.push(<img key={`${cardType}-card-${index}`} src={cardPicture} alt="Policy" />)
@@ -52,7 +56,7 @@ const PlayerBoardComponent = ({
                 {renderPlayers(playersMiddle, 'players-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })} >
-                    <img src={require('../../static/liberalpolicies.png')} />
+                    <img src={liberalPolicies} />
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
@@ -60,7 +64,7 @@ const PlayerBoardComponent = ({
                 </div>
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
-                    <img src={require('../../static/facistpolicies3.png')} />
+                    <img src={facistPolicies} />
                     <div className="policy-card-fascist">
                         {renderPolicies(policiesFacistCount, 'facist')}
                     </div>

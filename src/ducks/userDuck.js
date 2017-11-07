@@ -11,7 +11,7 @@ const initialState = {
     userName: '',
     roomName: '',
     isAffiliationHidden: false,
-    currentView: null,
+    currentView: Views.Home,
 }
 
 const actions = {

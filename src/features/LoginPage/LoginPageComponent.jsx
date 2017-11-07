@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Avatar2 from '../../static/Avatar2.png'
-import Avatar1 from '../../static/Avatar1.png'
+import { getAvatar } from '../../utils/avatarsHelper'
 
 const LoginPageComponent = ({
     onSetNameClick,
@@ -10,6 +9,8 @@ const LoginPageComponent = ({
     userName,
     onNameReset,
 }) => {
+    const avatar2 = getAvatar('liberal-2')
+    const avatar3 = getAvatar('liberal-3')
     return (
         <div className="login-page">
             <div className="login-form-container">
@@ -44,8 +45,8 @@ const LoginPageComponent = ({
                     </div>
                 </div>
             </div>
-            <img src={Avatar2} alt="avatar" className="home-image-large" />
-            <img src={Avatar1} alt="avatar" className="home-image-small" />
+            <img src={avatar3} alt="avatar" className="home-image-large" />
+            <img src={avatar2} alt="avatar" className="home-image-small" />
             <div className="home-content">
 
             </div>
