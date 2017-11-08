@@ -127,7 +127,7 @@ export class SocketHandler extends React.PureComponent {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
                 this.props.chatActions.clearChat()
-                this.props.userActions.setView({ viewName: Views.Home })
+                this.props.userActions.setView({ viewName: Views.Lobby })
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
