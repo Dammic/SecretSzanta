@@ -90,7 +90,7 @@ module.exports = function (io, RoomsManager) {
         },
 
         joinRoom: (socket, { playerName, roomName }) => {
-            if (roomName && socket.currentRoom !== GlobalRoomName && RoomsManager.isRoomPresent(roomName)) {
+            if (roomName && socket.currentRoom === GlobalRoomName && RoomsManager.isRoomPresent(roomName)) {
                 if (RoomsManager.isInBlackList(roomName, playerName)) {
                     console.log(`INFO - Banned player ${playerName} tried to enter room ${roomName}!`)
                     socket.emit(SocketEvents.CLIENT_ERROR, {
@@ -100,11 +100,7 @@ module.exports = function (io, RoomsManager) {
                 }
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
-                socket.join(roomName)
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
-                socket.leave(GlobalRoomName)
-
-                socket.currentRoom = roomName
+                socketEvents.switchRooms(socket, socket.currentRoom, roomName)
 
                 RoomsManager.addPlayer(roomName, playerName, socket)
                 socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
@@ -355,34 +351,32 @@ module.exports = function (io, RoomsManager) {
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
-            socketEvents.leaveGameRoom(kickedSocket)
+            socketEvents.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
         },
-        leaveGameRoom: (socket) => {
-            socket.leave(socket.currentRoom)
-            socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
-            if (socket.currentRoom !== GlobalRoomName) {
-                socket.join(GlobalRoomName)
-                socket.currentRoom = GlobalRoomName
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has entered the room` })
+        switchRooms: (socket, startRoom, targetRoom) => {
+            if (startRoom) {
+                socket.leave(startRoom)
+                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
+            }
+            socket.currentRoom = targetRoom
+            if (targetRoom) {
+                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
+                socket.join(targetRoom)
             }
         },
         selectName: (socket, { userName }) => {
             // deselecting name
             if (!userName) {
                 RoomsManager.removePlayerFromPlayersList(socket.currentPlayerName)
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
                 socket.emit(SocketEvents.SelectName, { data: { userName: '' } })
+                socketEvents.switchRooms(socket, GlobalRoomName, '')
                 socket.currentPlayerName = ''
-                socket.currentRoom = ''
-                socket.leave(GlobalRoomName)
             // selecting name
             } else if (!RoomsManager.isInPlayersList(userName)) {
                 RoomsManager.addPlayerToPlayersList(userName)
                 socket.emit(SocketEvents.SelectName, { data: { userName } })
                 socket.currentPlayerName = userName
-                socket.currentRoom = GlobalRoomName
-                socket.join(GlobalRoomName)
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has entered the room` })
+                socketEvents.switchRooms(socket, '', GlobalRoomName)
             } else {
                 socketEvents.sendError(socket, ErrorMessages.NameTaken)            
             }

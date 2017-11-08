@@ -21,13 +21,11 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
-            this.props.chatActions.addMessage({ timestamp, content: `${player.playerName} has joined the room!` })
             player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
             this.props.roomActions.addPlayer({ player })
         })
         socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (payload) => {
             const { playerName, timestamp } = payload.data
-            this.props.chatActions.addMessage({ timestamp, content: `${playerName} has left the room!` })
             this.props.roomActions.removePlayer({ playerName })
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
@@ -128,7 +126,7 @@ export class SocketHandler extends React.PureComponent {
             if (this.props.userName === playerName) {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
-                this.props.chatActions.resetChat()
+                this.props.chatActions.clearChat()
                 this.props.userActions.setView({ viewName: Views.Home })
                 return
             }
