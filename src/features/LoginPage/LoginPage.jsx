@@ -2,9 +2,9 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Views } from '../../../Dictionary'
+import { SocketEvents } from '../../../Dictionary'
 import LoginPageComponent from './LoginPageComponent'
-import { selectName, setView } from '../../ducks/userDuck'
+import { socket } from '../../utils/SocketHandler'
 
 export class LoginPage extends React.PureComponent {
     static propTypes = {
@@ -32,13 +32,12 @@ export class LoginPage extends React.PureComponent {
     }
 
     resetName = () => {
-        this.props.userActions.selectName({ userName: '' })
+        socket.emit(SocketEvents.SelectName, { userName: '' })
     }
 
     setName = () => {
         const name = this.inputRef.value
-        this.props.userActions.selectName({ userName: name })
-        this.props.userActions.setView({ viewName: Views.Lobby })
+        socket.emit(SocketEvents.SelectName, { userName: name })
     }
 
     render() {
@@ -57,7 +56,4 @@ export class LoginPage extends React.PureComponent {
 const mapStateToProps = ({ user: { userName } }) => ({
     userName,
 })
-const mapDispatchToProps = dispatch => ({
-    userActions: bindActionCreators({ selectName, setView }, dispatch),
-})
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)
+export default connect(mapStateToProps)(LoginPage)

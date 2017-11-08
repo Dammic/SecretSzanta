@@ -11,6 +11,7 @@ const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards } = require('..
  */
 class RoomsManager {
     constructor() {
+        this.players = {}
         this.rooms_props = {}
     }
 
@@ -415,6 +416,26 @@ class RoomsManager {
 
     removeRoom(roomName) {
         delete this.rooms_props[roomName]
+    }
+
+    /**********************************************/
+    /*******************policies*******************/
+    /**********************************************/
+    isInPlayersList(userName) {
+        return !!this.players[userName]
+    }
+
+    addPlayerToPlayersList(userName) {
+        this.players[userName] = {
+            avatarNumber: random(1, 6),
+            playerName: userName,
+            currentRoom: null,
+        }
+    }
+    removePlayerFromPlayersList(userName) {
+        if (userName) {
+            delete this.players[userName]
+        }
     }
 }
 

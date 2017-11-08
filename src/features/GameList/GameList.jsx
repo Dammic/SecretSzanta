@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Views } from '../../../Dictionary'
 import GameListComponent from './GameListComponent'
 import { joinRoom, setView } from '../../ducks/userDuck'
+import { clearChat } from '../../ducks/chatDuck'
 import { rooms } from '../../const/roomMock'
 
 export class GameList extends React.PureComponent {
@@ -18,6 +19,7 @@ export class GameList extends React.PureComponent {
     setRoomName = (event) => {
         const roomID = event.target.attributes.getNamedItem('data-roomid').value
         this.props.userActions.joinRoom({ roomName: roomID })
+        this.props.chatActions.clearChat()
         this.props.userActions.setView({ viewName: Views.Game })
     }
 
@@ -39,5 +41,6 @@ const mapStateToProps = ({ user }) => ({
 })
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ joinRoom, setView }, dispatch),
+    chatActions: bindActionCreators({ clearChat }, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)
