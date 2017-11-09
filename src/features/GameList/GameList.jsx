@@ -28,7 +28,7 @@ export class GameList extends React.PureComponent {
         return (
             <GameListComponent
                 userName={userName}
-                // when time comes, you can rooms swap it with roomsList
+                // when time comes, you can rooms swap it with roomsList from store
                 rooms={rooms}
                 onClick={this.setRoomName}
             />
