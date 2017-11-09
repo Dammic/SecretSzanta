@@ -12,8 +12,8 @@ export class GameList extends React.PureComponent {
     static propTypes = {
         // redux
         userActions: PropTypes.objectOf(PropTypes.func),
-        roomName: PropTypes.string,
         userName: PropTypes.string,
+        roomsList: PropTypes.objectOf(PropTypes.any),
     }
 
     setRoomName = (event) => {
@@ -24,10 +24,11 @@ export class GameList extends React.PureComponent {
     }
 
     render() {
-        const { userName } = this.props
+        const { userName, roomsList } = this.props
         return (
             <GameListComponent
                 userName={userName}
+                // when time comes, you can rooms swap it with roomsList
                 rooms={rooms}
                 onClick={this.setRoomName}
             />
@@ -35,9 +36,9 @@ export class GameList extends React.PureComponent {
     }
 }
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, lobby }) => ({
     userName: user.userName,
-    roomName: user.roomName,
+    roomsList: lobby.roomsList,
 })
 const mapDispatchToProps = dispatch => ({
     userActions: bindActionCreators({ joinRoom, setView }, dispatch),

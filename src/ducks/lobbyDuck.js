@@ -2,8 +2,9 @@ import { cloneDeep } from 'lodash'
 import { handleActions, createAction } from 'redux-actions'
 
 // Actions
-const setPlayersList = createAction('players/SET_PLAYERS_LIST')
-const changePlayerInPlayersList = createAction('players/CHANGE_PLAYER_IN_PLAYERS_LIST')
+const syncLobby = createAction('lobby/SYNC_LOBBY')
+const changePlayerInPlayersList = createAction('lobby/CHANGE_PLAYER_IN_PLAYERS_LIST')
+const changeRoomInRoomsList = createAction('lobby/CHANGE_ROOM_IN_ROOMS_LIST')
 
 const initialState = {
     // playersList has structure: { avatarNumber, playerName, currentRoom }
@@ -12,9 +13,10 @@ const initialState = {
 }
 
 const actions = {
-    [setPlayersList]: (state, { payload: { players } }) => ({
+    [syncLobby]: (state, { payload: { players, rooms } }) => ({
         ...state,
         playersList: players,
+        roomsList: rooms,
     }),
 
     // passing empty player results in player removal from list
@@ -31,7 +33,22 @@ const actions = {
             playersList: newPlayersList,
         }
     },
+
+    // passing empty room results in room removal from list
+    [changeRoomInRoomsList]: (state, action) => {
+        const { room, roomName } = action.payload
+        const newRoomsList = cloneDeep(state.roomsList)
+        if (roomName && room) {
+            newRoomsList[roomName] = room
+        } else {
+            delete newRoomsList[roomName]
+        }
+        return {
+            ...state,
+            roomsList: newRoomsList,
+        }
+    },
 }
 
-export { setPlayersList, changePlayerInPlayersList }
+export { syncLobby, changePlayerInPlayersList, changeRoomInRoomsList }
 export default handleActions(actions, initialState)

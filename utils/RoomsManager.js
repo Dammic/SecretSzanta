@@ -236,11 +236,19 @@ class RoomsManager {
     /****************************/
 
     getRoomsList() {
-        return map(this.rooms_props, (room, key) => ({
+        return mapValues(this.rooms_props, (room, key) => ({
             roomName: key,
             maxPlayers: room.maxPlayers,
             playersCount: size(room.playersDict),
         }))
+    }
+    getRoomDetailsForLobby(roomName) {
+        const room = this.rooms_props[roomName]
+        return {
+            roomName,
+            maxPlayers: room.maxPlayers,
+            playersCount: size(room.playersDict),
+        }
     }
     getRoomDetails(roomName) {
         const { playersDict, ownerName, maxPlayers, gamePhase, failedElectionsCount } = this.rooms_props[roomName]
