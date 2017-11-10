@@ -371,12 +371,14 @@ module.exports = function (io, RoomsManager) {
                 socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
                 
                 const updatedRoom = (startRoom === GlobalRoomName ? targetRoom : startRoom)
-                io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
-                    data: {
-                        roomName: updatedRoom,
-                        room: RoomsManager.getRoomDetailsForLobby(updatedRoom),
-                    },
-                })
+                if (updatedRoom) {
+                    io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
+                        data: {
+                            roomName: updatedRoom,
+                            room: RoomsManager.getRoomDetailsForLobby(updatedRoom),
+                        },
+                    })
+                }
             }
             socket.currentRoom = targetRoom
             if (targetRoom) {
