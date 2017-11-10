@@ -192,13 +192,12 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.SelectName, ({ data: { userName } }) => {
+            this.props.chatActions.clearChat()
             if (userName) {
                 this.props.userActions.selectName({ userName })
-                this.props.chatActions.clearChat()
                 this.props.userActions.setView({ viewName: Views.Lobby })
             } else {
                 this.props.userActions.selectName({ userName: '' })
-                this.props.chatActions.clearChat()
                 this.props.userActions.setView({ viewName: Views.Home })
             }
         })
