@@ -3,12 +3,12 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { delay } from 'lodash'
-import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes } from '../../Dictionary'
+import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes, Views } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck' 
 import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
-import { addMessage } from '../ducks/chatDuck'
+import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 
 export let socket
@@ -21,13 +21,11 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
-            this.props.chatActions.addMessage({ timestamp, content: `${player.playerName} has joined the room!` })
             player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
             this.props.roomActions.addPlayer({ player })
         })
         socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (payload) => {
             const { playerName, timestamp } = payload.data
-            this.props.chatActions.addMessage({ timestamp, content: `${playerName} has left the room!` })
             this.props.roomActions.removePlayer({ playerName })
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
@@ -126,9 +124,10 @@ export class SocketHandler extends React.PureComponent {
             const { playerName, wasBanned, timestamp } = payload.data
 
             if (this.props.userName === playerName) {
-                this.props.userActions.joinRoom({ roomName: '' })
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
+                this.props.chatActions.clearChat()
+                this.props.userActions.setView({ viewName: Views.Lobby })
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
@@ -191,6 +190,17 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             this.props.roomActions.increasePolicyCount({ isFacist })
         })
+
+        socket.on(SocketEvents.SelectName, ({ data: { userName } }) => {
+            this.props.chatActions.clearChat()
+            if (userName) {
+                this.props.userActions.selectName({ userName })
+                this.props.userActions.setView({ viewName: Views.Lobby })
+            } else {
+                this.props.userActions.selectName({ userName: '' })
+                this.props.userActions.setView({ viewName: Views.Home })
+            }
+        })
     }
 
     render() {
@@ -209,7 +219,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         roomActions: bindActionCreators(roomActions, dispatch),
         userActions: bindActionCreators(userActions, dispatch),
-        chatActions: bindActionCreators({ addMessage }, dispatch),
+        chatActions: bindActionCreators({ addMessage, clearChat }, dispatch),
         playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
         notificationsActions: bindActionCreators({ addNotification }, dispatch),

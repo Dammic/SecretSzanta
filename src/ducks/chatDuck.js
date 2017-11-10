@@ -3,6 +3,7 @@ import { handleActions, createAction } from 'redux-actions'
 
 // Actions
 const addMessage = createAction('chat/ADD_MESSAGE')
+const clearChat = createAction('chat/CLEAR_CHAT')
 
 const initialState = {
     messages: [],
@@ -22,7 +23,10 @@ const actions = {
             messages: [...messages, newMessage],
         }
     },
+    [clearChat]: state => {
+        return initialState
+    },
 }
 
-export { addMessage }
+export { addMessage, clearChat }
 export default handleActions(actions, initialState)

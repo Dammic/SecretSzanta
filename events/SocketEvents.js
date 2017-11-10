@@ -1,5 +1,5 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards } = require('../Dictionary')
+const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName } = require('../Dictionary')
 const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
@@ -58,10 +58,11 @@ module.exports = function (io, RoomsManager) {
                         console.log(`The room "${socket.currentRoom}" was permanently removed!`)
                     }
                 }
-
                 socket.leave(socket.currentRoom)
                 socket.currentRoom = ''
             }
+
+            RoomsManager.removePlayerFromPlayersList(socket.currentPlayerName)
             socket.currentPlayerName = ''
         },
 
@@ -89,7 +90,7 @@ module.exports = function (io, RoomsManager) {
         },
 
         joinRoom: (socket, { playerName, roomName }) => {
-            if (roomName && !socket.currentRoom && RoomsManager.isRoomPresent(roomName)) {
+            if (roomName && socket.currentRoom === GlobalRoomName && RoomsManager.isRoomPresent(roomName)) {
                 if (RoomsManager.isInBlackList(roomName, playerName)) {
                     console.log(`INFO - Banned player ${playerName} tried to enter room ${roomName}!`)
                     socket.emit(SocketEvents.CLIENT_ERROR, {
@@ -99,9 +100,7 @@ module.exports = function (io, RoomsManager) {
                 }
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
-                socket.join(roomName)
-                socket.currentPlayerName = playerName
-                socket.currentRoom = roomName
+                socketEvents.switchRooms(socket, socket.currentRoom, roomName)
 
                 RoomsManager.addPlayer(roomName, playerName, socket)
                 socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
@@ -352,7 +351,35 @@ module.exports = function (io, RoomsManager) {
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
-            kickedSocket.leave(socket.currentRoom)
+            socketEvents.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
+        },
+        switchRooms: (socket, startRoom, targetRoom) => {
+            if (startRoom) {
+                socket.leave(startRoom)
+                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
+            }
+            socket.currentRoom = targetRoom
+            if (targetRoom) {
+                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
+                socket.join(targetRoom)
+            }
+        },
+        selectName: (socket, { userName }) => {
+            // deselecting name
+            if (!userName) {
+                RoomsManager.removePlayerFromPlayersList(socket.currentPlayerName)
+                socket.emit(SocketEvents.SelectName, { data: { userName: '' } })
+                socketEvents.switchRooms(socket, GlobalRoomName, '')
+                socket.currentPlayerName = ''
+            // selecting name
+            } else if (!RoomsManager.isInPlayersList(userName)) {
+                RoomsManager.addPlayerToPlayersList(userName)
+                socket.emit(SocketEvents.SelectName, { data: { userName } })
+                socket.currentPlayerName = userName
+                socketEvents.switchRooms(socket, '', GlobalRoomName)
+            } else {
+                socketEvents.sendError(socket, ErrorMessages.NameTaken)            
+            }
         },
     }
 
@@ -377,5 +404,6 @@ module.exports = function (io, RoomsManager) {
         socket.on(SocketEvents.PlayerBanned, partialFunctions.banPlayer) 
         socket.on(SocketEvents.PlayerKicked, partialFunctions.kickPlayer)
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
+        socket.on(SocketEvents.SelectName, partialFunctions.selectName)
     })
 }

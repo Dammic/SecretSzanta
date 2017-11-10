@@ -1,5 +1,6 @@
 module.exports = {
     SocketEvents: {
+        SelectName: 'CLIENT_SELECT_NAME',
         CLIENT_SEND_MESSAGE: 'CLIENT_SEND_MESSAGE',
         CLIENT_JOIN_ROOM: 'CLIENT_JOIN_ROOM',
         CLIENT_LEAVE_ROOM: 'CLIENT_LEAVE_ROOM',
@@ -56,6 +57,7 @@ module.exports = {
     },
     ErrorMessages: {
         notOwner: 'This action is forbidden! You are not the owner!',
+        NameTaken: 'The selected name is already taken',
     },
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
@@ -75,4 +77,5 @@ module.exports = {
         About: 'ABOUT',
         Game: 'GAME',
     },
+    GlobalRoomName: 'Global',
 }
