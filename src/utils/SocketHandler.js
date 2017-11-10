@@ -6,8 +6,9 @@ import { delay } from 'lodash'
 import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes, Views } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
-import * as userActions from '../ducks/userDuck' 
-import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
+import * as userActions from '../ducks/userDuck'
+import * as lobbyActions from '../ducks/lobbyDuck'
+import { setChoiceMode, setChooserPlayer, setPlayersList } from '../ducks/playersDuck'
 import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 
@@ -201,6 +202,14 @@ export class SocketHandler extends React.PureComponent {
                 this.props.userActions.setView({ viewName: Views.Home })
             }
         })
+
+        socket.on(SocketEvents.SyncPlayersList, ({ data: { players }}) => {
+          this.props.lobbyActions.setPlayersList({ players })            
+        })
+        
+        socket.on(SocketEvents.PlayersListChanged, ({ data: { player, playerName }}) => {
+            this.props.lobbyActions.changePlayerInPlayersList({ player, playerName })
+        })
     }
 
     render() {
@@ -220,9 +229,10 @@ const mapDispatchToProps = (dispatch) => {
         roomActions: bindActionCreators(roomActions, dispatch),
         userActions: bindActionCreators(userActions, dispatch),
         chatActions: bindActionCreators({ addMessage, clearChat }, dispatch),
-        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
+        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer, setPlayersList }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
         notificationsActions: bindActionCreators({ addNotification }, dispatch),
+        lobbyActions: bindActionCreators(lobbyActions, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)

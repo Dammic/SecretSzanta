@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map, filter, reject } from 'lodash'
+import { map, filter, reject, size } from 'lodash'
 import PlayersListRow from './PlayersListRow'
 
 const PlayersListComponent = ({ players }) => {
     return (
         <div className="players-list">
             <div className="category">
-                <span>Currently logged players: <b>0</b></span>
+                <span>Currently logged players: <b>{size(players)}</b></span>
             </div>
             {map(filter(players, player => !!player.currentRoom), player => (
                 <PlayersListRow
@@ -30,7 +30,7 @@ const PlayersListComponent = ({ players }) => {
 }
 
 PlayersListComponent.propTypes = {
-    players: PropTypes.arrayOf(PropTypes.object),
+    players: PropTypes.objectOf(PropTypes.any),
 }
 
 export default PlayersListComponent

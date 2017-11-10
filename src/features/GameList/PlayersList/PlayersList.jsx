@@ -1,30 +1,24 @@
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import PlayersListComponent from './PlayersListComponent'
 
 class PlayersList extends PureComponent {
+    static propTypes = {
+        playersList: PropTypes.object,
+    }
     render() {
-        const fakePlayers = [
-            {
-                playerName: 'testplayer1',
-                currentRoom: 'testroom1',
-                avatarNumber: 1,
-            },
-            {
-                playerName: 'testplayer3',
-                avatarNumber: 3,
-            },
-            {
-                playerName: 'testplayer2',
-                currentRoom: 'testroom2',
-                avatarNumber: 2,
-            },
-        ]
+        const { playersList } = this.props
         return (
             <PlayersListComponent
-                players={fakePlayers}
+                players={playersList}
             />
         )
     }
 }
 
-export default PlayersList
+const mapStateToProps = ({ lobby }) => ({
+    playersList: lobby.playersList,
+})
+
+export default connect(mapStateToProps)(PlayersList)

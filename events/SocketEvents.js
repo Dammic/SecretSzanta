@@ -58,11 +58,10 @@ module.exports = function (io, RoomsManager) {
                         console.log(`The room "${socket.currentRoom}" was permanently removed!`)
                     }
                 }
-                socket.leave(socket.currentRoom)
-                socket.currentRoom = ''
             }
 
             RoomsManager.removePlayerFromPlayersList(socket.currentPlayerName)
+            socketEvents.switchRooms(socket, socket.currentRoom, '')
             socket.currentPlayerName = ''
         },
 
@@ -99,10 +98,11 @@ module.exports = function (io, RoomsManager) {
                     return
                 }
 
-                const roomDetails = RoomsManager.getRoomDetails(roomName)
                 socketEvents.switchRooms(socket, socket.currentRoom, roomName)
 
                 RoomsManager.addPlayer(roomName, playerName, socket)
+
+                const roomDetails = RoomsManager.getRoomDetails(roomName)
                 socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
 
                 io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
@@ -360,16 +360,29 @@ module.exports = function (io, RoomsManager) {
             }
             socket.currentRoom = targetRoom
             if (targetRoom) {
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
+                if (startRoom) {
+                    RoomsManager.updatePlayerRoom(socket.currentPlayerName, targetRoom)
+                }
+
+                if (targetRoom === GlobalRoomName) {
+                    socket.emit(SocketEvents.SyncPlayersList, { data: { players: RoomsManager.getPlayersList() } })
+                }
                 socket.join(targetRoom)
+                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
             }
+            io.sockets.in(GlobalRoomName).emit(SocketEvents.PlayersListChanged, {
+                data: {
+                    playerName: socket.currentPlayerName,
+                    player: RoomsManager.getPlayerFromPlayersList(socket.currentPlayerName),
+                },
+            })
         },
         selectName: (socket, { userName }) => {
             // deselecting name
             if (!userName) {
                 RoomsManager.removePlayerFromPlayersList(socket.currentPlayerName)
-                socket.emit(SocketEvents.SelectName, { data: { userName: '' } })
                 socketEvents.switchRooms(socket, GlobalRoomName, '')
+                socket.emit(SocketEvents.SelectName, { data: { userName: '' } })
                 socket.currentPlayerName = ''
             // selecting name
             } else if (!RoomsManager.isInPlayersList(userName)) {
@@ -378,7 +391,7 @@ module.exports = function (io, RoomsManager) {
                 socket.currentPlayerName = userName
                 socketEvents.switchRooms(socket, '', GlobalRoomName)
             } else {
-                socketEvents.sendError(socket, ErrorMessages.NameTaken)            
+                socketEvents.sendError(socket, ErrorMessages.NameTaken)
             }
         },
     }
