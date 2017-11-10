@@ -8,7 +8,7 @@ import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck'
 import * as lobbyActions from '../ducks/lobbyDuck'
-import { setChoiceMode, setChooserPlayer, setPlayersList } from '../ducks/playersDuck'
+import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
 import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 
@@ -229,7 +229,7 @@ const mapDispatchToProps = (dispatch) => {
         roomActions: bindActionCreators(roomActions, dispatch),
         userActions: bindActionCreators(userActions, dispatch),
         chatActions: bindActionCreators({ addMessage, clearChat }, dispatch),
-        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer, setPlayersList }, dispatch),
+        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
         notificationsActions: bindActionCreators({ addNotification }, dispatch),
         lobbyActions: bindActionCreators(lobbyActions, dispatch),
