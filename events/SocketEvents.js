@@ -54,6 +54,12 @@ module.exports = function (io, RoomsManager) {
                             },
                         })
                     } else {
+                        io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
+                            data: {
+                                roomName: socket.currentRoom,
+                                room: null,
+                            },
+                        })
                         RoomsManager.removeRoom(socket.currentRoom)
                         console.log(`The room "${socket.currentRoom}" was permanently removed!`)
                     }
@@ -69,6 +75,13 @@ module.exports = function (io, RoomsManager) {
             // if the room does not exist, create it
             if (roomName && !RoomsManager.isRoomPresent(roomName)) {
                 RoomsManager.initializeRoom(roomName, playerName, maxPlayers, password)
+
+                io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
+                    data: {
+                        roomName,
+                        room: RoomsManager.getRoomDetailsForLobby(roomName),
+                    },
+                })
                 socketEvents.joinRoom(socket, { roomName, playerName })
             } else {
                 console.error('selected room is already present! Cannot create a duplicate!')
@@ -98,9 +111,8 @@ module.exports = function (io, RoomsManager) {
                     return
                 }
 
-                socketEvents.switchRooms(socket, socket.currentRoom, roomName)
-
                 RoomsManager.addPlayer(roomName, playerName, socket)
+                socketEvents.switchRooms(socket, socket.currentRoom, roomName)
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
                 socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
@@ -357,6 +369,16 @@ module.exports = function (io, RoomsManager) {
             if (startRoom) {
                 socket.leave(startRoom)
                 socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
+                
+                const updatedRoom = (startRoom === GlobalRoomName ? targetRoom : startRoom)
+                if (updatedRoom) {
+                    io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
+                        data: {
+                            roomName: updatedRoom,
+                            room: RoomsManager.getRoomDetailsForLobby(updatedRoom),
+                        },
+                    })
+                }
             }
             socket.currentRoom = targetRoom
             if (targetRoom) {
@@ -365,7 +387,12 @@ module.exports = function (io, RoomsManager) {
                 }
 
                 if (targetRoom === GlobalRoomName) {
-                    socket.emit(SocketEvents.SyncPlayersList, { data: { players: RoomsManager.getPlayersList() } })
+                    socket.emit(SocketEvents.SyncLobby, {
+                        data: {
+                            players: RoomsManager.getPlayersList(),
+                            rooms: RoomsManager.getRoomsList(),
+                        },
+                    })
                 }
                 socket.join(targetRoom)
                 socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })

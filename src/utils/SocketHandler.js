@@ -203,12 +203,16 @@ export class SocketHandler extends React.PureComponent {
             }
         })
 
-        socket.on(SocketEvents.SyncPlayersList, ({ data: { players }}) => {
-          this.props.lobbyActions.setPlayersList({ players })            
+        socket.on(SocketEvents.SyncLobby, ({ data: { players, rooms } }) => {
+          this.props.lobbyActions.syncLobby({ players, rooms })
         })
-        
-        socket.on(SocketEvents.PlayersListChanged, ({ data: { player, playerName }}) => {
+
+        socket.on(SocketEvents.PlayersListChanged, ({ data: { player, playerName } }) => {
             this.props.lobbyActions.changePlayerInPlayersList({ player, playerName })
+        })
+
+        socket.on(SocketEvents.RoomsListChanged, ({ data: { room, roomName } }) => {
+            this.props.lobbyActions.changeRoomInRoomsList({ room, roomName })
         })
     }
 
