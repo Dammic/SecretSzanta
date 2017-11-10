@@ -12,6 +12,7 @@ import room from './ducks/roomDuck'
 import notification from './ducks/notificationsDuck'
 import players from './ducks/playersDuck'
 import modal from './ducks/modalDuck'
+import lobby from './ducks/lobbyDuck'
 
 import LandingPage from './features/LandingPage/LandingPage'
 import NotFound from './features/NotFound/NotFound'
@@ -25,6 +26,7 @@ const store = createStore(
         notification,
         players,
         modal,
+        lobby,
         routing: routerReducer
     }),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

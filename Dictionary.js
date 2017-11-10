@@ -1,6 +1,8 @@
 module.exports = {
     SocketEvents: {
         SelectName: 'CLIENT_SELECT_NAME',
+        SyncPlayersList: 'SYNC_PLAYERS_LIST',
+        PlayersListChanged: 'PLAYERS_LIST_CHANGED',
         CLIENT_SEND_MESSAGE: 'CLIENT_SEND_MESSAGE',
         CLIENT_JOIN_ROOM: 'CLIENT_JOIN_ROOM',
         CLIENT_LEAVE_ROOM: 'CLIENT_LEAVE_ROOM',

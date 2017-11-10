@@ -3,7 +3,7 @@ const {
     filter, includes, forEach, random, slice, times, map, head,
     find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf,
 } = require('lodash')
-const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards } = require('../Dictionary')
+const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards, GlobalRoomName } = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -421,6 +421,14 @@ class RoomsManager {
     /**********************************************/
     /*****************playersList******************/
     /**********************************************/
+    getPlayersList() {
+        return this.players;
+    } 
+
+    getPlayerFromPlayersList(userName) {
+        return this.players[userName];
+    }
+
     isInPlayersList(userName) {
         return !!this.players[userName]
     }
@@ -436,6 +444,9 @@ class RoomsManager {
         if (userName) {
             delete this.players[userName]
         }
+    }
+    updatePlayerRoom(userName, newRoomName) {
+        this.players[userName].currentRoom = (newRoomName === GlobalRoomName ? '' : newRoomName)
     }
 }
 
