@@ -30,10 +30,12 @@ const HeaderComponent = ({ setView, currentView, isLobbyVisible }) => {
     }
 
     return (
-        <div className="header">
-            <span className="app-name">Secret Hitler</span>
-            <div className="header-navigation">
-                {map(views, renderNavigationLink)}
+        <div className="header-container">
+            <div className="header">
+                <span className="app-name">Secret Hitler</span>
+                <div className="header-navigation">
+                    {map(views, renderNavigationLink)}
+                </div>
             </div>
         </div>
     )
