@@ -1,6 +1,6 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName } = require('../Dictionary')
-const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
+const { size, pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
 
 module.exports = function (io, RoomsManager) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
@@ -54,14 +54,13 @@ module.exports = function (io, RoomsManager) {
                             },
                         })
                     } else {
-                        RoomsManager.removeRoom(socket.currentRoom)
-
                         io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
                             data: {
                                 roomName: socket.currentRoom,
                                 room: null,
                             },
                         })
+                        RoomsManager.removeRoom(socket.currentRoom)
                         console.log(`The room "${socket.currentRoom}" was permanently removed!`)
                     }
                 }
@@ -112,9 +111,8 @@ module.exports = function (io, RoomsManager) {
                     return
                 }
 
-                socketEvents.switchRooms(socket, socket.currentRoom, roomName)
-
                 RoomsManager.addPlayer(roomName, playerName, socket)
+                socketEvents.switchRooms(socket, socket.currentRoom, roomName)
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
                 socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
@@ -371,6 +369,14 @@ module.exports = function (io, RoomsManager) {
             if (startRoom) {
                 socket.leave(startRoom)
                 socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
+                
+                const updatedRoom = (startRoom === GlobalRoomName ? targetRoom : startRoom)
+                io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
+                    data: {
+                        roomName: updatedRoom,
+                        room: RoomsManager.getRoomDetailsForLobby(updatedRoom),
+                    },
+                })
             }
             socket.currentRoom = targetRoom
             if (targetRoom) {

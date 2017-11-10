@@ -244,6 +244,7 @@ class RoomsManager {
     }
     getRoomDetailsForLobby(roomName) {
         const room = this.rooms_props[roomName]
+        if (!room) return null
         return {
             roomName,
             maxPlayers: room.maxPlayers,
