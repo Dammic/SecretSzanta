@@ -5,6 +5,7 @@ module.exports = {
         PlayersListChanged: 'PLAYERS_LIST_CHANGED',
         SyncRoomsList: 'SYNC_ROOMS_LIST',
         RoomsListChanged: 'ROOMS_LIST_CHANGED',
+        AllowEnteringRoom: 'ALLOW_ENTERING_ROOM',
         CLIENT_SEND_MESSAGE: 'CLIENT_SEND_MESSAGE',
         CLIENT_JOIN_ROOM: 'CLIENT_JOIN_ROOM',
         CLIENT_LEAVE_ROOM: 'CLIENT_LEAVE_ROOM',

@@ -20,6 +20,14 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
             this.props.roomActions.syncRoomData(payload.data)
         })
+
+        socket.on(SocketEvents.AllowEnteringRoom, (payload) => {
+            console.info('hello')
+            const { roomName } = payload.data
+            this.props.userActions.joinRoom({ roomName: roomName })
+            this.props.chatActions.clearChat()
+            this.props.userActions.setView({ viewName: Views.Game })
+        })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
             player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION
@@ -128,7 +136,9 @@ export class SocketHandler extends React.PureComponent {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
                 this.props.chatActions.clearChat()
+                this.props.roomActions.clearRoom()
                 this.props.userActions.setView({ viewName: Views.Lobby })
+                this.props.userActions.joinRoom({ roomName: '' })
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`

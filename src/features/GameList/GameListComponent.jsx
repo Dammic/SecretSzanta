@@ -16,9 +16,10 @@ const GameListComponent = ({
             <div className="game-list-container">
                 <div className="first-column">
                     <div className="game-list">
-                        {map(rooms, room => (
+                        {/* index is temporary, delete when room names will not be mocked */}
+                        {map(rooms, (room, index) => (
                             <GameListItemComponent
-                                key={room.roomID}
+                                key={room.roomID + index}
                                 roomID={room.roomID}
                                 roomName={room.roomName}
                                 playerCount={room.playerCount}

@@ -1,127 +1,127 @@
 
 export const rooms = [
     {
-        roomID: 0,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
     {
-        roomID: 1,
+        roomID: 'example',
         roomName: 'Bad Example',
         playerCount: 10,
     },
     {
-        roomID: 2,
+        roomID: 'example',
         roomName: 'Wrong GameRoom',
         playerCount: 10,
     },
     {
-        roomID: 3,
+        roomID: 'example',
         roomName: 'Do not eneter',
         playerCount: 10,
     },
     {
-        roomID: 4,
+        roomID: 'example',
         roomName: 'Private',
         playerCount: 10,
     },
     {
-        roomID: 5,
+        roomID: 'example',
         roomName: 'Nope',
         playerCount: 10,
     },
     {
-        roomID: 6,
+        roomID: 'example',
         roomName: 'Stay out!',
         playerCount: 10,
     },
 
     {
-        roomID: 7,
+        roomID: 'example',
         roomName: 'Wrong GameRoom',
         playerCount: 10,
     },
     {
-        roomID: 8,
+        roomID: 'example',
         roomName: 'Do not eneter',
         playerCount: 10,
     },
     {
-        roomID: 9,
+        roomID: 'example',
         roomName: 'Private',
         playerCount: 10,
     },
     {
-        roomID: 10,
+        roomID: 'example',
         roomName: 'Nope',
         playerCount: 10,
     },
     {
-        roomID: 11,
+        roomID: 'example',
         roomName: 'Stay out!',
         playerCount: 10,
     },
 
     {
-        roomID: 12,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
 
     {
-        roomID: 13,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
 
     {
-        roomID: 14,
+        roomID: 'example',
         roomName: 'Nope',
         playerCount: 10,
     },
     {
-        roomID: 15,
+        roomID: 'example',
         roomName: 'Stay out!',
         playerCount: 10,
     },
 
     {
-        roomID: 16,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
 
     {
-        roomID: 17,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
 
     {
-        roomID: 18,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
 
     {
-        roomID: 19,
+        roomID: 'example',
         roomName: 'Nope',
         playerCount: 10,
     },
     {
-        roomID: 20,
+        roomID: 'example',
         roomName: 'Stay out!',
         playerCount: 10,
     },
 
     {
-        roomID: 21,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
 
     {
-        roomID: 22,
+        roomID: 'example',
         roomName: 'example',
         playerCount: 10,
     },
