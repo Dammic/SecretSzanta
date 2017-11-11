@@ -4,7 +4,6 @@ const Server = require('http').Server
 const swig = require('swig')
 const Express = require('express')
 const SocketEvents = require('./events/SocketEvents')
-const roomsRoute = require('./routes/rooms')
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
