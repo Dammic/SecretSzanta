@@ -2,8 +2,7 @@ const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName } = require('../Dictionary')
 const { isNil, includes, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
 const ClientVerificationHof = require('../utils/ClientVerificationHof')
-let RoomsManager = require('../utils/RoomsManager')
-RoomsManager = new RoomsManager()
+const RoomsManager = new (require('../utils/RoomsManager'))()
 
 module.exports = function (io) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
