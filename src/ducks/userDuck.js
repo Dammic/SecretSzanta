@@ -3,7 +3,7 @@ import { Views } from '../../Dictionary'
 
 // Actions
 const selectName = createAction('user/SELECT_NAME')
-const joinRoom = createAction('user/JOIN_ROOM')
+const setRoomName = createAction('user/JOIN_ROOM')
 const toggleAffiliationMenu = createAction('user/TOGGLE_AFFILIATION_MENU')
 const setView = createAction('user/SET_VIEW')
 
@@ -22,7 +22,7 @@ const actions = {
             userName,
         }
     },
-    [joinRoom]: (state, action) => {
+    [setRoomName]: (state, action) => {
         const { roomName } = action.payload
         return {
             ...state,
@@ -52,5 +52,5 @@ const actions = {
     },
 }
 
-export { selectName, joinRoom, toggleAffiliationMenu, setView }
+export { selectName, setRoomName, toggleAffiliationMenu, setView }
 export default handleActions(actions, initialState)

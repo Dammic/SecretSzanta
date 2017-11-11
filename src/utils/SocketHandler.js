@@ -23,7 +23,7 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.AllowEnteringRoom, (payload) => {
             const { roomName } = payload.data
-            this.props.userActions.joinRoom({ roomName })
+            this.props.userActions.setRoomName({ roomName })
             this.props.chatActions.clearChat()
             this.props.userActions.setView({ viewName: Views.Game })
         })
@@ -137,7 +137,7 @@ export class SocketHandler extends React.PureComponent {
                 this.props.chatActions.clearChat()
                 this.props.roomActions.clearRoom()
                 this.props.userActions.setView({ viewName: Views.Lobby })
-                this.props.userActions.joinRoom({ roomName: '' })
+                this.props.userActions.setRoomName({ roomName: '' })
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
