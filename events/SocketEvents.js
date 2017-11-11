@@ -1,8 +1,11 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
 const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName } = require('../Dictionary')
-const { pullAt, isNil, indexOf, includes, filter, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
+const { isNil, includes, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
+const ClientVerificationHof = require('../utils/ClientVerificationHof')
+let RoomsManager = require('../utils/RoomsManager')
+RoomsManager = new RoomsManager()
 
-module.exports = function (io, RoomsManager) {
+module.exports = function (io) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
     const socketEvents = {
         sendError: (socket, errorMessage) => {
@@ -134,11 +137,6 @@ module.exports = function (io, RoomsManager) {
         },
 
         startGame: (socket) => {
-            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
-                socketEvents.sendError(socket, ErrorMessages.notOwner)
-                return
-            }
-
             RoomsManager.startGame(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
 
@@ -352,10 +350,6 @@ module.exports = function (io, RoomsManager) {
             }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
-            if (!RoomsManager.isRoomOwner(socket.currentRoom, socket.currentPlayerName)) {
-                socketEvents.sendError(socket, ErrorMessages.notOwner)
-                return
-            }
             RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
                 data: {
@@ -428,6 +422,7 @@ module.exports = function (io, RoomsManager) {
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
         socket.currentRoom = ''
+        const clientVerificationHof = ClientVerificationHof(RoomsManager, socket)
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions
@@ -440,11 +435,11 @@ module.exports = function (io, RoomsManager) {
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, partialFunctions.joinRoom)
         socket.on(SocketEvents.VOTING_PHASE_START, partialFunctions.startVotingPhaseVote)
         socket.on(SocketEvents.CLIENT_VOTE, partialFunctions.vote)
-        socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
+        socket.on(SocketEvents.START_GAME, clientVerificationHof(['isOwner'], partialFunctions.startGame))
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
         socket.on(SocketEvents.PlayerKilled, partialFunctions.killPlayer)
-        socket.on(SocketEvents.PlayerBanned, partialFunctions.banPlayer) 
-        socket.on(SocketEvents.PlayerKicked, partialFunctions.kickPlayer)
+        socket.on(SocketEvents.PlayerBanned, clientVerificationHof(['isOwner'], partialFunctions.banPlayer))
+        socket.on(SocketEvents.PlayerKicked, clientVerificationHof(['isOwner'], partialFunctions.kickPlayer))
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
     })

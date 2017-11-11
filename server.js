@@ -5,7 +5,6 @@ const swig = require('swig')
 const Express = require('express')
 const SocketEvents = require('./events/SocketEvents')
 const roomsRoute = require('./routes/rooms')
-const RoomsManager = require('./utils/RoomsManager')
 
 // initialize the server and configure support for ejs templates
 const app = new Express()
@@ -22,13 +21,11 @@ app.use(Express.static(__dirname + '/public'))
 
 // socket.io
 const io = require('socket.io')(server)
-const RoomsManagerInstance = new RoomsManager()
 
-SocketEvents(io, RoomsManagerInstance)
+SocketEvents(io)
 
 // universal routing and rendering
 app.get('/', (req, res) => res.render('index'))
-app.use('/rooms', roomsRoute(RoomsManagerInstance))
 
 app.use('*', (req, res, next) => {
     res.status(404)
