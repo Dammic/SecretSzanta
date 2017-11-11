@@ -201,10 +201,7 @@ const actions = {
             votes: null,
         }
     },
-    [clearRoom]: state => {
-        return initialState 
-    
-    },
+    [clearRoom]: () => initialState,
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,

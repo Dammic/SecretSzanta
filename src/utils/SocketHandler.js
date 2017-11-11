@@ -22,9 +22,8 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.AllowEnteringRoom, (payload) => {
-            console.info('hello')
             const { roomName } = payload.data
-            this.props.userActions.joinRoom({ roomName: roomName })
+            this.props.userActions.joinRoom({ roomName })
             this.props.chatActions.clearChat()
             this.props.userActions.setView({ viewName: Views.Game })
         })
