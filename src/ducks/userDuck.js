@@ -3,7 +3,7 @@ import { Views } from '../../Dictionary'
 
 // Actions
 const selectName = createAction('user/SELECT_NAME')
-const setRoomName = createAction('user/JOIN_ROOM')
+const setRoomName = createAction('user/SET_ROOM_NAME')
 const toggleAffiliationMenu = createAction('user/TOGGLE_AFFILIATION_MENU')
 const setView = createAction('user/SET_VIEW')
 

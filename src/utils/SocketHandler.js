@@ -23,9 +23,7 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.AllowEnteringRoom, (payload) => {
             const { roomName } = payload.data
-            this.props.userActions.setRoomName({ roomName })
-            this.props.chatActions.clearChat()
-            this.props.userActions.setView({ viewName: Views.Game })
+            this.switchRooms(roomName)
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
@@ -134,10 +132,8 @@ export class SocketHandler extends React.PureComponent {
             if (this.props.userName === playerName) {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
-                this.props.chatActions.clearChat()
                 this.props.roomActions.clearRoom()
-                this.props.userActions.setView({ viewName: Views.Lobby })
-                this.props.userActions.setRoomName({ roomName: '' })
+                this.switchRooms('')
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
@@ -224,6 +220,13 @@ export class SocketHandler extends React.PureComponent {
             this.props.lobbyActions.changeRoomInRoomsList({ room, roomName })
         })
     }
+
+    switchRooms = (targetRoomName) => {
+        this.props.chatActions.clearChat()
+        this.props.userActions.setRoomName({ roomName: targetRoomName || '' })
+        this.props.userActions.setView({ viewName: (targetRoomName ? Views.Game : Views.Lobby) })
+    }
+
 
     render() {
         return null
