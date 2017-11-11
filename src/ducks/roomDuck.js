@@ -17,6 +17,7 @@ const registerVote = createAction('room/REGISTER_VOTE')
 const resetVotes = createAction('room/RESET_VOTES')
 const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
+const clearRoom = createAction('room/CLEAR_ROOM')
 
 const initialState = {
     maxPlayers: 0,
@@ -200,12 +201,13 @@ const actions = {
             votes: null,
         }
     },
+    [clearRoom]: () => initialState,
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes,
+    resetVotes, clearRoom,
 }
 
 export default handleActions(actions, initialState)

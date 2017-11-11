@@ -22,7 +22,7 @@ const GameListItemComponent = ({
 }
 
 GameListItemComponent.propTypes = {
-    roomID: PropTypes.number,
+    roomID: PropTypes.string,
     roomName: PropTypes.string,
     playerCount: PropTypes.number,
     onClick: PropTypes.func,

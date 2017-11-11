@@ -115,6 +115,8 @@ module.exports = function (io, RoomsManager) {
                 socketEvents.switchRooms(socket, socket.currentRoom, roomName)
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
+
+                socket.emit(SocketEvents.AllowEnteringRoom, { data: { roomName: socket.currentRoom } })
                 socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
 
                 io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
