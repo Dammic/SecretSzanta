@@ -3,6 +3,7 @@ const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole
 const { isNil, includes, find, map, pick, get, forEach, mapValues, partial, partialRight } = require('lodash')
 const ClientVerificationHof = require('../utils/ClientVerificationHof')
 const RoomsManager = new (require('../utils/RoomsManager'))()
+let cancelTimeoutToken
 
 module.exports = function (io) {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
@@ -21,6 +22,78 @@ module.exports = function (io) {
                     ),
                 },
             })
+        },
+        checkForImmediateSuperpowersOrContinue: (socket) => {
+            const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
+
+            // 4th power is always kill on each board
+            if (fascistPolicyCount === 4 || fascistPolicyCount === 5) {
+                socketEvents.startKillPhase(socket)
+            // 5th power is always kill AND veto power unlock
+            } else if (fascistPolicyCount === 5) {
+                RoomsManager.toggleVeto(socket.currentRoom)
+                socketEvents.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
+            } else {
+                resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
+            }
+        },
+        triggerVetoPrompt: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
+            RoomsManager.clearVetoVotes(socket.currentRoom)
+
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            const chancellorEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
+            presidentEmit(SocketEvents.ServerWaitingForVeto)
+            chancellorEmit(SocketEvents.ServerWaitingForVeto)
+            socketEvents.resumeGame(
+                socket,
+                {
+                    delay: 30000,
+                    func: socketEvents.startChancellorChoicePhase,
+                    customMessage: 'Due to veto power, the president and chancellor can now together veto the enacted policy. Next phase will begin in 30 seconds (assuming no veto will be reported)...',
+                },
+            )
+        },
+       
+        // protect it that it can only be fired by president OR chancellor ONCE
+        veto: (socket) => {
+            const gamePhase = RoomsManager.getGamePhase(socket.currentRoom)
+            if (gamePhase !== GamePhases.ServerWaitingForVeto) {
+                console.error('Player tried to veto when the server was not waiting for it!')
+                socket.emit(SocketEvents.CLIENT_ERROR, {
+                    error: 'You cannot veto right now!',
+                })
+            }
+            const vetoVotes = RoomsManager.getVetoVotes(socket.currentRoom)
+            const playerRole = RoomsManager.getPlayerRole(socket.currentRoom, socket.currentPlayerName)
+            if (!includes(vetoVotes, playerRole)) {
+                console.error('Player tried to vote twice!')
+                socket.emit(SocketEvents.CLIENT_ERROR, {
+                    error: 'You cannot veto twice!',
+                })
+            }
+
+            RoomsManager.addVetoVote(socket.currentRoom, socket.currentPlayerName)
+            const roleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'president' : 'chancellor'
+            if (didVetoSucceed) {
+                socketEvents.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
+                clearTimeout(cancelTimeoutToken)
+                RoomsManager.discardPolicyByVeto(socket.currentRoom)
+                RoomsManager.failElection(socket.currentRoom)
+            } else {
+                const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
+                socketEvents.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
+            }
+        },
+
+        resumeGame: (socket, { delay, func, customMessage }) => {
+            const gamePhase = RoomsManager.getGamePhase(socket.currentRoom)
+            if (delay) {
+                socketEvents.sendMessage(socket, { content: customMessage || `Next phase will begin in ${delay / 1000} seconds!` })
+                cancelTimeoutToken = setTimeout(func.bind(socket), delay)
+            } else {
+                func(socket)
+            }
         },
 
         disconnect: (socket) => {
@@ -190,18 +263,14 @@ module.exports = function (io) {
                 let topCard
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
-                    setTimeout(() => {
-                        socketEvents.startPresidentPolicyChoice(socket)
-                    }, 3000)
+                    socketEvents.resumeGame(socket, { delay: 3000, func: socketEvents.startPresidentPolicyChoice })
                 } else {
                     threeVotesFailed = RoomsManager.failElection(socket.currentRoom)
                     if (threeVotesFailed) {
                         topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
                         RoomsManager.enactPolicy(socket.currentRoom, topCard)
                     }
-                    setTimeout(() => {
-                        socketEvents.startChancellorChoicePhase(socket)
-                    }, 3000)
+                    socketEvents.resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
@@ -254,6 +323,11 @@ module.exports = function (io) {
             })
         },
 
+        presidentChoosePolicy: (socket, { choice }) => {
+             
+        
+        },
+
         choosePolicy: (socket, { choice }) => {
             const { gamePhase } = RoomsManager.getRoomDetails(socket.currentRoom)
             let drawnCards = RoomsManager.getDrawnCards(socket.currentRoom)
@@ -287,14 +361,12 @@ module.exports = function (io) {
                             timestamp: getCurrentTimestamp(),
                         },
                     })
-                    const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
-                    if ((fascistPolicyCount === 4 || fascistPolicyCount === 5) && enactedPolicy === PolicyCards.FacistPolicy) {
-                        socketEvents.startKillPhase(socket)
-                    } else {
-                        setTimeout(() => {
-                            socketEvents.startChancellorChoicePhase(socket)
-                        }, 4000)
-                        socketEvents.sendMessage(socket, { content: 'Next turn will begin in 4 seconds!' })
+
+                    const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
+                    if (isVetoUnlocked) {
+                        socketEvents.triggerVetoPrompt(socket) 
+                    } else if (enactedPolicy === PolicyCards.FacistPolicy) {
+                        socketEvents.checkForImmediateSuperpowersOrContinue(socket)
                     }
                 } else {
                     console.error('Cheater!')
@@ -342,10 +414,7 @@ module.exports = function (io) {
                     },
                 })
             } else {
-                setTimeout(() => {
-                    socketEvents.startChancellorChoicePhase(socket)
-                }, 3000)
-                socketEvents.sendMessage(socket, { content: 'Next turn will begin in 3 seconds!' })
+                socketEvents.resumeGame(socket, { delay: 4000, func: socketEvents.startChancellorChoicePhase })
             }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
@@ -421,7 +490,10 @@ module.exports = function (io) {
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
         socket.currentRoom = ''
-        const clientVerificationHof = ClientVerificationHof(RoomsManager, socket)
+
+        const clientVerificationHof = ClientVerificationHof(RoomsManager)
+        socketEvents.startGame = clientVerificationHof(['isOwner'], socketEvents.startGame)
+        socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions
@@ -434,11 +506,11 @@ module.exports = function (io) {
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, partialFunctions.joinRoom)
         socket.on(SocketEvents.VOTING_PHASE_START, partialFunctions.startVotingPhaseVote)
         socket.on(SocketEvents.CLIENT_VOTE, partialFunctions.vote)
-        socket.on(SocketEvents.START_GAME, clientVerificationHof(['isOwner'], partialFunctions.startGame))
+        socket.on(SocketEvents.START_GAME, partialFunctions.startGame)
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, partialFunctions.startChancellorChoicePhase)
         socket.on(SocketEvents.PlayerKilled, partialFunctions.killPlayer)
-        socket.on(SocketEvents.PlayerBanned, clientVerificationHof(['isOwner'], partialFunctions.banPlayer))
-        socket.on(SocketEvents.PlayerKicked, clientVerificationHof(['isOwner'], partialFunctions.kickPlayer))
+        socket.on(SocketEvents.PlayerBanned, partialFunctions.banPlayer)
+        socket.on(SocketEvents.PlayerKicked, partialFunctions.kickPlayer)
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
     })

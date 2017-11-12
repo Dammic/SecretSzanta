@@ -40,14 +40,42 @@ class RoomsManager {
             drawPile: [],
             drawnCards: [],
             discardPile: [],
-            liberalPoliciesOnTheTable: 0,
-            fascistPoliciesOnTheTable: 0,
+            policiesPile = [],
+            isVetoUnlocked: false,
+            vetoVotes: [],
         }
     }
 
     isInBlackList(roomName, playerName) {
         const { blackList } = this.rooms_props[roomName]
         return includes(blackList, playerName)
+    }
+
+    toggleVeto(roomName) {
+        this.rooms_props[roomName].isVetoUnlocked = true
+    }
+    addVetoVote(roomName, role) {
+        const { vetoVotes } = this.rooms_props[roomName]
+        vetoVotes.push(role)
+    }
+    didVetoSucceed(roomName) {
+        const { vetoVotes } = this.rooms_props[roomName]
+        return size(vetoVotes) === 2
+    }
+    getVetoVotes(roomName) {
+        return this.rooms_props[roomName].vetoVotes
+    }
+    clearVetoVotes(roomName) {
+        this.rooms_props[roomName].vetoVotes = []
+    }
+
+    isVetoUnlocked(roomName) {
+        return this.rooms_props[roomName].isVetoUnlocked
+    }
+
+    getPlayerRole(roomName, playerName) {
+        const { playersDict } = this.rooms_props[roomName]
+        return get(playersDict, `${playerName}.role`)
     }
 
     setChancellor(roomName) {
@@ -145,8 +173,7 @@ class RoomsManager {
             drawPile: shuffle(concat(fascistCards, liberalCards)),
             drawnCards: [],
             discardPile: [],
-            liberalPoliciesOnTheTable: 0,
-            fascistPoliciesOnTheTable: 0,
+            policiesPile: [],
         }
     }
     
@@ -264,6 +291,9 @@ class RoomsManager {
                 return genericInfo
             }),
         }
+    }
+    getGamePhase(roomName) {
+        return this.rooms_props[roomName].gamePhase
     }
 
     /**
@@ -390,17 +420,19 @@ class RoomsManager {
     /**********************************************/
 
     enactPolicy(roomName, card) {
-        if (card === PolicyCards.LiberalPolicy) {
-            this.rooms_props[roomName].liberalPoliciesOnTheTable += 1
-        } else {
-            this.rooms_props[roomName].fascistPoliciesOnTheTable += 1
-        }
+        this.rooms_props[roomName].policiesPile.push(card)
         this.rooms_props[roomName].drawnCards = []
     }
     discardPolicy(roomName, card) {
         const { drawnCards } = this.rooms_props[roomName]
         pullAt(drawnCards, indexOf(drawnCards, card))
         this.rooms_props[roomName].discardPile.push(card)
+    }
+    discardPolicyByVeto(roomName) {
+        const { policiesPile, discardPile } = this.rooms_props[roomName]
+        const discardedPolicy = take(policiesPile, 1)
+        drop(policiesPile, 1)
+        discardPile.push(discardedPolicy)
     }
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
@@ -419,8 +451,11 @@ class RoomsManager {
         return policies
     }
     getPolicyCardsCount(roomName, policyType) {
-        const { liberalPoliciesOnTheTable, fascistPoliciesOnTheTable } = this.rooms_props[roomName]
-        return (policyType === PolicyCards.FacistPolicy ? fascistPoliciesOnTheTable : liberalPoliciesOnTheTable)
+        const { policiesPile } = this.rooms_props[roomName]
+        return (policyType === PolicyCards.FacistPolicy
+            ? size(filter(policiesPile, PolicyCards.FacistPolicy)
+            ? size(filter(policiesPile, PolicyCards.LiberalPolicy)
+        )
     }
 
     removeRoom(roomName) {

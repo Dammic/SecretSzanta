@@ -18,6 +18,7 @@ const resetVotes = createAction('room/RESET_VOTES')
 const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
 const clearRoom = createAction('room/CLEAR_ROOM')
+const toggleVeto = createAction('room/TOGGLE_VETO')
 
 const initialState = {
     maxPlayers: 0,
@@ -29,6 +30,7 @@ const initialState = {
     liberalPoliciesCount: 0,
     trackerPosition: 0,
     votes: null,
+    isVetoUnlocked: false,
 }
 
 const actions = {
@@ -202,12 +204,16 @@ const actions = {
         }
     },
     [clearRoom]: () => initialState,
+    [toggleVeto]: state => ({
+        ...state,
+        isVetoUnlocked: !state.isVetoUnlocked,
+    })
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom,
+    resetVotes, clearRoom, toggleVeto,
 }
 
 export default handleActions(actions, initialState)

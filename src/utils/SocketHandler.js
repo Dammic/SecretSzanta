@@ -20,10 +20,12 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
             this.props.roomActions.syncRoomData(payload.data)
         })
-
         socket.on(SocketEvents.AllowEnteringRoom, (payload) => {
             const { roomName } = payload.data
             this.switchRooms(roomName)
+        })
+        socket.on(SocketEvents.ServerWaitingForVeto, (payload) => {
+            this.props.roomActions.toggleVeto()
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
