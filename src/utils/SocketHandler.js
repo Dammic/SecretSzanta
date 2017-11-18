@@ -156,7 +156,6 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.ResetTracker, (payload) => {
             const { timestamp, trackerPositionBeforeReset } = payload.data
             let delay = 0
-            console.info(trackerPositionBeforeReset)
             if (trackerPositionBeforeReset === 3) {
               this.props.roomActions.increaseTracker()
               delay = 4000

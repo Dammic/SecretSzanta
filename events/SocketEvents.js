@@ -34,7 +34,7 @@ module.exports = function (io) {
                 RoomsManager.toggleVeto(socket.currentRoom)
                 socketEvents.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
             } else {
-                resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
+                socketEvents.resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
             }
         },
         triggerVetoPrompt: (socket) => {
@@ -75,12 +75,12 @@ module.exports = function (io) {
 
             RoomsManager.addVetoVote(socket.currentRoom, socket.currentPlayerName)
             const roleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'president' : 'chancellor'
-            if (didVetoSucceed) {
+            if (RoomsManager.didVetoSucceed(socket.currentRoom)) {
+                RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ServerAcceptedVeto)
                 socketEvents.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
                 clearTimeout(cancelTimeoutToken)
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
-
-                const gamePhase = RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ServerAcceptedVeto)
+                socketEvents.checkIfTrackerPositionShouldUpdate(socket.currentRoom, false)
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
                     data: {
@@ -88,10 +88,8 @@ module.exports = function (io) {
                         liberal: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.LiberalPolicy),
                     },
                 })
-
+                
                 socketEvents.resumeGame(socket, { delay: 5000, func: socketEvents.startChancellorChoicePhase })
-
-                // RoomsManager.failElection(socket.currentRoom)
             } else {
                 const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
                 socketEvents.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
@@ -399,6 +397,8 @@ module.exports = function (io) {
                         socketEvents.triggerVetoPrompt(socket) 
                     } else if (enactedPolicy === PolicyCards.FacistPolicy) {
                         socketEvents.checkForImmediateSuperpowersOrContinue(socket)
+                    } else {
+                        socketEvents.resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
                     }
                 } else {
                     console.error('Cheater!')

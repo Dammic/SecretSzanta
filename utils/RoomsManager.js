@@ -453,8 +453,8 @@ class RoomsManager {
     getPolicyCardsCount(roomName, policyType) {
         const { policiesPile } = this.rooms_props[roomName]
         return (policyType === PolicyCards.FacistPolicy
-            ? size(filter(policiesPile, PolicyCards.FacistPolicy))
-            : size(filter(policiesPile, PolicyCards.LiberalPolicy))
+            ? size(filter(policiesPile, policy => policy === PolicyCards.FacistPolicy))
+            : size(filter(policiesPile, policy => policy === PolicyCards.LiberalPolicy))
         )
     }
 
