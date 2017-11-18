@@ -11,14 +11,14 @@ const ClientVerificationHof = (RoomsManager) => {
         },
         isPresident: (socket) => {
             const { currentRoom, currentPlayerName } = socket
-            const president = RoomsManager.getPresident(currentRoom) {
+            const president = RoomsManager.getPresident(currentRoom)
             if (get(president, 'playerName') !== currentPlayerName ) {
                 throw Error(ErrorMessages.notPresident)
             }
         },
         isChancellor: (socket) => {
             const { currentRoom, currentPlayerName } = socket
-            const chancellor = RoomsManager.getChancellor(currentRoom) {
+            const chancellor = RoomsManager.getChancellor(currentRoom)
             if (get(chancellor, 'playerName') !== currentPlayerName ) {
                 throw Error(ErrorMessages.notChancellor)
             }

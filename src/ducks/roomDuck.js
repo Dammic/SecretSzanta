@@ -10,6 +10,7 @@ const chooseNewChancellor = createAction('room/CHOOSE_NEW_CHANCELLOR')
 const chooseNewPresident = createAction('room/CHOOSE_NEW_PRESIDENT')
 const syncRoomData = createAction('room/SYNC_ROOM_DATA')
 const increasePolicyCount = createAction('room/INCREASE_POLICY_COUNT')
+const setPoliciesCount = createAction('room/SET_POLICY_COUNTS')
 const increaseTracker = createAction('room/INCREASE_TRACKER')
 const resetTracker = createAction('room/RESET_TRACKER')
 const revealFacists = createAction('room/REVEAL_FACISTS')
@@ -155,6 +156,11 @@ const actions = {
             liberalPoliciesCount: liberalPoliciesCount + 1,
         }
     },
+    [setPoliciesCount]: (state, { payload: { facist, liberal } }) => ({
+        ...state,
+        facistPoliciesCount: facist || state.facistPoliciesCount,
+        liberalPoliciesCount: liberal || state.liberalPoliciesCount,
+    }),
     [revealFacists]: (state, action) => {
         const { facists } = action.payload
 
@@ -213,7 +219,7 @@ export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom, toggleVeto,
+    resetVotes, clearRoom, toggleVeto, setPoliciesCount,
 }
 
 export default handleActions(actions, initialState)

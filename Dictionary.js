@@ -2,6 +2,8 @@ module.exports = {
     SocketEvents: {
         SelectName: 'CLIENT_SELECT_NAME',
         SyncLobby: 'SYNC_LOBBY',
+        SyncPolicies: 'SYNC_POLICIES',
+        IncreaseTrackerPosition: 'IncreaseTrackerPosition',
         PlayersListChanged: 'PLAYERS_LIST_CHANGED',
         SyncRoomsList: 'SYNC_ROOMS_LIST',
         RoomsListChanged: 'ROOMS_LIST_CHANGED',
@@ -52,6 +54,7 @@ module.exports = {
         PresidentPolicyChoice: 'GAME_PHASE_PRESIDENT_POLICY_CHOICE',
         ChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
         ServerWaitingForVeto: 'GAME_PHASE_SERVER_WAITING_FOR_VETO',
+        ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',

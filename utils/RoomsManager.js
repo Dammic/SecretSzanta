@@ -40,7 +40,7 @@ class RoomsManager {
             drawPile: [],
             drawnCards: [],
             discardPile: [],
-            policiesPile = [],
+            policiesPile: [],
             isVetoUnlocked: false,
             vetoVotes: [],
         }
@@ -80,8 +80,6 @@ class RoomsManager {
 
     setChancellor(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
-
-        this.rooms_props[roomName].failedElectionsCount = 0
 
         const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
         if (previousChancellor) {
@@ -250,14 +248,16 @@ class RoomsManager {
         return ((votesCount[true] > votesCount[false]) || !votesCount[false])
     }
 
-    failElection(roomName) {
+    increaseFailedElectionsCount(roomName) {
         const room = this.rooms_props[roomName]
         room.failedElectionsCount += 1
-        if (room.failedElectionsCount >= 3) {
-            room.failedElectionsCount = 0
-            return true
-        }
-        return false
+    }
+    getFailedElectionsCount(roomName) {
+        const { failedElectionsCount } = this.rooms_props[roomName]
+        return failedElectionsCount 
+    }
+    resetFailedElectionsCount(roomName) {
+        this.rooms_props[roomName].failedElectionsCount = 0
     }
 
     /****************************/
@@ -453,8 +453,8 @@ class RoomsManager {
     getPolicyCardsCount(roomName, policyType) {
         const { policiesPile } = this.rooms_props[roomName]
         return (policyType === PolicyCards.FacistPolicy
-            ? size(filter(policiesPile, PolicyCards.FacistPolicy)
-            ? size(filter(policiesPile, PolicyCards.LiberalPolicy)
+            ? size(filter(policiesPile, PolicyCards.FacistPolicy))
+            : size(filter(policiesPile, PolicyCards.LiberalPolicy))
         )
     }
 
