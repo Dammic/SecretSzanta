@@ -8,6 +8,7 @@ const ModalComponent = ({
     title,
     overlayClosesModal,
     isCloseButtonShown,
+    isOverlayOpaque,
     closeModal,
     child,
 }) => {
@@ -15,12 +16,12 @@ const ModalComponent = ({
         return (
             <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
                 <div className="modal-container">
-                    <Scrollbars className={classNames('modal-content')}>
+                    <div className={classNames('modal-content')}>
                         {isCloseButtonShown && <a className="modal-close-button" onClick={closeModal}>?</a>}
                         <div className="modal-title">{title}</div>
                         <div className="modal-body">{child}</div>
-                    </Scrollbars>
-                    <a className="overlay" onClick={overlayClosesModal ? closeModal : null} />
+                    </div>
+                    <a className={classNames('overlay', 'modal-overlay', { opaque: isOverlayOpaque })} onClick={overlayClosesModal ? closeModal : null} />
                 </div>
             </ReactCSSTransitionGroup>
         )
