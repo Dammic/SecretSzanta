@@ -12,7 +12,8 @@
     "run:dev": "nodemon server.js --watch utils/ --watch events/ --watch server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
-    "eslint-fix": "eslint ./src --fix"
+    "eslint-fix": "eslint ./src --fix",
+    "test": "jest"
   },
   "jest": {
     "moduleNameMapper": {
