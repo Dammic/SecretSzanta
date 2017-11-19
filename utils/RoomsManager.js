@@ -50,10 +50,12 @@ class RoomsManager {
         return includes(blackList, playerName)
     }
 
+    getGamePhase(roomName) {
+        return this.rooms_props[roomName].gamePhase
+    }
+
     setChancellor(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
-
-        this.rooms_props[roomName].failedElectionsCount = 0
 
         const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
         if (previousChancellor) {
@@ -63,6 +65,8 @@ class RoomsManager {
         if (currentChancellor) {
             currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
         }
+
+        if (!chancellorCandidateName) return;
         const nextChancellor = playersDict[chancellorCandidateName]
         nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
     }
@@ -109,10 +113,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
         const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
-        let nextPresidentIndex = 0
-        if (lastPresidentIndex >= 0 && lastPresidentIndex < size(sortedPlayers) - 1) {
-            nextPresidentIndex = lastPresidentIndex + 1
-        }
+        const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
 
         const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
@@ -402,6 +403,13 @@ class RoomsManager {
         pullAt(drawnCards, indexOf(drawnCards, card))
         this.rooms_props[roomName].discardPile.push(card)
     }
+
+    discardAllCards(roomName) {
+        const room = this.rooms_props[roomName]
+        room.discardPile = room.drawnCards
+        room.drawnCards = []
+    }
+
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
