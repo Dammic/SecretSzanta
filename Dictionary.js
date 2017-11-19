@@ -2,10 +2,14 @@ module.exports = {
     SocketEvents: {
         SelectName: 'CLIENT_SELECT_NAME',
         SyncLobby: 'SYNC_LOBBY',
+        SyncPolicies: 'SYNC_POLICIES',
+        IncreaseTrackerPosition: 'IncreaseTrackerPosition',
         PlayersListChanged: 'PLAYERS_LIST_CHANGED',
         SyncRoomsList: 'SYNC_ROOMS_LIST',
         RoomsListChanged: 'ROOMS_LIST_CHANGED',
         AllowEnteringRoom: 'ALLOW_ENTERING_ROOM',
+        ServerWaitingForVeto: 'SERVER_WAITING_FOR_VETO',
+        VetoVoteRegistered: 'VETO_VOTE_REGISTERED',
         CLIENT_SEND_MESSAGE: 'CLIENT_SEND_MESSAGE',
         CLIENT_JOIN_ROOM: 'CLIENT_JOIN_ROOM',
         CLIENT_LEAVE_ROOM: 'CLIENT_LEAVE_ROOM',
@@ -50,6 +54,8 @@ module.exports = {
         GAME_PHASE_FINISHED: 'GAME_PHASE_FINISHED',
         PresidentPolicyChoice: 'GAME_PHASE_PRESIDENT_POLICY_CHOICE',
         ChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
+        ServerWaitingForVeto: 'GAME_PHASE_SERVER_WAITING_FOR_VETO',
+        ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
@@ -62,6 +68,8 @@ module.exports = {
     },
     ErrorMessages: {
         notOwner: 'This action is forbidden! You are not the owner!',
+        notPresident: 'This action is reserved for president!',
+        notChancellor: 'This action is reserved for chancellor!',
         NameTaken: 'The selected name is already taken',
     },
     ChoiceModeContexts: {
