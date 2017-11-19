@@ -452,10 +452,7 @@ class RoomsManager {
     }
     getPolicyCardsCount(roomName, policyType) {
         const { policiesPile } = this.rooms_props[roomName]
-        return (policyType === PolicyCards.FacistPolicy
-            ? size(filter(policiesPile, policy => policy === PolicyCards.FacistPolicy))
-            : size(filter(policiesPile, policy => policy === PolicyCards.LiberalPolicy))
-        )
+        return size(filter(policiesPile, policy => policy === policyType))
     }
 
     removeRoom(roomName) {

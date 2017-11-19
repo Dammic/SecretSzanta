@@ -327,7 +327,7 @@ module.exports = function (io) {
         socket.currentRoom = ''
 
         const clientVerificationHof = ClientVerificationHof(RoomsManager)
-        socketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
+        phaseSocketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
         socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
