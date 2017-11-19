@@ -20,7 +20,7 @@ const ModalComponent = ({
                         <div className="modal-title">{title}</div>
                         <div className="modal-body">{child}</div>
                     </Scrollbars>
-                    <a className="overlay" onClick={overlayClosesModal ? closeModal : null} />
+                    <a className="overlay modal-overlay" onClick={overlayClosesModal ? closeModal : null} />
                 </div>
             </ReactCSSTransitionGroup>
         )

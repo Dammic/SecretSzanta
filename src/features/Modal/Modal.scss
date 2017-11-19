@@ -9,10 +9,7 @@
     top: 0;
     left: 0;
     .modal-overlay {
-        position: fixed;
-        height: 100%;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.25);
+        background-color: rgba(0, 0, 0, 0.5);
     }
     .modal-content {
         z-index: 9999;
@@ -23,6 +20,15 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, .25);
         background-color: $modal-background;
         color: $modal-font;
+        border-top-left-radius: 15em 6em;
+        border-bottom-right-radius: 15em 6em;
+
+        & > div {
+            border-bottom: 2px solid;
+            border-color: #B6B7AC;
+            margin-bottom: 20px !important;
+            overflow-x: hidden !important;
+        }
         
         .modal-title {
             text-align: center;
@@ -34,6 +40,8 @@
         .modal-body {
             position: relative;
             padding: 15px;
+            border-top: 2px solid;
+            border-color: #B6B7AC;
         }
         .modal-close-button {
             font-size: 18px;
