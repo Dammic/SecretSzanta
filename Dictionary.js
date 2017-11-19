@@ -29,6 +29,7 @@ module.exports = {
         ChoosePolicy: 'CHOOSE_POLICY',
         NewPolicy: 'NEW_POLICY',
         ResetTracker: 'RESET_TRACKER',
+        SetTimer: 'SET_TIMER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',

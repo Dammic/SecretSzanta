@@ -18,6 +18,7 @@ const resetVotes = createAction('room/RESET_VOTES')
 const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
 const clearRoom = createAction('room/CLEAR_ROOM')
+const setWaitTime = createAction('room/SET_WAIT_TIME')
 
 const initialState = {
     maxPlayers: 0,
@@ -29,6 +30,7 @@ const initialState = {
     liberalPoliciesCount: 0,
     trackerPosition: 0,
     votes: null,
+    waitTime: 0,
 }
 
 const actions = {
@@ -202,12 +204,16 @@ const actions = {
         }
     },
     [clearRoom]: () => initialState,
+    [setWaitTime]: (state, { payload: { waitTime } }) => ({
+        ...state,
+        waitTime,
+    }),
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom,
+    resetVotes, clearRoom, setWaitTime,
 }
 
 export default handleActions(actions, initialState)

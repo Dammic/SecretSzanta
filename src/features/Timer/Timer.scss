@@ -1,0 +1,21 @@
+.timer {
+    width: 350px;
+    height: 20%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    right: 2px;
+    position: absolute;
+    bottom: 0;
+    z-index: -1;
+    transition: all .3s;
+
+    &.visible {
+        z-index: 0;
+        bottom: 10px;
+    }
+}

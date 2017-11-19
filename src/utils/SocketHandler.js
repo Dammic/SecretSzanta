@@ -219,6 +219,9 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.RoomsListChanged, ({ data: { room, roomName } }) => {
             this.props.lobbyActions.changeRoomInRoomsList({ room, roomName })
         })
+        socket.on(SocketEvents.SetTimer, ({ data: { waitTime } }) => {
+            this.props.roomActions.setWaitTimer({ waitTime })
+        })
     }
 
     switchRooms = (targetRoomName) => {
