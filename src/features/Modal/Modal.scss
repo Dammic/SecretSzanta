@@ -25,7 +25,7 @@
 
         & > div {
             border-bottom: 2px solid;
-            border-color: #B6B7AC;
+            border-color: $modal-border;
             margin-bottom: 20px !important;
             overflow-x: hidden !important;
         }
@@ -41,7 +41,7 @@
             position: relative;
             padding: 15px;
             border-top: 2px solid;
-            border-color: #B6B7AC;
+            border-color: $modal-border;
         }
         .modal-close-button {
             font-size: 18px;
