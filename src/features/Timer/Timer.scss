@@ -1,21 +1,31 @@
 .timer {
-    width: 350px;
-    height: 20%;
-    display: -webkit-box;
-    display: -ms-flexbox;
+    @keyframes glowing {
+      0% { background-color: $timer-veto-button-start-bg; box-shadow: 0 0 3px $timer-veto-button-start-bg; }
+      50% { background-color: $timer-veto-button-end-bg; box-shadow: 0 0 10px $timer-veto-button-end-bg; }
+      100% { background-color: $timer-veto-button-start-bg; box-shadow: 0 0 3px $timer-veto-button-start-bg; }
+
+    }
+
+    width: 322px;
+    height: 30px;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    right: 2px;
+    z-index: 0;
+    align-items: center;
+    right: 0;
     position: absolute;
-    bottom: 0;
-    z-index: -1;
+    bottom: 10%;
     transition: all .3s;
+    padding-left: 30px;
+    color: $timer-font;
+    background-color: $timer-bg;
 
     &.visible {
-        z-index: 0;
-        bottom: 10px;
+        bottom: 20%;
+    }
+    .veto {
+        width: 50px;
+        animation: glowing 1500ms infinite;
+        color: $timer-veto-font;
+        margin-left: 10px;
     }
 }

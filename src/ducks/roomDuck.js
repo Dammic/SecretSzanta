@@ -1,5 +1,5 @@
 import { handleActions, createAction } from 'redux-actions'
-import { cloneDeep, forEach, find } from 'lodash'
+import { cloneDeep, forEach, find, isNil } from 'lodash'
 import { PlayerRole } from '../../Dictionary'
 
 // Actions
@@ -10,6 +10,7 @@ const chooseNewChancellor = createAction('room/CHOOSE_NEW_CHANCELLOR')
 const chooseNewPresident = createAction('room/CHOOSE_NEW_PRESIDENT')
 const syncRoomData = createAction('room/SYNC_ROOM_DATA')
 const increasePolicyCount = createAction('room/INCREASE_POLICY_COUNT')
+const setPoliciesCount = createAction('room/SET_POLICY_COUNTS')
 const increaseTracker = createAction('room/INCREASE_TRACKER')
 const resetTracker = createAction('room/RESET_TRACKER')
 const revealFacists = createAction('room/REVEAL_FACISTS')
@@ -19,6 +20,7 @@ const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
 const clearRoom = createAction('room/CLEAR_ROOM')
 const setWaitTime = createAction('room/SET_WAIT_TIME')
+const setVeto = createAction('room/SET_VETO')
 
 const initialState = {
     maxPlayers: 0,
@@ -31,6 +33,7 @@ const initialState = {
     trackerPosition: 0,
     votes: null,
     waitTime: 0,
+    isVetoUnlocked: false,
 }
 
 const actions = {
@@ -155,6 +158,11 @@ const actions = {
             liberalPoliciesCount: liberalPoliciesCount + 1,
         }
     },
+    [setPoliciesCount]: (state, { payload: { facist, liberal } }) => ({
+        ...state,
+        facistPoliciesCount: (isNil(facist) ? state.facistPoliciesCount : facist),
+        liberalPoliciesCount: (isNil(liberal) ? state.liberalPoliciesCount : liberal),
+    }),
     [revealFacists]: (state, action) => {
         const { facists } = action.payload
 
@@ -208,12 +216,16 @@ const actions = {
         ...state,
         waitTime,
     }),
+    [setVeto]: (state, { payload: { value } }) => ({
+        ...state,
+        isVetoUnlocked: value,
+    })
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom, setWaitTime,
+    resetVotes, clearRoom, setVeto, setPoliciesCount, setWaitTime,
 }
 
 export default handleActions(actions, initialState)

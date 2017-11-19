@@ -20,7 +20,7 @@ export class UIBox extends React.PureComponent {
         this.props.playersActions.setChoiceMode({
             isVisible: true,
             context: ChoiceModeContexts.KickChoice,
-            selectablePlayers: this.props.playersWithoutMe,  
+            selectablePlayers: this.props.playersWithoutMe,
         })
     }
 
@@ -53,9 +53,8 @@ export class UIBox extends React.PureComponent {
         />)
     }
 
-
     render() {
-        const { affiliation, role, isAffiliationHidden, isOwner} = this.props
+        const { affiliation, role, isAffiliationHidden, isOwner } = this.props
         return (
             <UIBoxComponent
                 onStartVote={this.onStartVote}

@@ -1,20 +1,26 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { SocketEvents } from '../../../Dictionary'
 import TimerComponent from './TimerComponent'
-import { setWaitTime } from '../../ducks/roomDuck'
+import { setWaitTime, setVeto } from '../../ducks/roomDuck'
+import { socket } from '../../utils/SocketHandler'
 
 export class Timer extends React.PureComponent {
     static propTypes = {
-
+        setVeto: PropTypes.func,
+        setWaitTime: PropTypes.func,
+        waitTime: PropTypes.number,
+        isVetoUnlocked: PropTypes.bool,
     }
     state = {
         secondsRemaining: 0,
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.waitTime !== nextProps.waitTime && nextProps.waitTime ) {
-            this.setState({ secondsRemaining: nextProps.waitTime })
+        if (this.props.waitTime !== nextProps.waitTime && nextProps.waitTime) {
+            this.setState({ secondsRemaining: nextProps.waitTime / 1000 })
+            clearInterval(this.interval)
             this.interval = setInterval(this.tick, 1000)
         }
     }
@@ -31,10 +37,18 @@ export class Timer extends React.PureComponent {
         }
     }
 
+    onVetoClick = () => {
+        socket.emit(SocketEvents.VetoVoteRegistered)
+        this.props.setVeto({ value: false })
+    }
+
     render() {
+        const { isVetoUnlocked } = this.props
         return (
             <TimerComponent
                 secondsRemaining={this.state.secondsRemaining}
+                isVetoUnlocked={isVetoUnlocked}
+                onVetoClick={this.onVetoClick}
             />
         )
     }
@@ -42,10 +56,12 @@ export class Timer extends React.PureComponent {
 
 const mapStateToProps = ({ room }) => ({
     waitTime: room.waitTime,
+    isVetoUnlocked: room.isVetoUnlocked,
 })
 
 const mapDispatchToProps = dispatch => ({
     setWaitTime: payload => dispatch(setWaitTime(payload)),
+    setVeto: payload => dispatch(setVeto(payload)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Timer)

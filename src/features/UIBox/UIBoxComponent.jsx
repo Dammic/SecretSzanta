@@ -57,6 +57,9 @@ const UIBoxComponent = ({
 UIBoxComponent.propTypes = {
     onStartVote: PropTypes.func,
     onStartGame: PropTypes.func,
+    onKickPlayer: PropTypes.func,
+    onBanPlayer: PropTypes.func,
+    isOwner: PropTypes.bool,
     affiliation: PropTypes.string,
     isAffiliationHidden: PropTypes.bool,
     onShowAffiliationClick: PropTypes.func,
