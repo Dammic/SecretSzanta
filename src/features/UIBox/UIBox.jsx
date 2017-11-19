@@ -54,7 +54,7 @@ export class UIBox extends React.PureComponent {
     }
 
     onVetoClick = () => {
-        socket.emit(SocketEvents.VetoRegistered)
+        socket.emit(SocketEvents.VetoVoteRegistered)
         this.props.roomActions.setVeto({ value: false })
     }
 

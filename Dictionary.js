@@ -9,7 +9,7 @@ module.exports = {
         RoomsListChanged: 'ROOMS_LIST_CHANGED',
         AllowEnteringRoom: 'ALLOW_ENTERING_ROOM',
         ServerWaitingForVeto: 'SERVER_WAITING_FOR_VETO',
-        VetoRegistered: 'VETO_REGISTERED',
+        VetoVoteRegistered: 'VETO_VOTE_REGISTERED',
         CLIENT_SEND_MESSAGE: 'CLIENT_SEND_MESSAGE',
         CLIENT_JOIN_ROOM: 'CLIENT_JOIN_ROOM',
         CLIENT_LEAVE_ROOM: 'CLIENT_LEAVE_ROOM',
