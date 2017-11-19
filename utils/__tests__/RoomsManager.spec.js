@@ -4,7 +4,7 @@ const { GamePhases } = require('../../Dictionary')
 describe('RoomsManager', () => {
     describe('initializeRoom', () => {
         test('should create room with owner', () => {
-            RoomsManager.initializeRoom('testRoom', 'owner', 8)
+            RoomsManager.initializeRoom('testRoom', 'owner', 8, 'password')
             const roomProps = RoomsManager.rooms_props.testRoom
             expect(roomProps).toBeDefined()
 
@@ -14,7 +14,7 @@ describe('RoomsManager', () => {
                 playersDict: {},
                 blackList: [],
                 maxPlayers: 8,
-                password: undefined,
+                password: 'password',
                 chancellorCandidateName: '',
                 failedElectionsCount: 0,
                 votes: {},
