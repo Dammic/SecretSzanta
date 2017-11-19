@@ -24,7 +24,7 @@ export class SocketHandler extends React.PureComponent {
             this.switchRooms(roomName)
         })
         socket.on(SocketEvents.ServerWaitingForVeto, (payload) => {
-            this.props.roomActions.toggleVeto()
+            this.props.roomActions.setVeto({ value: true })
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
@@ -69,6 +69,7 @@ export class SocketHandler extends React.PureComponent {
             const { presidentName, playersChoices, timestamp } = payload.data
 
             this.props.roomActions.chooseNewPresident({ newPresident: presidentName })
+            this.props.roomActions.setVeto({ value: false })
             this.props.roomActions.resetVotes()
             this.props.chatActions.addMessage({ timestamp, content: `${presidentName} has become the new president!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_CHANCELLOR_CHOICE })

@@ -1,7 +1,7 @@
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
     filter, includes, forEach, random, slice, times, map, head,
-    find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf,
+    find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf, dropRight,
 } = require('lodash')
 const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards, GlobalRoomName } = require('../Dictionary')
 
@@ -430,8 +430,8 @@ class RoomsManager {
     }
     discardPolicyByVeto(roomName) {
         const { policiesPile, discardPile } = this.rooms_props[roomName]
-        const discardedPolicy = take(policiesPile, 1)
-        drop(policiesPile, 1)
+        const discardedPolicy = take(policiesPile, 1)[0]
+        this.rooms_props[roomName].policiesPile = dropRight(policiesPile, 1)
         discardPile.push(discardedPolicy)
     }
     getDrawnCards(roomName) {

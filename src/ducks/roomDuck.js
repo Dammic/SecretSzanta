@@ -1,5 +1,5 @@
 import { handleActions, createAction } from 'redux-actions'
-import { cloneDeep, forEach, find } from 'lodash'
+import { cloneDeep, forEach, find, isNil } from 'lodash'
 import { PlayerRole } from '../../Dictionary'
 
 // Actions
@@ -19,7 +19,7 @@ const resetVotes = createAction('room/RESET_VOTES')
 const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
 const clearRoom = createAction('room/CLEAR_ROOM')
-const toggleVeto = createAction('room/TOGGLE_VETO')
+const setVeto = createAction('room/SET_VETO')
 
 const initialState = {
     maxPlayers: 0,
@@ -158,8 +158,8 @@ const actions = {
     },
     [setPoliciesCount]: (state, { payload: { facist, liberal } }) => ({
         ...state,
-        facistPoliciesCount: facist || state.facistPoliciesCount,
-        liberalPoliciesCount: liberal || state.liberalPoliciesCount,
+        facistPoliciesCount: (isNil(facist) ? state.facistPoliciesCount : facist),
+        liberalPoliciesCount: (isNil(liberal) ? state.liberalPoliciesCount : liberal),
     }),
     [revealFacists]: (state, action) => {
         const { facists } = action.payload
@@ -210,16 +210,16 @@ const actions = {
         }
     },
     [clearRoom]: () => initialState,
-    [toggleVeto]: state => ({
+    [setVeto]: (state, { payload: { value } }) => ({
         ...state,
-        isVetoUnlocked: !state.isVetoUnlocked,
+        isVetoUnlocked: value,
     })
 }
 export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom, toggleVeto, setPoliciesCount,
+    resetVotes, clearRoom, setVeto, setPoliciesCount,
 }
 
 export default handleActions(actions, initialState)

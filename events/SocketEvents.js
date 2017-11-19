@@ -30,9 +30,10 @@ module.exports = function (io) {
             if (fascistPolicyCount === 4 || fascistPolicyCount === 5) {
                 socketEvents.startKillPhase(socket)
             // 5th power is always kill AND veto power unlock
-            } else if (fascistPolicyCount === 1) {
+            } else if (fascistPolicyCount === 5) {
                 RoomsManager.toggleVeto(socket.currentRoom)
                 socketEvents.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
+                socketEvents.resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
             } else {
                 socketEvents.resumeGame(socket, { delay: 3000, func: socketEvents.startChancellorChoicePhase })
             }
@@ -66,7 +67,7 @@ module.exports = function (io) {
             }
             const vetoVotes = RoomsManager.getVetoVotes(socket.currentRoom)
             const playerRole = RoomsManager.getPlayerRole(socket.currentRoom, socket.currentPlayerName)
-            if (!includes(vetoVotes, playerRole)) {
+            if (includes(vetoVotes, playerRole)) {
                 console.error('Player tried to vote twice!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
                     error: 'You cannot veto twice!',
@@ -80,7 +81,7 @@ module.exports = function (io) {
                 socketEvents.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
                 clearTimeout(cancelTimeoutToken)
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
-                socketEvents.checkIfTrackerPositionShouldUpdate(socket.currentRoom, false)
+                socketEvents.checkIfTrackerPositionShouldUpdate(socket, false)
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
                     data: {
@@ -545,5 +546,6 @@ module.exports = function (io) {
         socket.on(SocketEvents.PlayerKicked, partialFunctions.kickPlayer)
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
+        socket.on(SocketEvents.VetoRegistered, partialFunctions.veto)
     })
 }
