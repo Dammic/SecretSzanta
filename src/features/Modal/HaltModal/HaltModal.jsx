@@ -5,20 +5,23 @@ import HaltModalComponent from './HaltModalComponent'
 
 class HaltModal extends PureComponent {
     static propTypes = {
-        end: PropTypes.bool,
-        owner: PropTypes.string,
+        hasGameEnded: PropTypes.bool,
+        ownerName: PropTypes.string,
     }
     render() {
-        return (<HaltModalComponent
-                owner={this.props.owner}
-                end={this.props.end}
-            / >)        
+        const { ownerName, hasGameEnded } = this.props;
+        return (
+            <HaltModalComponent
+                ownerName={ownerName}
+                hasGameEnded={hasGameEnded}
+            />
+        )        
     }
 }
 
 const mapStateToProps = ({ room }) => {
     return {
-        owner: room.ownerName,
+        ownerName: room.ownerName,
     }
 }
 

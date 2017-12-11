@@ -144,7 +144,7 @@ export class SocketHandler extends React.PureComponent {
                 title: message,
                 isOverlayOpaque: true,
                 componentName: 'HaltModal',
-                initialData: { end: false },
+                initialData: { hasGameEnded: false },
             })
         })
 
@@ -157,7 +157,7 @@ export class SocketHandler extends React.PureComponent {
                     title: "The game abruptly ended",
                     isOverlayOpaque: true,
                     componentName: 'HaltModal',
-                    initialData: { end: true },
+                    initialData: { hasGameEnded: true },
                 })
                 return
             }
