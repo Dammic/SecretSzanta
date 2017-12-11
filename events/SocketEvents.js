@@ -349,8 +349,8 @@ module.exports = function (io) {
             }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
-            const gameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW
-            const needHide = gameBegan && (socketEvents.kickIfHitler(socket, playerName)
+            const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW
+            const isOverlaysHidingNeeded = hasGameBegan && (socketEvents.kickIfHitler(socket, playerName)
                 || socketEvents.kickIfPresident(socket, playerName))
 
             RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
