@@ -6,7 +6,7 @@ import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
 import { SocketEvents, ChoiceModeContexts } from '../../../Dictionary'
 import { toggleAffiliationMenu } from '../../ducks/userDuck'
-import { resetTracker } from '../../ducks/roomDuck'
+import { resetTracker, setVeto } from '../../ducks/roomDuck'
 import * as playerActions from '../../ducks/playersDuck'
 import { socket } from '../../utils/SocketHandler'
 
@@ -20,7 +20,7 @@ export class UIBox extends React.PureComponent {
         this.props.playersActions.setChoiceMode({
             isVisible: true,
             context: ChoiceModeContexts.KickChoice,
-            selectablePlayers: this.props.playersWithoutMe,  
+            selectablePlayers: this.props.playersWithoutMe,
         })
     }
 
@@ -53,9 +53,14 @@ export class UIBox extends React.PureComponent {
         />)
     }
 
+    onVetoClick = () => {
+        socket.emit(SocketEvents.VetoVoteRegistered)
+        this.props.roomActions.setVeto({ value: false })
+    }
+
 
     render() {
-        const { affiliation, role, isAffiliationHidden, isOwner} = this.props
+        const { affiliation, role, isAffiliationHidden, isOwner, isVetoUnlocked } = this.props
         return (
             <UIBoxComponent
                 onStartVote={this.onStartVote}
@@ -68,6 +73,8 @@ export class UIBox extends React.PureComponent {
                 role={role}
                 getPlayerCard={this.getPlayerCard}
                 isAffiliationHidden={isAffiliationHidden}
+                isVetoUnlocked={isVetoUnlocked}
+                onVetoClick={this.onVetoClick}
             />
         )
     }
@@ -85,11 +92,12 @@ const mapStateToProps = ({ user, room }) => {
         facistAvatar: get(player, 'facistAvatar'),
         liberalAvatar: get(player, 'avatarNumber'),
         role: get(player, 'role'),
+        isVetoUnlocked: room.isVetoUnlocked,
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ resetTracker }, dispatch),
+    roomActions: bindActionCreators({ resetTracker, setVeto }, dispatch),
     userActions: bindActionCreators({ toggleAffiliationMenu }, dispatch),
     playersActions: bindActionCreators(playerActions, dispatch)
 })

@@ -6,6 +6,12 @@
     height: 20%;
     max-height: 200px;
 
+    @keyframes glowing {
+      0% { background-color: $uibox-veto-button-start-bg; box-shadow: 0 0 3px $uibox-veto-button-start-bg; }
+      50% { background-color: $uibox-veto-button-end-bg; box-shadow: 0 0 10px $uibox-veto-button-end-bg; }
+      100% { background-color: $uibox-veto-button-start-bg; box-shadow: 0 0 3px $uibox-veto-button-start-bg; }
+    }
+
     .game-controls {
         display: flex;
         width: 75px;
@@ -17,6 +23,10 @@
             display: flex;
             flex-direction: column;
             width: 50px;
+            .veto {
+                animation: glowing 1500ms infinite;
+                color: $uibox-veto-font;
+            }
         }
         .side-buttons {
             display: flex;
