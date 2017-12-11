@@ -317,7 +317,7 @@ module.exports = function (io) {
             RoomsManager.chooseNextPresident(socket.currentRoom)
             RoomsManager.initializeVoting(socket.currentRoom) // resets chancellor player name
             RoomsManager.setChancellor(socket.currentRoom)
-            setTimeout(() => socketEvents.startChancellorChoicePhase(socket), 1000)
+            socketEventsUtils.resumeGame(socket, { delay: 1000, func: phaseSocketEvents.startChancellorChoicePhase })
             return true;
         },
         kickIfHitler: (socket, playerName) => {
