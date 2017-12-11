@@ -303,7 +303,7 @@ module.exports = function (io) {
                     playerName,
                     timestamp: getCurrentTimestamp(),
                     wasBanned: permanently,
-                    needHide,
+                    isOverlaysHidingNeeded,
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
