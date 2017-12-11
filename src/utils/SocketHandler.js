@@ -35,7 +35,7 @@ export class SocketHandler extends React.PureComponent {
             const { playerName, timestamp } = payload.data
             this.props.roomActions.removePlayer({ playerName })
 
-            this.hideAll()
+            this.cancelEveryGameChoice()
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
             this.props.chatActions.addMessage(payload.data)
@@ -139,7 +139,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: message })
             this.props.roomActions.removePlayer({ playerName })
 
-            if (needHide) this.hideAll()
+            if (needHide) this.cancelEveryGameChoice()
             this.props.modalActions.setModal({
                 title: message,
                 isOverlayOpaque: true,
@@ -250,7 +250,7 @@ export class SocketHandler extends React.PureComponent {
         this.props.userActions.setView({ viewName: (targetRoomName ? Views.Game : Views.Lobby) })
     }
 
-    hideAll = () => {
+    cancelEveryGameChoice = () => {
         this.props.playersActions.setChooserPlayer({ playerName: '' })
         this.props.playersActions.hideChoiceMode()
         this.props.modalActions.toggleModal({ value: false })
