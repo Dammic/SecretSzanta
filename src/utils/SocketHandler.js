@@ -150,7 +150,6 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
-            console.log('Game Finished')
 
             if (!whoWon) {
                 this.props.modalActions.setModal({
