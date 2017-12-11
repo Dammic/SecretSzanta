@@ -90,9 +90,10 @@ class RoomsManager {
             currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
         }
 
-        if (!chancellorCandidateName) return;
-        const nextChancellor = playersDict[chancellorCandidateName]
-        nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
+        if (chancellorCandidateName) {
+            const nextChancellor = playersDict[chancellorCandidateName]
+            nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
+        }
     }
 
     getChancellor(roomName) {
@@ -430,7 +431,7 @@ class RoomsManager {
 
     discardAllCards(roomName) {
         const room = this.rooms_props[roomName]
-        room.discardPile = room.drawnCards
+        room.discardPile = [...room.discardPile, ...room.drawnCards]
         room.drawnCards = []
     }
 
