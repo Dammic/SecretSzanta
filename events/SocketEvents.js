@@ -328,7 +328,7 @@ module.exports = function (io) {
         switchRooms: (socket, startRoom, targetRoom) => {
             if (startRoom) {
                 socket.leave(startRoom)
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
+                socketEventsUtils.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
                 
                 const updatedRoom = (startRoom === GlobalRoomName ? targetRoom : startRoom)
                 if (updatedRoom) {
@@ -355,7 +355,7 @@ module.exports = function (io) {
                     })
                 }
                 socket.join(targetRoom)
-                socketEvents.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
+                socketEventsUtils.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
             }
             io.sockets.in(GlobalRoomName).emit(SocketEvents.PlayersListChanged, {
                 data: {
