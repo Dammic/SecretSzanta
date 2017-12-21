@@ -126,7 +126,7 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {
-            const { playerName, needHide, wasBanned, timestamp } = payload.data
+            const { playerName, isOverlaysHidingNeeded, wasBanned, timestamp } = payload.data
 
             if (this.props.userName === playerName) {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
@@ -139,7 +139,7 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: message })
             this.props.roomActions.removePlayer({ playerName })
 
-            if (needHide) this.cancelEveryGameChoice()
+            if (isOverlaysHidingNeeded) this.cancelEveryGameChoice()
             this.props.modalActions.setModal({
                 title: message,
                 isOverlayOpaque: true,
