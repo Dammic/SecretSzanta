@@ -363,7 +363,6 @@ module.exports = function (io) {
                     player: RoomsManager.getPlayerFromPlayersList(socket.currentPlayerName),
                 },
             })
-            socketEventsUtils.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
         },
         selectName: (socket, { userName }) => {
             // deselecting name
