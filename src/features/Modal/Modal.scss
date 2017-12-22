@@ -25,6 +25,16 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, .25);
         background-color: $modal-background;
         color: $modal-font;
+        border-top-left-radius: 15em 6em;
+        border-bottom-right-radius: 15em 6em;
+        overflow: hidden;
+
+        & > div {
+            border-bottom: 2px solid;
+            border-color: $modal-border;
+            margin-bottom: 20px !important;
+            overflow-x: hidden !important;
+        }
         
         .modal-title {
             text-align: center;
@@ -37,6 +47,8 @@
         .modal-body {
             position: relative;
             padding: 15px;
+            border-top: 2px solid;
+            border-color: $modal-border;
         }
         .modal-close-button {
             font-size: 18px;

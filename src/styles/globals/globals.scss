@@ -13,6 +13,42 @@ html, body {
 }
 
 .blurred {
-	filter: blur(3px);
+    filter: blur(3px);
+}
+
+.fabulous-button {
+    background: transparent;
+    padding: 1rem 1rem;
+    margin: 0 1rem;
+    transition: all .5s ease;
+    color: #41403E;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    outline: none;
+    box-shadow: 20px 38px 34px -26px hsla(0,0%,0%,.2);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    &:hover{
+        box-shadow:2px 8px 4px -6px hsla(0,0%,0%,.3);
+        background-color: $fabulous-button-hover-bg;
+        cursor: pointer;
+    } 
+    &.lined.thick{
+        border: solid 7px $fabulous-button-border;
+    }
+    &.dotted.thick{
+        border: dotted 5px $fabulous-button-border;
+    }
+    &.dashed.thick{
+        border: dashed 5px $fabulous-button-border;
+    }
+    &.lined.thin{
+        border: solid 2px $fabulous-button-border;
+    }
+    &.dotted.thin{
+        border: dotted 2px $fabulous-button-border;
+    }
+    &.dashed.thin{
+        border: dashed 2px $fabulous-button-border;
+    }
 }
 
