@@ -12,7 +12,9 @@ const ModalComponent = ({
     closeModal,
     child,
 }) => {
-    if (!isVisible) return null;
+    if (!isVisible) return (
+        <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={0} transitionLeaveTimeout={0} />
+    );
 
     const overlayClasses = classNames('overlay modal-overlay', { opaque: isOverlayOpaque })
     return (
