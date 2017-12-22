@@ -325,45 +325,6 @@ module.exports = function (io) {
             if (playerName !== hitlerName) return false;
             return true;
         },
-        switchRooms: (socket, startRoom, targetRoom) => {
-            if (startRoom) {
-                socket.leave(startRoom)
-                socketEventsUtils.sendMessage(socket, { content: `${socket.currentPlayerName} has left the room` })
-                
-                const updatedRoom = (startRoom === GlobalRoomName ? targetRoom : startRoom)
-                if (updatedRoom) {
-                    io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
-                        data: {
-                            roomName: updatedRoom,
-                            room: RoomsManager.getRoomDetailsForLobby(updatedRoom),
-                        },
-                    })
-                }
-            }
-            socket.currentRoom = targetRoom
-            if (targetRoom) {
-                if (startRoom) {
-                    RoomsManager.updatePlayerRoom(socket.currentPlayerName, targetRoom)
-                }
-
-                if (targetRoom === GlobalRoomName) {
-                    socket.emit(SocketEvents.SyncLobby, {
-                        data: {
-                            players: RoomsManager.getPlayersList(),
-                            rooms: RoomsManager.getRoomsList(),
-                        },
-                    })
-                }
-                socket.join(targetRoom)
-                socketEventsUtils.sendMessage(socket, { content: `${socket.currentPlayerName} has joined the room` })
-            }
-            io.sockets.in(GlobalRoomName).emit(SocketEvents.PlayersListChanged, {
-                data: {
-                    playerName: socket.currentPlayerName,
-                    player: RoomsManager.getPlayerFromPlayersList(socket.currentPlayerName),
-                },
-            })
-        },
         selectName: (socket, { userName }) => {
             // deselecting name
             if (!userName) {
