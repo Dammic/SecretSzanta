@@ -7,7 +7,7 @@ import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck'
 import * as lobbyActions from '../ducks/lobbyDuck'
-import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
+import { setChoiceMode, setChooserPlayer, hideChoiceMode } from '../ducks/playersDuck'
 import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 
@@ -34,6 +34,8 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (payload) => {
             const { playerName, timestamp } = payload.data
             this.props.roomActions.removePlayer({ playerName })
+
+            this.cancelEveryGameChoice()
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
             this.props.chatActions.addMessage(payload.data)
@@ -124,22 +126,42 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {
-            const { playerName, wasBanned, timestamp } = payload.data
+            const { playerName, isOverlaysHidingNeeded, wasBanned, timestamp } = payload.data
 
             if (this.props.userName === playerName) {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
                 this.props.roomActions.clearRoom()
                 this.switchRooms('')
+                this.cancelEveryGameChoice()
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
             this.props.chatActions.addMessage({ timestamp, content: message })
             this.props.roomActions.removePlayer({ playerName })
+
+            if (isOverlaysHidingNeeded) this.cancelEveryGameChoice()
+            this.props.modalActions.setModal({
+                title: message,
+                isOverlayOpaque: true,
+                componentName: 'HaltModal',
+                initialData: { hasGameEnded: false },
+            })
         })
 
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
+
+            if (!whoWon) {
+                this.props.modalActions.setModal({
+                    title: "The game abruptly ended",
+                    isOverlayOpaque: true,
+                    componentName: 'HaltModal',
+                    initialData: { hasGameEnded: true },
+                })
+                return
+            }
+
             this.props.roomActions.revealFacists({ facists })
             const wonText = whoWon === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals won!' : 'Fascist won!'
             this.props.modalActions.setModal({
@@ -229,6 +251,12 @@ export class SocketHandler extends React.PureComponent {
         this.props.userActions.setView({ viewName: (targetRoomName ? Views.Game : Views.Lobby) })
     }
 
+    cancelEveryGameChoice = () => {
+        this.props.playersActions.setChooserPlayer({ playerName: '' })
+        this.props.playersActions.hideChoiceMode()
+        this.props.modalActions.toggleModal({ value: false })
+    }
+
 
     render() {
         return null
@@ -247,7 +275,7 @@ const mapDispatchToProps = (dispatch) => {
         roomActions: bindActionCreators(roomActions, dispatch),
         userActions: bindActionCreators(userActions, dispatch),
         chatActions: bindActionCreators({ addMessage, clearChat }, dispatch),
-        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
+        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer, hideChoiceMode }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
         notificationsActions: bindActionCreators({ addNotification }, dispatch),
         lobbyActions: bindActionCreators(lobbyActions, dispatch),
