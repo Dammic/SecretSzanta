@@ -322,8 +322,7 @@ module.exports = function (io) {
         },
         kickIfHitler: (socket, playerName) => {
             const hitlerName = get(RoomsManager.getHitler(socket.currentRoom), 'playerName')
-            if (playerName !== hitlerName) return false;
-            return true;
+            return playerName === hitlerName
         },
         selectName: (socket, { userName }) => {
             // deselecting name
