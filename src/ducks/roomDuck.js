@@ -19,6 +19,7 @@ const resetVotes = createAction('room/RESET_VOTES')
 const revealVotes = createAction('room/REVEAL_VOTES')
 const killPlayer = createAction('room/KILL_PLAYER')
 const clearRoom = createAction('room/CLEAR_ROOM')
+const setWaitTime = createAction('room/SET_WAIT_TIME')
 const setVeto = createAction('room/SET_VETO')
 
 const initialState = {
@@ -31,6 +32,7 @@ const initialState = {
     liberalPoliciesCount: 0,
     trackerPosition: 0,
     votes: null,
+    waitTime: 0,
     isVetoUnlocked: false,
 }
 
@@ -210,6 +212,10 @@ const actions = {
         }
     },
     [clearRoom]: () => initialState,
+    [setWaitTime]: (state, { payload: { waitTime } }) => ({
+        ...state,
+        waitTime,
+    }),
     [setVeto]: (state, { payload: { value } }) => ({
         ...state,
         isVetoUnlocked: value,
@@ -219,7 +225,7 @@ export {
     addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
     chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
     registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom, setVeto, setPoliciesCount,
+    resetVotes, clearRoom, setVeto, setPoliciesCount, setWaitTime,
 }
 
 export default handleActions(actions, initialState)

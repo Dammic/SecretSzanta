@@ -16,8 +16,6 @@ const UIBoxComponent = ({
     affiliation,
     getPlayerCard,
     role,
-    isVetoUnlocked,
-    onVetoClick,
 }) => {
     const facistsKinds = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
     const affiliationClassName = (includes(facistsKinds, affiliation)
@@ -39,7 +37,6 @@ const UIBoxComponent = ({
                         roles<i className={classNames('fa fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} aria-hidden="true" />
                     </a>
                     {isOwner && ownersButtons}
-                    {isVetoUnlocked && <a role="button" tabIndex="0" className="btn veto" onClick={onVetoClick}>veto</a>}
                 </div>
             </div>
             <div className={classNames('submenu', { hidden: isAffiliationHidden })}>
@@ -60,7 +57,6 @@ const UIBoxComponent = ({
 UIBoxComponent.propTypes = {
     onStartVote: PropTypes.func,
     onStartGame: PropTypes.func,
-    onVetoClick: PropTypes.func,
     onKickPlayer: PropTypes.func,
     onBanPlayer: PropTypes.func,
     isOwner: PropTypes.bool,
@@ -69,6 +65,5 @@ UIBoxComponent.propTypes = {
     onShowAffiliationClick: PropTypes.func,
     getPlayerCard: PropTypes.func,
     role: PropTypes.string,
-    isVetoUnlocked: PropTypes.bool,
 }
 export default UIBoxComponent
