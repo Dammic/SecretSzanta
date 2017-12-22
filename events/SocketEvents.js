@@ -307,7 +307,7 @@ module.exports = function (io) {
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
-            socketEvents.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
+            socketEventsUtils.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
         },
         kickIfPresident: (socket, playerName) => {
             const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
