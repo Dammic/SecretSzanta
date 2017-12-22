@@ -133,6 +133,7 @@ export class SocketHandler extends React.PureComponent {
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
                 this.props.roomActions.clearRoom()
                 this.switchRooms('')
+                this.cancelEveryGameChoice()
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
