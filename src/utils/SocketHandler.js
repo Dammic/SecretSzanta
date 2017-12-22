@@ -2,13 +2,12 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { delay } from 'lodash'
 import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes, Views } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck'
 import * as lobbyActions from '../ducks/lobbyDuck'
-import { setChoiceMode, setChooserPlayer } from '../ducks/playersDuck'
+import { setChoiceMode, setChooserPlayer, hideChoiceMode } from '../ducks/playersDuck'
 import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 
@@ -20,10 +19,12 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
             this.props.roomActions.syncRoomData(payload.data)
         })
-
         socket.on(SocketEvents.AllowEnteringRoom, (payload) => {
             const { roomName } = payload.data
             this.switchRooms(roomName)
+        })
+        socket.on(SocketEvents.ServerWaitingForVeto, (payload) => {
+            this.props.roomActions.setVeto({ value: true })
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
             const { player, timestamp } = payload.data
@@ -33,6 +34,8 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_LEAVE_ROOM, (payload) => {
             const { playerName, timestamp } = payload.data
             this.props.roomActions.removePlayer({ playerName })
+
+            this.cancelEveryGameChoice()
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
             this.props.chatActions.addMessage(payload.data)
@@ -68,6 +71,7 @@ export class SocketHandler extends React.PureComponent {
             const { presidentName, playersChoices, timestamp } = payload.data
 
             this.props.roomActions.chooseNewPresident({ newPresident: presidentName })
+            this.props.roomActions.setVeto({ value: false })
             this.props.roomActions.resetVotes()
             this.props.chatActions.addMessage({ timestamp, content: `${presidentName} has become the new president!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_CHANCELLOR_CHOICE })
@@ -91,17 +95,12 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `${playerName} has voted. ${remaining} ${remaining === 1 ? 'vote' : 'votes'} left...` })
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
-            const { votes, failedElectionsCount, timestamp, newChancellor } = payload.data
+            const { votes, timestamp, newChancellor } = payload.data
             this.props.roomActions.revealVotes({ newVotes: votes })
-            const votingResultMessage = (newChancellor
-                ? `${newChancellor} has become the new chancellor!`
-                : 'The proposal has been rejected!' 
-            )
-            this.props.chatActions.addMessage({ timestamp, content: `Voting completed! ${votingResultMessage}` })
-            if (!newChancellor && failedElectionsCount !== 0) {
-                this.props.roomActions.increaseTracker()
-                this.props.chatActions.addMessage({ timestamp, content: 'The failed elections tracker has advanced!' })
-            }
+        })
+
+        socket.on(SocketEvents.IncreaseTrackerPosition, (payload) => {
+            this.props.roomActions.increaseTracker()
         })
 
         socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
@@ -127,22 +126,42 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {
-            const { playerName, wasBanned, timestamp } = payload.data
+            const { playerName, isOverlaysHidingNeeded, wasBanned, timestamp } = payload.data
 
             if (this.props.userName === playerName) {
                 const message = `You have been ${wasBanned ? 'banned' : 'kicked'} by the owner of the room!`
                 this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message })
                 this.props.roomActions.clearRoom()
                 this.switchRooms('')
+                this.cancelEveryGameChoice()
                 return
             }
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
             this.props.chatActions.addMessage({ timestamp, content: message })
             this.props.roomActions.removePlayer({ playerName })
+
+            if (isOverlaysHidingNeeded) this.cancelEveryGameChoice()
+            this.props.modalActions.setModal({
+                title: message,
+                isOverlayOpaque: true,
+                componentName: 'HaltModal',
+                initialData: { hasGameEnded: false },
+            })
         })
 
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
+
+            if (!whoWon) {
+                this.props.modalActions.setModal({
+                    title: "The game abruptly ended",
+                    isOverlayOpaque: true,
+                    componentName: 'HaltModal',
+                    initialData: { hasGameEnded: true },
+                })
+                return
+            }
+
             this.props.roomActions.revealFacists({ facists })
             const wonText = whoWon === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals won!' : 'Fascist won!'
             this.props.modalActions.setModal({
@@ -158,13 +177,15 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
-            const { timestamp } = payload.data
-            this.props.roomActions.increaseTracker()
-            this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker will be reset!' })
-            delay(() => {
+            const { timestamp, trackerPositionBeforeReset } = payload.data
+            let delay = 0
+            if (trackerPositionBeforeReset === 3) {
+              this.props.roomActions.increaseTracker()
+              delay = 4000
+            }
+            setTimeout(() => {
                 this.props.roomActions.resetTracker()
-                this.props.chatActions.addMessage({ timestamp, content: 'The failed election tracker has been reset!' })
-            }, 4000)
+            }, delay)
             // time of delay must be greater that time of an animation of tracker beeing moved
         })
 
@@ -190,11 +211,14 @@ export class SocketHandler extends React.PureComponent {
             this.props.playersActions.setChooserPlayer({ playerName: chancellorName })
         })
 
-        socket.on(SocketEvents.NewPolicy, ({ data: { timestamp, policy } }) => {
+        socket.on(SocketEvents.NewPolicy, ({ data: { policy } }) => {
             const isFacist = policy === PolicyCards.FacistPolicy
             this.props.playersActions.setChooserPlayer({ playerName: '' })
-            this.props.chatActions.addMessage({ timestamp, content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             this.props.roomActions.increasePolicyCount({ isFacist })
+        })
+
+        socket.on(SocketEvents.SyncPolicies, ({ data: { facist, liberal } }) => {
+            this.props.roomActions.setPoliciesCount({ facist, liberal })
         })
 
         socket.on(SocketEvents.SelectName, ({ data: { userName } }) => {
@@ -227,6 +251,12 @@ export class SocketHandler extends React.PureComponent {
         this.props.userActions.setView({ viewName: (targetRoomName ? Views.Game : Views.Lobby) })
     }
 
+    cancelEveryGameChoice = () => {
+        this.props.playersActions.setChooserPlayer({ playerName: '' })
+        this.props.playersActions.hideChoiceMode()
+        this.props.modalActions.toggleModal({ value: false })
+    }
+
 
     render() {
         return null
@@ -245,7 +275,7 @@ const mapDispatchToProps = (dispatch) => {
         roomActions: bindActionCreators(roomActions, dispatch),
         userActions: bindActionCreators(userActions, dispatch),
         chatActions: bindActionCreators({ addMessage, clearChat }, dispatch),
-        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer }, dispatch),
+        playersActions: bindActionCreators({ setChoiceMode, setChooserPlayer, hideChoiceMode }, dispatch),
         modalActions: bindActionCreators(modalActions, dispatch),
         notificationsActions: bindActionCreators({ addNotification }, dispatch),
         lobbyActions: bindActionCreators(lobbyActions, dispatch),
