@@ -19,7 +19,21 @@ npm run dev
 
 That will build the application files, start the watcher process and run the server.
 
+#DOCKER CONTAINER
 
+Project has configured docker container, first you must have installed [docker.](https://www.docker.com/)
+
+To build container run:
+
+```
+sudo docker build -t secret-szanta .
+```
+
+Then to run container:
+
+`
+sudo docker run -p 80:3000 secret-szanta
+`
 
 #IMPORTANT DEV NOTES:
 - everytime you add a new vendor library, make sure to require it inside src/vendors.js file! Otherwise
