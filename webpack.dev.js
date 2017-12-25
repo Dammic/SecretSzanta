@@ -1,6 +1,13 @@
-'use strict'
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
+const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'production')
+const JS_ENV = JSON.stringify(process.env.NODE_ENV || 'production')
+
+console.log('Using NODE_ENV:', NODE_ENV)
+console.log('Using JS_ENV:', JS_ENV)
 
 module.exports = {
     cache: true,
@@ -23,15 +30,18 @@ module.exports = {
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),
         new webpack.DllReferencePlugin({
-            context: __dirname,
+            context: path.join(__dirname, "src"),
             manifest: require('./vendor-manifest.json')
-        })
+        }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static'
+        }),
     ],
     module: {
         loaders: [
             {
                 test: /\.js$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 include: [
                     path.join(__dirname, 'src') //important for performance!
                 ],
@@ -41,7 +51,7 @@ module.exports = {
                 }
             }, {
                 test: /\.jsx$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 include: [
                     path.join(__dirname, 'src'), //important for performance!
                 ],
@@ -56,9 +66,29 @@ module.exports = {
                 test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader'
             }, {
-                //IMAGE LOADER
                 test: /\.(jpe?g|png|gif|svg)$/i,
-                loader:'file-loader'
+                loader: [
+                    'file-loader',
+                    {
+                        loader: 'image-webpack-loader',
+                        query: {
+                            bypassOnDebug: true,
+                            mozjpeg: {
+                                progressive: true,
+                            },
+                            gifsicle: {
+                                interlaced: false,
+                            },
+                            optipng: {
+                                optimizationLevel: 4,
+                            },
+                            pngquant: {
+                                quality: '75-90',
+                                speed: 3,
+                            },
+                        },
+                    },
+                ],
             }, {
                 test: /\.scss$/,
                 loaders: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
@@ -69,8 +99,8 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.jsx'],
-        root: path.resolve(__dirname, 'src'),
-        modulesDirectories: ['node_modules']
+        extensions: ['.js', '.jsx'],
     }
 }
+
+//module.exports = NODE_ENV === JSON.stringify('production') ?  xxx : {};

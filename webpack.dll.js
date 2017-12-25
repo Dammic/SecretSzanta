@@ -1,6 +1,6 @@
-'use strict'
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
     entry: {
@@ -17,13 +17,12 @@ module.exports = {
             name: '[name]',
             context: path.resolve(__dirname, 'src')
         }),
-        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compress: { warnings: false },
+        }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static'
         })
     ],
-    resolve: {
-        root: path.resolve(__dirname),
-        modulesDirectories: ['node_modules']
-    }
 }
