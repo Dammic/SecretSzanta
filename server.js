@@ -1,4 +1,3 @@
-'use strict'
 const path = require('path')
 const Server = require('http').Server
 const swig = require('swig')
@@ -25,7 +24,7 @@ SocketEvents(io)
 
 app.use('/', expressStaticGzip(path.join(__dirname, '/public'), {
     enableBrotli: false,
-}));
+}))
 
 // universal routing and rendering
 app.get('/', (req, res) => res.render('index'))

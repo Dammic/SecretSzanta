@@ -12,7 +12,8 @@
     "run:dev": "nodemon server.js --watch utils/ --watch events/ --watch server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
-    "eslint-fix": "eslint ./src --fix"
+        
+    "build:prod": "rimraf public && webpack -p --config webpack.dll.js && webpack -p --config webpack.dev.js"
   },
   "authors": [
     "Damian Michalski",
