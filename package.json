@@ -12,7 +12,7 @@
     "run:dev": "nodemon server.js --watch utils/ --watch events/ --watch server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
-    "build:prod": "rimraf public && webpack -p --config webpack.dll.js && webpack -p --config webpack.dev.js"
+    "build:prod": "rimraf public && webpack -p --config webpack.dev.js"
   },
   "authors": [
     "Damian Michalski",
@@ -53,6 +53,7 @@
   "devDependencies": {
     "babel-eslint": "~7.2.3",
     "babel-loader": "7.1.2",
+    "babel-plugin-lodash": "3.3.2",
     "babel-preset-stage-1": "~6.22.0",
     "classnames": "~2.2.5",
     "compression-webpack-plugin": "1.1.3",

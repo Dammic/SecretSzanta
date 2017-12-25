@@ -29,11 +29,27 @@ const productionPlugins = [
         },
     }),
     new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.optimize.CommonsChunkPlugin({
+        name: 'dll.vendor',
+        filename: 'dll/dll.vendor.js',
+        minChunks(module) {
+            const context = module.context
+            return context && context.indexOf('node_modules') >= 0
+        },
+    }),
     new CompressionPlugin({
         asset: '[path].gz[query]',
         algorithm: 'gzip',
         regExp: /\.js$|\.css$|\.html$/,
         threshold: 1,
+    }),
+]
+
+const developmentPlugins = [
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname, 'src'),
+        manifest,
     }),
 ]
 
@@ -59,15 +75,11 @@ module.exports = {
                 NODE_ENV: JSON.stringify(NODE_ENV),
             },
         }),
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname, 'src'),
-            manifest,
-        }),
-        ...(NODE_ENV === 'production' ? productionPlugins : []),
+        ...(NODE_ENV === 'production' ? productionPlugins : developmentPlugins),
         // turn on for bundle size analytics
-        // new BundleAnalyzerPlugin({
-        //     analyzerMode: 'static',
-        // }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+        }),
     ],
     module: {
         loaders: [
@@ -79,6 +91,7 @@ module.exports = {
                 ],
                 options: {
                     cacheDirectory: true, // important for performance
+                    plugins: ['lodash'],
                     presets: ['es2015', 'stage-3', 'stage-1'],
                 },
             }, {
@@ -89,6 +102,7 @@ module.exports = {
                 ],
                 options: {
                     cacheDirectory: true,
+                    plugins: ['lodash'],
                     presets: ['react', 'es2015', 'stage-3', 'stage-1'],
                 },
             }, {

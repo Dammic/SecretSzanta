@@ -1,3 +1,5 @@
+// THIS FILE IS USED ONLY FOR DEVELOPMENT
+
 const path = require('path')
 const webpack = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
@@ -54,8 +56,8 @@ module.exports = {
             threshold: 1,
         }),
         // turn on for bundle size analytics
-        // new BundleAnalyzerPlugin({
-        //     analyzerMode: 'static',
-        // }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+        }),
     ],
 }
