@@ -77,7 +77,7 @@ module.exports = {
                 include: [
                     path.join(__dirname, 'src'), // important for performance!
                 ],
-                query: {
+                options: {
                     cacheDirectory: true, // important for performance
                     presets: ['es2015', 'stage-3', 'stage-1'],
                 },
@@ -87,7 +87,7 @@ module.exports = {
                 include: [
                     path.join(__dirname, 'src'), // important for performance!
                 ],
-                query: {
+                options: {
                     cacheDirectory: true,
                     presets: ['react', 'es2015', 'stage-3', 'stage-1'],
                 },
@@ -103,7 +103,7 @@ module.exports = {
                     'file-loader',
                     {
                         loader: 'image-webpack-loader',
-                        query: {
+                        options: {
                             bypassOnDebug: true,
                             mozjpeg: {
                                 progressive: true,
