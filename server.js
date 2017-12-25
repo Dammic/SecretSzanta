@@ -25,6 +25,7 @@ app.use('/', expressStaticGzip(path.join(__dirname, '/public'), {
 
 // universal routing and rendering
 app.use('*', (req, res, next) => {
+    console.log('Request has been made for the site: ', req.originalUrl)
     return res.sendFile('index.html', { root: `${__dirname}/views` })
 })
 
