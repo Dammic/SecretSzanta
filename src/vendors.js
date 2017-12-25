@@ -4,8 +4,6 @@
  */
 require('axios')
 require('lodash')
-require('lodash-es')
-require('fbjs')
 require('moment')
 require('react')
 require('react-dom')

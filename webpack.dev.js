@@ -91,7 +91,7 @@ module.exports = {
                 ],
                 options: {
                     cacheDirectory: true, // important for performance
-                    plugins: ['lodash'],
+                    plugins: NODE_ENV === 'production' ? ['lodash'] : [],
                     presets: ['es2015', 'stage-3', 'stage-1'],
                 },
             }, {
@@ -102,7 +102,7 @@ module.exports = {
                 ],
                 options: {
                     cacheDirectory: true,
-                    plugins: ['lodash'],
+                    plugins: NODE_ENV === 'production' ? ['lodash'] : [],
                     presets: ['react', 'es2015', 'stage-3', 'stage-1'],
                 },
             }, {
