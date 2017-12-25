@@ -1,6 +1,5 @@
 const path = require('path')
 const Server = require('http').Server
-const swig = require('swig')
 const Express = require('express')
 const expressStaticGzip = require('express-static-gzip');
 const SocketEvents = require('./events/SocketEvents')
@@ -13,8 +12,6 @@ const server = new Server(app)
 
 
 // view engine setup
-app.engine('html', swig.renderFile)
-app.set('view engine', 'html')
 app.set('views', path.join(__dirname, 'views'))
 
 // socket.io
@@ -27,10 +24,10 @@ app.use('/', expressStaticGzip(path.join(__dirname, '/public'), {
 }))
 
 // universal routing and rendering
-app.get('/', (req, res) => res.render('index'))
+app.get('/', (req, res) => res.sendFile('views/index.html'))
 
 app.use('*', (req, res, next) => {
-    return res.render('index')
+    return res.sendFile('index.html', { root: `${__dirname}/views` })
 })
 
 // start the server
