@@ -56,8 +56,8 @@ module.exports = {
             threshold: 1,
         }),
         // turn on for bundle size analytics
-        new BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-        }),
+        // new BundleAnalyzerPlugin({
+        //     analyzerMode: 'static',
+        // }),
     ],
 }
