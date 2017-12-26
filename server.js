@@ -13,19 +13,21 @@ const server = new Server(app)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
+app.use(expressStaticGzip(path.join(__dirname, '/public'), {
+    enableBrotli: false,
+}))
 
 // socket.io
 const io = require('socket.io')(server)
 
 SocketEvents(io)
 
-app.use('/', expressStaticGzip(path.join(__dirname, '/public'), {
-    enableBrotli: false,
-}))
-
 // universal routing and rendering
 app.use('*', (req, res, next) => {
-    console.log('Request has been made for the site: ', req.originalUrl)
+    if (req.originalUrl !== '/') {
+        res.status(404)
+        console.log('404! Page not found! Original url: req.originalUrl')
+    }
     return res.sendFile('index.html', { root: `${__dirname}/views` })
 })
 
