@@ -54,9 +54,17 @@ class RoomsManager {
     toggleVeto(roomName) {
         this.rooms_props[roomName].isVetoUnlocked = true
     }
-    addVetoVote(roomName, role) {
+    addVetoVote(roomName, playerName) {
         const { vetoVotes } = this.rooms_props[roomName]
-        vetoVotes.push(role)
+        const playerRole = RoomsManager.getPlayerRole(roomName, playerName)
+        if (
+            !includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)
+            || includes(vetoVotes, playerRole)
+        ) {
+            console.error(`player ${playerName} wanted to vote twice or wanted to vote with wrong role: ${playerRole}`)
+            return
+        }
+        vetoVotes.push(playerRole)
     }
     didVetoSucceed(roomName) {
         const { vetoVotes } = this.rooms_props[roomName]
