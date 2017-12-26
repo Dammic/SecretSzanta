@@ -1,3 +1,4 @@
+const { cloneDeep, size } = require('lodash')
 const RoomsManager = new (require('../RoomsManager'))()
 const { GamePhases } = require('../../Dictionary')
 
@@ -5,6 +6,10 @@ describe('RoomsManager', () => {
     beforeEach(() => {
         RoomsManager.initializeRoom('testRoom')
         RoomsManager.players = {}
+    });
+    afterEach(() => {
+        // this tests if the function did not override different room than it should
+        expect(size(RoomsManager.rooms_props)).toEqual(1)
     });
     describe('initializeRoom', () => {
         test('should create room with owner', () => {
@@ -76,6 +81,15 @@ describe('RoomsManager', () => {
             roomProps['testRoom'].blackList = ['olga', 'ola']
 
             expect(RoomsManager.isInBlackList('testRoom', 'ala' )).toEqual(false)
+        })
+    })
+
+    describe('toggleVeto', () => {
+        test('should set isVetoUnlocked to true and not mess other things up', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.isVetoUnlocked = true 
+            RoomsManager.toggleVeto('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
         })
     })
 })
