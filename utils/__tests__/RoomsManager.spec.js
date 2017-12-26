@@ -2,6 +2,10 @@ const RoomsManager = new (require('../RoomsManager'))()
 const { GamePhases } = require('../../Dictionary')
 
 describe('RoomsManager', () => {
+    beforeEach(() => {
+        RoomsManager.initializeRoom('testRoom')
+        RoomsManager.players = {}
+    });
     describe('initializeRoom', () => {
         test('should create room with owner', () => {
             RoomsManager.initializeRoom('testRoom', 'owner', 8, 'password')
@@ -50,6 +54,28 @@ describe('RoomsManager', () => {
                 isVetoUnlocked: false,
                 vetoVotes: [],
             })
+        })
+    })
+    describe('isInBlackList', () => {
+        test('if blacklist is empty, should return false', () => {
+            const roomProps = RoomsManager.rooms_props
+            roomProps['testRoom'].blackList = []
+
+            expect(RoomsManager.isInBlackList('testRoom', 'ala')).toEqual(false)
+        })
+
+        test('if blacklist contains the user, should return true', () => {
+            const roomProps = RoomsManager.rooms_props;
+            roomProps['testRoom'].blackList = ['ala', 'ola']
+
+            expect(RoomsManager.isInBlackList('testRoom', 'ala' )).toEqual(true)
+        })
+
+        test('if blacklist contains some users but not this one, should return false', () => {
+            const roomProps = RoomsManager.rooms_props
+            roomProps['testRoom'].blackList = ['olga', 'ola']
+
+            expect(RoomsManager.isInBlackList('testRoom', 'ala' )).toEqual(false)
         })
     })
 })
