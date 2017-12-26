@@ -4,6 +4,7 @@ const path = require('path')
 const webpack = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionPlugin = require('compression-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 const NODE_ENV = process.argv.indexOf('-p') !== -1 ? 'production' : 'development'
 
@@ -55,6 +56,11 @@ module.exports = {
             regExp: /\.js$|\.css$|\.html$/,
             threshold: 1,
         }),
+        new BrotliPlugin({
+            asset: '[path].br[query]',
+            regExp: /\.js$|\.css$|\.html$/,
+            threshold: 1,
+        })
         // turn on for bundle size analytics
         // new BundleAnalyzerPlugin({
         //     analyzerMode: 'static',

@@ -14,7 +14,7 @@ const server = new Server(app)
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.use(expressStaticGzip(path.join(__dirname, '/public'), {
-    enableBrotli: false,
+    enableBrotli: true,
 }))
 
 // socket.io

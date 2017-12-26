@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionPlugin = require('compression-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 const NODE_ENV = process.argv.indexOf('-p') !== -1 ? 'production' : 'development'
 const manifest = './vendor-manifest.json'
@@ -44,6 +45,11 @@ const productionPlugins = [
         regExp: /\.js$|\.css$|\.html$/,
         threshold: 1,
     }),
+    new BrotliPlugin({
+        asset: '[path].br[query]',
+        regExp: /\.js$|\.css$|\.html$/,
+        threshold: 1,
+    })
 ]
 
 const developmentPlugins = [
