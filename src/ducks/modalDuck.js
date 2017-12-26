@@ -9,18 +9,20 @@ const initialState = {
     title: '',
     overlayClosesModal: false,
     isCloseButtonShown: false,
+    isOverlayOpaque: false,
     componentName: '',
     modalTmpData: {},
 }
 
 const actions = {
     [setModal]: (state, action) => {
-        const { isVisible = true, title, overlayClosesModal = false, isCloseButtonShown = false, componentName, initialData } = action.payload
+        const { isVisible = true, title, overlayClosesModal = false, isCloseButtonShown = false, isOverlayOpaque = false, componentName, initialData } = action.payload
         return {
             isVisible,
             title,
             overlayClosesModal,
             isCloseButtonShown,
+            isOverlayOpaque,
             componentName,
             modalTmpData: initialData,
         }

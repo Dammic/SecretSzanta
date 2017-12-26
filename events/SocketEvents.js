@@ -292,16 +292,37 @@ module.exports = function (io) {
             }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
+            const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW
+            const isOverlaysHidingNeeded = hasGameBegan && (socketEvents.kickIfHitler(socket, playerName)
+                || socketEvents.kickIfPresident(socket, playerName))
+
             RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
+            
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
                 data: {
                     playerName,
                     timestamp: getCurrentTimestamp(),
                     wasBanned: permanently,
+                    isOverlaysHidingNeeded,
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
             socketEventsUtils.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
+        },
+        kickIfPresident: (socket, playerName) => {
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            if (playerName !== presidentName) return false;
+            
+            RoomsManager.discardAllCards(socket.currentRoom)
+            RoomsManager.chooseNextPresident(socket.currentRoom)
+            RoomsManager.initializeVoting(socket.currentRoom) // resets chancellor player name
+            RoomsManager.setChancellor(socket.currentRoom)
+            socketEventsUtils.resumeGame(socket, { delay: 1000, func: phaseSocketEvents.startChancellorChoicePhase })
+            return true;
+        },
+        kickIfHitler: (socket, playerName) => {
+            const hitlerName = get(RoomsManager.getHitler(socket.currentRoom), 'playerName')
+            return playerName === hitlerName
         },
         selectName: (socket, { userName }) => {
             // deselecting name

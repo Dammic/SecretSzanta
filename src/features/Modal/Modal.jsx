@@ -7,11 +7,13 @@ import * as modalActions from '../../ducks/modalDuck'
 import WinningModal from './WinningModal/WinningModal'
 import VotingModal from './VotingModal/VotingModal'
 import PolicyChoiceModal from './PolicyChoiceModal/PolicyChoiceModal'
+import HaltModal from './HaltModal/HaltModal'
 
 const modalInnerComponents = {
     VotingModal,
     PolicyChoiceModal,
     WinningModal,
+    HaltModal,
 }
 
 class Modal extends React.PureComponent {
@@ -21,6 +23,7 @@ class Modal extends React.PureComponent {
         title: PropTypes.string,
         overlayClosesModal: PropTypes.bool,
         isCloseButtonShown: PropTypes.bool,
+        isOverlayOpaque: PropTypes.bool,
         componentName: PropTypes.string,
         modalTmpData: PropTypes.objectOf(PropTypes.any),
         modalActions: PropTypes.objectOf(PropTypes.func),
@@ -31,7 +34,7 @@ class Modal extends React.PureComponent {
     }
 
     render() {
-        const { isVisible, title, overlayClosesModal, isCloseButtonShown, componentName, modalTmpData } = this.props
+        const { isVisible, title, overlayClosesModal, isCloseButtonShown, isOverlayOpaque, componentName, modalTmpData } = this.props
         const ModalInnerComponent = modalInnerComponents[componentName]
         if (!ModalInnerComponent) {
             return null
@@ -42,6 +45,7 @@ class Modal extends React.PureComponent {
                 title={title}
                 overlayClosesModal={overlayClosesModal}
                 isCloseButtonShown={isCloseButtonShown}
+                isOverlayOpaque={isOverlayOpaque}
                 closeModal={this.closeModal}
                 child={<ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} />}
             />
@@ -54,6 +58,7 @@ const mapStateToProps = ({ modal }) => ({
     title: modal.title,
     overlayClosesModal: modal.overlayClosesModal,
     isCloseButtonShown: modal.isCloseButtonShown,
+    isOverlayOpaque: modal.isOverlayOpaque,
     componentName: modal.componentName,
     modalTmpData: modal.modalTmpData,
 })

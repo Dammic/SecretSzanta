@@ -1,0 +1,31 @@
+.timer {
+    @keyframes glowing {
+      0% { background-color: $timer-veto-button-start-bg; box-shadow: 0 0 3px $timer-veto-button-start-bg; }
+      50% { background-color: $timer-veto-button-end-bg; box-shadow: 0 0 10px $timer-veto-button-end-bg; }
+      100% { background-color: $timer-veto-button-start-bg; box-shadow: 0 0 3px $timer-veto-button-start-bg; }
+
+    }
+
+    width: 322px;
+    height: 30px;
+    display: flex;
+    z-index: 0;
+    align-items: center;
+    right: 0;
+    position: absolute;
+    bottom: 10%;
+    transition: all .3s;
+    padding-left: 30px;
+    color: $timer-font;
+    background-color: $timer-bg;
+
+    &.visible {
+        bottom: 20%;
+    }
+    .veto {
+        width: 50px;
+        animation: glowing 1500ms infinite;
+        color: $timer-veto-font;
+        margin-left: 10px;
+    }
+}
