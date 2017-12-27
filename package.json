@@ -67,7 +67,6 @@
     "express": "~4.14.1",
     "file-loader": "~0.10.0",
     "fs": "0.0.1-security",
-    "fsevents": "1.0.14",
     "merge-stream": "~1.0.1",
     "node-sass": "~4.4.0",
     "nodemon": "1.12.1",
