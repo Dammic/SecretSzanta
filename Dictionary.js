@@ -57,6 +57,7 @@ module.exports = {
         ChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
         ServerWaitingForVeto: 'GAME_PHASE_SERVER_WAITING_FOR_VETO',
         ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
+        Pause: 'GAME_PHASE_PAUSE',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
