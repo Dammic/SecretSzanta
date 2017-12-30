@@ -1,9 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { Router, Route, browserHistory } from 'react-router'
+import createHistory from 'history/createBrowserHistory'
+import { Route, Switch } from 'react-router'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 import thunk from 'redux-thunk'
 
 import chat from './ducks/chatDuck'
@@ -17,6 +18,9 @@ import lobby from './ducks/lobbyDuck'
 import LandingPage from './features/LandingPage/LandingPage'
 import NotFound from './features/NotFound/NotFound'
 
+const history = createHistory()
+const middleware = routerMiddleware(history)
+
 /* eslint-disable no-underscore-dangle */
 const store = createStore(
     combineReducers({
@@ -27,24 +31,24 @@ const store = createStore(
         players,
         modal,
         lobby,
-        routing: routerReducer
+        routing: routerReducer,
     }),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     compose(
-        applyMiddleware(thunk)
-    )
+        applyMiddleware(thunk),
+        applyMiddleware(middleware),
+    ),
 )
 /* eslint-enable */
 
-// Create an enhanced history that syncs navigation events with the store
-const history = syncHistoryWithStore(browserHistory, store)
-
 render(
     <Provider store={store}>
-        <Router history={history}>
-            <Route path="/" component={LandingPage} />
-            <Route path="*" component={NotFound} />
-        </Router>
+        <ConnectedRouter history={history}>
+            <Switch>
+                <Route path="/" component={LandingPage} />
+                <Route path="*" component={NotFound} />
+            </Switch>
+        </ConnectedRouter>
     </Provider>,
     document.getElementById('root')
 )
