@@ -20,6 +20,12 @@ export class LandingPage extends React.PureComponent {
         currentView: PropTypes.string,
     }
 
+    componentDidUpdate() {
+        setTimeout(() => {
+            window.scrollTo(0, 0)
+        }, 0)
+    }
+
     renderCurrentView = () => {
         const { currentView } = this.props
 
