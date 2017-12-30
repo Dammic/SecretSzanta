@@ -56,15 +56,13 @@ class RoomsManager {
     }
     addVetoVote(roomName, playerName) {
         const { vetoVotes } = this.rooms_props[roomName]
-        const playerRole = RoomsManager.getPlayerRole(roomName, playerName)
+        const playerRole = this.getPlayerRole(roomName, playerName)
         if (
-            !includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)
-            || includes(vetoVotes, playerRole)
+            includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)
+            && !includes(vetoVotes, playerRole)
         ) {
-            console.error(`player ${playerName} wanted to vote twice or wanted to vote with wrong role: ${playerRole}`)
-            return
+            vetoVotes.push(playerRole)
         }
-        vetoVotes.push(playerRole)
     }
     didVetoSucceed(roomName) {
         const { vetoVotes } = this.rooms_props[roomName]
@@ -480,7 +478,7 @@ class RoomsManager {
     /**********************************************/
     getPlayersList() {
         return this.players;
-    } 
+    }
 
     getPlayerFromPlayersList(userName) {
         return this.players[userName];
