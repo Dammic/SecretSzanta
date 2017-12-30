@@ -18,6 +18,7 @@ export class SocketHandler extends React.PureComponent {
         socket = IO()
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
             this.props.roomActions.syncRoomData(payload.data)
+            console.log(payload.data);
             if (payload.data.gamePhase === GamePhases.Paused) {
                 this.props.modalActions.setModal({
                     title: 'The game in this room has been paused by the owner',
@@ -43,6 +44,7 @@ export class SocketHandler extends React.PureComponent {
             const { playerName, timestamp } = payload.data
             this.props.roomActions.removePlayer({ playerName })
 
+            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.Paused })
             this.cancelEveryGameChoice()
         })
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
@@ -144,6 +146,7 @@ export class SocketHandler extends React.PureComponent {
             const message = `${playerName} has been ${wasBanned ? 'banned' : 'kicked'} by the owner`
             this.props.chatActions.addMessage({ timestamp, content: message })
             this.props.roomActions.removePlayer({ playerName })
+            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.Paused })
 
             if (isOverlaysHidingNeeded) this.cancelEveryGameChoice()
             this.props.modalActions.setModal({
@@ -262,6 +265,7 @@ export class SocketHandler extends React.PureComponent {
     cancelEveryGameChoice = () => {
         this.props.playersActions.setChooserPlayer({ playerName: '' })
         this.props.playersActions.hideChoiceMode()
+        console.log(this.props.gamePhase);
         if (this.props.gamePhase !== GamePhases.Paused) this.props.modalActions.toggleModal({ value: false })
     }
 
