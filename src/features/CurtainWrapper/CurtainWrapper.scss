@@ -10,6 +10,7 @@
         overflow: hidden;
         width: 85.5%;
         height: 78%;
+        display: flex;
         align-self: flex-end;
     }
 
@@ -19,22 +20,25 @@
         float: left;
         position: relative;
         z-index: 2;
-        transition: all 1s ease-out;
+        transition: all 2s ease-in;
+        border-width: 2px;
+        border-color: rgba(0,0,0,.5);
+        background-clip: padding-box;
     }
 
     &.curtain__panel--fascist {
         height: 73.8%;
         .curtain__panel {
             background-color: #79040A; 
-            border-width: 10px;
-            border-color: transparent;
-            background-clip: padding-box;
+            background-image: url("../static/curtain.png");
         }
     }
 
     &.curtain__panel--liberal {
         .curtain__panel {
             background-color: #063F56; 
+            background-image: url("../static/curtain.png");
+            filter: brightness(50%) sepia(1) hue-rotate(160deg) saturate(200%) brightness(330%)
         }
         .curtain__wrapper {
             height: 79%;
@@ -44,15 +48,15 @@
 
     .curtain__panel--left {
         transform: translateX(0);
-        border-right: none;
+        border-right-style: solid;
         &.hidden {
-            transform: translateX(-150%);
+            transform: translateX(-150%) rotateY(180deg);
         }
     }
 
     .curtain__panel--right {
-        transform: translateX(0);
-        border-left: none;
+        transform: translateX(0) rotateY(180deg);
+        border-left-style: solid;
         &.hidden {
             transform: translateX(150%);
         }
