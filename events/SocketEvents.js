@@ -49,15 +49,22 @@ module.exports = function (io) {
             if (gamePhase !== GamePhases.ServerWaitingForVeto) {
                 console.error('Player tried to veto when the server was not waiting for it!')
                 socketEventsUtils.sendError(socket, 'You cannot veto right now!')
+                return
             }
             const vetoVotes = RoomsManager.getVetoVotes(socket.currentRoom)
             const playerRole = RoomsManager.getPlayerRole(socket.currentRoom, socket.currentPlayerName)
             if (includes(vetoVotes, playerRole)) {
                 console.error('Player tried to vote twice!')
                 socketEventsUtils.sendError(socket, 'You cannot veto twice!')
+                return
             }
-
+            if (!includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)) {
+                console.error(`Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
+                socketEventsUtils.sendError(socket, 'You must be a president or a chancellor to veto!')
+                return
+            }
             RoomsManager.addVetoVote(socket.currentRoom, socket.currentPlayerName)
+
             const roleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'president' : 'chancellor'
             if (RoomsManager.didVetoSucceed(socket.currentRoom)) {
                 RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ServerAcceptedVeto)
