@@ -18,7 +18,6 @@ export class SocketHandler extends React.PureComponent {
         socket = IO()
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
             this.props.roomActions.syncRoomData(payload.data)
-            console.log(payload.data);
             if (payload.data.gamePhase === GamePhases.Paused) {
                 this.props.modalActions.setModal({
                     title: 'The game in this room has been paused by the owner',
@@ -265,7 +264,6 @@ export class SocketHandler extends React.PureComponent {
     cancelEveryGameChoice = () => {
         this.props.playersActions.setChooserPlayer({ playerName: '' })
         this.props.playersActions.hideChoiceMode()
-        console.log(this.props.gamePhase);
         if (this.props.gamePhase !== GamePhases.Paused) this.props.modalActions.toggleModal({ value: false })
     }
 
