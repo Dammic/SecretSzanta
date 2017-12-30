@@ -418,6 +418,7 @@ class RoomsManager {
             blackList.push(playerName)
         }
 
+        this.setGamePhase(roomName, GamePhases.Paused) 
         delete playersDict[playerName]
     }
     
