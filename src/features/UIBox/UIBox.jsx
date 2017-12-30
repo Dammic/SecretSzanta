@@ -54,7 +54,7 @@ export class UIBox extends React.PureComponent {
     }
 
     render() {
-        const { affiliation, role, isAffiliationHidden, isOwner } = this.props
+        const { affiliation, gamePhase, role, isAffiliationHidden, isOwner } = this.props
         return (
             <UIBoxComponent
                 onStartVote={this.onStartVote}
@@ -63,6 +63,7 @@ export class UIBox extends React.PureComponent {
                 onBanPlayer={this.onBanPlayer}
                 onShowAffiliationClick={this.toggleShow}
                 isOwner={isOwner}
+                gamePhase={gamePhase}
                 affiliation={affiliation}
                 role={role}
                 getPlayerCard={this.getPlayerCard}
@@ -84,6 +85,7 @@ const mapStateToProps = ({ user, room }) => {
         facistAvatar: get(player, 'facistAvatar'),
         liberalAvatar: get(player, 'avatarNumber'),
         role: get(player, 'role'),
+        gamePhase: room.gamePhase,
     }
 }
 
