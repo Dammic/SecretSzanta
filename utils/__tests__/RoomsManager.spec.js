@@ -123,6 +123,19 @@ describe('RoomsManager', () => {
             expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
         })
 
+        test('should be able to add president and chancellor votes into votes ', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.vetoVotes = [PlayerRole.ROLE_PRESIDENT, PlayerRole.ROLE_CHANCELLOR]
+
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
+            RoomsManager.addVetoVote('testRoom', 'ola')
+
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
+            RoomsManager.addVetoVote('testRoom', 'ala')
+
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+
         test('should not add more than 2 votes ever', () => {
             const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
             initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
