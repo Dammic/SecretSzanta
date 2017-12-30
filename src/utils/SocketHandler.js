@@ -262,7 +262,7 @@ export class SocketHandler extends React.PureComponent {
     cancelEveryGameChoice = () => {
         this.props.playersActions.setChooserPlayer({ playerName: '' })
         this.props.playersActions.hideChoiceMode()
-        this.props.modalActions.toggleModal({ value: false })
+        if (this.props.gamePhase !== GamePhases.Paused) this.props.modalActions.toggleModal({ value: false })
     }
 
 
@@ -276,6 +276,7 @@ const mapStateToProps = ({ user, room }) => {
         userName: user.userName,
         playersDict: room.playersDict,
         trackerPosition: room.trackerPosition,
+        gamePhase: room.gamePhase,
     }
 }
 const mapDispatchToProps = (dispatch) => {
