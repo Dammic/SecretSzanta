@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { times, map } from 'lodash'
+import classNames from 'classnames'
 import { PlayerDirection } from '../../../Dictionary'
 import Player from './Player/Player'
-import classNames from 'classnames'
 import liberalCard from '../../static/liberalcard.png'
 import facistCard from '../../static/facistcard.png'
 import liberalPolicies from '../../static/liberalpolicies.png'
-import CurtainWrapper from '../CurtainWrapper/CurtainWrapper'
+import CurtainWrapper from './CurtainWrapper/CurtainWrapper'
 
 const PlayerBoardComponent = ({
     playersLeft = [],
@@ -90,5 +90,6 @@ PlayerBoardComponent.propTypes = {
     isChoiceModeVisible: PropTypes.bool,
     onChoiceModeSelect: PropTypes.func,
     renderFascistPlayerBoard: PropTypes.func,
+    isPlayerboardHidden: PropTypes.bool,
 }
 export default PlayerBoardComponent
