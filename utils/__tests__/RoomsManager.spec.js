@@ -1,9 +1,10 @@
 const { cloneDeep, size } = require('lodash')
-const RoomsManager = new (require('../RoomsManager'))()
-const { GamePhases } = require('../../Dictionary')
+const { GamePhases, PlayerRole } = require('../../Dictionary')
+let RoomsManager;
 
 describe('RoomsManager', () => {
     beforeEach(() => {
+        RoomsManager = new (require('../RoomsManager'))()
         RoomsManager.initializeRoom('testRoom')
         RoomsManager.players = {}
     });
@@ -87,8 +88,67 @@ describe('RoomsManager', () => {
     describe('toggleVeto', () => {
         test('should set isVetoUnlocked to true and not mess other things up', () => {
             const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
-            initialRoomProps.isVetoUnlocked = true 
+            initialRoomProps.isVetoUnlocked = true
             RoomsManager.toggleVeto('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+    })
+
+    describe('addVetoVote', () => {
+        test('should be able to add president vote into votes ', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.vetoVotes = [PlayerRole.ROLE_PRESIDENT]
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
+            
+            RoomsManager.addVetoVote('testRoom', 'ala')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('should be able to add chancellor vote into votes ', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR]
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
+            
+            RoomsManager.addVetoVote('testRoom', 'ala')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('should be able to add chancellor and president votes into votes ', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
+
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
+            RoomsManager.addVetoVote('testRoom', 'ala')
+
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
+            RoomsManager.addVetoVote('testRoom', 'ola')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+
+        test('should not add more than 2 votes ever', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
+
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
+            RoomsManager.addVetoVote('testRoom', 'ala')
+            RoomsManager.addVetoVote('testRoom', 'ela')
+
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
+            RoomsManager.addVetoVote('testRoom', 'iza')
+            RoomsManager.addVetoVote('testRoom', 'aza')
+
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+
+        test('non-president and non-chancellor cannot vote for veto', () => {
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.vetoVotes = []
+
+            RoomsManager.getPlayerRole = () => null
+            RoomsManager.addVetoVote('testRoom', 'ala')
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+            RoomsManager.addVetoVote('testRoom', 'iza')
+            RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PREVIOUS_PRESIDENT
+            RoomsManager.addVetoVote('testRoom', 'ola')
+
             expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
         })
     })
