@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { includes } from 'lodash'
-import { PlayerAffilications } from '../../../Dictionary'
+import { PlayerAffilications, GamePhases } from '../../../Dictionary'
 import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComponent'
 
 const UIBoxComponent = ({
@@ -12,6 +12,7 @@ const UIBoxComponent = ({
     onBanPlayer,
     onShowAffiliationClick,
     isOwner,
+    gamePhase,
     isAffiliationHidden,
     affiliation,
     getPlayerCard,
@@ -23,11 +24,15 @@ const UIBoxComponent = ({
         : 'liberal'
     )
 
+    const Button = (label, onClick) => (
+        <a key={`${label}`} role="button" tabIndex="0" className="btn" onClick={onClick}>{`${label}`}</a>
+    )
+
     const ownersButtons = [
-        <a key="startGame" role="button" tabIndex="0" className="btn" onClick={onStartGame}>start</a>,
-        <a key="startVote" role="button" tabIndex="0" className="btn" onClick={onStartVote}>voting</a>,
-        <a key="kickPlayer" role="button" tabIndex="0" className="btn" onClick={onKickPlayer}>kick</a>, 
-        <a key="banPlayer" role="button" tabIndex="0" className="btn" onClick={onBanPlayer}>ban</a>,
+        gamePhase === GamePhases.GAME_PHASE_NEW && Button("start", onStartGame),
+        Button("voting", onStartVote),
+        Button("kick", onKickPlayer),
+        Button("ban", onBanPlayer),
     ];
     return (
         <div className="ui-box">
@@ -60,6 +65,7 @@ UIBoxComponent.propTypes = {
     onKickPlayer: PropTypes.func,
     onBanPlayer: PropTypes.func,
     isOwner: PropTypes.bool,
+    gamePhase: PropTypes.string,
     affiliation: PropTypes.string,
     isAffiliationHidden: PropTypes.bool,
     onShowAffiliationClick: PropTypes.func,

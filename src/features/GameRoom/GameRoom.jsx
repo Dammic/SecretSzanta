@@ -9,6 +9,10 @@ export class GameRoom extends React.PureComponent {
         gamePhase: PropTypes.string,
     }
 
+    componentDidMount() {
+        window.scrollTo(0, 0)
+    }
+
     render() {
         console.info('Current game phase: ', this.props.gamePhase)
         return <GameRoomComponent />
