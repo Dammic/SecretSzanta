@@ -1,5 +1,5 @@
 const { cloneDeep, size } = require('lodash')
-const { GamePhases, PlayerRole } = require('../../Dictionary')
+const { GamePhases, PlayerRole, PlayerBoards } = require('../../Dictionary')
 let RoomsManager;
 
 describe('RoomsManager', () => {
@@ -35,6 +35,7 @@ describe('RoomsManager', () => {
                 policiesPile: [],
                 isVetoUnlocked: false,
                 vetoVotes: [],
+                boardType: null,
             })
         })
         test('should create room without owner', () => {
@@ -59,6 +60,7 @@ describe('RoomsManager', () => {
                 policiesPile: [],
                 isVetoUnlocked: false,
                 vetoVotes: [],
+                boardType: null,
             })
         })
     })
@@ -163,6 +165,129 @@ describe('RoomsManager', () => {
             RoomsManager.addVetoVote('testRoom', 'ola')
 
             expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+    })
+
+    describe('setPlayerboardType', () => {
+        test('Should set small board for 5 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = PlayerBoards.SmallBoard
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('Should set small board for 6 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+                player6: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = PlayerBoards.SmallBoard
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('Should set medium board for 7 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+                player6: {},
+                player7: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = PlayerBoards.MediumBoard
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('Should set medium board for 8 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+                player6: {},
+                player7: {},
+                player8: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = PlayerBoards.MediumBoard
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('Should set large board for 9 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+                player6: {},
+                player7: {},
+                player8: {},
+                player9: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = PlayerBoards.LargeBoard
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('Should set large board for 10 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+                player6: {},
+                player7: {},
+                player8: {},
+                player9: {},
+                player10: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = PlayerBoards.LargeBoard
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+        test('Should set no board for 11 players', () => {
+            RoomsManager.rooms_props['testRoom'].playersDict = {
+                player1: {},
+                player2: {},
+                player3: {},
+                player4: {},
+                player5: {},
+                player6: {},
+                player7: {},
+                player8: {},
+                player9: {},
+                player10: {},
+                player11: {},
+            }
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.boardType = undefined
+            RoomsManager.setPlayerboardType('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+    })
+    describe('getPlayerboardType', () => {
+        test('should retrieve the boardType from rooms_props', () => {
+            const roomProps = RoomsManager.rooms_props
+            roomProps['testRoom'].boardType = PlayerBoards.SmallBoard
+
+            expect(RoomsManager.getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
         })
     })
 })

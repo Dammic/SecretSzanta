@@ -162,6 +162,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
         this.rooms_props[roomName].failedElectionsCount = 0
+        this.setPlayerboardType(roomName)
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount

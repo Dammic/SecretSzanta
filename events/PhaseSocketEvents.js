@@ -8,7 +8,6 @@ const PhaseSocketEvents = (io, RoomsManager) => {
     const phaseSocketEvents = {
         startGame: (socket) => {
             RoomsManager.startGame(socket.currentRoom)
-            RoomsManager.setPlayerboardType(socket.currentRoom)
             const facists = RoomsManager.getFacists(socket.currentRoom)
 
             // just filtering out emit functions
