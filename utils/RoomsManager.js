@@ -3,7 +3,14 @@ const {
     filter, includes, forEach, random, slice, times, map, head,
     find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf, dropRight,
 } = require('lodash')
-const { GamePhases, PlayerRole, PlayerAffilications, PolicyCards, GlobalRoomName } = require('../Dictionary')
+const {
+    GamePhases,
+    PlayerRole,
+    PlayerAffilications,
+    PolicyCards,
+    GlobalRoomName,
+    PlayerBoards,
+} = require('../Dictionary')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -43,6 +50,7 @@ class RoomsManager {
             policiesPile: [],
             isVetoUnlocked: false,
             vetoVotes: [],
+            boardType: null,
         }
     }
 
@@ -154,6 +162,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
         this.rooms_props[roomName].failedElectionsCount = 0
+        this.setPlayerboardType(roomName)
         forEach(playersDict, player => player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION)
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
@@ -286,11 +295,19 @@ class RoomsManager {
         }
     }
     getRoomDetails(roomName) {
-        const { playersDict, ownerName, maxPlayers, gamePhase, failedElectionsCount } = this.rooms_props[roomName]
+        const {
+            playersDict,
+            ownerName,
+            maxPlayers,
+            gamePhase,
+            failedElectionsCount,
+            boardType,
+        } = this.rooms_props[roomName]
         return {
             maxPlayers,
             gamePhase,
             ownerName,
+            boardType,
             trackerPosition: failedElectionsCount,
             playersDict: mapValues(playersDict, (player) => {
                 let genericInfo = pick(player, ['playerName', 'avatarNumber'])
@@ -473,6 +490,23 @@ class RoomsManager {
 
     removeRoom(roomName) {
         delete this.rooms_props[roomName]
+    }
+
+    setPlayerboardType(roomName) {
+        const { playersDict } = this.rooms_props[roomName]
+        const playersCount = size(playersDict)
+        let boardType
+        if (playersCount <= 6) {
+            boardType = PlayerBoards.SmallBoard
+        } else if (playersCount <= 8) {
+            boardType = PlayerBoards.MediumBoard
+        } else if (playersCount <= 10) {
+            boardType = PlayerBoards.LargeBoard
+        }
+        this.rooms_props[roomName].boardType = boardType
+    }
+    getPlayerboardType(roomName) {
+        return this.rooms_props[roomName].boardType
     }
 
     /**********************************************/

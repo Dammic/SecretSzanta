@@ -92,5 +92,10 @@ module.exports = {
         About: 'ABOUT',
         Game: 'GAME',
     },
+    PlayerBoards: {
+        SmallBoard: 'SMALL_BOARD',
+        MediumBoard: 'MEDIUM_BOARD',
+        LargeBoard: 'LARGE_BOARD',
+    },
     GlobalRoomName: 'Global',
 }
