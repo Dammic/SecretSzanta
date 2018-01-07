@@ -13,6 +13,6 @@ COPY . .
 EXPOSE 3000
 
 RUN npm run build:dll
-RUN npm run build
+RUN npm run build:prod
 
 CMD [ "npm", "run", "run"]
