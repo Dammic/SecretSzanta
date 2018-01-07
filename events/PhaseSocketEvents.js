@@ -33,8 +33,8 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             })
         },
 
-        startChancellorChoicePhase: (socket) => {
-            RoomsManager.startChancellorChoicePhase(socket.currentRoom)
+        startChancellorChoicePhase: (socket, designatedPresidentName = null) => {
+            RoomsManager.startChancellorChoicePhase(socket.currentRoom, designatedPresidentName)
             const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
 
             io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
@@ -70,6 +70,19 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
             const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
+                data: {
+                    presidentName,
+                    timestamp: getCurrentTimestamp(),
+                    playersChoices,
+                },
+            })
+        },
+
+        startForcePresidentChoicePhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.SpecialPresidentChoicePhase)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SpecialPresidentChoice, {
                 data: {
                     presidentName,
                     timestamp: getCurrentTimestamp(),

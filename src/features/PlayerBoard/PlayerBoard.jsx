@@ -84,6 +84,9 @@ export class PlayerBoard extends React.PureComponent {
             case ChoiceModeContexts.BanChoice:
                 socketEvent = SocketEvents.PlayerBanned
                 break
+            case ChoiceModeContexts.SpecialPresidentChoice:
+                socketEvent = SocketEvents.SpecialPresidentChoice
+                break
             default:
                 hideChoice = false
                 console.info('no action matches the specified context')

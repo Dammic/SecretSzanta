@@ -126,6 +126,19 @@ export class SocketHandler extends React.PureComponent {
             }
         })
 
+        socket.on(SocketEvents.SpecialPresidentChoice, (payload) => {
+            const { presidentName, playersChoices, timestamp } = payload.data
+            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.SpecialPresidentChoicePhase })
+            this.props.chatActions.addMessage({ timestamp, content: 'Because 3 fascist policies have been enacted, the president will now choose its successor...' })
+            if (presidentName === this.props.userName) {
+                this.props.playersActions.setChoiceMode({
+                    isVisible: true,
+                    context: ChoiceModeContexts.SpecialPresidentChoice,
+                    selectablePlayers: playersChoices,
+                })
+            }
+        })
+
         socket.on(SocketEvents.PlayerKilled, (payload) => {
             const { playerName, wasHitler, timestamp } = payload.data
             const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'It turned out the killed foe was not Hitler, unfortunately.')
