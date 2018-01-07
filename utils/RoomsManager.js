@@ -155,8 +155,8 @@ class RoomsManager {
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
 
         const lastPresidentIndex = (previousPresidentNameBackup 
-            ? findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
-            : findIndex(sortedPlayers, { playerName: previousPresidentNameBackup })
+            ? findIndex(sortedPlayers, { playerName: previousPresidentNameBackup })
+            : findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
         )
         const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
 
@@ -472,6 +472,10 @@ class RoomsManager {
         room.drawnCards = []
     }
 
+    clearDrawnCards(roomName) {
+        this.rooms_props[roomName].drawnCards = []
+    }
+
     discardPolicyByVeto(roomName) {
         const { policiesPile, discardPile } = this.rooms_props[roomName]
         const discardedPolicy = take(policiesPile, 1)[0]
@@ -551,11 +555,11 @@ class RoomsManager {
     updatePlayerRoom(userName, newRoomName) {
         this.players[userName].currentRoom = (newRoomName === GlobalRoomName ? '' : newRoomName)
     }
-    setPresidentBackup = (roomName) => {
+    setPresidentBackup(roomName) {
         const currentPresident = this.getPresident(roomName)
         this.rooms_props[roomName].previousPresidentNameBackup = currentPresident.playerName
     }
-    resetPresidentBackup = (roomName) => {
+    resetPresidentBackup(roomName) {
         this.rooms_props[roomName].previousPresidentNameBackup = null
     }
 }

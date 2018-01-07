@@ -241,8 +241,7 @@ module.exports = function (io) {
                 if (gamePhase === GamePhases.PresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
                     socketEvents.choosePolicyPresident(socket, choice, drawnCards, chancellor.playerName)
                 } else if (gamePhase === GamePhases.ChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
-                    const enactedPolicy = drawnCards[0]
-                    socketEvents.choosePolicyChancellor(socket, choice, enactedPolicy)
+                    socketEvents.choosePolicyChancellor(socket, choice)
                 } else {
                     console.error('Cheater!')
                     // cheating (bad role tried to choose)? 
@@ -253,14 +252,14 @@ module.exports = function (io) {
             }
         },
 
-        choosePolicyChancellor: (socket, choice, enactedPolicy) => {
-            RoomsManager.discardPolicy(socket.currentRoom, choice)
-            socketEventsUtils.enactPolicy(socket, enactedPolicy)
+        choosePolicyChancellor: (socket, choice) => {
+            socketEventsUtils.enactPolicy(socket, choice)
+            RoomsManager.clearDrawnCards(socket.currentRoom)
 
             const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
             if (isVetoUnlocked) {
                 socketEvents.triggerVetoPrompt(socket)
-            } else if (enactedPolicy === PolicyCards.FacistPolicy) {
+            } else if (choice === PolicyCards.FacistPolicy) {
                 socketEvents.checkForImmediateSuperpowersOrContinue(socket)
             } else {
                 socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })

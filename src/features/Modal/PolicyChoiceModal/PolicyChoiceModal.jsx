@@ -19,15 +19,8 @@ export class PolicyChoiceModal extends React.PureComponent {
     onPolicyChoice = (event) => {
         const { data: { policies, role } } = this.props
         const index = event.target.getAttribute('data-index')
-        let choice
+        const choice = policies[index]
 
-        // for chancellor, we need to send the server the discarded card as well, despite choosing the enacted card
-        if (role === PlayerRole.ROLE_CHANCELLOR) {
-            pullAt(policies, index)
-            choice = policies[0]
-        } else {
-            choice = policies[index]
-        }
         socket.emit(SocketEvents.ChoosePolicy, { choice })
         this.props.closeModal()
     }
