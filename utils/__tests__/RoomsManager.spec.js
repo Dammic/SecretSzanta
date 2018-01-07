@@ -1,4 +1,4 @@
-const { cloneDeep, size, times, forEach } = require('lodash')
+const { cloneDeep, size, times, forEach, reduce } = require('lodash')
 const { GamePhases, PlayerRole, PlayerBoards } = require('../../Dictionary')
 let RoomsManager;
 
@@ -170,11 +170,10 @@ describe('RoomsManager', () => {
 
     describe('setPlayerboardType', () => {
         const generatePlayersDict = (amount) => {
-            let playersKeys = {}
-            times(amount, (index) => {
-                playersKeys[`player${index + 1}`] = {}
-            })
-            return playersKeys
+            return reduce(times(amount), (sum, index) => {
+                sum[`player${index + 1}`] = {}
+                return sum
+            }, {})
         }
         test('helper function should generate 5 players', () => {
             expect(generatePlayersDict(5)).toEqual({ player1: {}, player2: {}, player3: {}, player4: {}, player5: {} })
