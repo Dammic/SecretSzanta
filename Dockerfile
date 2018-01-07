@@ -12,7 +12,6 @@ COPY . .
 # exposing port inside of container to outside
 EXPOSE 3000
 
-RUN npm run build:dll
 RUN npm run build:prod
 
 CMD [ "npm", "run", "run"]
