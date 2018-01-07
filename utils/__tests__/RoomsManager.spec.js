@@ -1,5 +1,5 @@
 const { cloneDeep, size, times, forEach, reduce } = require('lodash')
-const { GamePhases, PlayerRole, PlayerBoards } = require('../../Dictionary')
+const { GamePhases, PlayerRole, PlayerBoards, PolicyCards } = require('../../Dictionary')
 let RoomsManager;
 
 describe('RoomsManager', () => {
@@ -36,6 +36,7 @@ describe('RoomsManager', () => {
                 isVetoUnlocked: false,
                 vetoVotes: [],
                 boardType: null,
+                previousPresidentNameBackup: null,
             })
         })
         test('should create room without owner', () => {
@@ -61,6 +62,7 @@ describe('RoomsManager', () => {
                 isVetoUnlocked: false,
                 vetoVotes: [],
                 boardType: null,
+                previousPresidentNameBackup: null,
             })
         })
     })
@@ -206,6 +208,24 @@ describe('RoomsManager', () => {
             roomProps['testRoom'].boardType = PlayerBoards.SmallBoard
 
             expect(RoomsManager.getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
+        })
+    })
+    describe('clearDrawnCards', () => {
+        test('should clear drawn cards', () => {
+            RoomsManager.rooms_props['testRoom'].drawnCards = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy]
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.drawnCards = []
+            RoomsManager.clearDrawnCards('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+    })
+    describe('clearDrawnCards', () => {
+        test('should clear drawn cards', () => {
+            RoomsManager.rooms_props['testRoom'].drawnCards = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy]
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            initialRoomProps.drawnCards = []
+            RoomsManager.clearDrawnCards('testRoom')
+            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
         })
     })
 })
