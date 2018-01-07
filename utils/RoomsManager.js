@@ -54,9 +54,15 @@ class RoomsManager {
     toggleVeto(roomName) {
         this.rooms_props[roomName].isVetoUnlocked = true
     }
-    addVetoVote(roomName, role) {
+    addVetoVote(roomName, playerName) {
         const { vetoVotes } = this.rooms_props[roomName]
-        vetoVotes.push(role)
+        const playerRole = this.getPlayerRole(roomName, playerName)
+        if (
+            includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)
+            && !includes(vetoVotes, playerRole)
+        ) {
+            vetoVotes.push(playerRole)
+        }
     }
     didVetoSucceed(roomName) {
         const { vetoVotes } = this.rooms_props[roomName]
@@ -89,8 +95,11 @@ class RoomsManager {
         if (currentChancellor) {
             currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
         }
-        const nextChancellor = playersDict[chancellorCandidateName]
-        nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
+
+        if (chancellorCandidateName) {
+            const nextChancellor = playersDict[chancellorCandidateName]
+            nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
+        }
     }
 
     getChancellor(roomName) {
@@ -135,10 +144,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
         const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
-        let nextPresidentIndex = 0
-        if (lastPresidentIndex >= 0 && lastPresidentIndex < size(sortedPlayers) - 1) {
-            nextPresidentIndex = lastPresidentIndex + 1
-        }
+        const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
 
         const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
@@ -148,6 +154,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
         this.rooms_props[roomName].failedElectionsCount = 0
+        forEach(playersDict, player => player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION)
 
         const liberalCount = Math.floor(size(playersDict) / 2) + 1
         const facistCount = size(playersDict) - liberalCount
@@ -412,6 +419,7 @@ class RoomsManager {
             blackList.push(playerName)
         }
 
+        this.setGamePhase(roomName, GamePhases.Paused) 
         delete playersDict[playerName]
     }
     
@@ -428,12 +436,20 @@ class RoomsManager {
         pullAt(drawnCards, indexOf(drawnCards, card))
         this.rooms_props[roomName].discardPile.push(card)
     }
+
+    discardAllCards(roomName) {
+        const room = this.rooms_props[roomName]
+        room.discardPile = [...room.discardPile, ...room.drawnCards]
+        room.drawnCards = []
+    }
+
     discardPolicyByVeto(roomName) {
         const { policiesPile, discardPile } = this.rooms_props[roomName]
         const discardedPolicy = take(policiesPile, 1)[0]
         this.rooms_props[roomName].policiesPile = dropRight(policiesPile, 1)
         discardPile.push(discardedPolicy)
     }
+
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
@@ -464,7 +480,7 @@ class RoomsManager {
     /**********************************************/
     getPlayersList() {
         return this.players;
-    } 
+    }
 
     getPlayerFromPlayersList(userName) {
         return this.players[userName];

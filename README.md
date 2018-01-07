@@ -16,8 +16,12 @@ Then to build our project files and start the server, run:
 ```
 npm run dev
 ```
-
 That will build the application files, start the watcher process and run the server.
+
+To test the project, simply run:
+```
+npm run test
+```
 
 #DOCKER CONTAINER
 

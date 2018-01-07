@@ -23,7 +23,7 @@ const VotingModalComponent = ({
             <div className="voting-info-container">
                 {renderPlayer(president.avatarNumber, PlayerRole.ROLE_PRESIDENT, president.playerName)}
                 <div className="choice-order-container">
-                    <div> => </div>
+                    <div><i className="fa fa-angle-double-right" aria-hidden="true" /></div>
                     <div>Nominates</div>
                 </div>
                 {renderPlayer(chancellorCandidate.avatarNumber, PlayerRole.ROLE_CHANCELLOR, chancellorCandidate.playerName)}
@@ -31,8 +31,8 @@ const VotingModalComponent = ({
             <div className="voting-intro">Player <strong>{president.playerName}</strong> nominates player <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
             <div className="voting-intro">Do you agree?</div>
             <div className="voting-buttons-container">
-                <div className="voting-button yes" onClick={onYesVote}>YAS!</div>
-                <div className="voting-button no" onClick={onNoVote}>No!</div>
+                <div className="fabulous-button lined thick" onClick={onYesVote}>Jaa!</div>
+                <div className="fabulous-button lined thick" onClick={onNoVote}>Nein!</div>
             </div>
         </div>
     )

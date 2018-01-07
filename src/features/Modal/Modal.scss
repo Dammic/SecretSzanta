@@ -3,9 +3,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100%;
-    z-index: 9998;
+    height: 100vh;
+    width: 100vw;
+    z-index: 30;
     top: 0;
     left: 0;
     .modal-overlay {
@@ -13,27 +13,43 @@
         height: 100%;
         width: 100%;
         background-color: rgba(0, 0, 0, 0.25);
+        &.opaque {
+            background-color: rgba(0, 0, 0, 0.75);
+        }
     }
     .modal-content {
         z-index: 9999;
         width: 60%;
         max-width: 600px;
-        max-height: 60%;
-        overflow-y: auto;
+        height: 60%;
         box-shadow: 0 5px 15px rgba(0, 0, 0, .25);
         background-color: $modal-background;
         color: $modal-font;
+        border-top-left-radius: 15em 6em;
+        border-bottom-right-radius: 15em 6em;
+        overflow: hidden;
+
+        & > div {
+            border-bottom: 2px solid;
+            border-color: $modal-border;
+            margin-bottom: 20px !important;
+            overflow-x: hidden !important;
+        }
         
         .modal-title {
             text-align: center;
             padding: 5px 10px 5px 10px;
             background-color: $modal-title;
             width: 100%;
+            box-sizing: border-box;
         
         }
         .modal-body {
             position: relative;
+            height: inherit;
             padding: 15px;
+            border-top: 2px solid;
+            border-color: $modal-border;
         }
         .modal-close-button {
             font-size: 18px;

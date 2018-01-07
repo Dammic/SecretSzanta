@@ -33,6 +33,7 @@ module.exports = {
         ChoosePolicy: 'CHOOSE_POLICY',
         NewPolicy: 'NEW_POLICY',
         ResetTracker: 'RESET_TRACKER',
+        SetTimer: 'SET_TIMER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',
@@ -56,6 +57,7 @@ module.exports = {
         ChancellorPolicyChoice: 'GAME_PHASE_CHANCELLOR_POLICY_CHOICE',
         ServerWaitingForVeto: 'GAME_PHASE_SERVER_WAITING_FOR_VETO',
         ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
+        Paused: 'GAME_PHASE_PAUSE',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',

@@ -24,6 +24,11 @@ const SocketEventsUtils = (io, RoomsManager) => {
         resumeGame: (socket, { delay, func, customMessage }) => {
             if (delay) {
                 socketEventsUtils.sendMessage(socket, { content: customMessage || `Next phase will begin in ${delay / 1000} seconds!` })
+                io.sockets.in(socket.currentRoom).emit(SocketEvents.SetTimer, {
+                    data: {
+                        waitTime: delay,
+                    },
+                })
                 cancelTimeoutToken = setTimeout(func.bind(null, socket), delay)
             } else {
                 func(socket)

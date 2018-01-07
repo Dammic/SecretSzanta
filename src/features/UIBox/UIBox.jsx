@@ -6,7 +6,7 @@ import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
 import { SocketEvents, ChoiceModeContexts } from '../../../Dictionary'
 import { toggleAffiliationMenu } from '../../ducks/userDuck'
-import { resetTracker, setVeto } from '../../ducks/roomDuck'
+import { resetTracker } from '../../ducks/roomDuck'
 import * as playerActions from '../../ducks/playersDuck'
 import { socket } from '../../utils/SocketHandler'
 
@@ -43,24 +43,19 @@ export class UIBox extends React.PureComponent {
     }
 
     getPlayerCard = () => {
-        const { facistAvatar, liberalAvatar, isOwner } = this.props
+        const { facistAvatar, liberalAvatar, isOwner, isDead } = this.props
         if (!liberalAvatar) return null
         
         return (<PlayerAvatarComponent
             liberalAvatar={liberalAvatar}
             facistAvatar={facistAvatar}
             isOwner={isOwner}
+            isDead={isDead}
         />)
     }
 
-    onVetoClick = () => {
-        socket.emit(SocketEvents.VetoVoteRegistered)
-        this.props.roomActions.setVeto({ value: false })
-    }
-
-
     render() {
-        const { affiliation, role, isAffiliationHidden, isOwner, isVetoUnlocked } = this.props
+        const { affiliation, gamePhase, role, isAffiliationHidden, isOwner } = this.props
         return (
             <UIBoxComponent
                 onStartVote={this.onStartVote}
@@ -69,12 +64,11 @@ export class UIBox extends React.PureComponent {
                 onBanPlayer={this.onBanPlayer}
                 onShowAffiliationClick={this.toggleShow}
                 isOwner={isOwner}
+                gamePhase={gamePhase}
                 affiliation={affiliation}
                 role={role}
                 getPlayerCard={this.getPlayerCard}
                 isAffiliationHidden={isAffiliationHidden}
-                isVetoUnlocked={isVetoUnlocked}
-                onVetoClick={this.onVetoClick}
             />
         )
     }
@@ -91,13 +85,14 @@ const mapStateToProps = ({ user, room }) => {
         affiliation: get(player, 'affiliation'),
         facistAvatar: get(player, 'facistAvatar'),
         liberalAvatar: get(player, 'avatarNumber'),
+        isDead: get(player, 'isDead'),
         role: get(player, 'role'),
-        isVetoUnlocked: room.isVetoUnlocked,
+        gamePhase: room.gamePhase,
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ resetTracker, setVeto }, dispatch),
+    roomActions: bindActionCreators({ resetTracker }, dispatch),
     userActions: bindActionCreators({ toggleAffiliationMenu }, dispatch),
     playersActions: bindActionCreators(playerActions, dispatch)
 })

@@ -49,15 +49,22 @@ module.exports = function (io) {
             if (gamePhase !== GamePhases.ServerWaitingForVeto) {
                 console.error('Player tried to veto when the server was not waiting for it!')
                 socketEventsUtils.sendError(socket, 'You cannot veto right now!')
+                return
             }
             const vetoVotes = RoomsManager.getVetoVotes(socket.currentRoom)
             const playerRole = RoomsManager.getPlayerRole(socket.currentRoom, socket.currentPlayerName)
             if (includes(vetoVotes, playerRole)) {
                 console.error('Player tried to vote twice!')
                 socketEventsUtils.sendError(socket, 'You cannot veto twice!')
+                return
             }
-
+            if (!includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)) {
+                console.error(`Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
+                socketEventsUtils.sendError(socket, 'You must be a president or a chancellor to veto!')
+                return
+            }
             RoomsManager.addVetoVote(socket.currentRoom, socket.currentPlayerName)
+
             const roleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'president' : 'chancellor'
             if (RoomsManager.didVetoSucceed(socket.currentRoom)) {
                 RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ServerAcceptedVeto)
@@ -292,16 +299,37 @@ module.exports = function (io) {
             }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
+            const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW
+            const isOverlaysHidingNeeded = hasGameBegan && (socketEvents.kickIfHitler(socket, playerName)
+                || socketEvents.kickIfPresident(socket, playerName))
+
             RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
+            
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
                 data: {
                     playerName,
                     timestamp: getCurrentTimestamp(),
                     wasBanned: permanently,
+                    isOverlaysHidingNeeded,
                 },
             })
             const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
             socketEventsUtils.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
+        },
+        kickIfPresident: (socket, playerName) => {
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            if (playerName !== presidentName) return false;
+            
+            RoomsManager.discardAllCards(socket.currentRoom)
+            RoomsManager.chooseNextPresident(socket.currentRoom)
+            RoomsManager.initializeVoting(socket.currentRoom) // resets chancellor player name
+            RoomsManager.setChancellor(socket.currentRoom)
+            socketEventsUtils.resumeGame(socket, { delay: 1000, func: phaseSocketEvents.startChancellorChoicePhase })
+            return true;
+        },
+        kickIfHitler: (socket, playerName) => {
+            const hitlerName = get(RoomsManager.getHitler(socket.currentRoom), 'playerName')
+            return playerName === hitlerName
         },
         selectName: (socket, { userName }) => {
             // deselecting name

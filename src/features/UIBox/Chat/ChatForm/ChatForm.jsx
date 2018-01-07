@@ -10,11 +10,8 @@ export class ChatForm extends React.PureComponent {
         // redux
         userName: PropTypes.string,
     }
-
-    componentWillMount() {
-        this.state = {
-            typedMessage: '',
-        }
+    state = {
+        typedMessage: '',
     }
 
     sendMessage = () => {
