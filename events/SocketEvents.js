@@ -18,7 +18,7 @@ module.exports = function (io) {
                     // examine cards code here
                 } else {
                     // President will designate next president superpower
-                    phaseSocketEvents.startForcePresidentChoicePhase(socket)
+                    phaseSocketEvents.startDesignateNextPresidentPhase(socket)
                 }
             // 4th power is always kill on each board
             } else if (fascistPolicyCount === 4) {
@@ -363,7 +363,7 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-            const startChancellorChoicePhaseWrapperFunc = (socket) => phaseSocketEvents.startChancellorChoicePhase(socket, playerName) 
+            const startChancellorChoicePhaseWrapperFunc = (socket) => phaseSocketEvents.startChancellorChoicePhase(socket, playerName)
             socketEventsUtils.resumeGame(socket, { delay: 4000, func: startChancellorChoicePhaseWrapperFunc })
         },
     }
@@ -399,6 +399,6 @@ module.exports = function (io) {
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
         socket.on(SocketEvents.VetoVoteRegistered, partialFunctions.veto)
-        socket.on(SocketEvents.SpecialPresidentChoice, partialFunctions.presidentDesignatedNextPresident)
+        socket.on(SocketEvents.DesignateNextPresident, partialFunctions.presidentDesignatedNextPresident)
     })
 }

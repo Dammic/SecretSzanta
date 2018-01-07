@@ -78,11 +78,11 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             })
         },
 
-        startForcePresidentChoicePhase: (socket) => {
-            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.SpecialPresidentChoicePhase)
+        startDesignateNextPresidentPhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.DesignateNextPresidentPhase)
             const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
             const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SpecialPresidentChoice, {
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.DesignateNextPresident, {
                 data: {
                     presidentName,
                     timestamp: getCurrentTimestamp(),

@@ -126,14 +126,14 @@ export class SocketHandler extends React.PureComponent {
             }
         })
 
-        socket.on(SocketEvents.SpecialPresidentChoice, (payload) => {
+        socket.on(SocketEvents.DesignateNextPresident, (payload) => {
             const { presidentName, playersChoices, timestamp } = payload.data
-            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.SpecialPresidentChoicePhase })
+            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.DesignateNextPresidentPhase })
             this.props.chatActions.addMessage({ timestamp, content: 'Because 3 fascist policies have been enacted, the president will now choose its successor...' })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
                     isVisible: true,
-                    context: ChoiceModeContexts.SpecialPresidentChoice,
+                    context: ChoiceModeContexts.DesignateNextPresidentChoice,
                     selectablePlayers: playersChoices,
                 })
             }

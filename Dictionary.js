@@ -34,7 +34,7 @@ module.exports = {
         NewPolicy: 'NEW_POLICY',
         ResetTracker: 'RESET_TRACKER',
         SetTimer: 'SET_TIMER',
-        SpecialPresidentChoice: 'SPECIAL_PRESIDENT_CHOICE',
+        DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',
@@ -59,7 +59,7 @@ module.exports = {
         ServerWaitingForVeto: 'GAME_PHASE_SERVER_WAITING_FOR_VETO',
         ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
         Paused: 'GAME_PHASE_PAUSE',
-        SpecialPresidentChoicePhase: 'GAME_PHASE_SPECIAL_PRESIDENT_CHOICE',
+        DesignateNextPresidentPhase: 'GAME_PHASE_DESIGNATE_NEXT_PRESIDENT',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
@@ -81,7 +81,7 @@ module.exports = {
         KillChoice: 'CONTEXT_KILL_CHOICE',
         KickChoice: 'CONTEXT_KICK_CHOICE',
         BanChoice: 'CONTEXT_BAN_CHOICE',
-        SpecialPresidentChoice: 'CONTEXT_SPECIAL_PRESIDENT_CHOICE',
+        DesignateNextPresidentChoice: 'CONTEXT_DESIGNATE_NEXT_PRESIDENT_CHOICE',
     },
     PolicyCards: {
         FacistPolicy: 'FACIST_POLICY',

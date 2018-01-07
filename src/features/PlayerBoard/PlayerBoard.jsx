@@ -84,8 +84,8 @@ export class PlayerBoard extends React.PureComponent {
             case ChoiceModeContexts.BanChoice:
                 socketEvent = SocketEvents.PlayerBanned
                 break
-            case ChoiceModeContexts.SpecialPresidentChoice:
-                socketEvent = SocketEvents.SpecialPresidentChoice
+            case ChoiceModeContexts.DesignateNextPresidentChoice:
+                socketEvent = SocketEvents.DesignateNextPresident
                 break
             default:
                 hideChoice = false
