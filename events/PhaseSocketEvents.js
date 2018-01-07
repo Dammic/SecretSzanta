@@ -18,6 +18,7 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                 data: {
                     playerName: socket.currentPlayerName,
                     timestamp: getCurrentTimestamp(),
+                    boardType: RoomsManager.getPlayerboardType(socket.currentRoom),
                 },
             })
         },

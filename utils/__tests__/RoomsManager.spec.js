@@ -1,5 +1,5 @@
-const { cloneDeep, size } = require('lodash')
-const { GamePhases, PlayerRole } = require('../../Dictionary')
+const { cloneDeep, size, times, forEach, reduce } = require('lodash')
+const { GamePhases, PlayerRole, PlayerBoards } = require('../../Dictionary')
 let RoomsManager;
 
 describe('RoomsManager', () => {
@@ -35,6 +35,7 @@ describe('RoomsManager', () => {
                 policiesPile: [],
                 isVetoUnlocked: false,
                 vetoVotes: [],
+                boardType: null,
             })
         })
         test('should create room without owner', () => {
@@ -59,6 +60,7 @@ describe('RoomsManager', () => {
                 policiesPile: [],
                 isVetoUnlocked: false,
                 vetoVotes: [],
+                boardType: null,
             })
         })
     })
@@ -163,6 +165,47 @@ describe('RoomsManager', () => {
             RoomsManager.addVetoVote('testRoom', 'ola')
 
             expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+    })
+
+    describe('setPlayerboardType', () => {
+        const generatePlayersDict = (amount) => {
+            return reduce(times(amount), (sum, index) => {
+                sum[`player${index + 1}`] = {}
+                return sum
+            }, {})
+        }
+        test('helper function should generate 5 players', () => {
+            expect(generatePlayersDict(5)).toEqual({ player1: {}, player2: {}, player3: {}, player4: {}, player5: {} })
+        })
+        test('helper function should generate 0 players', () => {
+            expect(generatePlayersDict()).toEqual({})
+        })
+        const expectedResults = {
+            5: PlayerBoards.SmallBoard,
+            6: PlayerBoards.SmallBoard,
+            7: PlayerBoards.MediumBoard,
+            8: PlayerBoards.MediumBoard,
+            9: PlayerBoards.LargeBoard,
+            10: PlayerBoards.LargeBoard,
+            11: undefined,
+        }
+        forEach(expectedResults, (expectedBoardSize, playersCount) => {
+            test(`Should set ${expectedBoardSize} for ${playersCount} players`, () => {
+                RoomsManager.rooms_props['testRoom'].playersDict = generatePlayersDict(playersCount)
+                const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+                initialRoomProps.boardType = expectedBoardSize
+                RoomsManager.setPlayerboardType('testRoom')
+                expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            })
+        })
+    })
+    describe('getPlayerboardType', () => {
+        test('should retrieve the boardType from rooms_props', () => {
+            const roomProps = RoomsManager.rooms_props
+            roomProps['testRoom'].boardType = PlayerBoards.SmallBoard
+
+            expect(RoomsManager.getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
         })
     })
 })

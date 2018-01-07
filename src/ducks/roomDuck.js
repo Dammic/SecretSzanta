@@ -3,24 +3,25 @@ import { cloneDeep, forEach, find, isNil } from 'lodash'
 import { PlayerRole } from '../../Dictionary'
 
 // Actions
-const addPlayer = createAction('room/addPlayer')
-const removePlayer = createAction('room/REMOVE_PLAYER')
-const changeGamePhase = createAction('room/CHANGE_GAME_PHASE')
-const chooseNewChancellor = createAction('room/CHOOSE_NEW_CHANCELLOR')
-const chooseNewPresident = createAction('room/CHOOSE_NEW_PRESIDENT')
-const syncRoomData = createAction('room/SYNC_ROOM_DATA')
-const increasePolicyCount = createAction('room/INCREASE_POLICY_COUNT')
-const setPoliciesCount = createAction('room/SET_POLICY_COUNTS')
-const increaseTracker = createAction('room/INCREASE_TRACKER')
-const resetTracker = createAction('room/RESET_TRACKER')
-const revealFacists = createAction('room/REVEAL_FACISTS')
-const registerVote = createAction('room/REGISTER_VOTE')
-const resetVotes = createAction('room/RESET_VOTES')
-const revealVotes = createAction('room/REVEAL_VOTES')
-const killPlayer = createAction('room/KILL_PLAYER')
-const clearRoom = createAction('room/CLEAR_ROOM')
-const setWaitTime = createAction('room/SET_WAIT_TIME')
-const setVeto = createAction('room/SET_VETO')
+export const addPlayer = createAction('room/addPlayer')
+export const removePlayer = createAction('room/REMOVE_PLAYER')
+export const changeGamePhase = createAction('room/CHANGE_GAME_PHASE')
+export const chooseNewChancellor = createAction('room/CHOOSE_NEW_CHANCELLOR')
+export const chooseNewPresident = createAction('room/CHOOSE_NEW_PRESIDENT')
+export const syncRoomData = createAction('room/SYNC_ROOM_DATA')
+export const increasePolicyCount = createAction('room/INCREASE_POLICY_COUNT')
+export const setPoliciesCount = createAction('room/SET_POLICY_COUNTS')
+export const increaseTracker = createAction('room/INCREASE_TRACKER')
+export const resetTracker = createAction('room/RESET_TRACKER')
+export const revealFacists = createAction('room/REVEAL_FACISTS')
+export const registerVote = createAction('room/REGISTER_VOTE')
+export const resetVotes = createAction('room/RESET_VOTES')
+export const revealVotes = createAction('room/REVEAL_VOTES')
+export const killPlayer = createAction('room/KILL_PLAYER')
+export const clearRoom = createAction('room/CLEAR_ROOM')
+export const setWaitTime = createAction('room/SET_WAIT_TIME')
+export const setVeto = createAction('room/SET_VETO')
+export const setBoardType = createAction('room/SET_BOARD_TYPE')
 
 const initialState = {
     maxPlayers: 0,
@@ -34,6 +35,7 @@ const initialState = {
     votes: null,
     waitTime: 0,
     isVetoUnlocked: false,
+    boardType: null,
 }
 
 const actions = {
@@ -219,13 +221,11 @@ const actions = {
     [setVeto]: (state, { payload: { value } }) => ({
         ...state,
         isVetoUnlocked: value,
-    })
-}
-export {
-    addPlayer, removePlayer, changeGamePhase, chooseNewChancellor,
-    chooseNewPresident, syncRoomData, increasePolicyCount, revealFacists,
-    registerVote, revealVotes, killPlayer, increaseTracker, resetTracker,
-    resetVotes, clearRoom, setVeto, setPoliciesCount, setWaitTime,
+    }),
+    [setBoardType]: (state, { payload: { newBoardType } }) => ({
+        ...state,
+        boardType: newBoardType,
+    }),
 }
 
 export default handleActions(actions, initialState)

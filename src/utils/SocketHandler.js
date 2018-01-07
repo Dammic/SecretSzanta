@@ -66,8 +66,9 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.START_GAME, (payload) => {
-            const { playerName, timestamp } = payload.data
+            const { playerName, timestamp, boardType } = payload.data
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.START_GAME })
+            this.props.roomActions.setBoardType({ newBoardType: boardType })
             this.props.chatActions.addMessage({ timestamp, content: `${playerName} has started the game.` })
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {

@@ -3,11 +3,14 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { delay, map, reject, find, forEach } from 'lodash'
-import { PlayerRole, ChoiceModeContexts, SocketEvents } from '../../../Dictionary'
+import { PlayerRole, ChoiceModeContexts, SocketEvents, PlayerBoards } from '../../../Dictionary'
 import { socket } from '../../utils/SocketHandler'
 import PlayerBoardComponent from './PlayerBoardComponent'
 import { increasePolicyCount, increaseTracker, resetTracker } from '../../ducks/roomDuck'
 import { hideChoiceMode } from '../../ducks/playersDuck'
+import SmallFascistPlayerBoardImage from '../../static/facistpoliciesSmall.png'
+import MediumFascistPlayerBoardImage from '../../static/facistpoliciesMedium.png'
+import LargeFascistPlayerBoardImage from '../../static/facistpoliciesLarge.png'
 
 export class PlayerBoard extends React.PureComponent {
     static propTypes = {
@@ -18,6 +21,7 @@ export class PlayerBoard extends React.PureComponent {
         facistPoliciesCount: PropTypes.number,
         liberalPoliciesCount: PropTypes.number,
         trackerPosition: PropTypes.number,
+        boardType: PropTypes.string,
         choiceMode: PropTypes.shape({
             isVisible: PropTypes.bool,
             selectablePlayers: PropTypes.arrayOf(PropTypes.string),
@@ -88,8 +92,22 @@ export class PlayerBoard extends React.PureComponent {
         if (hideChoice) this.props.playersActions.hideChoiceMode()
     }
 
+    getFascistPlayerBoard = () => {
+        const { boardType } = this.props
+        switch (boardType) {
+            case PlayerBoards.SmallBoard:
+                return SmallFascistPlayerBoardImage
+            case PlayerBoards.MediumBoard:
+                return MediumFascistPlayerBoardImage
+            case PlayerBoards.LargeBoard:
+                return LargeFascistPlayerBoardImage
+            default:
+                return SmallFascistPlayerBoardImage
+        }
+    }
+
     render() {
-        const { choiceMode, playersDict, userName, liberalPoliciesCount, facistPoliciesCount, trackerPosition } = this.props
+        const { choiceMode, playersDict, userName, liberalPoliciesCount, facistPoliciesCount, trackerPosition, boardType } = this.props
         const playersWithoutMe = reject(playersDict, { playerName: userName })
         const players = map(playersWithoutMe, player => this.makePlayer(player))
         const left = []
@@ -116,6 +134,8 @@ export class PlayerBoard extends React.PureComponent {
             onChoiceModeSelect={this.onChoiceModeSelect}
             trackerPosition={trackerPosition}
             trackerMoved={this.state.trackerMoved}
+            renderFascistPlayerBoard={this.getFascistPlayerBoard}
+            isPlayerboardHidden={!!boardType}
         />)
     }
 }
@@ -127,6 +147,7 @@ const mapStateToProps = ({ user, room, players }) => ({
     liberalPoliciesCount: room.liberalPoliciesCount,
     trackerPosition: room.trackerPosition,
     choiceModeContext: room.choiceModeContext,
+    boardType: room.boardType,
     choiceMode: players.choiceMode,
 })
 

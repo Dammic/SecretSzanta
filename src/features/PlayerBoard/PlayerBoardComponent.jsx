@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { times, map } from 'lodash'
+import classNames from 'classnames'
 import { PlayerDirection } from '../../../Dictionary'
 import Player from './Player/Player'
-import classNames from 'classnames'
 import liberalCard from '../../static/liberalcard.png'
 import facistCard from '../../static/facistcard.png'
 import liberalPolicies from '../../static/liberalpolicies.png'
-import facistPolicies from '../../static/facistpolicies3.png'
+import CurtainWrapper from './CurtainWrapper/CurtainWrapper'
 
 const PlayerBoardComponent = ({
     playersLeft = [],
@@ -19,6 +19,8 @@ const PlayerBoardComponent = ({
     trackerMoved,
     isChoiceModeVisible,
     onChoiceModeSelect,
+    renderFascistPlayerBoard,
+    isPlayerboardHidden,
 }) => {
     const renderPolicies = (count, cardType) => {
         const result = []
@@ -55,7 +57,8 @@ const PlayerBoardComponent = ({
             <div className="central-part">
                 {renderPlayers(playersMiddle, 'players-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
 
-                <div className={classNames('policy', { blurred: isChoiceModeVisible })} >
+                <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
+                    <CurtainWrapper isHidden={isPlayerboardHidden} customClass="curtain__panel--liberal" />
                     <img src={liberalPolicies} />
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
@@ -64,7 +67,8 @@ const PlayerBoardComponent = ({
                 </div>
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
-                    <img src={facistPolicies} />
+                    <CurtainWrapper isHidden={isPlayerboardHidden} customClass="curtain__panel--fascist" />
+                    <img src={renderFascistPlayerBoard()} />
                     <div className="policy-card-fascist">
                         {renderPolicies(policiesFacistCount, 'facist')}
                     </div>
@@ -85,5 +89,7 @@ PlayerBoardComponent.propTypes = {
     trackerPosition: PropTypes.number,
     isChoiceModeVisible: PropTypes.bool,
     onChoiceModeSelect: PropTypes.func,
+    renderFascistPlayerBoard: PropTypes.func,
+    isPlayerboardHidden: PropTypes.bool,
 }
 export default PlayerBoardComponent
