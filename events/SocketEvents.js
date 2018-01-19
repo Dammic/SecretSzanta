@@ -13,8 +13,8 @@ module.exports = function (io) {
         checkForImmediateSuperpowersOrContinue: (socket) => {
             const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
             const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom);
-            if (fascistPolicyCount === 1) {
-                if (playerboardType !== PlayerBoards.SmallBoard) {
+            if (fascistPolicyCount === 3) {
+                if (playerboardType === PlayerBoards.SmallBoard) {
                     // examine cards code here
                 } else {
                     // President will designate next president superpower
