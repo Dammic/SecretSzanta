@@ -35,6 +35,9 @@ module.exports = {
         ResetTracker: 'RESET_TRACKER',
         SetTimer: 'SET_TIMER',
         DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
+        StartPeekCardsPhase: 'START_PICK_CARDS_PHASE',
+        PeekCards: 'PEEK_CARDS',
+        EndPeekCardsPhase: 'END_PICK_CARDS_PHASE',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',
@@ -60,6 +63,7 @@ module.exports = {
         ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
         Paused: 'GAME_PHASE_PAUSE',
         DesignateNextPresidentPhase: 'GAME_PHASE_DESIGNATE_NEXT_PRESIDENT',
+        PeekCardsSuperpower: 'GAME_PHASE_PEEK_CARDS_SUPERPOWER',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',

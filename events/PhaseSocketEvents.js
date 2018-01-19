@@ -90,6 +90,21 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                 },
             })
         },
+        startPeekCardsPhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.StartPeekCardsPhase, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
+            presidentEmit(SocketEvents.PeekCards, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    cards: RoomsManager.peekPolicyCards(socket.currentRoom),
+                },
+            })
+        },
     }
     return phaseSocketEvents
 }
