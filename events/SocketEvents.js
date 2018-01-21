@@ -13,7 +13,7 @@ module.exports = function (io) {
         checkForImmediateSuperpowersOrContinue: (socket) => {
             const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
             const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom)
-            if (fascistPolicyCount === 1) {// && playerboardType === PlayerBoards.LargeBoard) {
+            if (fascistPolicyCount === 1 && playerboardType === PlayerBoards.LargeBoard) {
                 phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
             } else if (fascistPolicyCount === 2 && playerboardType !== PlayerBoards.SmallBoard) {
                 phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
@@ -372,10 +372,9 @@ module.exports = function (io) {
         },
         superpowerAffiliationPeekPlayer: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has choosen ${playerName} to be investigated and has now seen their affiliation!` })
-            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
-            const presidentEmit = RoomsManager.getRoleSocket(socket, PlayerRole.ROLE_PRESIDENT)
-            const selectedPlayerInfo = RoomsManager.getPlayerInfo(socket, playerName)
-            if (selectedPlayerInfo.affiliation = PlayerAffilications.HITLER_AFFILIATION) {
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            const selectedPlayerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, playerName)
+            if (selectedPlayerInfo.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
                 selectedPlayerInfo.affiliation = PlayerAffilications.FACIST_AFFILIATION
             }
             presidentEmit(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, {
