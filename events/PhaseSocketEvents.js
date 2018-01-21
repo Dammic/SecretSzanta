@@ -90,6 +90,24 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                 },
             })
         },
+
+        startPeekAffiliationSuperpowerPhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.PeekAffiliationSuperpowerPhase)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SuperpowerAffiliationPeekStart, {
+                data: {
+                    presidentName,
+                    timestamp: getCurrentTimestamp(),
+                },
+            })
+            presidentEmit(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, {
+                data: {
+                    playersChoices,
+                },
+            })
+        },
     }
     return phaseSocketEvents
 }
