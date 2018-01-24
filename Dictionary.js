@@ -35,10 +35,10 @@ module.exports = {
         ResetTracker: 'RESET_TRACKER',
         SetTimer: 'SET_TIMER',
         DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
-        EndDesignateNextPresident: 'END_DESIGNATE_NEXT_PRESIDENT',
         StartPeekCardsPhase: 'START_PICK_CARDS_PHASE',
         PeekCards: 'PEEK_CARDS',
         EndPeekCardsPhase: 'END_PICK_CARDS_PHASE',
+        SetChooserPlayer: 'SET_CHOOSER_PLAYER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',

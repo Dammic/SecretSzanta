@@ -362,7 +362,11 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.EndDesignateNextPresident)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+                data: {
+                    playerName: '',
+                },
+            })
             socketEventsUtils.resumeGame(socket, {
                 delay: 4000,
                 func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
@@ -380,7 +384,7 @@ module.exports = function (io) {
         const clientVerificationHof = ClientVerificationHof(RoomsManager)
         phaseSocketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
         socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
-        socketEvents.kickPlayer = clientVerificationHof(['isPresident'], socketEvents.endPeekCardsPhase)
+        socketEvents.endPeekCardsPhase = clientVerificationHof(['isPresident'], socketEvents.endPeekCardsPhase)
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions
