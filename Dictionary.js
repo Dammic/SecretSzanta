@@ -35,7 +35,7 @@ module.exports = {
         ResetTracker: 'RESET_TRACKER',
         SetTimer: 'SET_TIMER',
         DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
-        EndDesignateNextPresident: 'END_DESIGNATE_NEXT_PRESIDENT',
+        SetChooserPlayer: 'SET_CHOOSER_PLAYER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',

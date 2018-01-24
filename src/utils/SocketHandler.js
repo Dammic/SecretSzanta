@@ -140,10 +140,6 @@ export class SocketHandler extends React.PureComponent {
             }
         })
 
-        socket.on(SocketEvents.EndDesignateNextPresident, () => {
-            this.props.playersActions.setChooserPlayer({ playerName: '' })
-        })
-
         socket.on(SocketEvents.PlayerKilled, (payload) => {
             const { playerName, wasHitler, timestamp } = payload.data
             const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'It turned out the killed foe was not Hitler, unfortunately.')
@@ -273,6 +269,10 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.SetTimer, ({ data: { waitTime } }) => {
             this.props.roomActions.setWaitTime({ waitTime })
         })
+        socket.on(SocketEvents.SetChooserPlayer, ({ data: { playerName } }) => {
+            this.props.playersActions.setChooserPlayer({ playerName })
+        })
+
     }
 
     switchRooms = (targetRoomName) => {
