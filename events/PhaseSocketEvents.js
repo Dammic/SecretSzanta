@@ -54,6 +54,7 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                 data: {
                     timestamp: getCurrentTimestamp(),
                     presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
+                    gamePhase: GamePhases.PresidentPolicyChoice,
                 },
             })
             presidentEmit(SocketEvents.ChoosePolicy, {

@@ -472,10 +472,6 @@ class RoomsManager {
         room.drawnCards = []
     }
 
-    clearDrawnCards(roomName) {
-        this.rooms_props[roomName].drawnCards = []
-    }
-
     discardPolicyByVeto(roomName) {
         const { policiesPile, discardPile } = this.rooms_props[roomName]
         const discardedPolicy = take(policiesPile, 1)[0]
