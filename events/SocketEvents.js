@@ -254,7 +254,6 @@ module.exports = function (io) {
 
         choosePolicyChancellor: (socket, choice) => {
             socketEventsUtils.enactPolicy(socket, choice)
-            RoomsManager.clearDrawnCards(socket.currentRoom)
 
             const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
             if (isVetoUnlocked) {
@@ -363,8 +362,10 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-            const startChancellorChoicePhaseWrapperFunc = (socket) => phaseSocketEvents.startChancellorChoicePhase(socket, playerName)
-            socketEventsUtils.resumeGame(socket, { delay: 4000, func: startChancellorChoicePhaseWrapperFunc })
+            socketEventsUtils.resumeGame(socket, {
+                delay: 4000,
+                func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
+            })
         },
     }
 
