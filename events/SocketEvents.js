@@ -362,6 +362,7 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.EndDesignateNextPresident)
             socketEventsUtils.resumeGame(socket, {
                 delay: 4000,
                 func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
