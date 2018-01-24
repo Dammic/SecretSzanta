@@ -373,6 +373,12 @@ module.exports = function (io) {
             })
         },
         endPeekCardsPhase: (socket) => {
+            socketEventsUtils.sendMessage(socket, { content: 'The president has seen the top 3 policy cards' })
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+                data: {
+                    playerName: '',
+                },
+            })
             socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
     }
@@ -410,6 +416,6 @@ module.exports = function (io) {
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
         socket.on(SocketEvents.VetoVoteRegistered, partialFunctions.veto)
         socket.on(SocketEvents.DesignateNextPresident, partialFunctions.presidentDesignatedNextPresident)
-        socket.on(SocketEvents.EndPeekCardsPhase, partialFunctions.endPeekCardsPhase)
+        socket.on(SocketEvents.PeekCards, partialFunctions.endPeekCardsPhase)
     })
 }

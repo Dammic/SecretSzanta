@@ -94,9 +94,11 @@ const PhaseSocketEvents = (io, RoomsManager) => {
         startPeekCardsPhase: (socket) => {
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
             const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.StartPeekCardsPhase, {
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            socketEventsUtils.sendMessage(socket, { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' })
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
                 data: {
-                    timestamp: getCurrentTimestamp(),
+                    playerName: presidentName,
                 },
             })
             presidentEmit(SocketEvents.PeekCards, {

@@ -26,7 +26,7 @@ export class PolicyChoiceModal extends React.PureComponent {
     }
 
     onButtonClose = () => {
-        socket.emit(SocketEvents.EndPeekCardsPhase)
+        socket.emit(SocketEvents.PeekCards)
         this.props.closeModal()
     }
 
