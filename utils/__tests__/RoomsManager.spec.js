@@ -468,7 +468,6 @@ describe('RoomsManager', () => {
             RoomsManager.rooms_props['testRoom'].drawPile = [PolicyCards.LiberalPolicy]
             RoomsManager.rooms_props['testRoom'].discardPile = [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy]
             const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
-            initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
             initialRoomProps.discardPile = []
             initialRoomProps.drawnCards = [PolicyCards.LiberalPolicy]
             RoomsManager.takeChoicePolicyCards('testRoom', 1)
@@ -497,7 +496,7 @@ describe('RoomsManager', () => {
         test('Should return 3 cards but not modify anything', () => {
             RoomsManager.rooms_props['testRoom'].drawPile = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy]
             const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
-            const peekedCards = RoomsManager.peekPolicyCards('testRoom', 1)
+            const peekedCards = RoomsManager.peekPolicyCards('testRoom')
 
             expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
             expect(peekedCards).toEqual([PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy])
