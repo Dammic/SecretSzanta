@@ -22,7 +22,7 @@ const history = createHistory()
 const middleware = routerMiddleware(history)
 
 /* eslint-disable no-underscore-dangle */
-const store = createStore(
+export const store = createStore(
     combineReducers({
         chat,
         user,

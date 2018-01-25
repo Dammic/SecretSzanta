@@ -9,43 +9,25 @@ import { toggleAffiliationMenu } from '../../ducks/userDuck'
 import { resetTracker } from '../../ducks/roomDuck'
 import * as playerActions from '../../ducks/playersDuck'
 import { socket } from '../../utils/SocketHandler'
+import { startGame, kickPlayer, banPlayer, startVoting } from '../../gameLogic/ownerActions'
 
 export class UIBox extends React.PureComponent {
-    onStartVote = () => {
-        socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE)
-    }
+    onKickPlayer = () => kickPlayer(this.props.userName, this.props.playersWithoutMe)
 
-    onKickPlayer = () => {
-        this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
-        this.props.playersActions.setChoiceMode({
-            isVisible: true,
-            context: ChoiceModeContexts.KickChoice,
-            selectablePlayers: this.props.playersWithoutMe,
-        })
-    }
+    onBanPlayer = () => banPlayer(this.props.userName, this.props.playersWithoutMe)
 
-    onBanPlayer = () => {
-        this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
-        this.props.playersActions.setChoiceMode({
-            isVisible: true,
-            context: ChoiceModeContexts.BanChoice,
-            selectablePlayers: this.props.playersWithoutMe,
-        })
-    }
-
-    onStartGame = () => {
-        socket.emit(SocketEvents.START_GAME, { playerName: this.props.userName })
-        this.props.roomActions.resetTracker()
-    }
+    onStartGame = () => startGame(this.props.userName)
 
     toggleShow = () => {
         this.props.userActions.toggleAffiliationMenu()
     }
 
     getPlayerCard = () => {
-        const { facistAvatar, liberalAvatar, isOwner, isDead } = this.props
+        const {
+            facistAvatar, liberalAvatar, isOwner, isDead
+        } = this.props
         if (!liberalAvatar) return null
-        
+
         return (<PlayerAvatarComponent
             liberalAvatar={liberalAvatar}
             facistAvatar={facistAvatar}
@@ -55,10 +37,12 @@ export class UIBox extends React.PureComponent {
     }
 
     render() {
-        const { affiliation, gamePhase, role, isAffiliationHidden, isOwner } = this.props
+        const {
+            affiliation, gamePhase, role, isAffiliationHidden, isOwner
+        } = this.props
         return (
             <UIBoxComponent
-                onStartVote={this.onStartVote}
+                onStartVote={startVoting}
                 onStartGame={this.onStartGame}
                 onKickPlayer={this.onKickPlayer}
                 onBanPlayer={this.onBanPlayer}
