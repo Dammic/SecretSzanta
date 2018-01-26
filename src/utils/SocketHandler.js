@@ -282,6 +282,8 @@ export class SocketHandler extends React.PureComponent {
                 isOverlayOpaque: true,
                 componentName: 'PeekAffiliationModal',
                 initialData: { playerInfo },
+            })
+        })
         socket.on(SocketEvents.PeekCards, ({ data: { cards } }) => {
             this.props.modalActions.setModal({
                 title: 'Those are the cards the next president will draw',
