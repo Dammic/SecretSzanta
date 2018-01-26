@@ -390,6 +390,11 @@ module.exports = function (io) {
             })
         },
         endPeekPlayerSuperpower: (socket) => {
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+                data: {
+                    playerName: '',
+                },
+            })
             socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
     }
@@ -428,10 +433,7 @@ module.exports = function (io) {
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
         socket.on(SocketEvents.VetoVoteRegistered, partialFunctions.veto)
         socket.on(SocketEvents.DesignateNextPresident, partialFunctions.presidentDesignatedNextPresident)
-<<<<<<< HEAD
         socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, partialFunctions.superpowerAffiliationPeekPlayer)
-        socket.on(SocketEvents.SuperpowerAffiliationPeekEnd, partialFunctions.endPeekPlayerSuperpower)
-=======
->>>>>>> 70da8c3517802e773c23a23387a34e94170353df
+        socket.on(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, partialFunctions.endPeekPlayerSuperpower)
     })
 }

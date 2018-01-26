@@ -270,10 +270,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.setWaitTime({ waitTime })
         })
 
-        socket.on(SocketEvents.SuperpowerAffiliationPeekStart, ({ data: { presidentName, timestamp }}) => {
-            this.props.chatActions.addMessage({ timestamp, content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' })
-            this.props.playersActions.setChooserPlayer({ playerName: presidentName })
-        })
         socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, ({ data: { playersChoices } }) => {
             this.props.playersActions.setChoiceMode({
                 isVisible: true,

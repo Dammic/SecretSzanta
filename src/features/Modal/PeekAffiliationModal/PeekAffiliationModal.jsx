@@ -11,7 +11,7 @@ export class PeekAffiliationModal extends PureComponent {
     };
 
     onModalClose = () => {
-        socket.emit(SocketEvents.SuperpowerAffiliationPeekEnd)
+        socket.emit(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal)
         this.props.closeModal()
     }
 

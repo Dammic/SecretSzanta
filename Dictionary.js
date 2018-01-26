@@ -35,10 +35,8 @@ module.exports = {
         ResetTracker: 'RESET_TRACKER',
         SetTimer: 'SET_TIMER',
         DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
-        SuperpowerAffiliationPeekStart: 'SUPERPOWER_AFFILIATION_PEEK_START',
         SuperpowerAffiliationPeekPlayerChoose: 'SUPERPOWER_AFFILIATION_PEEK_PLAYER_CHOOSE',
         SuperpowerAffiliationPeekAffiliationReveal: 'SUPERPOWER_AFFILIATION_PEEK_AFFILIATION_REVEAL',
-        SuperpowerAffiliationPeekEnd: 'SUPERPOWER_AFFILIATION_PEEK_START',
         SetChooserPlayer: 'SET_CHOOSER_PLAYER',
     },
     PlayerDirection: {
