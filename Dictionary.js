@@ -37,6 +37,7 @@ module.exports = {
         DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
         SuperpowerAffiliationPeekPlayerChoose: 'SUPERPOWER_AFFILIATION_PEEK_PLAYER_CHOOSE',
         SuperpowerAffiliationPeekAffiliationReveal: 'SUPERPOWER_AFFILIATION_PEEK_AFFILIATION_REVEAL',
+        PeekCards: 'PEEK_CARDS',
         SetChooserPlayer: 'SET_CHOOSER_PLAYER',
     },
     PlayerDirection: {
@@ -64,6 +65,7 @@ module.exports = {
         Paused: 'GAME_PHASE_PAUSE',
         DesignateNextPresidentPhase: 'GAME_PHASE_DESIGNATE_NEXT_PRESIDENT',
         PeekAffiliationSuperpowerPhase: 'PEEK_AFFILIATION_SUPERPOWER_PHASE',
+        PeekCardsSuperpower: 'GAME_PHASE_PEEK_CARDS_SUPERPOWER',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',

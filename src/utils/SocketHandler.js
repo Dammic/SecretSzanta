@@ -211,12 +211,11 @@ export class SocketHandler extends React.PureComponent {
             // time of delay must be greater that time of an animation of tracker beeing moved
         })
 
-        socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
+        socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title } }) => {
             this.props.modalActions.setModal({
                 title,
                 initialData: {
                     policies: policyCards,
-                    role,
                 },
                 componentName: 'PolicyChoiceModal',
             })
@@ -283,6 +282,14 @@ export class SocketHandler extends React.PureComponent {
                 isOverlayOpaque: true,
                 componentName: 'PeekAffiliationModal',
                 initialData: { playerInfo },
+        socket.on(SocketEvents.PeekCards, ({ data: { cards } }) => {
+            this.props.modalActions.setModal({
+                title: 'Those are the cards the next president will draw',
+                initialData: {
+                    policies: cards,
+                    selectable: false,
+                },
+                componentName: 'PolicyChoiceModal',
             })
         })
         socket.on(SocketEvents.SetChooserPlayer, ({ data: { playerName } }) => {

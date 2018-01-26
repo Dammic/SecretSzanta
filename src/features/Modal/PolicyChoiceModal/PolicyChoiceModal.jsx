@@ -11,13 +11,13 @@ export class PolicyChoiceModal extends React.PureComponent {
         // parent
         data: PropTypes.shape({
             policies: PropTypes.arrayOf(PropTypes.string).isRequired,
-            role: PropTypes.string.isRequired,
+            selectable: PropTypes.bool,
         }),
         closeModal: PropTypes.func.isRequired,
     }
 
     onPolicyChoice = (event) => {
-        const { data: { policies, role } } = this.props
+        const { data: { policies } } = this.props
         const index = event.target.getAttribute('data-index')
         const choice = policies[index]
 
@@ -25,12 +25,19 @@ export class PolicyChoiceModal extends React.PureComponent {
         this.props.closeModal()
     }
 
+    onButtonClose = () => {
+        socket.emit(SocketEvents.PeekCards)
+        this.props.closeModal()
+    }
+
     render() {
-        const { data: { policies } } = this.props
+        const { data: { policies, selectable = true } } = this.props
         return (
             <PolicyChoiceModalComponent
                 policies={policies}
-                onClick={this.onPolicyChoice}
+                onClick={selectable ? this.onPolicyChoice : undefined}
+                selectable={selectable}
+                onButtonClose={this.onButtonClose}
             />
         )
     }
