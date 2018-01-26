@@ -442,7 +442,6 @@ describe('RoomsManager', () => {
         const checkIfCardsMatch = (expectedCards, receivedCards) => {
             const expectedCardsGroupedCount = countBy(expectedCards)
             const receivedCardsGroupedCount = countBy(receivedCards)
-            console.info(expectedCardsGroupedCount, receivedCardsGroupedCount)
             return (
                 (expectedCardsGroupedCount[PolicyCards.FacistPolicy] === receivedCardsGroupedCount[PolicyCards.FacistPolicy])
                 && (expectedCardsGroupedCount[PolicyCards.LiberalPolicy] === receivedCardsGroupedCount[PolicyCards.LiberalPolicy])
