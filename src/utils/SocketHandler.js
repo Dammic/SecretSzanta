@@ -126,6 +126,20 @@ export class SocketHandler extends React.PureComponent {
             }
         })
 
+        socket.on(SocketEvents.DesignateNextPresident, (payload) => {
+            const { presidentName, playersChoices, timestamp } = payload.data
+            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.DesignateNextPresidentPhase })
+            this.props.chatActions.addMessage({ timestamp, content: 'Because 3 fascist policies have been enacted, the president will now choose its successor...' })
+            this.props.playersActions.setChooserPlayer({ playerName: presidentName })
+            if (presidentName === this.props.userName) {
+                this.props.playersActions.setChoiceMode({
+                    isVisible: true,
+                    context: ChoiceModeContexts.DesignateNextPresidentChoice,
+                    selectablePlayers: playersChoices,
+                })
+            }
+        })
+
         socket.on(SocketEvents.PlayerKilled, (payload) => {
             const { playerName, wasHitler, timestamp } = payload.data
             const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'It turned out the killed foe was not Hitler, unfortunately.')
@@ -208,7 +222,8 @@ export class SocketHandler extends React.PureComponent {
             })
         })
 
-        socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName } }) => {
+        socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName, gamePhase } }) => {
+            this.props.roomActions.changeGamePhase({ gamePhase })
             this.props.chatActions.addMessage({ timestamp, content: 'The president is now discarding one policy out of three...' })
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             this.props.roomActions.resetVotes()
@@ -254,6 +269,10 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.SetTimer, ({ data: { waitTime } }) => {
             this.props.roomActions.setWaitTime({ waitTime })
         })
+        socket.on(SocketEvents.SetChooserPlayer, ({ data: { playerName } }) => {
+            this.props.playersActions.setChooserPlayer({ playerName })
+        })
+
     }
 
     switchRooms = (targetRoomName) => {

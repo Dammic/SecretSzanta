@@ -1,5 +1,5 @@
 const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName } = require('../Dictionary')
+const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName, PlayerBoards } = require('../Dictionary')
 const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight } = require('lodash')
 const ClientVerificationHof = require('../utils/ClientVerificationHof')
 const RoomsManager = new (require('../utils/RoomsManager'))()
@@ -12,9 +12,16 @@ module.exports = function (io) {
     const socketEvents = {
         checkForImmediateSuperpowersOrContinue: (socket) => {
             const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
-
+            const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom);
+            if (fascistPolicyCount === 3) {
+                if (playerboardType === PlayerBoards.SmallBoard) {
+                    // examine cards code here
+                } else {
+                    // President will designate next president superpower
+                    phaseSocketEvents.startDesignateNextPresidentPhase(socket)
+                }
             // 4th power is always kill on each board
-            if (fascistPolicyCount === 4) {
+            } else if (fascistPolicyCount === 4) {
                 phaseSocketEvents.startKillPhase(socket)
             // 5th power is always kill AND veto power unlock
             } else if (fascistPolicyCount === 5) {
@@ -232,36 +239,9 @@ module.exports = function (io) {
                 const president = RoomsManager.getPresident(socket.currentRoom)
                 const chancellor = RoomsManager.getChancellor(socket.currentRoom)
                 if (gamePhase === GamePhases.PresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
-                    RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ChancellorPolicyChoice)
-                    const chancellorEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
-                    io.sockets.in(socket.currentRoom).emit(SocketEvents.ChancellorChoosePolicy, {
-                        data: {
-                            timestamp: getCurrentTimestamp(),
-                            chancellorName: chancellor.playerName,
-                        },
-                    })
-                    RoomsManager.discardPolicy(socket.currentRoom, choice)
-                    chancellorEmit(SocketEvents.ChoosePolicy, {
-                        data: {
-                            policyCards: drawnCards,
-                            title: 'Choose policy to enact',
-                            role: PlayerRole.ROLE_CHANCELLOR,
-                        },
-                    })
+                    socketEvents.choosePolicyPresident(socket, choice, drawnCards, chancellor.playerName)
                 } else if (gamePhase === GamePhases.ChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
-                    RoomsManager.discardPolicy(socket.currentRoom, choice)
-                    const enactedPolicy = drawnCards[0]
-
-                    socketEventsUtils.enactPolicy(socket, enactedPolicy)
-
-                    const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
-                    if (isVetoUnlocked) {
-                        socketEvents.triggerVetoPrompt(socket) 
-                    } else if (enactedPolicy === PolicyCards.FacistPolicy) {
-                        socketEvents.checkForImmediateSuperpowersOrContinue(socket)
-                    } else {
-                        socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
-                    }
+                    socketEvents.choosePolicyChancellor(socket, choice)
                 } else {
                     console.error('Cheater!')
                     // cheating (bad role tried to choose)? 
@@ -270,6 +250,38 @@ module.exports = function (io) {
                 console.error('Cheater!')
                 // cheating (sent card was not in collection)! 
             }
+        },
+
+        choosePolicyChancellor: (socket, choice) => {
+            socketEventsUtils.enactPolicy(socket, choice)
+
+            const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
+            if (isVetoUnlocked) {
+                socketEvents.triggerVetoPrompt(socket)
+            } else if (choice === PolicyCards.FacistPolicy) {
+                socketEvents.checkForImmediateSuperpowersOrContinue(socket)
+            } else {
+                socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
+            }
+        },
+
+        choosePolicyPresident: (socket, choice, drawnCards, chancellorName) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ChancellorPolicyChoice)
+            const chancellorEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.ChancellorChoosePolicy, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    chancellorName,
+                },
+            })
+            RoomsManager.discardPolicy(socket.currentRoom, choice)
+            chancellorEmit(SocketEvents.ChoosePolicy, {
+                data: {
+                    policyCards: drawnCards,
+                    title: 'Choose policy to enact',
+                    role: PlayerRole.ROLE_CHANCELLOR,
+                },
+            })
         },
 
         killPlayer: (socket, { playerName }) => {
@@ -348,6 +360,18 @@ module.exports = function (io) {
                 socketEventsUtils.sendError(socket, ErrorMessages.NameTaken)
             }
         },
+        presidentDesignatedNextPresident: (socket, { playerName }) => {
+            socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+                data: {
+                    playerName: '',
+                },
+            })
+            socketEventsUtils.resumeGame(socket, {
+                delay: 4000,
+                func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
+            })
+        },
     }
 
     io.on('connection', (socket) => {
@@ -381,5 +405,6 @@ module.exports = function (io) {
         socket.on(SocketEvents.ChoosePolicy, partialFunctions.choosePolicy)
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
         socket.on(SocketEvents.VetoVoteRegistered, partialFunctions.veto)
+        socket.on(SocketEvents.DesignateNextPresident, partialFunctions.presidentDesignatedNextPresident)
     })
 }

@@ -51,6 +51,8 @@ class RoomsManager {
             isVetoUnlocked: false,
             vetoVotes: [],
             boardType: null,
+            // this president will be set as president at the start of the turn, before choosing normal president, only once
+            previousPresidentNameBackup: null,
         }
     }
 
@@ -149,13 +151,18 @@ class RoomsManager {
     }
 
     chooseNextPresident(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict, previousPresidentNameBackup } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
-        const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+
+        const lastPresidentIndex = (previousPresidentNameBackup 
+            ? findIndex(sortedPlayers, { playerName: previousPresidentNameBackup })
+            : findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+        )
         const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
 
         const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
+        if (previousPresidentNameBackup) this.resetPresidentBackup(roomName)
     }
 
     startGame(roomName) {
@@ -208,9 +215,14 @@ class RoomsManager {
         return find(playersDict, { affiliation: PlayerAffilications.HITLER_AFFILIATION })
     }
 
-    startChancellorChoicePhase(roomName) {
+    startChancellorChoicePhase(roomName, designatedPresidentName) {
         this.rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
-        this.chooseNextPresident(roomName)
+        if (designatedPresidentName) {
+            this.setPresidentBackup(roomName)
+            this.setPresident(roomName, designatedPresidentName)
+        } else {
+            this.chooseNextPresident(roomName)
+        }
     }
 
     getChancellorChoices(roomName) {
@@ -538,6 +550,13 @@ class RoomsManager {
     }
     updatePlayerRoom(userName, newRoomName) {
         this.players[userName].currentRoom = (newRoomName === GlobalRoomName ? '' : newRoomName)
+    }
+    setPresidentBackup(roomName) {
+        const currentPresident = this.getPresident(roomName)
+        this.rooms_props[roomName].previousPresidentNameBackup = currentPresident.playerName
+    }
+    resetPresidentBackup(roomName) {
+        this.rooms_props[roomName].previousPresidentNameBackup = null
     }
 }
 
