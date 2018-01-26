@@ -5,7 +5,7 @@ import classNames from 'classnames/bind'
 
 const MessagesBoxComponent = ({
     messages = [],
-    setMessagesEndRef,
+    setMessagesBoxRef,
 }) => {
     const buildMessage = (message, index) => {
         const { time, author, content } = message
@@ -17,16 +17,15 @@ const MessagesBoxComponent = ({
     }
 
     return (
-        <div className="messages-box">
+        <div className="messages-box" ref={setMessagesBoxRef}>
             {map(messages, (message, index) => buildMessage(message, index))}
-            <div id="EndOfMessages" ref={setMessagesEndRef} />
         </div>
     )
 }
 
 MessagesBoxComponent.propTypes = {
     messages: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
-    setMessagesEndRef: PropTypes.func,
+    setMessagesBoxRef: PropTypes.func,
 }
 export default MessagesBoxComponent
 

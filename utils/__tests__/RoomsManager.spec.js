@@ -210,15 +210,6 @@ describe('RoomsManager', () => {
             expect(RoomsManager.getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
         })
     })
-    describe('clearDrawnCards', () => {
-        test('should clear drawn cards', () => {
-            RoomsManager.rooms_props['testRoom'].drawnCards = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
-            initialRoomProps.drawnCards = []
-            RoomsManager.clearDrawnCards('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
-        })
-    })
     describe('chooseNextPresident', () => {
         test('should choose next new president (normal flow, 3 players)', () => {
             RoomsManager.rooms_props['testRoom'].playersDict = {}
@@ -346,23 +337,22 @@ describe('RoomsManager', () => {
             expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
         })
 
-        test('should choose next new president (special flow, 4 players, 2 -> 1 (and 1st was special president))', () => {
+        test('should choose next new president (special flow, 4 players, 1 -> 2 -> 2 (and 2nd was special president))', () => {
             RoomsManager.rooms_props['testRoom'].playersDict = {}
             RoomsManager.rooms_props['testRoom'].previousPresidentNameBackup = 'player1'
             RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
-                role: PlayerRole.ROLE_PRESIDENT,
+                role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
                 slotNumber: 1,
             }
             RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
-                role: null,
-                isDead: true,
+                role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 2,
             }
             RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
-                role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
+                role: null,
                 slotNumber: 3,
             }
             RoomsManager.rooms_props['testRoom'].playersDict.player4 = {
@@ -372,9 +362,9 @@ describe('RoomsManager', () => {
                 slotNumber: 4,
             }
             const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
-            initialRoomProps.playersDict.player1.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
-            initialRoomProps.playersDict.player2.role = null
-            initialRoomProps.playersDict.player3.role = PlayerRole.ROLE_PRESIDENT
+            initialRoomProps.playersDict.player1.role = null
+            initialRoomProps.playersDict.player2.role = PlayerRole.ROLE_PRESIDENT
+            initialRoomProps.playersDict.player3.role = null
             initialRoomProps.playersDict.player4.role = null
             initialRoomProps.previousPresidentNameBackup = null
             RoomsManager.chooseNextPresident('testRoom')

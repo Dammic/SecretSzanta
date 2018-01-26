@@ -258,7 +258,6 @@ module.exports = function (io) {
 
         choosePolicyChancellor: (socket, choice) => {
             socketEventsUtils.enactPolicy(socket, choice)
-            RoomsManager.clearDrawnCards(socket.currentRoom)
 
             const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
             if (isVetoUnlocked) {
@@ -367,8 +366,15 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-            const startChancellorChoicePhaseWrapperFunc = (socket) => phaseSocketEvents.startChancellorChoicePhase(socket, playerName)
-            socketEventsUtils.resumeGame(socket, { delay: 4000, func: startChancellorChoicePhaseWrapperFunc })
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+                data: {
+                    playerName: '',
+                },
+            })
+            socketEventsUtils.resumeGame(socket, {
+                delay: 4000,
+                func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
+            })
         },
         superpowerAffiliationPeekPlayer: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has choosen ${playerName} to be investigated and has now seen their affiliation!` })
@@ -422,7 +428,10 @@ module.exports = function (io) {
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
         socket.on(SocketEvents.VetoVoteRegistered, partialFunctions.veto)
         socket.on(SocketEvents.DesignateNextPresident, partialFunctions.presidentDesignatedNextPresident)
+<<<<<<< HEAD
         socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, partialFunctions.superpowerAffiliationPeekPlayer)
         socket.on(SocketEvents.SuperpowerAffiliationPeekEnd, partialFunctions.endPeekPlayerSuperpower)
+=======
+>>>>>>> 70da8c3517802e773c23a23387a34e94170353df
     })
 }

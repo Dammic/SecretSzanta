@@ -39,6 +39,7 @@ module.exports = {
         SuperpowerAffiliationPeekPlayerChoose: 'SUPERPOWER_AFFILIATION_PEEK_PLAYER_CHOOSE',
         SuperpowerAffiliationPeekAffiliationReveal: 'SUPERPOWER_AFFILIATION_PEEK_AFFILIATION_REVEAL',
         SuperpowerAffiliationPeekEnd: 'SUPERPOWER_AFFILIATION_PEEK_START',
+        SetChooserPlayer: 'SET_CHOOSER_PLAYER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',

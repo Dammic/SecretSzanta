@@ -13,11 +13,11 @@ export class MessagesBox extends React.PureComponent {
         this.scrollToBottomOfMessages()
     }
 
-    setMessagesEndRef = (ref) => { this.messagesEndRef = ref }
+    setMessagesBoxRef = (ref) => { this.messagesBoxRef = ref }
 
     scrollToBottomOfMessages = () => {
-        if (this.messagesEndRef) {
-            this.messagesEndRef.scrollIntoView()
+        if (this.messagesBoxRef) {
+            this.messagesBoxRef.scrollTop = this.messagesBoxRef.scrollHeight
         }
     }
 
@@ -25,7 +25,8 @@ export class MessagesBox extends React.PureComponent {
         return (
             <MessagesBoxComponent
                 messages={this.props.messages}
-                setMessagesEndRef={this.setMessagesEndRef} />
+                setMessagesBoxRef={this.setMessagesBoxRef}
+            />
         )
     }
 }
