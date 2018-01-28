@@ -89,7 +89,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
-                    isVisible: true,
                     context: ChoiceModeContexts.ChancellorChoice,
                     selectablePlayers: playersChoices,
                 })
@@ -119,7 +118,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...` })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
-                    isVisible: true,
                     context: ChoiceModeContexts.KillChoice,
                     selectablePlayers: playersChoices,
                 })
@@ -133,7 +131,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
-                    isVisible: true,
                     context: ChoiceModeContexts.DesignateNextPresidentChoice,
                     selectablePlayers: playersChoices,
                 })
@@ -271,7 +268,6 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, ({ data: { playersChoices } }) => {
             this.props.playersActions.setChoiceMode({
-                isVisible: true,
                 context: ChoiceModeContexts.AffiliationPeekChoice,
                 selectablePlayers: playersChoices,
             })

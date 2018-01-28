@@ -18,7 +18,6 @@ export class UIBox extends React.PureComponent {
     onKickPlayer = () => {
         this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
         this.props.playersActions.setChoiceMode({
-            isVisible: true,
             context: ChoiceModeContexts.KickChoice,
             selectablePlayers: this.props.playersWithoutMe,
         })
@@ -27,7 +26,6 @@ export class UIBox extends React.PureComponent {
     onBanPlayer = () => {
         this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
         this.props.playersActions.setChoiceMode({
-            isVisible: true,
             context: ChoiceModeContexts.BanChoice,
             selectablePlayers: this.props.playersWithoutMe,
         })
