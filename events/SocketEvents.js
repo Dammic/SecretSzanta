@@ -366,11 +366,7 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
-                data: {
-                    playerName: '',
-                },
-            })
+            socketEventsUtils.emitSetChooserPlayer(socket, '')
             socketEventsUtils.resumeGame(socket, {
                 delay: 4000,
                 func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
@@ -390,20 +386,12 @@ module.exports = function (io) {
             })
         },
         endPeekPlayerSuperpower: (socket) => {
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
-                data: {
-                    playerName: '',
-                },
-            })
+            socketEventsUtils.emitSetChooserPlayer(socket, '')
             socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
         endPeekCardsPhase: (socket) => {
             socketEventsUtils.sendMessage(socket, { content: 'The president has seen the top 3 policy cards' })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
-                data: {
-                    playerName: '',
-                },
-            })
+            socketEventsUtils.emitSetChooserPlayer(socket, '')
             socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
     }
