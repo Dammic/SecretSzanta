@@ -17,7 +17,7 @@ const initialState = {
 const actions = {
     [setChoiceMode]: (state, action) => {
         const { choiceMode } = state
-        const { isVisible, context, selectablePlayers } = action.payload
+        const { isVisible = true, context, selectablePlayers } = action.payload
         return {
             ...state,
             choiceMode: {

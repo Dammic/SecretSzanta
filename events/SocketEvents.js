@@ -12,8 +12,12 @@ module.exports = function (io) {
     const socketEvents = {
         checkForImmediateSuperpowersOrContinue: (socket) => {
             const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
-            const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom);
-            if (fascistPolicyCount === 3) {
+            const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom)
+            if (fascistPolicyCount === 1 && playerboardType === PlayerBoards.LargeBoard) {
+                phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
+            } else if (fascistPolicyCount === 2 && playerboardType !== PlayerBoards.SmallBoard) {
+                phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
+            } else if (fascistPolicyCount === 3) {
                 if (playerboardType === PlayerBoards.SmallBoard) {
                     // President will see top 3 cards from the drawPile deck
                     phaseSocketEvents.startPeekCardsPhase(socket)
@@ -362,23 +366,32 @@ module.exports = function (io) {
         },
         presidentDesignatedNextPresident: (socket, { playerName }) => {
             socketEventsUtils.sendMessage(socket, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
-                data: {
-                    playerName: '',
-                },
-            })
+            socketEventsUtils.emitSetChooserPlayer(socket, '')
             socketEventsUtils.resumeGame(socket, {
                 delay: 4000,
                 func: socketObject => phaseSocketEvents.startChancellorChoicePhase(socketObject, playerName),
             })
         },
-        endPeekCardsPhase: (socket) => {
-            socketEventsUtils.sendMessage(socket, { content: 'The president has seen the top 3 policy cards' })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+        superpowerAffiliationPeekPlayer: (socket, { playerName }) => {
+            socketEventsUtils.sendMessage(socket, { content: `The president has choosen ${playerName} to be investigated and has now seen their affiliation!` })
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            const selectedPlayerInfo = RoomsManager.getPlayerInfo(socket.currentRoom, playerName)
+            if (selectedPlayerInfo.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
+                selectedPlayerInfo.affiliation = PlayerAffilications.FACIST_AFFILIATION
+            }
+            presidentEmit(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, {
                 data: {
-                    playerName: '',
+                    playerInfo: selectedPlayerInfo,
                 },
             })
+        },
+        endPeekPlayerSuperpower: (socket) => {
+            socketEventsUtils.emitSetChooserPlayer(socket, '')
+            socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
+        },
+        endPeekCardsPhase: (socket) => {
+            socketEventsUtils.sendMessage(socket, { content: 'The president has seen the top 3 policy cards' })
+            socketEventsUtils.emitSetChooserPlayer(socket, '')
             socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
     }
@@ -390,6 +403,8 @@ module.exports = function (io) {
         const clientVerificationHof = ClientVerificationHof(RoomsManager)
         phaseSocketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
         socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
+        socketEvents.superpowerAffiliationPeekPlayer = clientVerificationHof(['isPresident'], socketEvents.superpowerAffiliationPeekPlayer)
+        socketEvents.endPeekPlayerSuperpower = clientVerificationHof(['isPresident'], socketEvents.endPeekPlayerSuperpower)
         socketEvents.endPeekCardsPhase = clientVerificationHof(['isPresident'], socketEvents.endPeekCardsPhase)
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
@@ -416,6 +431,8 @@ module.exports = function (io) {
         socket.on(SocketEvents.SelectName, partialFunctions.selectName)
         socket.on(SocketEvents.VetoVoteRegistered, partialFunctions.veto)
         socket.on(SocketEvents.DesignateNextPresident, partialFunctions.presidentDesignatedNextPresident)
+        socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, partialFunctions.superpowerAffiliationPeekPlayer)
+        socket.on(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, partialFunctions.endPeekPlayerSuperpower)
         socket.on(SocketEvents.PeekCards, partialFunctions.endPeekCardsPhase)
     })
 }
