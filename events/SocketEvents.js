@@ -1,6 +1,7 @@
 const {
     getCurrentTimestamp,
     logInfo,
+    logError,
 } = require('../utils/utils')
 const {
     SocketEvents,
@@ -72,19 +73,19 @@ module.exports = function (io) {
         veto: (socket) => {
             const gamePhase = RoomsManager.getGamePhase(socket.currentRoom)
             if (gamePhase !== GamePhases.ServerWaitingForVeto) {
-                console.error('Player tried to veto when the server was not waiting for it!')
+                logError(socket, 'Player tried to veto when the server was not waiting for it!')
                 socketEventsUtils.sendError(socket, 'You cannot veto right now!')
                 return
             }
             const vetoVotes = RoomsManager.getVetoVotes(socket.currentRoom)
             const playerRole = RoomsManager.getPlayerRole(socket.currentRoom, socket.currentPlayerName)
             if (includes(vetoVotes, playerRole)) {
-                console.error('Player tried to vote twice!')
+                logError(socket, 'Player tried to vote twice!')
                 socketEventsUtils.sendError(socket, 'You cannot veto twice!')
                 return
             }
             if (!includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)) {
-                console.error(`Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
+                logError(`Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
                 socketEventsUtils.sendError(socket, 'You must be a president or a chancellor to veto!')
                 return
             }
@@ -151,7 +152,7 @@ module.exports = function (io) {
                             },
                         })
                         RoomsManager.removeRoom(socket.currentRoom)
-                        console.log(`The room "${socket.currentRoom}" was permanently removed!`)
+                        logInfo(socket, 'The room was permanently removed!')
                     }
                 }
             }
@@ -174,7 +175,7 @@ module.exports = function (io) {
                 })
                 socketEvents.joinRoom(socket, { roomName, playerName })
             } else {
-                console.error('selected room is already present! Cannot create a duplicate!')
+                logError(socket, 'Selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
                     error: 'You cannot create duplicate of this room!',
                 })
@@ -183,8 +184,8 @@ module.exports = function (io) {
 
         joinRoom: (socket, { playerName, roomName }) => {
             if (!roomName || socket.currentRoom !== GlobalRoomName || !RoomsManager.isRoomPresent(roomName)) {
-                console.error(`ERROR - Why is the room gone!, Player ${playerName} tried to enter nonexistent room ${roomName}!`)
-                socketEventsUtils.sendError(socket, 'Error = WHY IS THE ROOM GONE?!')
+                logError(socket, 'Player tried to enter nonexistent room!')
+                socketEventsUtils.sendError(socket, 'The room does not exist!')
             }
 
             if (RoomsManager.isInBlackList(roomName, playerName)) {
