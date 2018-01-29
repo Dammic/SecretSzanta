@@ -17,6 +17,14 @@ const SocketEventsUtils = (io, RoomsManager) => {
             })
         },
 
+        emitSetChooserPlayer: (socket, playerName) => {
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.SetChooserPlayer, {
+                data: {
+                    playerName,
+                },
+            })
+        },
+
         sendError: (socket, errorMessage) => {
             socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
         },

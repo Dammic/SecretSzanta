@@ -4,11 +4,7 @@ import { bindActionCreators } from 'redux'
 import { get, map, reject } from 'lodash'
 import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
-import { SocketEvents, ChoiceModeContexts } from '../../../Dictionary'
 import { toggleAffiliationMenu } from '../../ducks/userDuck'
-import { resetTracker } from '../../ducks/roomDuck'
-import * as playerActions from '../../ducks/playersDuck'
-import { socket } from '../../utils/SocketHandler'
 import { startGame, kickPlayer, banPlayer, startVoting } from '../../gameLogic/ownerActions'
 
 export class UIBox extends React.PureComponent {
@@ -76,8 +72,6 @@ const mapStateToProps = ({ user, room }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ resetTracker }, dispatch),
     userActions: bindActionCreators({ toggleAffiliationMenu }, dispatch),
-    playersActions: bindActionCreators(playerActions, dispatch)
 })
 export default connect(mapStateToProps, mapDispatchToProps)(UIBox)

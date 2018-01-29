@@ -34,6 +34,11 @@ module.exports = {
         NewPolicy: 'NEW_POLICY',
         ResetTracker: 'RESET_TRACKER',
         SetTimer: 'SET_TIMER',
+        DesignateNextPresident: 'DESIGNATE_NEXT_PRESIDENT',
+        SuperpowerAffiliationPeekPlayerChoose: 'SUPERPOWER_AFFILIATION_PEEK_PLAYER_CHOOSE',
+        SuperpowerAffiliationPeekAffiliationReveal: 'SUPERPOWER_AFFILIATION_PEEK_AFFILIATION_REVEAL',
+        PeekCards: 'PEEK_CARDS',
+        SetChooserPlayer: 'SET_CHOOSER_PLAYER',
     },
     PlayerDirection: {
         PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',
@@ -58,6 +63,9 @@ module.exports = {
         ServerWaitingForVeto: 'GAME_PHASE_SERVER_WAITING_FOR_VETO',
         ServerAcceptedVeto: 'GAME_PHASE_SERVER_ACCEPTED_VETO',
         Paused: 'GAME_PHASE_PAUSE',
+        DesignateNextPresidentPhase: 'GAME_PHASE_DESIGNATE_NEXT_PRESIDENT',
+        PeekAffiliationSuperpowerPhase: 'PEEK_AFFILIATION_SUPERPOWER_PHASE',
+        PeekCardsSuperpower: 'GAME_PHASE_PEEK_CARDS_SUPERPOWER',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
@@ -79,6 +87,8 @@ module.exports = {
         KillChoice: 'CONTEXT_KILL_CHOICE',
         KickChoice: 'CONTEXT_KICK_CHOICE',
         BanChoice: 'CONTEXT_BAN_CHOICE',
+        DesignateNextPresidentChoice: 'CONTEXT_DESIGNATE_NEXT_PRESIDENT_CHOICE',
+        AffiliationPeekChoice: 'CONTEXT_AFFILIATION_PEEK_CHOICE',
     },
     PolicyCards: {
         FacistPolicy: 'FACIST_POLICY',

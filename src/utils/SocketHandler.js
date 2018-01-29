@@ -92,7 +92,6 @@ export class SocketHandler extends React.PureComponent {
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
-                    isVisible: true,
                     context: ChoiceModeContexts.ChancellorChoice,
                     selectablePlayers: playersChoices,
                 })
@@ -122,8 +121,20 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...` })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
-                    isVisible: true,
                     context: ChoiceModeContexts.KillChoice,
+                    selectablePlayers: playersChoices,
+                })
+            }
+        })
+
+        socket.on(SocketEvents.DesignateNextPresident, (payload) => {
+            const { presidentName, playersChoices, timestamp } = payload.data
+            this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.DesignateNextPresidentPhase })
+            this.props.chatActions.addMessage({ timestamp, content: 'Because 3 fascist policies have been enacted, the president will now choose its successor...' })
+            this.props.playersActions.setChooserPlayer({ playerName: presidentName })
+            if (presidentName === this.props.userName) {
+                this.props.playersActions.setChoiceMode({
+                    context: ChoiceModeContexts.DesignateNextPresidentChoice,
                     selectablePlayers: playersChoices,
                 })
             }
@@ -200,18 +211,18 @@ export class SocketHandler extends React.PureComponent {
             // time of delay must be greater that time of an animation of tracker beeing moved
         })
 
-        socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title, role } }) => {
+        socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title } }) => {
             this.props.modalActions.setModal({
                 title,
                 initialData: {
                     policies: policyCards,
-                    role,
                 },
                 componentName: 'PolicyChoiceModal',
             })
         })
 
-        socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName } }) => {
+        socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName, gamePhase } }) => {
+            this.props.roomActions.changeGamePhase({ gamePhase })
             this.props.chatActions.addMessage({ timestamp, content: 'The president is now discarding one policy out of three...' })
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             this.props.roomActions.resetVotes()
@@ -256,6 +267,34 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.SetTimer, ({ data: { waitTime } }) => {
             this.props.roomActions.setWaitTime({ waitTime })
+        })
+
+        socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, ({ data: { playersChoices } }) => {
+            this.props.playersActions.setChoiceMode({
+                context: ChoiceModeContexts.AffiliationPeekChoice,
+                selectablePlayers: playersChoices,
+            })
+        })
+        socket.on(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, ({ data: { playerInfo } }) => {
+            this.props.modalActions.setModal({
+                title: 'This is the selected player affiliation',
+                isOverlayOpaque: true,
+                componentName: 'PeekAffiliationModal',
+                initialData: { playerInfo },
+            })
+        })
+        socket.on(SocketEvents.PeekCards, ({ data: { cards } }) => {
+            this.props.modalActions.setModal({
+                title: 'Those are the cards the next president will draw',
+                initialData: {
+                    policies: cards,
+                    selectable: false,
+                },
+                componentName: 'PolicyChoiceModal',
+            })
+        })
+        socket.on(SocketEvents.SetChooserPlayer, ({ data: { playerName } }) => {
+            this.props.playersActions.setChooserPlayer({ playerName })
         })
     }
 

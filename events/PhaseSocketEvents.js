@@ -33,8 +33,8 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             })
         },
 
-        startChancellorChoicePhase: (socket) => {
-            RoomsManager.startChancellorChoicePhase(socket.currentRoom)
+        startChancellorChoicePhase: (socket, designatedPresidentName = null) => {
+            RoomsManager.startChancellorChoicePhase(socket.currentRoom, designatedPresidentName)
             const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
 
             io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
@@ -54,6 +54,7 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                 data: {
                     timestamp: getCurrentTimestamp(),
                     presidentName: RoomsManager.getPresident(socket.currentRoom).playerName,
+                    gamePhase: GamePhases.PresidentPolicyChoice,
                 },
             })
             presidentEmit(SocketEvents.ChoosePolicy, {
@@ -74,6 +75,48 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                     presidentName,
                     timestamp: getCurrentTimestamp(),
                     playersChoices,
+                },
+            })
+        },
+
+        startDesignateNextPresidentPhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.DesignateNextPresidentPhase)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.DesignateNextPresident, {
+                data: {
+                    presidentName,
+                    timestamp: getCurrentTimestamp(),
+                    playersChoices,
+                },
+            })
+        },
+
+        startPeekAffiliationSuperpowerPhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.PeekAffiliationSuperpowerPhase)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            const playersChoices = RoomsManager.getOtherAlivePlayers(socket.currentRoom, presidentName)
+            socketEventsUtils.sendMessage(socket, { content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' })
+            socketEventsUtils.emitSetChooserPlayer(socket, presidentName)
+            
+            presidentEmit(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, {
+                data: {
+                    playersChoices,
+                },
+            })
+        },
+        startPeekCardsPhase: (socket) => {
+            RoomsManager.setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
+            const presidentEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+            const presidentName = get(RoomsManager.getPresident(socket.currentRoom), 'playerName')
+            socketEventsUtils.sendMessage(socket, { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' })
+            socketEventsUtils.emitSetChooserPlayer(socket, presidentName)
+            
+            presidentEmit(SocketEvents.PeekCards, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    cards: RoomsManager.peekPolicyCards(socket.currentRoom),
                 },
             })
         },

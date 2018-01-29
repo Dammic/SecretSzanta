@@ -11,33 +11,33 @@ export class PolicyChoiceModal extends React.PureComponent {
         // parent
         data: PropTypes.shape({
             policies: PropTypes.arrayOf(PropTypes.string).isRequired,
-            role: PropTypes.string.isRequired,
+            selectable: PropTypes.bool,
         }),
         closeModal: PropTypes.func.isRequired,
     }
 
     onPolicyChoice = (event) => {
-        const { data: { policies, role } } = this.props
+        const { data: { policies } } = this.props
         const index = event.target.getAttribute('data-index')
-        let choice
+        const choice = policies[index]
 
-        // for chancellor, we need to send the server the discarded card as well, despite choosing the enacted card
-        if (role === PlayerRole.ROLE_CHANCELLOR) {
-            pullAt(policies, index)
-            choice = policies[0]
-        } else {
-            choice = policies[index]
-        }
         socket.emit(SocketEvents.ChoosePolicy, { choice })
         this.props.closeModal()
     }
 
+    onButtonClose = () => {
+        socket.emit(SocketEvents.PeekCards)
+        this.props.closeModal()
+    }
+
     render() {
-        const { data: { policies } } = this.props
+        const { data: { policies, selectable = true } } = this.props
         return (
             <PolicyChoiceModalComponent
                 policies={policies}
-                onClick={this.onPolicyChoice}
+                onClick={selectable ? this.onPolicyChoice : undefined}
+                selectable={selectable}
+                onButtonClose={this.onButtonClose}
             />
         )
     }

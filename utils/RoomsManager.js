@@ -51,6 +51,8 @@ class RoomsManager {
             isVetoUnlocked: false,
             vetoVotes: [],
             boardType: null,
+            // this president will be set as president at the start of the turn, before choosing normal president, only once
+            previousPresidentNameBackup: null,
         }
     }
 
@@ -149,13 +151,18 @@ class RoomsManager {
     }
 
     chooseNextPresident(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict, previousPresidentNameBackup } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
-        const lastPresidentIndex = findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+
+        const lastPresidentIndex = (previousPresidentNameBackup 
+            ? findIndex(sortedPlayers, { playerName: previousPresidentNameBackup })
+            : findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
+        )
         const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
 
         const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
+        if (previousPresidentNameBackup) this.resetPresidentBackup(roomName)
     }
 
     startGame(roomName) {
@@ -208,9 +215,14 @@ class RoomsManager {
         return find(playersDict, { affiliation: PlayerAffilications.HITLER_AFFILIATION })
     }
 
-    startChancellorChoicePhase(roomName) {
+    startChancellorChoicePhase(roomName, designatedPresidentName) {
         this.rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
-        this.chooseNextPresident(roomName)
+        if (designatedPresidentName) {
+            this.setPresidentBackup(roomName)
+            this.setPresident(roomName, designatedPresidentName)
+        } else {
+            this.chooseNextPresident(roomName)
+        }
     }
 
     getChancellorChoices(roomName) {
@@ -471,17 +483,22 @@ class RoomsManager {
         return this.rooms_props[roomName].drawnCards
     }
     takeChoicePolicyCards(roomName, amount) {
-        const { drawPile, discardPile } = this.rooms_props[roomName]
+        const room = this.rooms_props[roomName]
 
-        let tmpDrawPile = drawPile
-        if (size(drawPile) < amount) {
-            tmpDrawPile = shuffle(concat(drawPile, discardPile))
-            this.rooms_props[roomName].discardPile = []
+        const policies = take(room.drawPile, amount)
+        room.drawPile = drop(room.drawPile, amount)
+        room.drawnCards = policies
+
+        const drawPileLength = size(room.drawPile)
+        if (drawPileLength < amount || drawPileLength < 3) {
+            room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
+            room.discardPile = []
         }
-        const policies = take(tmpDrawPile, amount)
-        this.rooms_props[roomName].drawPile = drop(tmpDrawPile, amount)
-        this.rooms_props[roomName].drawnCards = policies
         return policies
+    }
+    peekPolicyCards(roomName) {
+        const { drawPile } = this.rooms_props[roomName]
+        return take(drawPile, 3)
     }
     getPolicyCardsCount(roomName, policyType) {
         const { policiesPile } = this.rooms_props[roomName]
@@ -538,6 +555,13 @@ class RoomsManager {
     }
     updatePlayerRoom(userName, newRoomName) {
         this.players[userName].currentRoom = (newRoomName === GlobalRoomName ? '' : newRoomName)
+    }
+    setPresidentBackup(roomName) {
+        const currentPresident = this.getPresident(roomName)
+        this.rooms_props[roomName].previousPresidentNameBackup = currentPresident.playerName
+    }
+    resetPresidentBackup(roomName) {
+        this.rooms_props[roomName].previousPresidentNameBackup = null
     }
 }
 
