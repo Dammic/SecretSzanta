@@ -1,5 +1,18 @@
-const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName, PlayerBoards } = require('../Dictionary')
+const {
+    getCurrentTimestamp,
+    logInfo,
+} = require('../utils/utils')
+const {
+    SocketEvents,
+    GamePhases,
+    PlayerAffilications,
+    ErrorMessages,
+    ErrorTypes,
+    PlayerRole,
+    PolicyCards,
+    GlobalRoomName,
+    PlayerBoards,
+} = require('../Dictionary')
 const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight } = require('lodash')
 const ClientVerificationHof = require('../utils/ClientVerificationHof')
 const RoomsManager = new (require('../utils/RoomsManager'))()
@@ -169,33 +182,46 @@ module.exports = function (io) {
         },
 
         joinRoom: (socket, { playerName, roomName }) => {
-            if (roomName && socket.currentRoom === GlobalRoomName && RoomsManager.isRoomPresent(roomName)) {
-                if (RoomsManager.isInBlackList(roomName, playerName)) {
-                    console.log(`INFO - Banned player ${playerName} tried to enter room ${roomName}!`)
-                    socket.emit(SocketEvents.CLIENT_ERROR, {
-                        error: 'You are BANNED in this room by the owner!',
-                    })
-                    return
-                }
-
-                RoomsManager.addPlayer(roomName, playerName, socket)
-                socketEventsUtils.switchRooms(socket, socket.currentRoom, roomName)
-
-                const roomDetails = RoomsManager.getRoomDetails(roomName)
-
-                socket.emit(SocketEvents.AllowEnteringRoom, { data: { roomName: socket.currentRoom } })
-                socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
-
-                io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
-                    data: {
-                        timestamp: getCurrentTimestamp(),
-                        player: RoomsManager.getPlayerInfo(roomName, playerName),
-                    },
-                })
-            } else {
+            if (!roomName || socket.currentRoom !== GlobalRoomName || !RoomsManager.isRoomPresent(roomName)) {
                 console.error(`ERROR - Why is the room gone!, Player ${playerName} tried to enter nonexistent room ${roomName}!`)
                 socketEventsUtils.sendError(socket, 'Error = WHY IS THE ROOM GONE?!')
             }
+
+            if (RoomsManager.isInBlackList(roomName, playerName)) {
+                logInfo(socket, 'Banned player tried to enter the room!')
+                socketEventsUtil.sendError(socket, 'You are BANNED in this room by the owner!')
+                return
+            }
+
+            const addingError = RoomsManager.addPlayer(roomName, playerName, socket)
+
+            if (addingError !== ErrorTypes.noError) {
+                let errorMessage = ''
+                if (addingError === ErrorTypes.deniedRoomEntry_samePlayerName) {
+                    errorMessage = 'In the room is player with the same name!'
+                } else if (addingError === ErrorTypes.deniedRoomEntry_fullRoom) {
+                    errorMessage = 'The room is full!'
+                } else if (addingError === ErrorTypes.deniedRoomEntry_beganGame) {
+                    errorMessage = 'The game has already began!'
+                }
+
+                socketEventsUtils.sendError(socket, errorMessage)
+                return
+            }
+
+            socketEventsUtils.switchRooms(socket, socket.currentRoom, roomName)
+
+            const roomDetails = RoomsManager.getRoomDetails(roomName)
+
+            socket.emit(SocketEvents.AllowEnteringRoom, { data: { roomName: socket.currentRoom } })
+            socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+
+            io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    player: RoomsManager.getPlayerInfo(roomName, playerName),
+                },
+            })
         },
 
         vote: (socket, { value }) => {

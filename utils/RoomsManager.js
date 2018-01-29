@@ -10,7 +10,11 @@ const {
     PolicyCards,
     GlobalRoomName,
     PlayerBoards,
+    ErrorTypes,
 } = require('../Dictionary')
+const {
+    logInfo,
+} = require('../utils/utils')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -31,7 +35,10 @@ class RoomsManager {
     initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
-        console.log(`INFO - New room "${roomName}" was created by: ${ownerName}`)
+        logInfo({
+            currentRoom: roomName,
+            currentPlayerName: ownerName,
+        }, 'New room was created by the player')
 
         this.rooms_props[roomName] = {
             ownerName,
@@ -122,7 +129,7 @@ class RoomsManager {
     getChancellorCandidateInfo(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
         const chancellorCandidate = playersDict[chancellorCandidateName]
-       
+
         return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
     }
 
@@ -340,27 +347,37 @@ class RoomsManager {
      * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
      */
     addPlayer(roomName, playerName, socket) {
-        const { playersDict, freeSlots } = this.rooms_props[roomName]     
+        const { playersDict, freeSlots, gamePhase } = this.rooms_props[roomName]
         const nextEmptySlot = freeSlots[0]
 
-        if (!nextEmptySlot) {
-            console.error("The rum is full!") 
-        } else if (playersDict[playerName]) {
-            console.error("The rum has player with the same name as you!")
-        } else {
-            const newPlayer = {
-                playerName,
-                role: null,
-                avatarNumber: random(1, 6),
-                facistAvatar: null,
-                affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
-                slotNumber: nextEmptySlot,
-                isDead: false,
-                emit: socket.emit.bind(socket),
-            }
-            playersDict[playerName] = newPlayer
-            this.rooms_props[roomName].freeSlots = tail(freeSlots)
+        if (!includes(
+            [GamePhases.GAME_PHASE_NEW, GamePhases.Paused],
+            gamePhase,
+        )) {
+            logInfo(socket, 'Player tried enter already began game')
+            return ErrorTypes.deniedRoomEntry_beganGame
         }
+        if (!nextEmptySlot) {
+            logInfo(socket, 'Player tried to enter full room')
+            return ErrorTypes.deniedRoomEntry_fullRoom
+        }
+        if (playersDict[playerName]) {
+            logInfo(socket, 'The room has player with the same name')
+            return ErrorTypes.deniedRoomEntry_samePlayerName
+        }
+
+        const newPlayer = {
+            playerName,
+            role: null,
+            avatarNumber: random(1, 6),
+            facistAvatar: null,
+            affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
+            slotNumber: nextEmptySlot,
+            isDead: false,
+            emit: socket.emit.bind(socket),
+        }
+        playersDict[playerName] = newPlayer
+        this.rooms_props[roomName].freeSlots = tail(freeSlots)
     }
 
     /**
