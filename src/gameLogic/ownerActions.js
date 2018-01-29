@@ -31,7 +31,6 @@ export function kickPlayer(userName, playersWithoutMe) {
     invokeOnEvery([
         playersActions.setChooserPlayer({ playerName: userName }),
         playersActions.setChoiceMode({
-            isVisible: true,
             context: ChoiceModeContexts.KickChoice,
             selectablePlayers: playersWithoutMe,
         }),
@@ -42,7 +41,6 @@ export function banPlayer(userName, playersWithoutMe) {
     invokeOnEvery([
         playersActions.setChooserPlayer({ playerName: userName }),
         playersActions.setChoiceMode({
-            isVisible: true,
             context: ChoiceModeContexts.BanChoice,
             selectablePlayers: playersWithoutMe,
         }),
