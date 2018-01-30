@@ -378,6 +378,8 @@ class RoomsManager {
         }
         playersDict[playerName] = newPlayer
         this.rooms_props[roomName].freeSlots = tail(freeSlots)
+
+        return ErrorTypes.noError
     }
 
     /**
