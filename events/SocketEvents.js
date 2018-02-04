@@ -429,6 +429,7 @@ module.exports = function (io) {
 
         const clientVerificationHof = ClientVerificationHof(RoomsManager)
         phaseSocketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
+        phaseSocketEvents.endGame = clientVerificationHof(['isOwner'], phaseSocketEvents.endGame)
         socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
         socketEvents.superpowerAffiliationPeekPlayer = clientVerificationHof(['isPresident'], socketEvents.superpowerAffiliationPeekPlayer)
         socketEvents.endPeekPlayerSuperpower = clientVerificationHof(['isPresident'], socketEvents.endPeekPlayerSuperpower)
@@ -461,5 +462,6 @@ module.exports = function (io) {
         socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, partialFunctions.superpowerAffiliationPeekPlayer)
         socket.on(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, partialFunctions.endPeekPlayerSuperpower)
         socket.on(SocketEvents.PeekCards, partialFunctions.endPeekCardsPhase)
+        socket.on(SocketEvents.GameFinished, partialFunctions.endGame)
     })
 }

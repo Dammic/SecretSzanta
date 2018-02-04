@@ -1,10 +1,11 @@
 import React from 'react'
+import { get } from 'lodash'
 import PropTypes from 'prop-types'
 
-export const Button = ({ label, onClick }) => {
+export const Button = ({ label, onClick, className }) => {
     return (
         <div
-            className="fabulous-button lined thick"
+            className={`${className || ''} fabulous-button lined thick`}
             onClick={onClick}
             role="button"
             tabIndex="0"
@@ -17,4 +18,5 @@ export const Button = ({ label, onClick }) => {
 Button.propTypes = {
     label: PropTypes.string,
     onClick: PropTypes.func,
+    className: PropTypes.string,
 }

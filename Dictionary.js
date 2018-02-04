@@ -66,6 +66,7 @@ module.exports = {
         DesignateNextPresidentPhase: 'GAME_PHASE_DESIGNATE_NEXT_PRESIDENT',
         PeekAffiliationSuperpowerPhase: 'PEEK_AFFILIATION_SUPERPOWER_PHASE',
         PeekCardsSuperpower: 'GAME_PHASE_PEEK_CARDS_SUPERPOWER',
+        Ended: 'GAME_PHASE_ENDED',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',

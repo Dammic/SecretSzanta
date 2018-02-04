@@ -11,7 +11,14 @@ const HaltModalComponent = ({
     onEndGame,
 }) => {
     const information = hasGameEnded ? 'The game has ended!' : `The owner ${ownerName} has paused the game.`
-    const Button = (label, onClick) => <ButtonComponent key={label} label={label} onClick={onClick} />
+    const Button = (label, onClick) => (
+        <ButtonComponent
+            key={label}
+            className="owner-button"
+            label={label}
+            onClick={onClick}
+        />
+    )
 
     return (
         <div className="halt-body">

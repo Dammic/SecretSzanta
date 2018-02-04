@@ -48,5 +48,5 @@ export function banPlayer(userName, playersWithoutMe) {
 }
 
 export function endGame() {
-
+    socket.emit(SocketEvents.GameFinished)
 }
