@@ -3,7 +3,13 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {
-    SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes, Views,
+    SocketEvents,
+    GamePhases,
+    ChoiceModeContexts,
+    PlayerAffilications,
+    PolicyCards,
+    MessagesTypes,
+    Views,
 } from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
