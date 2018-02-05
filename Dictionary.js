@@ -87,7 +87,6 @@ module.exports = {
         deniedRoomEntry_beganGame: 'DENIED_ROOM_ENTRY_BEGAN_GAME',
         deniedRoomEntry_fullRoom: 'DENIED_ROOM_ENTRY_FULL_ROOM',
         deniedRoomEntry_samePlayerName: 'DENIED_ROOM_ENTRY_SAME_PLAYER_NAME',
-        noError: 'NO_ERROR_SAFE_EXECUTION',
     },
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',

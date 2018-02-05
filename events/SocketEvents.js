@@ -196,7 +196,7 @@ module.exports = function (io) {
 
             const addingError = RoomsManager.addPlayer(roomName, playerName, socket)
 
-            if (addingError !== ErrorTypes.noError) {
+            if (addingError !== undefined) {
                 let errorMessage = ''
                 if (addingError === ErrorTypes.deniedRoomEntry_samePlayerName) {
                     errorMessage = 'In the room is player with the same name!'
