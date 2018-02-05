@@ -19,23 +19,21 @@ export class UIBox extends React.PureComponent {
     }
 
     getPlayerCard = () => {
-        const {
-            facistAvatar, liberalAvatar, isOwner, isDead
-        } = this.props
+        const { facistAvatar, liberalAvatar, isOwner, isDead } = this.props
         if (!liberalAvatar) return null
 
-        return (<PlayerAvatarComponent
-            liberalAvatar={liberalAvatar}
-            facistAvatar={facistAvatar}
-            isOwner={isOwner}
-            isDead={isDead}
-        />)
+        return (
+            <PlayerAvatarComponent
+                liberalAvatar={liberalAvatar}
+                facistAvatar={facistAvatar}
+                isOwner={isOwner}
+                isDead={isDead}
+            />
+        )
     }
 
     render() {
-        const {
-            affiliation, gamePhase, role, isAffiliationHidden, isOwner
-        } = this.props
+        const { affiliation, gamePhase, role, isAffiliationHidden, isOwner } = this.props
         return (
             <UIBoxComponent
                 onStartVote={startVoting}

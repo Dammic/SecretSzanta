@@ -7,6 +7,10 @@
     ],
     "rules": {
         "max-len": ["error", { "code": 120 }],
+        "object-curly-newline": ["error", {
+            "multiline": true,
+            "consistent": true,
+        }],
         "indent": ["error", 4, {"SwitchCase": 1}],
         "semi": ["error", "never"],
         "linebreak-style": "off",

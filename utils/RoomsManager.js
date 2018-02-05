@@ -12,9 +12,7 @@ const {
     PlayerBoards,
     ErrorTypes,
 } = require('../Dictionary')
-const {
-    logInfo,
-} = require('../utils/utils')
+const { logInfo } = require('../utils/utils')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
