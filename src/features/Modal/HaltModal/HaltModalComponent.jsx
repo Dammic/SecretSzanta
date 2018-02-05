@@ -10,7 +10,7 @@ const HaltModalComponent = ({
     onInvitePlayers,
     onEndGame,
 }) => {
-    const information = hasGameEnded ? 'The game has ended!' : `The owner ${ownerName} has paused the game.`
+    const pauseGameReason = hasGameEnded ? 'The game has ended!' : `The owner ${ownerName} has paused the game.`
     const Button = (label, onClick) => (
         <ButtonComponent
             key={label}
@@ -23,7 +23,7 @@ const HaltModalComponent = ({
     return (
         <div className="halt-body">
             <i className="fa fa-pause" aria-hidden="true" />
-            <span className="info">{information}</span>
+            <span className="info">{pauseGameReason}</span>
             {isOwner && [
                 Button('Resume game', onResumeGame),
                 Button('Invite players', onInvitePlayers),
