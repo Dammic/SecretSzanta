@@ -85,7 +85,7 @@ module.exports = function (io) {
                 return
             }
             if (!includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)) {
-                logError(`Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
+                logError(socket, `Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
                 socketEventsUtils.sendError(socket, 'You must be a president or a chancellor to veto!')
                 return
             }
@@ -190,7 +190,7 @@ module.exports = function (io) {
 
             if (RoomsManager.isInBlackList(roomName, playerName)) {
                 logInfo(socket, 'Banned player tried to enter the room!')
-                socketEventsUtil.sendError(socket, 'You are BANNED in this room by the owner!')
+                socketEventsUtils.sendError(socket, 'You are BANNED in this room by the owner!')
                 return
             }
 
