@@ -199,7 +199,7 @@ module.exports = function (io) {
             if (addingError !== undefined) {
                 let errorMessage = ''
                 if (addingError === ErrorTypes.DeniedRoomEntry.SamePlayerName) {
-                    errorMessage = 'In the room is player with the same name!'
+                    errorMessage = 'There is a player with the same name in the room!'
                 } else if (addingError === ErrorTypes.DeniedRoomEntry.FullRoom) {
                     errorMessage = 'The room is full!'
                 } else if (addingError === ErrorTypes.DeniedRoomEntry.BeganGame) {
