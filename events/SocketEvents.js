@@ -198,11 +198,11 @@ module.exports = function (io) {
 
             if (addingError !== undefined) {
                 let errorMessage = ''
-                if (addingError === ErrorTypes.deniedRoomEntry_samePlayerName) {
+                if (addingError === ErrorTypes.DeniedRoomEntry.SamePlayerName) {
                     errorMessage = 'In the room is player with the same name!'
-                } else if (addingError === ErrorTypes.deniedRoomEntry_fullRoom) {
+                } else if (addingError === ErrorTypes.DeniedRoomEntry.FullRoom) {
                     errorMessage = 'The room is full!'
-                } else if (addingError === ErrorTypes.deniedRoomEntry_beganGame) {
+                } else if (addingError === ErrorTypes.DeniedRoomEntry.BeganGame) {
                     errorMessage = 'The game has already began!'
                 }
 

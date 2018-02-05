@@ -355,15 +355,15 @@ class RoomsManager {
             gamePhase,
         )) {
             logInfo(socket, 'Player tried enter already began game')
-            return ErrorTypes.deniedRoomEntry_beganGame
+            return ErrorTypes.DeniedRoomEntry.BeganGame
         }
         if (!nextEmptySlot) {
             logInfo(socket, 'Player tried to enter full room')
-            return ErrorTypes.deniedRoomEntry_fullRoom
+            return ErrorTypes.DeniedRoomEntry.FullRoom
         }
         if (playersDict[playerName]) {
             logInfo(socket, 'The room has player with the same name')
-            return ErrorTypes.deniedRoomEntry_samePlayerName
+            return ErrorTypes.DeniedRoomEntry.SamePlayerName
         }
 
         const newPlayer = {

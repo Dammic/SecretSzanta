@@ -84,9 +84,11 @@ module.exports = {
         NameTaken: 'The selected name is already taken',
     },
     ErrorTypes: {
-        deniedRoomEntry_beganGame: 'DENIED_ROOM_ENTRY_BEGAN_GAME',
-        deniedRoomEntry_fullRoom: 'DENIED_ROOM_ENTRY_FULL_ROOM',
-        deniedRoomEntry_samePlayerName: 'DENIED_ROOM_ENTRY_SAME_PLAYER_NAME',
+        DeniedRoomEntry: {
+            BeganGame: 'DENIED_ROOM_ENTRY_BEGAN_GAME',
+            FullRoom: 'DENIED_ROOM_ENTRY_FULL_ROOM',
+            SamePlayerName: 'DENIED_ROOM_ENTRY_SAME_PLAYER_NAME',
+        },
     },
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
