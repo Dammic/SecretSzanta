@@ -22,27 +22,28 @@ export function startVoting() {
     socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE)
 }
 
+// TODO
 export function openInvitePlayersScreen() {
 
 }
 
 // TODO: should take needed data by it self from tree, not from arguments
-export function kickPlayer(userName, playersWithoutMe) {
+export function startKickPlayerMode(userName, playersWithoutOwner) {
     invokeOnEvery([
         playersActions.setChooserPlayer({ playerName: userName }),
         playersActions.setChoiceMode({
             context: ChoiceModeContexts.KickChoice,
-            selectablePlayers: playersWithoutMe,
+            selectablePlayers: playersWithoutOwner,
         }),
     ], store.dispatch)
 }
 
-export function banPlayer(userName, playersWithoutMe) {
+export function startBanPlayerMode(userName, playersWithoutOwner) {
     invokeOnEvery([
         playersActions.setChooserPlayer({ playerName: userName }),
         playersActions.setChoiceMode({
             context: ChoiceModeContexts.BanChoice,
-            selectablePlayers: playersWithoutMe,
+            selectablePlayers: playersWithoutOwner,
         }),
     ], store.dispatch)
 }

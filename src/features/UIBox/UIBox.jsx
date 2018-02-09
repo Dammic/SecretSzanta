@@ -5,12 +5,12 @@ import { get, map, reject } from 'lodash'
 import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
 import { toggleAffiliationMenu } from '../../ducks/userDuck'
-import { startGame, kickPlayer, banPlayer, startVoting } from '../../gameLogic/ownerActions'
+import { startGame, startKickPlayerMode, startBanPlayerMode, startVoting } from '../../gameLogic/ownerActions'
 
 export class UIBox extends React.PureComponent {
-    onKickPlayer = () => kickPlayer(this.props.userName, this.props.playersWithoutMe)
+    onKickPlayer = () => startKickPlayerMode(this.props.userName, this.props.playersWithoutMe)
 
-    onBanPlayer = () => banPlayer(this.props.userName, this.props.playersWithoutMe)
+    onBanPlayer = () => startBanPlayerMode(this.props.userName, this.props.playersWithoutMe)
 
     onStartGame = () => startGame(this.props.userName)
 
