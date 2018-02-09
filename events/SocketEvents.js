@@ -9,6 +9,7 @@ const {
     PlayerAffilications,
     ErrorMessages,
     ErrorTypes,
+    ErrorMappedMessages,
     PlayerRole,
     PolicyCards,
     GlobalRoomName,
@@ -199,16 +200,7 @@ module.exports = function (io) {
             const addingError = RoomsManager.addPlayer(roomName, playerName, socket)
 
             if (addingError !== undefined) {
-                let errorMessage = ''
-                if (addingError === ErrorTypes.DeniedRoomEntry.SamePlayerName) {
-                    errorMessage = 'There is a player with the same name in the room!'
-                } else if (addingError === ErrorTypes.DeniedRoomEntry.FullRoom) {
-                    errorMessage = 'The room is full!'
-                } else if (addingError === ErrorTypes.DeniedRoomEntry.BeganGame) {
-                    errorMessage = 'The game has already began!'
-                }
-
-                socketEventsUtils.sendError(socket, errorMessage)
+                socketEventsUtils.sendError(socket, ErrorMappedMessages[addingError])
                 return
             }
 
