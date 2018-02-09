@@ -1,12 +1,11 @@
 const moment = require('moment')
+const { pad } = require('lodash')
 const { MessagesTypes } = require('../Dictionary')
 
-const getCurrentTimestamp = () => {
-    return Math.floor(Date.now() / 1000)
-}
+const getCurrentTimestamp = () => Math.floor(Date.now() / 1000)
 
-const log =({ currentRoom, currentPlayerName }, messageType, message) => {
-    console.log(`[${moment().format('MM-DD HH:mm')}] - ${messageType} - [${currentRoom}][${currentPlayerName}]: ${message}`)
+const log = ({ currentRoom, currentPlayerName }, messageType, message) => {
+    console.log(`[${moment().format('MM-DD HH:mm')}] - ${pad(messageType, 6)} - [${currentRoom}][${currentPlayerName}]: ${message}`)
 }
 
 const logInfo = (contextData, message) => log(contextData, MessagesTypes.INFO, message)
