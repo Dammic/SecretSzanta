@@ -292,6 +292,7 @@ class RoomsManager {
 
     getRoomsList() {
         return mapValues(this.rooms_props, (room, key) => ({
+            roomId: key,
             roomName: key,
             maxPlayers: room.maxPlayers,
             playersCount: size(room.playersDict),
