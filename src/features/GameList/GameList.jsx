@@ -15,9 +15,9 @@ export class GameList extends React.PureComponent {
     }
 
     setRoomName = (event) => {
-        const roomID = event.target.attributes.getNamedItem('data-roomid').value
-        this.props.setRoom({ roomId: roomID })
-        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: roomID })
+        const roomId = event.target.attributes.getNamedItem('data-roomid').value
+        this.props.setRoom({ roomId })
+        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: roomId })
     }
 
     render() {
@@ -26,7 +26,7 @@ export class GameList extends React.PureComponent {
             <GameListComponent
                 userName={userName}
                 // when time comes, you can rooms swap it with roomsList from store
-                rooms={rooms}
+                rooms={roomsList}
                 onClick={this.setRoomName}
             />
         )

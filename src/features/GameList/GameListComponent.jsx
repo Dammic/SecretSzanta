@@ -19,8 +19,8 @@ const GameListComponent = ({
                         {/* index is temporary, delete when room names will not be mocked */}
                         {map(rooms, (room, index) => (
                             <GameListItemComponent
-                                key={room.roomID + index}
-                                roomID={room.roomID}
+                                key={room.roomId + index}
+                                roomId={room.roomId}
                                 roomName={room.roomName}
                                 playerCount={room.playerCount}
                                 onClick={onClick}
