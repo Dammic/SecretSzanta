@@ -1,11 +1,16 @@
-.create-game-modal{
-	.input-field{
-		display: flex;
-		flex-direction: column;
-		width: 50%;
-	}
-	.create-button{
-		background: aqua;
-		width: 50%;
-	}
+.create-game-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .input-field {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+
+    .create-button {
+        margin-top: 10px;
+        width: 50%;
+    }
 }

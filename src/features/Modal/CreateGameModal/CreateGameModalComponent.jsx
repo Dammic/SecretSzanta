@@ -26,7 +26,7 @@ const CreateGameModalComponent = ({
                     onChange={onNumberOfPlayersChange}
                 />
             </div>
-            <div className="create-button" onClick={onCreate}>Create</div>
+            <button className="create-button" onClick={onCreate}>Create</button>
         </div>
     )
 }
