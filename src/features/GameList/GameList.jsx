@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { socket } from '../../utils/SocketHandler'
 import { SocketEvents } from '../../../Dictionary'
 import GameListComponent from './GameListComponent'
-import { rooms } from '../../const/roomMock'
 import { setRoomId } from '../../ducks/roomDuck'
 
 export class GameList extends React.PureComponent {
@@ -25,7 +24,6 @@ export class GameList extends React.PureComponent {
         return (
             <GameListComponent
                 userName={userName}
-                // when time comes, you can rooms swap it with roomsList from store
                 rooms={roomsList}
                 onClick={this.setRoomName}
             />
@@ -39,7 +37,7 @@ const mapStateToProps = ({ user, lobby }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    setRoom: dispatch(setRoomId),
+    setRoom: roomId => dispatch(setRoomId(roomId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameList)
