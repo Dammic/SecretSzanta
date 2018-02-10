@@ -9,6 +9,7 @@ import VotingModal from './VotingModal/VotingModal'
 import PolicyChoiceModal from './PolicyChoiceModal/PolicyChoiceModal'
 import HaltModal from './HaltModal/HaltModal'
 import PeekAffiliationModal from './PeekAffiliationModal/PeekAffiliationModal'
+import { CreateGameModal } from './CreateGameModal/CreateGameModal'
 
 const modalInnerComponents = {
     VotingModal,
@@ -16,6 +17,7 @@ const modalInnerComponents = {
     WinningModal,
     HaltModal,
     PeekAffiliationModal,
+    CreateGameModal,
 }
 
 class Modal extends React.PureComponent {
