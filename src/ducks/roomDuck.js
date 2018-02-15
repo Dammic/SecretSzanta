@@ -3,7 +3,6 @@ import { cloneDeep, forEach, find, isNil } from 'lodash'
 import { PlayerRole } from '../../Dictionary'
 
 // Actions
-export const setRoomId = createAction('room/SET_ROOM_ID')
 export const addPlayer = createAction('room/addPlayer')
 export const removePlayer = createAction('room/REMOVE_PLAYER')
 export const changeGamePhase = createAction('room/CHANGE_GAME_PHASE')
@@ -25,7 +24,6 @@ export const setVeto = createAction('room/SET_VETO')
 export const setBoardType = createAction('room/SET_BOARD_TYPE')
 
 const initialState = {
-    roomId: null,
     maxPlayers: 0,
     ownerName: '',
     playersDict: {},
@@ -41,14 +39,6 @@ const initialState = {
 }
 
 const actions = {
-    [setRoomId]: (state, action) => {
-        const { roomId } = action.payload
-
-        return {
-            ...state,
-            roomId,
-        }
-    },
     [addPlayer]: (state, action) => {
         const { player } = action.payload
         const { playersDict } = state
