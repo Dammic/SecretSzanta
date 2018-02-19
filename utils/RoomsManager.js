@@ -348,10 +348,7 @@ class RoomsManager {
         const { playersDict, freeSlots, gamePhase } = this.rooms_props[roomName]
         const nextEmptySlot = freeSlots[0]
 
-        if (!includes(
-            [GamePhases.GAME_PHASE_NEW, GamePhases.Paused],
-            gamePhase,
-        )) {
+        if (!includes([GamePhases.GAME_PHASE_NEW, GamePhases.Paused], gamePhase)) {
             logInfo(socket, 'Player tried enter already began game')
             return ErrorTypes.DeniedRoomEntry.BeganGame
         }
