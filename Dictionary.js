@@ -1,4 +1,4 @@
-const mainDictionary = {
+const Dictionary = {
     SocketEvents: {
         SelectName: 'CLIENT_SELECT_NAME',
         SyncLobby: 'SYNC_LOBBY',
@@ -118,10 +118,10 @@ const mainDictionary = {
     GlobalRoomName: 'Global',
 }
 
-mainDictionary.ErrorMappedMessages = {
+Dictionary.ErrorMappedMessages = {
     [mainDictionary.ErrorTypes.DeniedRoomEntry.BeganGame]: 'The game has already began!',
     [mainDictionary.ErrorTypes.DeniedRoomEntry.FullRoom]: 'The room is full!',
     [mainDictionary.ErrorTypes.DeniedRoomEntry.SamePlayerName]: 'There is a player with the same name in the room!',
 }
 
-module.exports = mainDictionary
+module.exports = Dictionary
