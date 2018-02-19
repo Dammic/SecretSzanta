@@ -1,28 +1,31 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CreateGameModalComponent from './CreateGameModalComponent'
 import { socket } from '../../../utils/SocketHandler'
 
-const { SocketEvents } = require('../../../../Dictionary')
+import { SocketEvents } from '../../../../Dictionary'
 
 export class CreateGameModal extends React.PureComponent {
+    propTypes = {
+        closeModal: PropTypes.func,
+    }
+
     state = {
         roomName: '',
         password: '',
-        numberOfPlayers: 10,
+        maxPlayers: 10,
     }
 
     onChange = property => (event => this.setState({ [property]: event.target.value }))
     onRoomNameChange = this.onChange('roomName')
     onPasswordChange = this.onChange('password')
-    onNumberOfPlayersChange = this.onChange('numberOfPlayers')
+    onMaxPlayersChange = this.onChange('maxPlayers')
 
     onCreate = () => {
-        console.log("Create")
-        const { roomName, password, numberOfPlayers } = this.state
-        console.log(roomName, password, numberOfPlayers)
+        const { roomName, password, maxPlayers } = this.state
         socket.emit(SocketEvents.CLIENT_CREATE_ROOM, {
             roomName,
-            maxPlayers: numberOfPlayers,
+            maxPlayers,
             password,
         })
 
@@ -35,7 +38,7 @@ export class CreateGameModal extends React.PureComponent {
                 onCreate={this.onCreate}
                 onRoomNameChange={this.onRoomNameChange}
                 onPasswordChange={this.onPasswordChange}
-                onNumberOfPlayersChange={this.onNumberOfPlayersChange}
+                onMaxPlayersChange={this.onMaxPlayersChange}
             />
         )
     }
