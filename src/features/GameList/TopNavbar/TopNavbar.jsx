@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setModal } from '../../../ducks/modalDuck'
 import { TopNavbarComponent } from './TopNavbarComponent'
@@ -10,11 +11,6 @@ class TopNavbar extends PureComponent {
             isCloseButtonShown: true,
             isOverlayOpaque: true,
             componentName: 'CreateGameModal',
-            initialData: {
-                roomName: 'anotherExample',
-                password: 'ble',
-                maxPlayers: 6,
-            },
         })
     }
 
@@ -27,8 +23,12 @@ class TopNavbar extends PureComponent {
     }
 }
 
+TopNavbar.propTypes = {
+    setModal: PropTypes.func,
+}
+
 const mapDispatchToProps = dispatch => ({
-    setModal: obj => dispatch(setModal(obj)),
+    setModal: modalOptions => dispatch(setModal(modalOptions)),
 })
 
 export default connect(null, mapDispatchToProps)(TopNavbar)
