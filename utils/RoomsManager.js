@@ -159,11 +159,11 @@ class RoomsManager {
         const { playersDict, previousPresidentNameBackup } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
 
-        const lastPresidentIndex = (previousPresidentNameBackup 
+        const lastPresidentIndex = (previousPresidentNameBackup
             ? findIndex(sortedPlayers, { playerName: previousPresidentNameBackup })
             : findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
         )
-        const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
+        const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers)
 
         const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
@@ -202,7 +202,7 @@ class RoomsManager {
             policiesPile: [],
         }
     }
-    
+
     getFacists(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
@@ -287,7 +287,7 @@ class RoomsManager {
     }
     getFailedElectionsCount(roomName) {
         const { failedElectionsCount } = this.rooms_props[roomName]
-        return failedElectionsCount 
+        return failedElectionsCount
     }
     resetFailedElectionsCount(roomName) {
         this.rooms_props[roomName].failedElectionsCount = 0
@@ -385,8 +385,8 @@ class RoomsManager {
      */
     removePlayer(roomName, playerName) {
         const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]
-        const player = playersDict[playerName] 
-        
+        const player = playersDict[playerName]
+
         if (player) {
             freeSlots.unshift(player.slotNumber)
             delete playersDict[playerName]
@@ -399,7 +399,7 @@ class RoomsManager {
 
         return (player
             ? pick(player, ['playerName', 'role', 'affiliation', 'avatarNumber', 'slotNumber'])
-            : null 
+            : null
         )
     }
 
@@ -432,7 +432,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         return size(playersDict)
     }
-    
+
     setGamePhase(roomName, newPhase) {
         this.rooms_props[roomName].gamePhase = newPhase
     }
@@ -463,10 +463,10 @@ class RoomsManager {
             blackList.push(playerName)
         }
 
-        this.setGamePhase(roomName, GamePhases.Paused) 
+        this.setGamePhase(roomName, GamePhases.Paused)
         delete playersDict[playerName]
     }
-    
+
     /**********************************************/
     /*******************policies*******************/
     /**********************************************/
@@ -545,11 +545,11 @@ class RoomsManager {
     /*****************playersList******************/
     /**********************************************/
     getPlayersList() {
-        return this.players;
+        return this.players
     }
 
     getPlayerFromPlayersList(userName) {
-        return this.players[userName];
+        return this.players[userName]
     }
 
     isInPlayersList(userName) {
