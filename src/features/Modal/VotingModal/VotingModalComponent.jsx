@@ -1,6 +1,6 @@
 import React from 'react'
 import { PlayerRole } from '../../../../Dictionary'
-import { Button } from '../../Shared/Button'
+import { Button } from '../../Shared/Button/Button'
 
 const VotingModalComponent = ({
     onYesVote,
