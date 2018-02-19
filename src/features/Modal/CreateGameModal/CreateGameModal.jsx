@@ -33,8 +33,10 @@ export class CreateGameModal extends React.PureComponent {
     }
 
     render() {
+        const { roomName, password, maxPlayers } = this.state
         return (
             <CreateGameModalComponent
+                {...{ roomName, password, maxPlayers }}
                 onCreate={this.onCreate}
                 onRoomNameChange={this.onRoomNameChange}
                 onPasswordChange={this.onPasswordChange}

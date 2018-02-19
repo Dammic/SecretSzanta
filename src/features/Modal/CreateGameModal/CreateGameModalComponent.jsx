@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const CreateGameModalComponent = ({
+    roomName,
+    password,
+    maxPlayers,
     onCreate,
     onRoomNameChange,
     onPasswordChange,
@@ -11,11 +14,11 @@ const CreateGameModalComponent = ({
         <div className="create-game-modal">
             <div className="input-field">
                 {'Room Name:'}
-                <input type="text" placeholder="" onChange={onRoomNameChange} />
+                <input type="text" value={roomName} onChange={onRoomNameChange} />
             </div>
             <div className="input-field">
                 <div>Password<i>(optional)</i>:</div>
-                <input name="password" type="password" placeholder="" onChange={onPasswordChange} />
+                <input name="password" type="password" value={password} onChange={onPasswordChange} />
             </div>
             <div className="input-field">
                 {'Maximal number of players:'}
@@ -23,7 +26,8 @@ const CreateGameModalComponent = ({
                     type="number"
                     min="5"
                     max="10"
-                    defaultValue="5"
+                    defaultValue="10"
+                    value={maxPlayers}
                     onChange={onMaxPlayersChange}
                 />
             </div>
@@ -33,6 +37,9 @@ const CreateGameModalComponent = ({
 }
 
 CreateGameModalComponent.propTypes = {
+    roomName: PropTypes.string,
+    password: PropTypes.string,
+    maxPlayers: PropTypes.number,
     onCreate: PropTypes.func,
     onRoomNameChange: PropTypes.func,
     onPasswordChange: PropTypes.func,
