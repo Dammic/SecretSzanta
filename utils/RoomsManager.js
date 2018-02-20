@@ -303,6 +303,7 @@ class RoomsManager {
         if (!room) return null
         return {
             roomName,
+            roomId: roomName,
             maxPlayers: room.maxPlayers,
             playersCount: size(room.playersDict),
         }
