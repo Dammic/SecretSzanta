@@ -148,10 +148,10 @@ module.exports = function (io) {
             socket.currentPlayerName = ''
         },
 
-        createRoom: (socket, { roomName, playerName, maxPlayers, password }) => {
+        createRoom: (socket, { roomName, maxPlayers, password }) => {
             // if the room does not exist, create it
             if (roomName && !RoomsManager.isRoomPresent(roomName)) {
-                RoomsManager.initializeRoom(roomName, playerName, maxPlayers, password)
+                RoomsManager.initializeRoom(roomName, socket.currentPlayerName, maxPlayers, password)
 
                 io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
                     data: {
@@ -159,7 +159,7 @@ module.exports = function (io) {
                         room: RoomsManager.getRoomDetailsForLobby(roomName),
                     },
                 })
-                socketEvents.joinRoom(socket, { roomName, playerName })
+                socketEvents.joinRoom(socket, { roomName })
             } else {
                 console.error('selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
@@ -168,17 +168,17 @@ module.exports = function (io) {
             }
         },
 
-        joinRoom: (socket, { playerName, roomName }) => {
+        joinRoom: (socket, { roomName }) => {
             if (roomName && socket.currentRoom === GlobalRoomName && RoomsManager.isRoomPresent(roomName)) {
-                if (RoomsManager.isInBlackList(roomName, playerName)) {
-                    console.log(`INFO - Banned player ${playerName} tried to enter room ${roomName}!`)
+                if (RoomsManager.isInBlackList(roomName, socket.currentPlayerName)) {
+                    console.log(`INFO - Banned player ${socket.currentPlayerName} tried to enter room ${roomName}!`)
                     socket.emit(SocketEvents.CLIENT_ERROR, {
                         error: 'You are BANNED in this room by the owner!',
                     })
                     return
                 }
 
-                RoomsManager.addPlayer(roomName, playerName, socket)
+                RoomsManager.addPlayer(roomName, socket.currentPlayerName, socket)
                 socketEventsUtils.switchRooms(socket, socket.currentRoom, roomName)
 
                 const roomDetails = RoomsManager.getRoomDetails(roomName)
@@ -189,11 +189,11 @@ module.exports = function (io) {
                 io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
                     data: {
                         timestamp: getCurrentTimestamp(),
-                        player: RoomsManager.getPlayerInfo(roomName, playerName),
+                        player: RoomsManager.getPlayerInfo(roomName, socket.currentPlayerName),
                     },
                 })
             } else {
-                console.error(`ERROR - Why is the room gone!, Player ${playerName} tried to enter nonexistent room ${roomName}!`)
+                console.error(`ERROR - Why is the room gone!, Player ${socket.currentPlayerName} tried to enter nonexistent room ${roomName}!`)
                 socketEventsUtils.sendError(socket, 'Error = WHY IS THE ROOM GONE?!')
             }
         },
