@@ -1,5 +1,6 @@
 import React from 'react'
 import { PlayerRole } from '../../../../Dictionary'
+import { Button } from '../../Shared/Button/Button'
 
 const VotingModalComponent = ({
     onYesVote,
@@ -31,8 +32,8 @@ const VotingModalComponent = ({
             <div className="voting-intro">Player <strong>{president.playerName}</strong> nominates player <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
             <div className="voting-intro">Do you agree?</div>
             <div className="voting-buttons-container">
-                <div className="fabulous-button lined thick" onClick={onYesVote}>Jaa!</div>
-                <div className="fabulous-button lined thick" onClick={onNoVote}>Nein!</div>
+                <Button onClick={onYesVote} label="Jaa!" />
+                <Button onClick={onNoVote} label="Nein!" />
             </div>
         </div>
     )

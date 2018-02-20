@@ -2,7 +2,15 @@ import IO from 'socket.io-client'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { SocketEvents, GamePhases, ChoiceModeContexts, PlayerAffilications, PolicyCards, MessagesTypes, Views } from '../../Dictionary'
+import {
+    SocketEvents,
+    GamePhases,
+    ChoiceModeContexts,
+    PlayerAffilications,
+    PolicyCards,
+    MessagesTypes,
+    Views,
+} from '../../Dictionary'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck'
@@ -54,7 +62,8 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage({ timestamp, content: `The president has nominated ${chancellorCandidate} for chancellor.` })
             this.props.chatActions.addMessage({ timestamp, content: `Voting phase has begun - vote for the new parliment!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_VOTING })
-            this.props.playersActions.setChooserPlayer({ playerName: '' })
+            this.cancelEveryGameChoice()
+
             if (!this.props.playersDict[this.props.userName].isDead) {
                 this.props.modalActions.setModal({
                     title: 'Vote for your parliment!',

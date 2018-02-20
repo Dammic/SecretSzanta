@@ -1,5 +1,20 @@
-const getCurrentTimestamp = require('../utils/utils').getCurrentTimestamp
-const { SocketEvents, GamePhases, PlayerAffilications, ErrorMessages, PlayerRole, PolicyCards, GlobalRoomName, PlayerBoards } = require('../Dictionary')
+const {
+    getCurrentTimestamp,
+    logInfo,
+    logError,
+} = require('../utils/utils')
+const {
+    SocketEvents,
+    GamePhases,
+    PlayerAffilications,
+    ErrorMessages,
+    ErrorTypes,
+    ErrorMappedMessages,
+    PlayerRole,
+    PolicyCards,
+    GlobalRoomName,
+    PlayerBoards,
+} = require('../Dictionary')
 const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight } = require('lodash')
 const ClientVerificationHof = require('../utils/ClientVerificationHof')
 const RoomsManager = new (require('../utils/RoomsManager'))()
@@ -59,19 +74,19 @@ module.exports = function (io) {
         veto: (socket) => {
             const gamePhase = RoomsManager.getGamePhase(socket.currentRoom)
             if (gamePhase !== GamePhases.ServerWaitingForVeto) {
-                console.error('Player tried to veto when the server was not waiting for it!')
+                logError(socket, 'Player tried to veto when the server was not waiting for it!')
                 socketEventsUtils.sendError(socket, 'You cannot veto right now!')
                 return
             }
             const vetoVotes = RoomsManager.getVetoVotes(socket.currentRoom)
             const playerRole = RoomsManager.getPlayerRole(socket.currentRoom, socket.currentPlayerName)
             if (includes(vetoVotes, playerRole)) {
-                console.error('Player tried to vote twice!')
+                logError(socket, 'Player tried to vote twice!')
                 socketEventsUtils.sendError(socket, 'You cannot veto twice!')
                 return
             }
             if (!includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)) {
-                console.error(`Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
+                logError(socket, `Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
                 socketEventsUtils.sendError(socket, 'You must be a president or a chancellor to veto!')
                 return
             }
@@ -138,7 +153,7 @@ module.exports = function (io) {
                             },
                         })
                         RoomsManager.removeRoom(socket.currentRoom)
-                        console.log(`The room "${socket.currentRoom}" was permanently removed!`)
+                        logInfo(socket, 'The room was permanently removed!')
                     }
                 }
             }
@@ -161,7 +176,7 @@ module.exports = function (io) {
                 })
                 socketEvents.joinRoom(socket, { roomName })
             } else {
-                console.error('selected room is already present! Cannot create a duplicate!')
+                logError(socket, 'Selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
                     error: 'You cannot create duplicate of this room!',
                 })
@@ -169,33 +184,39 @@ module.exports = function (io) {
         },
 
         joinRoom: (socket, { roomName }) => {
-            if (roomName && socket.currentRoom === GlobalRoomName && RoomsManager.isRoomPresent(roomName)) {
-                if (RoomsManager.isInBlackList(roomName, socket.currentPlayerName)) {
-                    console.log(`INFO - Banned player ${socket.currentPlayerName} tried to enter room ${roomName}!`)
-                    socket.emit(SocketEvents.CLIENT_ERROR, {
-                        error: 'You are BANNED in this room by the owner!',
-                    })
-                    return
-                }
-
-                RoomsManager.addPlayer(roomName, socket.currentPlayerName, socket)
-                socketEventsUtils.switchRooms(socket, socket.currentRoom, roomName)
-
-                const roomDetails = RoomsManager.getRoomDetails(roomName)
-
-                socket.emit(SocketEvents.AllowEnteringRoom, { data: { roomName: socket.currentRoom } })
-                socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
-
-                io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
-                    data: {
-                        timestamp: getCurrentTimestamp(),
-                        player: RoomsManager.getPlayerInfo(roomName, socket.currentPlayerName),
-                    },
-                })
-            } else {
-                console.error(`ERROR - Why is the room gone!, Player ${socket.currentPlayerName} tried to enter nonexistent room ${roomName}!`)
-                socketEventsUtils.sendError(socket, 'Error = WHY IS THE ROOM GONE?!')
+            if (!roomName || socket.currentRoom !== GlobalRoomName || !RoomsManager.isRoomPresent(roomName)) {
+                logError(socket, 'Player tried to enter nonexistent room!')
+                socketEventsUtils.sendError(socket, 'The room does not exist!')
+                // TODO: uncomment return statement after the room managment is done right on frontend
+                // return
             }
+
+            if (RoomsManager.isInBlackList(roomName, socket.currentPlayerName)) {
+                logInfo(socket, 'Banned player tried to enter the room!')
+                socketEventsUtils.sendError(socket, 'You are BANNED in this room by the owner!')
+                return
+            }
+
+            const addingError = RoomsManager.addPlayer(roomName, socket.currentPlayerName, socket)
+
+            if (addingError !== undefined) {
+                socketEventsUtils.sendError(socket, ErrorMappedMessages[addingError])
+                return
+            }
+
+            socketEventsUtils.switchRooms(socket, socket.currentRoom, roomName)
+
+            const roomDetails = RoomsManager.getRoomDetails(roomName)
+
+            socket.emit(SocketEvents.AllowEnteringRoom, { data: { roomName: socket.currentRoom } })
+            socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+
+            io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
+                data: {
+                    timestamp: getCurrentTimestamp(),
+                    player: RoomsManager.getPlayerInfo(roomName, socket.currentPlayerName),
+                },
+            })
         },
 
         vote: (socket, { value }) => {
@@ -402,6 +423,7 @@ module.exports = function (io) {
 
         const clientVerificationHof = ClientVerificationHof(RoomsManager)
         phaseSocketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
+        phaseSocketEvents.endGame = clientVerificationHof(['isOwner'], phaseSocketEvents.endGame)
         socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
         socketEvents.superpowerAffiliationPeekPlayer = clientVerificationHof(['isPresident'], socketEvents.superpowerAffiliationPeekPlayer)
         socketEvents.endPeekPlayerSuperpower = clientVerificationHof(['isPresident'], socketEvents.endPeekPlayerSuperpower)
@@ -434,5 +456,6 @@ module.exports = function (io) {
         socket.on(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, partialFunctions.superpowerAffiliationPeekPlayer)
         socket.on(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, partialFunctions.endPeekPlayerSuperpower)
         socket.on(SocketEvents.PeekCards, partialFunctions.endPeekCardsPhase)
+        socket.on(SocketEvents.GameFinished, partialFunctions.endGame)
     })
 }

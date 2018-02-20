@@ -10,7 +10,9 @@ const {
     PolicyCards,
     GlobalRoomName,
     PlayerBoards,
+    ErrorTypes,
 } = require('../Dictionary')
+const { logInfo } = require('../utils/utils')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -31,7 +33,10 @@ class RoomsManager {
     initializeRoom(roomName, ownerName, maxPlayers = 10, password) {
         let freeSlots = []
         times(maxPlayers, index => freeSlots.push(index + 1))
-        console.log(`INFO - New room "${roomName}" was created by: ${ownerName}`)
+        logInfo({
+            currentRoom: roomName,
+            currentPlayerName: ownerName,
+        }, 'New room was created by the player')
 
         this.rooms_props[roomName] = {
             ownerName,
@@ -122,7 +127,7 @@ class RoomsManager {
     getChancellorCandidateInfo(roomName) {
         const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
         const chancellorCandidate = playersDict[chancellorCandidateName]
-       
+
         return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
     }
 
@@ -154,11 +159,11 @@ class RoomsManager {
         const { playersDict, previousPresidentNameBackup } = this.rooms_props[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
 
-        const lastPresidentIndex = (previousPresidentNameBackup 
+        const lastPresidentIndex = (previousPresidentNameBackup
             ? findIndex(sortedPlayers, { playerName: previousPresidentNameBackup })
             : findIndex(sortedPlayers, { role: PlayerRole.ROLE_PRESIDENT })
         )
-        const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers) 
+        const nextPresidentIndex = (lastPresidentIndex + 1) % size(sortedPlayers)
 
         const nextPresident = sortedPlayers[nextPresidentIndex]
         this.setPresident(roomName, nextPresident.playerName)
@@ -197,7 +202,7 @@ class RoomsManager {
             policiesPile: [],
         }
     }
-    
+
     getFacists(roomName) {
         const { playersDict } = this.rooms_props[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
@@ -282,7 +287,7 @@ class RoomsManager {
     }
     getFailedElectionsCount(roomName) {
         const { failedElectionsCount } = this.rooms_props[roomName]
-        return failedElectionsCount 
+        return failedElectionsCount
     }
     resetFailedElectionsCount(roomName) {
         this.rooms_props[roomName].failedElectionsCount = 0
@@ -342,27 +347,34 @@ class RoomsManager {
      * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
      */
     addPlayer(roomName, playerName, socket) {
-        const { playersDict, freeSlots } = this.rooms_props[roomName]     
+        const { playersDict, freeSlots, gamePhase } = this.rooms_props[roomName]
         const nextEmptySlot = freeSlots[0]
 
-        if (!nextEmptySlot) {
-            console.error("The rum is full!") 
-        } else if (playersDict[playerName]) {
-            console.error("The rum has player with the same name as you!")
-        } else {
-            const newPlayer = {
-                playerName,
-                role: null,
-                avatarNumber: random(1, 6),
-                facistAvatar: null,
-                affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
-                slotNumber: nextEmptySlot,
-                isDead: false,
-                emit: socket.emit.bind(socket),
-            }
-            playersDict[playerName] = newPlayer
-            this.rooms_props[roomName].freeSlots = tail(freeSlots)
+        if (!includes([GamePhases.GAME_PHASE_NEW, GamePhases.Paused], gamePhase)) {
+            logInfo(socket, 'Player tried enter already began game')
+            return ErrorTypes.DeniedRoomEntry.BeganGame
         }
+        if (!nextEmptySlot) {
+            logInfo(socket, 'Player tried to enter full room')
+            return ErrorTypes.DeniedRoomEntry.FullRoom
+        }
+        if (playersDict[playerName]) {
+            logInfo(socket, 'The room has player with the same name')
+            return ErrorTypes.DeniedRoomEntry.SamePlayerName
+        }
+
+        const newPlayer = {
+            playerName,
+            role: null,
+            avatarNumber: random(1, 6),
+            facistAvatar: null,
+            affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
+            slotNumber: nextEmptySlot,
+            isDead: false,
+            emit: socket.emit.bind(socket),
+        }
+        playersDict[playerName] = newPlayer
+        this.rooms_props[roomName].freeSlots = tail(freeSlots)
     }
 
     /**
@@ -372,8 +384,8 @@ class RoomsManager {
      */
     removePlayer(roomName, playerName) {
         const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]
-        const player = playersDict[playerName] 
-        
+        const player = playersDict[playerName]
+
         if (player) {
             freeSlots.unshift(player.slotNumber)
             delete playersDict[playerName]
@@ -386,7 +398,7 @@ class RoomsManager {
 
         return (player
             ? pick(player, ['playerName', 'role', 'affiliation', 'avatarNumber', 'slotNumber'])
-            : null 
+            : null
         )
     }
 
@@ -419,7 +431,7 @@ class RoomsManager {
         const { playersDict } = this.rooms_props[roomName]
         return size(playersDict)
     }
-    
+
     setGamePhase(roomName, newPhase) {
         this.rooms_props[roomName].gamePhase = newPhase
     }
@@ -450,10 +462,10 @@ class RoomsManager {
             blackList.push(playerName)
         }
 
-        this.setGamePhase(roomName, GamePhases.Paused) 
+        this.setGamePhase(roomName, GamePhases.Paused)
         delete playersDict[playerName]
     }
-    
+
     /**********************************************/
     /*******************policies*******************/
     /**********************************************/
@@ -532,11 +544,11 @@ class RoomsManager {
     /*****************playersList******************/
     /**********************************************/
     getPlayersList() {
-        return this.players;
+        return this.players
     }
 
     getPlayerFromPlayersList(userName) {
-        return this.players[userName];
+        return this.players[userName]
     }
 
     isInPlayersList(userName) {

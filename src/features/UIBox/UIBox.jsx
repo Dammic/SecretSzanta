@@ -4,37 +4,15 @@ import { bindActionCreators } from 'redux'
 import { get, map, reject } from 'lodash'
 import UIBoxComponent from './UIBoxComponent'
 import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
-import { SocketEvents, ChoiceModeContexts } from '../../../Dictionary'
 import { toggleAffiliationMenu } from '../../ducks/userDuck'
-import { resetTracker } from '../../ducks/roomDuck'
-import * as playerActions from '../../ducks/playersDuck'
-import { socket } from '../../utils/SocketHandler'
+import { startGame, startKickPlayerMode, startBanPlayerMode, startVoting } from '../../gameLogic/ownerActions'
 
 export class UIBox extends React.PureComponent {
-    onStartVote = () => {
-        socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE)
-    }
+    onKickPlayer = () => startKickPlayerMode(this.props.userName, this.props.playersWithoutMe)
 
-    onKickPlayer = () => {
-        this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
-        this.props.playersActions.setChoiceMode({
-            context: ChoiceModeContexts.KickChoice,
-            selectablePlayers: this.props.playersWithoutMe,
-        })
-    }
+    onBanPlayer = () => startBanPlayerMode(this.props.userName, this.props.playersWithoutMe)
 
-    onBanPlayer = () => {
-        this.props.playersActions.setChooserPlayer({ playerName: this.props.userName })
-        this.props.playersActions.setChoiceMode({
-            context: ChoiceModeContexts.BanChoice,
-            selectablePlayers: this.props.playersWithoutMe,
-        })
-    }
-
-    onStartGame = () => {
-        socket.emit(SocketEvents.START_GAME, { playerName: this.props.userName })
-        this.props.roomActions.resetTracker()
-    }
+    onStartGame = () => startGame(this.props.userName)
 
     toggleShow = () => {
         this.props.userActions.toggleAffiliationMenu()
@@ -43,20 +21,22 @@ export class UIBox extends React.PureComponent {
     getPlayerCard = () => {
         const { facistAvatar, liberalAvatar, isOwner, isDead } = this.props
         if (!liberalAvatar) return null
-        
-        return (<PlayerAvatarComponent
-            liberalAvatar={liberalAvatar}
-            facistAvatar={facistAvatar}
-            isOwner={isOwner}
-            isDead={isDead}
-        />)
+
+        return (
+            <PlayerAvatarComponent
+                liberalAvatar={liberalAvatar}
+                facistAvatar={facistAvatar}
+                isOwner={isOwner}
+                isDead={isDead}
+            />
+        )
     }
 
     render() {
         const { affiliation, gamePhase, role, isAffiliationHidden, isOwner } = this.props
         return (
             <UIBoxComponent
-                onStartVote={this.onStartVote}
+                onStartVote={startVoting}
                 onStartGame={this.onStartGame}
                 onKickPlayer={this.onKickPlayer}
                 onBanPlayer={this.onBanPlayer}
@@ -90,8 +70,6 @@ const mapStateToProps = ({ user, room }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    roomActions: bindActionCreators({ resetTracker }, dispatch),
     userActions: bindActionCreators({ toggleAffiliationMenu }, dispatch),
-    playersActions: bindActionCreators(playerActions, dispatch)
 })
 export default connect(mapStateToProps, mapDispatchToProps)(UIBox)
