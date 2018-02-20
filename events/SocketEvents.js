@@ -187,8 +187,7 @@ module.exports = function (io) {
             if (!roomName || socket.currentRoom !== GlobalRoomName || !RoomsManager.isRoomPresent(roomName)) {
                 logError(socket, 'Player tried to enter nonexistent room!')
                 socketEventsUtils.sendError(socket, 'The room does not exist!')
-                // TODO: uncomment return statement after the room managment is done right on frontend
-                // return
+                return
             }
 
             if (RoomsManager.isInBlackList(roomName, socket.currentPlayerName)) {
