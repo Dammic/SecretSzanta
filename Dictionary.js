@@ -1,4 +1,4 @@
-module.exports = {
+const Dictionary = {
     SocketEvents: {
         SelectName: 'CLIENT_SELECT_NAME',
         SyncLobby: 'SYNC_LOBBY',
@@ -66,6 +66,7 @@ module.exports = {
         DesignateNextPresidentPhase: 'GAME_PHASE_DESIGNATE_NEXT_PRESIDENT',
         PeekAffiliationSuperpowerPhase: 'PEEK_AFFILIATION_SUPERPOWER_PHASE',
         PeekCardsSuperpower: 'GAME_PHASE_PEEK_CARDS_SUPERPOWER',
+        Ended: 'GAME_PHASE_ENDED',
     },
     PlayerAffilications: {
         LIBERAL_AFFILIATION: 'LIBERAL_AFFILIATION',
@@ -81,6 +82,13 @@ module.exports = {
         notPresident: 'This action is reserved for president!',
         notChancellor: 'This action is reserved for chancellor!',
         NameTaken: 'The selected name is already taken',
+    },
+    ErrorTypes: {
+        DeniedRoomEntry: {
+            BeganGame: 'DENIED_ROOM_ENTRY_BEGAN_GAME',
+            FullRoom: 'DENIED_ROOM_ENTRY_FULL_ROOM',
+            SamePlayerName: 'DENIED_ROOM_ENTRY_SAME_PLAYER_NAME',
+        },
     },
     ChoiceModeContexts: {
         ChancellorChoice: 'CONTEXT_CHANCELLOR_CHOICE',
@@ -109,3 +117,11 @@ module.exports = {
     },
     GlobalRoomName: 'Global',
 }
+
+Dictionary.ErrorMappedMessages = {
+    [Dictionary.ErrorTypes.DeniedRoomEntry.BeganGame]: 'The game has already began!',
+    [Dictionary.ErrorTypes.DeniedRoomEntry.FullRoom]: 'The room is full!',
+    [Dictionary.ErrorTypes.DeniedRoomEntry.SamePlayerName]: 'There is a player with the same name in the room!',
+}
+
+module.exports = Dictionary

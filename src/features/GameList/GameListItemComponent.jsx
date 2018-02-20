@@ -14,7 +14,9 @@ const GameListItemComponent = ({
                     <div>{roomName} |{playerCount}/9999</div>
                 </div>
                 <div className="join-button-area">
-                    <button data-roomid={roomID} onClick={onClick}>JOIN</button>
+                    <button data-roomid={roomID} onClick={onClick}>
+                        JOIN
+                    </button>
                 </div>
             </div>
         </div>
