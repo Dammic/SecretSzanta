@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { socket } from '../../utils/SocketHandler'
 import { SocketEvents } from '../../../Dictionary'
 import GameListComponent from './GameListComponent'
-import { rooms } from '../../const/roomMock'
+import { setRoomName } from '../../ducks/userDuck'
 
 export class GameList extends React.PureComponent {
     static propTypes = {
@@ -14,9 +14,9 @@ export class GameList extends React.PureComponent {
     }
 
     setRoomName = (event) => {
-        const roomID = event.target.attributes.getNamedItem('data-roomid').value
-        socket.emit(SocketEvents.CLIENT_CREATE_ROOM, { playerName: this.props.userName, roomName: roomID })
-        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: roomID })
+        const roomId = event.target.attributes.getNamedItem('data-roomid').value
+        this.props.setRoom({ roomName: roomId })
+        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: roomId })
     }
 
     render() {
@@ -24,8 +24,7 @@ export class GameList extends React.PureComponent {
         return (
             <GameListComponent
                 userName={userName}
-                // when time comes, you can rooms swap it with roomsList from store
-                rooms={rooms}
+                rooms={roomsList}
                 onClick={this.setRoomName}
             />
         )
@@ -36,4 +35,9 @@ const mapStateToProps = ({ user, lobby }) => ({
     userName: user.userName,
     roomsList: lobby.roomsList,
 })
-export default connect(mapStateToProps)(GameList)
+
+const mapDispatchToProps = dispatch => ({
+    setRoom: roomId => dispatch(setRoomName(roomId)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameList)

@@ -163,10 +163,10 @@ module.exports = function (io) {
             socket.currentPlayerName = ''
         },
 
-        createRoom: (socket, { roomName, playerName, maxPlayers, password }) => {
+        createRoom: (socket, { roomName, maxPlayers, password }) => {
             // if the room does not exist, create it
             if (roomName && !RoomsManager.isRoomPresent(roomName)) {
-                RoomsManager.initializeRoom(roomName, playerName, maxPlayers, password)
+                RoomsManager.initializeRoom(roomName, socket.currentPlayerName, maxPlayers, password)
 
                 io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
                     data: {
@@ -174,7 +174,7 @@ module.exports = function (io) {
                         room: RoomsManager.getRoomDetailsForLobby(roomName),
                     },
                 })
-                socketEvents.joinRoom(socket, { roomName, playerName })
+                socketEvents.joinRoom(socket, { roomName })
             } else {
                 logError(socket, 'Selected room is already present! Cannot create a duplicate!')
                 socket.emit(SocketEvents.CLIENT_ERROR, {
@@ -183,21 +183,20 @@ module.exports = function (io) {
             }
         },
 
-        joinRoom: (socket, { playerName, roomName }) => {
+        joinRoom: (socket, { roomName }) => {
             if (!roomName || socket.currentRoom !== GlobalRoomName || !RoomsManager.isRoomPresent(roomName)) {
                 logError(socket, 'Player tried to enter nonexistent room!')
                 socketEventsUtils.sendError(socket, 'The room does not exist!')
-                // TODO: uncomment return statement after the room managment is done right on frontend
-                // return
+                return
             }
 
-            if (RoomsManager.isInBlackList(roomName, playerName)) {
+            if (RoomsManager.isInBlackList(roomName, socket.currentPlayerName)) {
                 logInfo(socket, 'Banned player tried to enter the room!')
                 socketEventsUtils.sendError(socket, 'You are BANNED in this room by the owner!')
                 return
             }
 
-            const addingError = RoomsManager.addPlayer(roomName, playerName, socket)
+            const addingError = RoomsManager.addPlayer(roomName, socket.currentPlayerName, socket)
 
             if (addingError !== undefined) {
                 socketEventsUtils.sendError(socket, ErrorMappedMessages[addingError])
@@ -214,7 +213,7 @@ module.exports = function (io) {
             io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
                 data: {
                     timestamp: getCurrentTimestamp(),
-                    player: RoomsManager.getPlayerInfo(roomName, playerName),
+                    player: RoomsManager.getPlayerInfo(roomName, socket.currentPlayerName),
                 },
             })
         },

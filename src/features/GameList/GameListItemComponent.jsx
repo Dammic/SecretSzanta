@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const GameListItemComponent = ({
-    roomID,
+    roomId,
     roomName,
     playerCount,
     onClick,
@@ -14,7 +14,7 @@ const GameListItemComponent = ({
                     <div>{roomName} |{playerCount}/9999</div>
                 </div>
                 <div className="join-button-area">
-                    <button data-roomid={roomID} onClick={onClick}>
+                    <button data-roomid={roomId} onClick={onClick}>
                         JOIN
                     </button>
                 </div>
@@ -24,7 +24,7 @@ const GameListItemComponent = ({
 }
 
 GameListItemComponent.propTypes = {
-    roomID: PropTypes.string,
+    roomId: PropTypes.string,
     roomName: PropTypes.string,
     playerCount: PropTypes.number,
     onClick: PropTypes.func,

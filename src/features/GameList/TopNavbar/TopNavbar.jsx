@@ -1,29 +1,34 @@
-import React from 'react'
-import TopNavbarComponent from './TopNavbarComponent'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setModal } from '../../../ducks/modalDuck'
+import { TopNavbarComponent } from './TopNavbarComponent'
 
-export default class TopNavbar extends React.PureComponent {
-
-    constructor () {
-        super()
-        this.state = {
-            isModalShown: false
-        }
+class TopNavbar extends PureComponent {
+    onShowModal = () => {
+        this.props.setModal({
+            title: 'Create new game',
+            isCloseButtonShown: true,
+            isOverlayOpaque: true,
+            componentName: 'CreateGameModal',
+        })
     }
 
-    hideModal = () => {
-        this.setState({isModalShown: false})
-    }
-
-    showModal = () => {
-        this.setState({isModalShown: true})
-    }
-
-    render () {
-        return <TopNavbarComponent
-            showModal={this.showModal}
-            isModalShown={this.state.isModalShown}
-            onHide={this.hideModal}
-            onCreate={this.hideModal}
-        />
+    render() {
+        return (
+            <TopNavbarComponent
+                onShowModal={this.onShowModal}
+            />
+        )
     }
 }
+
+TopNavbar.propTypes = {
+    setModal: PropTypes.func,
+}
+
+const mapDispatchToProps = dispatch => ({
+    setModal: modalOptions => dispatch(setModal(modalOptions)),
+})
+
+export default connect(null, mapDispatchToProps)(TopNavbar)

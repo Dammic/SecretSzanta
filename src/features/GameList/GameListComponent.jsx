@@ -16,11 +16,10 @@ const GameListComponent = ({
             <div className="game-list-container">
                 <div className="first-column">
                     <div className="game-list">
-                        {/* index is temporary, delete when room names will not be mocked */}
-                        {map(rooms, (room, index) => (
+                        {map(rooms, room => (
                             <GameListItemComponent
-                                key={room.roomID + index}
-                                roomID={room.roomID}
+                                key={room.roomId}
+                                roomId={room.roomId}
                                 roomName={room.roomName}
                                 playerCount={room.playerCount}
                                 onClick={onClick}
@@ -43,7 +42,7 @@ const GameListComponent = ({
 
 GameListComponent.propTypes = {
     userName: PropTypes.string,
-    rooms: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
+    rooms: PropTypes.objectOf(PropTypes.objectOf(PropTypes.any)),
     onClick: PropTypes.func,
 }
 export default GameListComponent
