@@ -16,10 +16,7 @@ export class CreateGameModal extends React.PureComponent {
         maxPlayers: 10,
     }
 
-    onChange = property => (event => this.setState({ [property]: event.target.value }))
-    onRoomNameChange = this.onChange('roomName')
-    onPasswordChange = this.onChange('password')
-    onMaxPlayersChange = this.onChange('maxPlayers')
+    onChange = event => this.setState({ [event.target.name]: event.target.value })
 
     onCreate = () => {
         const { roomName, password, maxPlayers } = this.state
@@ -38,9 +35,7 @@ export class CreateGameModal extends React.PureComponent {
             <CreateGameModalComponent
                 {...{ roomName, password, maxPlayers }}
                 onCreate={this.onCreate}
-                onRoomNameChange={this.onRoomNameChange}
-                onPasswordChange={this.onPasswordChange}
-                onMaxPlayersChange={this.onMaxPlayersChange}
+                onChange={this.onChange}
             />
         )
     }

@@ -6,29 +6,27 @@ const CreateGameModalComponent = ({
     password,
     maxPlayers,
     onCreate,
-    onRoomNameChange,
-    onPasswordChange,
-    onMaxPlayersChange,
+    onChange,
 }) => {
     return (
         <div className="create-game-modal">
             <div className="input-field">
                 {'Room Name:'}
-                <input type="text" value={roomName} onChange={onRoomNameChange} />
+                <input name="roomName" type="text" value={roomName} onChange={onChange} />
             </div>
             <div className="input-field">
                 <div>Password<i>(optional)</i>:</div>
-                <input name="password" type="password" value={password} onChange={onPasswordChange} />
+                <input name="password" type="password" value={password} onChange={onChange} />
             </div>
             <div className="input-field">
                 {'Maximal number of players:'}
                 <input
+                    name="maxPlayers"
                     type="number"
                     min="5"
                     max="10"
-                    defaultValue="10"
                     value={maxPlayers}
-                    onChange={onMaxPlayersChange}
+                    onChange={onChange}
                 />
             </div>
             <button className="create-button" onClick={onCreate}>Create</button>
@@ -41,9 +39,7 @@ CreateGameModalComponent.propTypes = {
     password: PropTypes.string,
     maxPlayers: PropTypes.number,
     onCreate: PropTypes.func,
-    onRoomNameChange: PropTypes.func,
-    onPasswordChange: PropTypes.func,
-    onMaxPlayersChange: PropTypes.func,
+    onChange: PropTypes.func,
 }
 
 export default CreateGameModalComponent
