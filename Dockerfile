@@ -2,6 +2,9 @@ FROM node:latest
 
 WORKDIR /secretSzanta
 
+RUN node --version
+RUN npm --version
+
 # copy dependencies
 COPY package*.json ./
 
