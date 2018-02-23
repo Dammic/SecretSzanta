@@ -1,5 +1,6 @@
 .game-room {
     position: relative;
+    height: calc(100vh - 50px);
     background: radial-gradient($game-room-start-bg, $game-room-end-bg);
 
     .name {
