@@ -12,7 +12,7 @@
     "run:dev": "nodemon server.js --watch utils/ --watch events/ --watch server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
-    "build:prod": "rimraf public && webpack -p --config webpack.dev.js",
+    "build:prod": "rimraf public && webpack --env prod --config webpack.dev.js",
     "test": "jest"
   },
   "jest": {
@@ -54,6 +54,7 @@
     "socket.io-client": "1.7.3"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.0.0-beta.40",
     "autoprefixer": "6.7.7",
     "babel": "6.23.0",
     "babel-cli": "6.22.2",
@@ -98,6 +99,7 @@
     "react-test-renderer": "16.1.1",
     "sass-loader": "4.1.1",
     "style-loader": "0.13.2",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "url-loader": "0.5.9",
     "webpack": "3.10.0",
     "webpack-bundle-analyzer": "2.9.1"
