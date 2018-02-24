@@ -29,7 +29,7 @@ const GameListComponent = ({
                 </div>
                 <div className="second-column">
                     <div className="utils-row">
-                        <span>Logged as <b>{userName}</b>!</span>
+                        <span className="ellipsis">Hello <b>{userName}</b>!</span>
                         <TopNavbar />
                     </div>
                     <PlayersList />
