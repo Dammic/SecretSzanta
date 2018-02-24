@@ -4,9 +4,19 @@ import classNames from 'classnames'
 import { map } from 'lodash'
 import { Views } from '../../../Dictionary'
 
-const HeaderComponent = ({ setView, currentView, isLobbyVisible }) => {
+const HeaderComponent = ({
+    setView,
+    currentView,
+    isLobbyVisible,
+    isMobileNavOpen,
+    openMobileNavigation,
+    closeMobileNavigation,
+}) => {
     const renderNavigationLink = (label, key) => {
-        const onNavClick = () => setView(key)
+        const onNavClick = () => {
+            setView(key)
+            closeMobileNavigation()
+        }
         return (
             <span
                 key={key}
@@ -26,15 +36,21 @@ const HeaderComponent = ({ setView, currentView, isLobbyVisible }) => {
         [Views.About]: 'About',
     }
     if (!isLobbyVisible) {
-        delete views[Views.Lobby] 
+        delete views[Views.Lobby]
     }
+
+    const headerNavigationClasses = classNames('header-navigation', { 'is-open': isMobileNavOpen })
+    const menuIconClasses = classNames('fa', { 'fa-bars': !isMobileNavOpen, 'fa-times': isMobileNavOpen }, 'menu-icon')
 
     return (
         <div className="header-container">
             <div className="header">
-                <span className="app-name">Secret Hitler</span>
-                <div className="header-navigation">
-                    {map(views, renderNavigationLink)}
+                <span className="app-name" onClick={closeMobileNavigation}>Secret Hitler</span>
+                <div className={headerNavigationClasses}>
+                    <i className={menuIconClasses} onClick={isMobileNavOpen ? closeMobileNavigation : openMobileNavigation} />
+                    <div className="header-navigation-links">
+                        {map(views, renderNavigationLink)}
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,6 +61,9 @@ HeaderComponent.propTypes = {
     setView: PropTypes.func.isRequired,
     isLobbyVisible: PropTypes.bool.isRequired,
     currentView: PropTypes.string,
+    isMobileNavOpen: PropTypes.bool,
+    openMobileNavigation: PropTypes.func,
+    closeMobileNavigation: PropTypes.func,
 }
 
 export default HeaderComponent
