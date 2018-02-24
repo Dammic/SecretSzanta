@@ -87,9 +87,9 @@ module.exports = {
         }),
         ...(NODE_ENV === 'production' ? productionPlugins : developmentPlugins),
         // turn on for bundle size analytics
-        new BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-        }),
+        // new BundleAnalyzerPlugin({
+        //     analyzerMode: 'static',
+        // }),
     ],
     module: {
         rules: [{
