@@ -58,6 +58,11 @@ const developmentPlugins = [
     }),
 ]
 
+const commonPlugins = [
+    '@babel/plugin-proposal-object-rest-spread',
+    '@babel/plugin-proposal-class-properties',
+]
+
 module.exports = {
     cache: true,
     devtool: NODE_ENV === 'production' ? 'cheap-module-source-map' : 'source-map',
@@ -82,9 +87,9 @@ module.exports = {
         }),
         ...(NODE_ENV === 'production' ? productionPlugins : developmentPlugins),
         // turn on for bundle size analytics
-        // new BundleAnalyzerPlugin({
-        //     analyzerMode: 'static',
-        // }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+        }),
     ],
     module: {
         rules: [{
@@ -96,15 +101,13 @@ module.exports = {
             use: {
                 loader: 'babel-loader',
                 options: {
-                    plugins: NODE_ENV === 'production' ? ['lodash'] : [],
+                    plugins: NODE_ENV === 'production' ? [...commonPlugins, 'lodash'] : commonPlugins,
                     presets: [
-                        ['env', {
+                        ['@babel/preset-env', {
                             targets: {
                                 browsers: ['last 2 versions', 'ie >= 7'],
                             },
                         }],
-                        'stage-3',
-                        'stage-1',
                     ],
                 },
             },
@@ -117,16 +120,15 @@ module.exports = {
             use: {
                 loader: 'babel-loader',
                 options: {
-                    plugins: NODE_ENV === 'production' ? ['lodash'] : [],
+                    plugins: NODE_ENV === 'production' ? [...commonPlugins, 'lodash'] : commonPlugins,
+
                     presets: [
-                        ['env', {
+                        ['@babel/preset-env', {
                             targets: {
                                 browsers: ['last 2 versions', 'ie >= 7'],
                             },
                         }],
-                        'react',
-                        'stage-3',
-                        'stage-1',
+                        ['@babel/react'],
                     ],
                 },
             },

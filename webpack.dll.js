@@ -5,6 +5,7 @@ const webpack = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const NODE_ENV = process.argv.indexOf('-p') !== -1 ? 'production' : 'development'
 
@@ -32,22 +33,21 @@ module.exports = {
                 NODE_ENV: JSON.stringify(NODE_ENV),
             },
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                ecma: 6,
                 warnings: false,
-                screw_ie8: true,
-                conditionals: true,
-                unused: true,
-                comparisons: true,
-                sequences: true,
-                dead_code: true,
-                evaluate: true,
-                if_return: true,
-                join_vars: true,
+                output: {
+                    comments: false,
+                },
+                toplevel: false,
+                nameCache: null,
+                ie8: false,
+                keep_classnames: undefined,
+                keep_fnames: false,
+                safari10: false,
             },
-            output: {
-                comments: false,
-            },
+            sourceMap: true,
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
         new CompressionPlugin({
@@ -60,10 +60,10 @@ module.exports = {
             asset: '[path].br[query]',
             regExp: /\.js$|\.css$|\.html$/,
             threshold: 1,
-        })
+        }),
         // turn on for bundle size analytics
-        // new BundleAnalyzerPlugin({
-        //     analyzerMode: 'static',
-        // }),
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+        }),
     ],
 }
