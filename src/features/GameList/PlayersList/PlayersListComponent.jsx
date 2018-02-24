@@ -7,7 +7,7 @@ const PlayersListComponent = ({ players }) => {
     return (
         <div className="players-list">
             <div className="category">
-                <span>Currently logged players: <b>{size(players)}</b></span>
+                <span>Online: <b>{size(players)}</b></span>
             </div>
             {map(filter(players, player => !!player.currentRoom), player => (
                 <PlayersListRow

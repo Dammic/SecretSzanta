@@ -1,16 +1,19 @@
 .game-list-container {
     display: flex;
+    height: inherit;
     .first-column {
+        /* 35px is margin top and 35px is margin bottom */
+        height: calc(100% - 35px - 35px);
         background-color: $game-list-first-column-bg;
-        max-height: 90vh;
         overflow: auto;
         width: 70%;
-	margin-top: 35px;
-        margin-left: 10px;
+        margin: 35px 0 35px 10px;
         .game-list {
-            display: grid;
-            grid-template-columns: 50% 50%;
-            grid-template-rows: auto;
+            @include respond-to(medium) { 
+                display: grid;
+                grid-template-columns: 50% 50%;
+                grid-template-rows: auto;
+            }
 
             .game-list-element {
                 height: 60px;
@@ -35,9 +38,13 @@
     .second-column {
         margin-left: 10px;
         margin-right: 10px;
-        width: 30%;
+        width: 40%;
+        height: 100%;
         display: flex;
         flex-direction: column;
+        @include respond-to(medium) {
+            width: 30%;
+        }
         .utils-row {
             display: flex;
             justify-content: space-between;
@@ -45,7 +52,7 @@
         }
         .chat {
             position: relative;
-            margin-top: 30px;
+            margin-top: 15px;
             margin-left: 2px;
             height: 220px;
             width: auto;
