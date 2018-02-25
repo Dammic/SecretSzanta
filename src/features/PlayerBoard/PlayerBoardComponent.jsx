@@ -21,6 +21,7 @@ const PlayerBoardComponent = ({
     onChoiceModeSelect,
     renderFascistPlayerBoard,
     isPlayerboardHidden,
+    isModalVisible,
 }) => {
     const renderPolicies = (count, cardType) => {
         const result = []
@@ -49,9 +50,10 @@ const PlayerBoardComponent = ({
     }
 
     const trackerFromLeftStyle = { left: `${37 + trackerPosition * 8}%` }
+    const playerBoardClasses = classNames('player-board', { blurred: isModalVisible })
 
     return (
-        <div className="player-board">
+        <div className={playerBoardClasses}>
             {isChoiceModeVisible && <div className="overlay choice-overlay" />}
             {renderPlayers(playersLeft, 'players-container', PlayerDirection.PLAYER_DIRECTION_LEFT)}
             <div className="central-part">
@@ -91,5 +93,6 @@ PlayerBoardComponent.propTypes = {
     onChoiceModeSelect: PropTypes.func,
     renderFascistPlayerBoard: PropTypes.func,
     isPlayerboardHidden: PropTypes.bool,
+    isModalVisible: PropTypes.bool,
 }
 export default PlayerBoardComponent
