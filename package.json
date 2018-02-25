@@ -13,7 +13,7 @@
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
     "build:prod": "rimraf public && webpack --env prod --config webpack.dev.js",
-    "test": "jest"
+    "test": "node_modules/jest/bin/jest.js"
   },
   "jest": {
     "moduleNameMapper": {
