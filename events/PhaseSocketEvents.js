@@ -23,9 +23,17 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             })
         },
 
-        endGame: (socket) => {
+        endGame: (socket, whoWon) => {
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.Ended)
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, { data: {} })
+
+            const facists = RoomsManager.getFacists(socket.currentRoom)
+            const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
+                data: {
+                    whoWon,
+                    facists: passedFacists,
+                },
+            })
         },
 
         startVotingPhaseVote: (socket, { playerName: chancellorName }) => {

@@ -321,26 +321,20 @@ module.exports = function (io) {
                 },
             })
             if (wasHitler) {
-                const facists = RoomsManager.getFacists(socket.currentRoom)
-
-                const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
-                    data: {
-                        whoWon: PlayerAffilications.LIBERAL_AFFILIATION,
-                        facists: passedFacists,
-                    },
-                })
+                phaseSocketEvents.endGame(socket, PlayerAffilications.LIBERAL_AFFILIATION)
             } else {
                 socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
             }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
             const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW
-            const isOverlaysHidingNeeded = hasGameBegan && (socketEvents.kickIfHitler(socket, playerName)
-                || socketEvents.kickIfPresident(socket, playerName))
+            const isOverlaysHidingNeeded = hasGameBegan && (
+                socketEvents.kickIfHitler(socket, playerName)
+                || socketEvents.kickIfPresident(socket, playerName)
+            )
 
             RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
-            
+
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
                 data: {
                     playerName,
