@@ -515,7 +515,6 @@ class RoomsManager {
         return take(drawPile, 3)
     }
     getPolicyCardsCount(roomName, policyType) {
-        console.info(roomName)
         const { policiesPile } = this.rooms_props[roomName]
         return size(filter(policiesPile, policy => policy === policyType))
     }

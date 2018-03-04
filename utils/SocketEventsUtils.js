@@ -99,6 +99,7 @@ const SocketEventsUtils = (io, RoomsManager) => {
 
                     const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
                     socketEventsUtils.enactPolicy(socket, topCard)
+
                 } else {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.IncreaseTrackerPosition, {
                         data: {
@@ -148,6 +149,15 @@ const SocketEventsUtils = (io, RoomsManager) => {
                 },
             })
         },
+
+        checkIfGameShouldFinish: (socket, onContinueCallback) => {
+            const winningSide = RoomsManager.checkWinConditions(socket.currentRoom)
+            if (winningSide) {
+                phaseSocketEvents.endGame(socket, winningSide)
+            } else {
+                onContinueCallback()
+            }
+        }
     }
     return socketEventsUtils
 }
