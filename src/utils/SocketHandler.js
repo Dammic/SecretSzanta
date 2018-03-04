@@ -182,10 +182,9 @@ export class SocketHandler extends React.PureComponent {
 
             if (!whoWon) {
                 this.props.modalActions.setModal({
-                    title: "The game abruptly ended",
+                    title: 'The game abruptly ended',
                     isOverlayOpaque: true,
-                    componentName: 'HaltModal',
-                    initialData: { hasGameEnded: true },
+                    componentName: 'GameEndModal',
                 })
                 return
             }
