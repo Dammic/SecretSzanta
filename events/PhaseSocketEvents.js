@@ -23,9 +23,9 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             })
         },
 
-        endGame: (socket) => {
+        endGame: (socket, whoWon) => {
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.Ended)
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, { data: {} })
+            io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, { data: { whoWon } })
         },
 
         startVotingPhaseVote: (socket, { playerName: chancellorName }) => {

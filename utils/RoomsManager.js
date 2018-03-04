@@ -515,6 +515,7 @@ class RoomsManager {
         return take(drawPile, 3)
     }
     getPolicyCardsCount(roomName, policyType) {
+        console.info(roomName)
         const { policiesPile } = this.rooms_props[roomName]
         return size(filter(policiesPile, policy => policy === policyType))
     }
@@ -577,6 +578,20 @@ class RoomsManager {
     resetPresidentBackup(roomName) {
         this.rooms_props[roomName].previousPresidentNameBackup = null
     }
+
+    checkWinConditions(roomName) {
+        const { playersDict } = this.rooms_props[roomName];
+        const hitler = find(playersDict, (player => player.affiliation === PlayerAffilications.HITLER_AFFILIATION));
+        const fascistPoliciesCount = this.getPolicyCardsCount(roomName, PolicyCards.FacistPolicy);
+        const liberalPoliciesCount = this.getPolicyCardsCount(roomName, PolicyCards.LiberalPolicy);
+        if (liberalPoliciesCount === 5 || hitler.isDead) {
+            return PlayerAffilications.LIBERAL_AFFILIATION;
+        } else if (fascistPoliciesCount === 6 || (fascistPoliciesCount >= 4 && hitler.role === PlayerRole.ROLE_CHANCELLOR)) {
+            return PlayerAffilications.FACIST_AFFILIATION;
+        }
+        return null; 
+    }
+
 }
 
 module.exports = RoomsManager

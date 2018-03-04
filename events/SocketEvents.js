@@ -280,11 +280,17 @@ module.exports = function (io) {
         choosePolicyChancellor: (socket, choice) => {
             socketEventsUtils.enactPolicy(socket, choice)
 
+            const winningSide = RoomsManager.checkWinConditions(socket.currentRoom)
+            if (winningSide) {
+                PhaseSocketEvents.endGame(socket, winningSide);
+                return;
+            }
+
             const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
             if (isVetoUnlocked) {
                 socketEvents.triggerVetoPrompt(socket)
             } else if (choice === PolicyCards.FacistPolicy) {
-                socketEvents.checkForImmediateSuperpowersOrContinue(socket)
+                socketEvents.checkForImmediateSuperpowersOrContinue(socket.currentRoom)
             } else {
                 socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
             }
@@ -312,7 +318,6 @@ module.exports = function (io) {
             RoomsManager.killPlayer(socket.currentRoom, playerName)
             const hitler = RoomsManager.getHitler(socket.currentRoom)
             const wasHitler = hitler.playerName === playerName
-
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
                 data: {
                     wasHitler,
@@ -320,16 +325,11 @@ module.exports = function (io) {
                     timestamp: getCurrentTimestamp(),
                 },
             })
-            if (wasHitler) {
-                const facists = RoomsManager.getFacists(socket.currentRoom)
 
-                const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
-                    data: {
-                        whoWon: PlayerAffilications.LIBERAL_AFFILIATION,
-                        facists: passedFacists,
-                    },
-                })
+            const winningSide = RoomsManager.checkWinConditions(socket.currentRoom)
+            if (winningSide) {
+                PhaseSocketEvents.endGame(socket, winningSide);
+                return;
             } else {
                 socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
             }
