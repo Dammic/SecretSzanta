@@ -617,6 +617,7 @@ describe('RoomsManager', () => {
 
             expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
             expect(peekedCards).toEqual([PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy])
+            expect(true).toEqual(false)
         })
     })
 })
