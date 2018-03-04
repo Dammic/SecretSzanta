@@ -2,32 +2,31 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const CompressionPlugin = require('compression-webpack-plugin');
-const BrotliPlugin = require('brotli-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin')
+const BrotliPlugin = require('brotli-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-const NODE_ENV = process.argv.indexOf('-p') !== -1 ? 'production' : 'development'
+const NODE_ENV = process.argv.indexOf('prod') !== -1 ? 'production' : 'development'
 const manifest = './vendor-manifest.json'
 
 console.log('Using NODE_ENV:', NODE_ENV)
 
 const productionPlugins = [
-    new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true,
-        compress: {
+    new UglifyJsPlugin({
+        uglifyOptions: {
+            ecma: 6,
             warnings: false,
-            screw_ie8: true,
-            conditionals: true,
-            unused: true,
-            comparisons: true,
-            sequences: true,
-            dead_code: true,
-            evaluate: true,
-            if_return: true,
-            join_vars: true,
+            output: {
+                comments: false,
+            },
+            toplevel: false,
+            nameCache: null,
+            ie8: false,
+            keep_classnames: undefined,
+            keep_fnames: false,
+            safari10: false,
         },
-        output: {
-          comments: false,
-        },
+        sourceMap: true,
     }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -59,6 +58,11 @@ const developmentPlugins = [
     }),
 ]
 
+const commonPlugins = [
+    '@babel/plugin-proposal-object-rest-spread',
+    '@babel/plugin-proposal-class-properties',
+]
+
 module.exports = {
     cache: true,
     devtool: NODE_ENV === 'production' ? 'cheap-module-source-map' : 'source-map',
@@ -88,67 +92,98 @@ module.exports = {
         // }),
     ],
     module: {
-        loaders: [
-            {
-                test: /\.js$/,
+        rules: [{
+            test: /\.js$/,
+            include: [
+                path.join(__dirname, 'src'), // important for performance!
+            ],
+            exclude: /node_modules/,
+            use: {
                 loader: 'babel-loader',
-                include: [
-                    path.join(__dirname, 'src'), // important for performance!
-                ],
                 options: {
-                    cacheDirectory: true, // important for performance
-                    plugins: NODE_ENV === 'production' ? ['lodash'] : [],
-                    presets: ['es2015', 'stage-3', 'stage-1'],
+                    plugins: NODE_ENV === 'production' ? [...commonPlugins, 'lodash'] : commonPlugins,
+                    presets: [
+                        ['@babel/preset-env', {
+                            targets: {
+                                browsers: ['last 2 versions'],
+                            },
+                        }],
+                    ],
                 },
-            }, {
-                test: /\.jsx$/,
+            },
+        }, {
+            test: /\.jsx$/,
+            include: [
+                path.join(__dirname, 'src'), // important for performance!
+            ],
+            exclude: /node_modules/,
+            use: {
                 loader: 'babel-loader',
-                include: [
-                    path.join(__dirname, 'src'), // important for performance!
-                ],
                 options: {
-                    cacheDirectory: true,
-                    plugins: NODE_ENV === 'production' ? ['lodash'] : [],
-                    presets: ['react', 'es2015', 'stage-3', 'stage-1'],
+                    plugins: NODE_ENV === 'production' ? [...commonPlugins, 'lodash'] : commonPlugins,
+
+                    presets: [
+                        ['@babel/preset-env', {
+                            targets: {
+                                browsers: ['last 2 versions', 'ie >= 7'],
+                            },
+                        }],
+                        ['@babel/react'],
+                    ],
                 },
-            }, {
-                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            },
+        }, {
+            test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            use: {
                 loader: 'url-loader?limit=10000&minetype=application/font-woff',
-            }, {
-                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            },
+        }, {
+            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            use: {
                 loader: 'file-loader',
-            }, {
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                loader: [
-                    'file-loader',
-                    {
-                        loader: 'image-webpack-loader',
-                        options: {
-                            bypassOnDebug: true,
-                            mozjpeg: {
-                                progressive: true,
-                            },
-                            gifsicle: {
-                                interlaced: false,
-                            },
-                            optipng: {
-                                optimizationLevel: 4,
-                            },
-                            pngquant: {
-                                quality: '75-90',
-                                speed: 3,
-                            },
+            },
+        }, {
+            test: /\.(jpe?g|png|gif|svg)$/i,
+            use: [
+                {
+                    loader: 'file-loader',
+                }, {
+                    loader: 'image-webpack-loader',
+                    options: {
+                        bypassOnDebug: true,
+                        mozjpeg: {
+                            progressive: true,
+                        },
+                        gifsicle: {
+                            interlaced: false,
+                        },
+                        optipng: {
+                            optimizationLevel: 4,
+                        },
+                        pngquant: {
+                            quality: '75-90',
+                            speed: 3,
                         },
                     },
-                ],
-            }, {
-                test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
-                include: [
-                    path.join(__dirname, 'src'), // important for performance!
-                ],
-            },
-        ],
+                },
+            ],
+        }, {
+            test: /\.scss$/,
+            include: [
+                path.join(__dirname, 'src'), // important for performance!
+            ],
+            use: [
+                {
+                    loader: 'style-loader',
+                }, {
+                    loader: 'css-loader',
+                }, {
+                    loader: 'postcss-loader',
+                }, {
+                    loader: 'sass-loader',
+                },
+            ],
+        }],
     },
     resolve: {
         extensions: ['.js', '.jsx'],
