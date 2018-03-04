@@ -465,6 +465,17 @@ describe('RoomsManager', () => {
                 [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy],
             )).toEqual(false)
         })
+        const checkIfRoomsCardsMatch = (first, second) => checkIfCardsMatch(
+            [
+                ...first.drawPile,
+                ...first.discardPile,
+                ...first.drawnCards,
+            ], [
+                ...second.drawPile,
+                ...second.discardPile,
+                ...second.drawnCards,
+            ]
+        )
         test('Should take 1 out of 4 cards', () => {
             RoomsManager.rooms_props['testRoom'].drawPile = [
                 PolicyCards.FacistPolicy,
@@ -483,17 +494,11 @@ describe('RoomsManager', () => {
             initialRoomProps.drawnCards = [PolicyCards.FacistPolicy]
             RoomsManager.takeChoicePolicyCards('testRoom', 1)
             
-            expect(checkIfCardsMatch(
-                [
-                    ...initialRoomProps.drawPile,
-                    ...initialRoomProps.discardPile,
-                    ...initialRoomProps.drawnCards,
-                ], [
-                    ...RoomsManager.rooms_props['testRoom'].drawPile,
-                    ...RoomsManager.rooms_props['testRoom'].discardPile,
-                    ...RoomsManager.rooms_props['testRoom'].drawnCards,
-                ]
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                RoomsManager.rooms_props['testRoom'],
             )).toEqual(true)
+
             expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
         })
         test('Should take 2 out of 4 cards and shuffle the rest with discards', () => {
@@ -520,17 +525,11 @@ describe('RoomsManager', () => {
             initialRoomProps.drawnCards = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy]
             RoomsManager.takeChoicePolicyCards('testRoom', 2)
 
-            expect(checkIfCardsMatch(
-                [
-                    ...initialRoomProps.drawPile,
-                    ...initialRoomProps.discardPile,
-                    ...initialRoomProps.drawnCards,
-                ], [
-                    ...RoomsManager.rooms_props['testRoom'].drawPile,
-                    ...RoomsManager.rooms_props['testRoom'].discardPile,
-                    ...RoomsManager.rooms_props['testRoom'].drawnCards,
-                ]
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                RoomsManager.rooms_props['testRoom'],
             )).toEqual(true)
+
             initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
             expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
             expect(RoomsManager.rooms_props['testRoom'].drawPile.length).toEqual(5)
@@ -553,17 +552,11 @@ describe('RoomsManager', () => {
             initialRoomProps.drawnCards = [PolicyCards.LiberalPolicy]
             RoomsManager.takeChoicePolicyCards('testRoom', 1)
 
-            expect(checkIfCardsMatch(
-                [
-                    ...initialRoomProps.drawPile,
-                    ...initialRoomProps.discardPile,
-                    ...initialRoomProps.drawnCards,
-                ], [
-                    ...RoomsManager.rooms_props['testRoom'].drawPile,
-                    ...RoomsManager.rooms_props['testRoom'].discardPile,
-                    ...RoomsManager.rooms_props['testRoom'].drawnCards,
-                ]
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                RoomsManager.rooms_props['testRoom'],
             )).toEqual(true)
+
             initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
             expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
             expect(RoomsManager.rooms_props['testRoom'].drawPile.length).toEqual(3)
@@ -592,20 +585,35 @@ describe('RoomsManager', () => {
             initialRoomProps.drawnCards = [PolicyCards.FacistPolicy]
             RoomsManager.takeChoicePolicyCards('testRoom', 1)
 
-            expect(checkIfCardsMatch(
-                [
-                    ...initialRoomProps.drawPile,
-                    ...initialRoomProps.discardPile,
-                    ...initialRoomProps.drawnCards,
-                ], [
-                    ...RoomsManager.rooms_props['testRoom'].drawPile,
-                    ...RoomsManager.rooms_props['testRoom'].discardPile,
-                    ...RoomsManager.rooms_props['testRoom'].drawnCards,
-                ]
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                RoomsManager.rooms_props['testRoom'],
             )).toEqual(true)
+
             initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
             expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
             expect(RoomsManager.rooms_props['testRoom'].drawPile.length).toEqual(5)
+        })
+        test('Should take 3 cards, but first shuffle, because there is only one available on draw pile', () => {
+            RoomsManager.rooms_props['testRoom'].drawPile = [
+                PolicyCards.FacistPolicy,
+            ] 
+            RoomsManager.rooms_props['testRoom'].discardPile = [
+                PolicyCards.FacistPolicy,
+                PolicyCards.LiberalPolicy,
+            ]
+            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+
+            RoomsManager.takeChoicePolicyCards('testRoom', 3)
+
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                RoomsManager.rooms_props['testRoom'],
+            )).toEqual(true)
+            expect(checkIfCardsMatch(
+                [ PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy ],
+                RoomsManager.rooms_props['testRoom'].drawnCards,
+            )).toEqual(true)
         })
     })
 
