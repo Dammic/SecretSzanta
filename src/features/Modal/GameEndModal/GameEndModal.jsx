@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { GameEndModalComponent } from './GameEndModalComponent'
 
-// eslint-disable-next-line
 class GameEndModal extends PureComponent {
     static propTypes = {
         playersDict: PropTypes.objectOf(PropTypes.any),
