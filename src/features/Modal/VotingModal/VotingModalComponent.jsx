@@ -1,6 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { PlayerRole } from '../../../../Dictionary'
 import { Button } from '../../Shared/Button/Button'
+import { getAvatar } from '../../../utils/avatarsHelper'
+import PresidentRoleImage from '../../../static/President.png'
+import ChancellorRoleImage from '../../../static/Chancellor.png'
 
 const VotingModalComponent = ({
     onYesVote,
@@ -11,9 +15,9 @@ const VotingModalComponent = ({
     const renderPlayer = (avatarNumber, role, playerName) => {
         return (
             <div className="voting-info-player">
-                <img className="voting-info-avatar" src={require(`../../../static/Avatar${avatarNumber}.png`)}></img>
-                <img className="voting-info-role" src={(role === PlayerRole.ROLE_PRESIDENT ? require('../../../static/President.png') : require('../../../static/Chancellor.png'))}></img>
-                <span>{playerName}</span>
+                <img className="voting-info-avatar" src={getAvatar(`liberal-${avatarNumber}`)}></img>
+                <img className="voting-info-role" src={(role === PlayerRole.ROLE_PRESIDENT ? PresidentRoleImage : ChancellorRoleImage)}></img>
+                <span className="ellipsis">{playerName}</span>
             </div>
         )
     }
@@ -29,7 +33,7 @@ const VotingModalComponent = ({
                 </div>
                 {renderPlayer(chancellorCandidate.avatarNumber, PlayerRole.ROLE_CHANCELLOR, chancellorCandidate.playerName)}
             </div>
-            <div className="voting-intro">Player <strong>{president.playerName}</strong> nominates player <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
+            <div className="voting-intro">The president nominates <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
             <div className="voting-intro">Do you agree?</div>
             <div className="voting-buttons-container">
                 <Button onClick={onYesVote} label="Jaa!" />
@@ -37,6 +41,19 @@ const VotingModalComponent = ({
             </div>
         </div>
     )
+}
+
+VotingModalComponent.propTypes = {
+    onYesVote: PropTypes.func.isRequired,
+    onNoVote: PropTypes.func.isRequired,
+    president: PropTypes.shape({
+        avatarNumber: PropTypes.number.isRequired,
+        playerName: PropTypes.string.isRequired,
+    }),
+    chancellorCandidate: PropTypes.shape({
+        avatarNumber: PropTypes.number.isRequired,
+        playerName: PropTypes.string.isRequired,
+    }),
 }
 
 export default VotingModalComponent

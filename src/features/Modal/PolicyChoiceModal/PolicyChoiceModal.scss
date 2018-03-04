@@ -7,16 +7,24 @@
         padding: 50px;
         padding-bottom: 0;
         .policy {
-            max-height: 150px;
-            max-width: 100px;
+            max-height: 120px;
+            max-width: 70px;
             padding-bottom: 20px;
             transition: all 0.5s;
+            @include respond-to(medium) { 
+                max-height: 150px;
+                max-width: 100px;
+            }
             &.selectable:hover {
+                max-height: 140px;
+                max-width: 90px;
                 cursor: pointer;
                 filter: brightness(1.2);
                 margin-top: 10px;
-                max-width: 120px;
-                max-height: 160px;
+                @include respond-to(medium) { 
+                    max-width: 120px;
+                    max-height: 160px;
+                }
             }
         }
     }
