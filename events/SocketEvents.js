@@ -61,7 +61,7 @@ module.exports = function (io) {
             presidentEmit(SocketEvents.ServerWaitingForVeto)
             chancellorEmit(SocketEvents.ServerWaitingForVeto)
             const onGameResume = (socket) => {
-                socketEventsUtils.checkIfGameShouldFinish(socket, () => {
+                phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
                     phaseSocketEvents.startChancellorChoicePhase(socket);
                 })
             }
@@ -105,7 +105,7 @@ module.exports = function (io) {
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
                 socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, false)
 
-                socketEventsUtils.checkIfGameShouldFinish(socket, () => {
+                phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
                         data: {
                             facist: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy),
@@ -246,11 +246,11 @@ module.exports = function (io) {
 
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
-                    socketEventsUtils.checkIfGameShouldFinish(socket, () => {
+                    phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
                         socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startPresidentPolicyChoice })
                     })
                 } else {
-                    socketEventsUtils.checkIfGameShouldFinish(socket, () => {
+                    phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
                         socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
                     })
                 }
@@ -297,7 +297,7 @@ module.exports = function (io) {
             } else if (choice === PolicyCards.FacistPolicy) {
                 socketEvents.checkForImmediateSuperpowersOrContinue(socket)
             } else {
-                socketEventsUtils.checkIfGameShouldFinish(socket, () => {
+                phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
                     socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
                 });
             }
@@ -333,7 +333,7 @@ module.exports = function (io) {
                 },
             })
 
-            socketEventsUtils.checkIfGameShouldFinish(socket, () => {
+            phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
                 socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
             })
         },

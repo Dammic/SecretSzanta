@@ -1,10 +1,12 @@
 const { pick, map } = require('lodash')
 const { SocketEvents, PlayerAffilications, PolicyCards, GlobalRoomName } = require('../Dictionary')
 const { getCurrentTimestamp } = require('./utils')
+const PhaseSocketEvents = require('../events/PhaseSocketEvents')
 
 let cancelTimeoutToken
 
 const SocketEventsUtils = (io, RoomsManager) => {
+    const phaseSocketEvents = PhaseSocketEvents(io, RoomsManager)
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
     const socketEventsUtils = {
         sendMessage: (socket, { content, author }) => {
@@ -149,15 +151,6 @@ const SocketEventsUtils = (io, RoomsManager) => {
                 },
             })
         },
-
-        checkIfGameShouldFinish: (socket, onContinueCallback) => {
-            const winningSide = RoomsManager.checkWinConditions(socket.currentRoom)
-            if (winningSide) {
-                phaseSocketEvents.endGame(socket, winningSide)
-            } else {
-                onContinueCallback()
-            }
-        }
     }
     return socketEventsUtils
 }

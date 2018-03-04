@@ -125,6 +125,15 @@ const PhaseSocketEvents = (io, RoomsManager) => {
                 },
             })
         },
+
+        checkIfGameShouldFinish: (socket, onContinueCallback) => {
+            const winningSide = RoomsManager.checkWinConditions(socket.currentRoom)
+            if (winningSide) {
+                phaseSocketEvents.endGame(socket, winningSide)
+            } else {
+                onContinueCallback()
+            }
+        }
     }
     return phaseSocketEvents
 }
