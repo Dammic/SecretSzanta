@@ -496,18 +496,24 @@ class RoomsManager {
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
+
+    reShuffle(roomName) {
+        const room = this.rooms_props[roomName]
+         
+        room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
+        room.discardPile = []
+    }
+
     takeChoicePolicyCards(roomName, amount) {
         const room = this.rooms_props[roomName]
+
+        if (size(room.drawPile) < amount) this.reShuffle(roomName)
 
         const policies = take(room.drawPile, amount)
         room.drawPile = drop(room.drawPile, amount)
         room.drawnCards = policies
 
-        const drawPileLength = size(room.drawPile)
-        if (drawPileLength < amount || drawPileLength < 3) {
-            room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
-            room.discardPile = []
-        }
+        if (size(room.drawPile) < 3) this.reShuffle(roomName)
         return policies
     }
     peekPolicyCards(roomName) {
