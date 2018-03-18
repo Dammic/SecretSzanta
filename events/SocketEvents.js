@@ -248,12 +248,11 @@ module.exports = function (io) {
 
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
-                    const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
-                    if (!shouldGameFinish) {
-                        socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startPresidentPolicyChoice })
-                    }
-                } else if (!shouldGameFinish) {
-                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
+                }
+
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
+                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: hasVotingSucceed ? phaseSocketEvents.startPresidentPolicyChoice : phaseSocketEvents.startChancellorChoicePhase })
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
@@ -336,9 +335,11 @@ module.exports = function (io) {
             })
 
             const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
-            if (!shouldGameFinish) {
-                socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
+            if (shouldGameFinish) {
+                return; 
             }
+
+            socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
             const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW

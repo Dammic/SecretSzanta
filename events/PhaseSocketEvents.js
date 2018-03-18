@@ -136,13 +136,14 @@ const PhaseSocketEvents = (io, RoomsManager) => {
 
         checkIfGameShouldFinish: (socket)  => {
             const { winningSide, reason } = RoomsManager.checkWinConditions(socket.currentRoom)
-            if (winningSide) {
-                const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
-                socketEventsUtils.sendMessage(socket, { content: `${winningSideName} have won - ${reason}` })
-                phaseSocketEvents.endGame(socket, winningSide)
-                return true
+            if (!winningSide) {
+                return false; 
             }
-            return false;
+
+            const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
+            socketEventsUtils.sendMessage(socket, { content: `${winningSideName} have won - ${reason}` })
+            phaseSocketEvents.endGame(socket, winningSide)
+            return true
         },
     }
     return phaseSocketEvents
