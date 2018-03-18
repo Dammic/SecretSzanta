@@ -12,7 +12,7 @@ const {
     PlayerBoards,
     ErrorTypes,
 } = require('../Dictionary')
-const { logInfo } = require('../utils/utils')
+const { logInfo, logError } = require('../utils/utils')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -470,6 +470,10 @@ class RoomsManager {
     /*******************policies*******************/
     /**********************************************/
     moveCard(sourcePile, destinationPile, card) {
+        if (!includes(sourcePile, card)) {
+            logError({}, `moveCard function: wanted to move card ${card} which don't exist in source pile`)
+            return
+        }
         pullAt(sourcePile, indexOf(sourcePile, card));
         destinationPile.push(card);
     }
