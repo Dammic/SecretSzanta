@@ -1,5 +1,5 @@
 const { cloneDeep, size, times, forEach, reduce, countBy } = require('lodash')
-const { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications } = require('../../Dictionary')
+const { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } = require('../../Dictionary')
 let RoomsManager;
 
 describe('RoomsManager', () => {
@@ -633,8 +633,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(PlayerAffilications.LIBERAL_AFFILIATION)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: PlayerAffilications.LIBERAL_AFFILIATION,
+                reason: WinReasons.fiveLiberalCards,
+            })
         })
 
         test('Should return liberal affiliation if liberal policies count < 5, but hitler is dead', () => {
@@ -649,8 +652,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(PlayerAffilications.LIBERAL_AFFILIATION)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: PlayerAffilications.LIBERAL_AFFILIATION,
+                reason: WinReasons.hitlerDead,
+            })
         })
 
         test('Should not return liberal affiliation if liberal policies count < 5, but hitler is alive', () => {
@@ -665,8 +671,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(null)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: null,
+                reason: null,
+            })
         })
 
         test('Should return fascist affiliation if fascist policies count === 6', () => {
@@ -681,8 +690,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(PlayerAffilications.FACIST_AFFILIATION)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: PlayerAffilications.FACIST_AFFILIATION,
+                reason: WinReasons.sixFascistCards,
+            })
         })
 
         test('Should return fascist affiliation if fascist policies === 4 AND hitler is chancellor', () => {
@@ -697,8 +709,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(PlayerAffilications.FACIST_AFFILIATION)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: PlayerAffilications.FACIST_AFFILIATION,
+                reason: WinReasons.hitlerBecameChancellor,
+            })
         })
 
         test('Should return fascist affiliation if fascist policies === 5 AND hitler is chancellor', () => {
@@ -713,8 +728,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(PlayerAffilications.FACIST_AFFILIATION)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: PlayerAffilications.FACIST_AFFILIATION,
+                reason: WinReasons.hitlerBecameChancellor,
+            })
         })
 
         test('Should not return fascist affiliation if fascist policies < 4 AND hitler is chancellor', () => {
@@ -729,8 +747,11 @@ describe('RoomsManager', () => {
                     affiliation: PlayerAffilications.HITLER_AFFILIATION,
                 },
             }
-            const winningAffiliation = RoomsManager.checkWinConditions('testRoom')
-            expect(winningAffiliation).toEqual(null)
+            const winningSide = RoomsManager.checkWinConditions('testRoom')
+            expect(winningSide).toEqual({
+                winningSide: null,
+                reason: null,
+            })
         })
     })
 })
