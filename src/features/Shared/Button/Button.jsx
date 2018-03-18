@@ -2,11 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import styles from './Button.css'
+
 export const Button = ({ label, onClick, className }) => {
-    const buttonClassNames = classNames('fabulous-button lined thick', className)
     return (
         <div
-            className={buttonClassNames}
+            className={classNames(styles.fabulousButton, styles.linedThick, className)}
             onClick={onClick}
             role="button"
             tabIndex="0"

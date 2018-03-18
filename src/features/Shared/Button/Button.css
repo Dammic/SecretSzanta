@@ -1,0 +1,37 @@
+@import 'variables/variables.css';
+
+.fabulousButton {
+    background: transparent;
+    padding: 1rem 1rem;
+    margin: 0 1rem;
+    transition: all .5s ease;
+    color: #41403E;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    outline: none;
+    box-shadow: 20px 38px 34px -26px hsla(0,0%,0%,.2);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    &:hover {
+        box-shadow:2px 8px 4px -6px hsla(0,0%,0%,.3);
+        background-color: var(--fabulous-button-hover-bg);
+        cursor: pointer;
+    }
+}
+.linedThick {
+    border: solid 7px var(--fabulous-button-border);
+}
+.dottedThick {
+    border: dotted 5px var(--fabulous-button-border);
+}
+.dashedThick {
+    border: dashed 5px var(--fabulous-button-border);
+}
+.linedThin {
+    border: solid 2px var(--fabulous-button-border);
+}
+.dottedThin {
+    border: dotted 2px var(--fabulous-button-border);
+}
+.dashedThin {
+    border: dashed 2px var(--fabulous-button-border);
+}

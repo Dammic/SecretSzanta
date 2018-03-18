@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames';
 import { map } from 'lodash'
 import { PolicyCards } from '../../../../Dictionary'
+import { Button } from '../../Shared/Button/Button'
 
 const liberalPolicy = require('../../../static/liberalcard.png')
 const fascistPolicy = require('../../../static/facistcard.png')
@@ -24,7 +25,13 @@ const PolicyChoiceModalComponent = ({
                     )
                 })}
             </ul>
-            {!selectable && <a className="fabulous-button lined thick acknowledge-button" onClick={onButtonClose}>Acknowledged</a>}
+            {!selectable && (
+                <Button
+                    onClick={onButtonClose}
+                    label="Acknowledged"
+                    className="acknowledge-button"
+                />
+            )}
         </div>
     )
 }
