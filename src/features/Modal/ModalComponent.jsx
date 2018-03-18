@@ -21,7 +21,11 @@ const ModalComponent = ({
         <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
             <div className="modal-container">
                 <div className={classNames('modal-content')}>
-                    {isCloseButtonShown && <a className="modal-close-button" onClick={closeModal}>?</a>}
+                    {isCloseButtonShown && (
+                        <a className="modal-close-button" onClick={closeModal}>
+                            <i className="fa fa-times" />
+                        </a>
+                    )}
                     <div className="modal-title">{title}</div>
                     <div className="modal-body">{child}</div>
                 </div>
