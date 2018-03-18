@@ -470,15 +470,15 @@ describe('RoomsManager', () => {
         })
     })
 
-    describe('takeChoicePolicyCards', () => {
-        const checkIfCardsMatch = (expectedCards, receivedCards) => {
-            const expectedCardsGroupedCount = countBy(expectedCards)
-            const receivedCardsGroupedCount = countBy(receivedCards)
-            return (
-                (expectedCardsGroupedCount[PolicyCards.FacistPolicy] === receivedCardsGroupedCount[PolicyCards.FacistPolicy])
-                && (expectedCardsGroupedCount[PolicyCards.LiberalPolicy] === receivedCardsGroupedCount[PolicyCards.LiberalPolicy])
-            )
-        }
+    const checkIfCardsMatch = (expectedCards, receivedCards) => {
+        const expectedCardsGroupedCount = countBy(expectedCards)
+        const receivedCardsGroupedCount = countBy(receivedCards)
+        return (
+            (expectedCardsGroupedCount[PolicyCards.FacistPolicy] === receivedCardsGroupedCount[PolicyCards.FacistPolicy])
+            && (expectedCardsGroupedCount[PolicyCards.LiberalPolicy] === receivedCardsGroupedCount[PolicyCards.LiberalPolicy])
+        )
+    }
+    describe('helper function checkuIfCardsMatch', () => {
         test('checkIfCardsMatch should return true for the same entry arrays', () => {
             expect(checkIfCardsMatch(
                 [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy],
@@ -497,6 +497,25 @@ describe('RoomsManager', () => {
                 [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy],
             )).toEqual(false)
         })
+    })
+
+    describe('reShuffle', () => {
+        test('The same cards stay after reShuffle', () => {
+            RoomsManager.drawPile = [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy]
+            RoomsManager.discardPile = [PolicyCards.LiberalPolicy]
+            const room = RoomsManager.rooms_props['testRoom']
+            const initialRoom = cloneDeep(room)
+            RoomsManager.reShuffle('testRoom')
+            expect(room.discardPile).toEqual([])
+            expect(checkIfCardsMatch(
+                room.drawPile,
+                [...initialRoom.drawPile, ...initialRoom.discardPile],
+            )).toEqual(true)
+            
+        })
+    })
+
+    describe('takeChoicePolicyCards', () => {
         const checkIfRoomsCardsMatch = (first, second) => checkIfCardsMatch(
             [
                 ...first.drawPile,
