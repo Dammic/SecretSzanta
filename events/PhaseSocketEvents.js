@@ -1,7 +1,8 @@
 const { forEach, get } = require('lodash')
-const { SocketEvents, PlayerRole, GamePhases } = require('../Dictionary')
+const { SocketEvents, PlayerRole, GamePhases, PlayerAffilications, PolicyCards } = require('../Dictionary')
 const { getCurrentTimestamp } = require('../utils/utils')
 const SocketEventsUtils = require('../utils/SocketEventsUtils')
+console.info(SocketEventsUtils)
 
 const PhaseSocketEvents = (io, RoomsManager) => {
     const socketEventsUtils = SocketEventsUtils(io, RoomsManager)
@@ -127,13 +128,43 @@ const PhaseSocketEvents = (io, RoomsManager) => {
         },
 
         checkIfGameShouldFinish: (socket, onContinueCallback) => {
-            const winningSide = RoomsManager.checkWinConditions(socket.currentRoom)
+            const { winningSide, reason } = RoomsManager.checkWinConditions(socket.currentRoom)
             if (winningSide) {
+                const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
+                socketEventsUtils.sendMessage(socket, { content: `${winningSideName} have won - ${reason}` })
                 phaseSocketEvents.endGame(socket, winningSide)
             } else {
                 onContinueCallback()
             }
-        }
+        },
+
+        checkForImmediateSuperpowersOrContinue: (socket) => {
+            const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
+            const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom)
+            if (fascistPolicyCount === 1 && playerboardType === PlayerBoards.LargeBoard) {
+                phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
+            } else if (fascistPolicyCount === 2 && playerboardType !== PlayerBoards.SmallBoard) {
+                phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
+            } else if (fascistPolicyCount === 3) {
+                if (playerboardType === PlayerBoards.SmallBoard) {
+                    // President will see top 3 cards from the drawPile deck
+                    phaseSocketEvents.startPeekCardsPhase(socket)
+                } else {
+                    // President will designate next president superpower
+                    phaseSocketEvents.startDesignateNextPresidentPhase(socket)
+                }
+            // 4th power is always kill on each board
+            } else if (fascistPolicyCount === 4) {
+                phaseSocketEvents.startKillPhase(socket)
+            // 5th power is always kill AND veto power unlock
+            } else if (fascistPolicyCount === 5) {
+                RoomsManager.toggleVeto(socket.currentRoom)
+                socketEventsUtils.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
+                phaseSocketEvents.startKillPhase(socket)
+            } else {
+                socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
+            }
+        },
     }
     return phaseSocketEvents
 }

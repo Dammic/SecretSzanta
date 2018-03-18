@@ -115,6 +115,12 @@ const Dictionary = {
         MediumBoard: 'MEDIUM_BOARD',
         LargeBoard: 'LARGE_BOARD',
     },
+    WinReasons: {
+        fiveLiberalCards: '5 liberal policies have been enacted',
+        hitlerDead: 'Hitler has been assassinated',
+        sixFascistCards: '6 fascist policies have been enacted',
+        hitlerBecameChancellor: 'Hitler has become chancellor after 4 fascist cards have been enacted',
+    },
     GlobalRoomName: 'Global',
 }
 
