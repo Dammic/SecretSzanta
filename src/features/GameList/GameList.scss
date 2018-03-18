@@ -1,7 +1,7 @@
 .game-list-container {
     display: flex;
     /* 100vh of page - 50px of header */
-    height: calc(100vh - 50px);
+    height: calc(100vh - $header-height);
     .first-column {
         /* 35px is margin top and 35px is margin bottom */
         height: calc(100% - 35px - 35px);
