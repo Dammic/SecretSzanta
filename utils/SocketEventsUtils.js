@@ -96,8 +96,9 @@ const SocketEventsUtils = (io, RoomsManager) => {
                 if (failedElectionsCount >= 3) {
                     socketEventsUtils.resetElectionTracker(socket, failedElectionsCount)
 
-                    const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
+                    const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)[0]
                     socketEventsUtils.enactPolicy(socket, topCard)
+
                 } else {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.IncreaseTrackerPosition, {
                         data: {

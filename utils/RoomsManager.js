@@ -11,6 +11,7 @@ const {
     GlobalRoomName,
     PlayerBoards,
     ErrorTypes,
+    WinReasons,
 } = require('../Dictionary')
 const { logInfo } = require('../utils/utils')
 
@@ -577,6 +578,24 @@ class RoomsManager {
     resetPresidentBackup(roomName) {
         this.rooms_props[roomName].previousPresidentNameBackup = null
     }
+
+    checkWinConditions(roomName) {
+        const { playersDict } = this.rooms_props[roomName];
+        const hitler = find(playersDict, (player => player.affiliation === PlayerAffilications.HITLER_AFFILIATION))
+        const fascistPoliciesCount = this.getPolicyCardsCount(roomName, PolicyCards.FacistPolicy);
+        const liberalPoliciesCount = this.getPolicyCardsCount(roomName, PolicyCards.LiberalPolicy);
+        if (liberalPoliciesCount === 5) {
+            return { winningSide: PlayerAffilications.LIBERAL_AFFILIATION, reason: WinReasons.fiveLiberalCards }
+        } else if (hitler.isDead) {
+            return { winningSide: PlayerAffilications.LIBERAL_AFFILIATION, reason: WinReasons.hitlerDead }
+        } else if (fascistPoliciesCount === 6) {
+            return { winningSide: PlayerAffilications.FACIST_AFFILIATION, reason: WinReasons.sixFascistCards }
+        } else if (fascistPoliciesCount >= 4 && hitler.role === PlayerRole.ROLE_CHANCELLOR) {
+            return { winningSide: PlayerAffilications.FACIST_AFFILIATION, reason: WinReasons.hitlerBecameChancellor }
+        }
+        return { winningSide: null, reason: null }; 
+    }
+
 }
 
 module.exports = RoomsManager

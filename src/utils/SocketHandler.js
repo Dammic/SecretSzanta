@@ -148,8 +148,9 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.PlayerKilled, (payload) => {
             const { playerName, wasHitler, timestamp } = payload.data
-            const killStatusMessage = (wasHitler ? 'Praise to him, because it was Hitler himself he killed!' : 'It turned out the killed foe was not Hitler, unfortunately.')
-            this.props.chatActions.addMessage({ timestamp, content: `The president has killed ${playerName}... ${killStatusMessage}` })
+            if (!wasHitler) {
+                this.props.chatActions.addMessage({ timestamp, content: `The president has killed ${playerName}... It turned out the killed foe was not Hitler, unfortunately` })
+            }
             this.props.roomActions.killPlayer({ playerName })
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {

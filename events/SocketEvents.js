@@ -15,7 +15,7 @@ const {
     GlobalRoomName,
     PlayerBoards,
 } = require('../Dictionary')
-const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight } = require('lodash')
+const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = require('lodash')
 const ClientVerificationHof = require('../utils/ClientVerificationHof')
 const RoomsManager = new (require('../utils/RoomsManager'))()
 const SocketEventsUtils = require('../utils/SocketEventsUtils')
@@ -60,11 +60,17 @@ module.exports = function (io) {
             const chancellorEmit = RoomsManager.getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
             presidentEmit(SocketEvents.ServerWaitingForVeto)
             chancellorEmit(SocketEvents.ServerWaitingForVeto)
+            const onGameResume = (socket) => {
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
+                    phaseSocketEvents.startChancellorChoicePhase(socket);
+                }
+            }
             socketEventsUtils.resumeGame(
                 socket,
                 {
                     delay: 30000,
-                    func: phaseSocketEvents.startChancellorChoicePhase,
+                    func: onGameResume,
                     customMessage: 'Due to veto power, the president and chancellor can now together veto the enacted policy. Next phase will begin in 30 seconds (assuming no veto will be reported)...',
                 },
             )
@@ -100,14 +106,17 @@ module.exports = function (io) {
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
                 socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, false)
 
-                io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
-                    data: {
-                        facist: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy),
-                        liberal: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.LiberalPolicy),
-                    },
-                })
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
+                    io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
+                        data: {
+                            facist: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy),
+                            liberal: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.LiberalPolicy),
+                        },
+                    })
 
-                socketEventsUtils.resumeGame(socket, { delay: 5000, func: phaseSocketEvents.startChancellorChoicePhase })
+                    socketEventsUtils.resumeGame(socket, { delay: 5000, func: phaseSocketEvents.startChancellorChoicePhase })
+                }
             } else {
                 const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
                 socketEventsUtils.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
@@ -230,7 +239,7 @@ module.exports = function (io) {
             if (RoomsManager.didAllVote(socket.currentRoom)) {
                 const hasVotingSucceed = RoomsManager.getVotingResult(socket.currentRoom)
                 const votingResultMessage = `Voting completed! ${hasVotingSucceed
-                    ? `${socket.currentRoom} has become the new chancellor!`
+                    ? `${socket.currentPlayerName} has become the new chancellor!`
                     : 'The proposal has been rejected!'}
                 `
                 socketEventsUtils.sendMessage(socket, { content: votingResultMessage })
@@ -239,9 +248,11 @@ module.exports = function (io) {
 
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
-                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startPresidentPolicyChoice })
-                } else {
-                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
+                }
+
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
+                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: hasVotingSucceed ? phaseSocketEvents.startPresidentPolicyChoice : phaseSocketEvents.startChancellorChoicePhase })
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
@@ -286,7 +297,10 @@ module.exports = function (io) {
             } else if (choice === PolicyCards.FacistPolicy) {
                 socketEvents.checkForImmediateSuperpowersOrContinue(socket)
             } else {
-                socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
+                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
+                }
             }
         },
 
@@ -312,7 +326,6 @@ module.exports = function (io) {
             RoomsManager.killPlayer(socket.currentRoom, playerName)
             const hitler = RoomsManager.getHitler(socket.currentRoom)
             const wasHitler = hitler.playerName === playerName
-
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
                 data: {
                     wasHitler,
@@ -320,11 +333,13 @@ module.exports = function (io) {
                     timestamp: getCurrentTimestamp(),
                 },
             })
-            if (wasHitler) {
-                phaseSocketEvents.endGame(socket, PlayerAffilications.LIBERAL_AFFILIATION)
-            } else {
-                socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
+
+            const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+            if (shouldGameFinish) {
+                return; 
             }
+
+            socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
             const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW
@@ -415,8 +430,9 @@ module.exports = function (io) {
         socket.currentRoom = ''
 
         const clientVerificationHof = ClientVerificationHof(RoomsManager)
-        phaseSocketEvents.startGame = clientVerificationHof(['isOwner'], phaseSocketEvents.startGame)
-        phaseSocketEvents.endGame = clientVerificationHof(['isOwner'], phaseSocketEvents.endGame)
+        const phaseSocketEventsCopy = cloneDeep(phaseSocketEvents)
+        phaseSocketEventsCopy.startGame = clientVerificationHof(['isOwner'], phaseSocketEventsCopy.startGame)
+        phaseSocketEventsCopy.endGame = clientVerificationHof(['isOwner'], phaseSocketEventsCopy.endGame)
         socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
         socketEvents.superpowerAffiliationPeekPlayer = clientVerificationHof(['isPresident'], socketEvents.superpowerAffiliationPeekPlayer)
         socketEvents.endPeekPlayerSuperpower = clientVerificationHof(['isPresident'], socketEvents.endPeekPlayerSuperpower)
@@ -426,7 +442,7 @@ module.exports = function (io) {
         // we need a way to pass socket object into those functions
         const partialFunctions = mapValues({
             ...socketEvents,
-            ...phaseSocketEvents,
+            ...phaseSocketEventsCopy,
             sendMessage: socketEventsUtils.sendMessage,
         }, func => partial(func, socket))
         partialFunctions['banPlayer'] = partialRight(partialFunctions.kickPlayer, true)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getAvatar } from '../../../utils/avatarsHelper'
@@ -13,13 +13,13 @@ const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
             />
             <span className="player-name ellipsis">{playerName}</span>
             {currentRoom && (
-                <React.Fragment>
+                <Fragment>
                     <span className="room-name ellipsis">
                         <span>room:{' '}</span>
                         <b className="room-name-text">{currentRoom}</b>
                     </span>
                     <span className="room-name mobile">Busy</span>
-                </React.Fragment>
+                </Fragment>
             )}
         </div>
     )
