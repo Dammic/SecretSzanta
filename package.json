@@ -14,7 +14,7 @@
     "eslint": "eslint ./src",
     "build:prod": "rimraf public && webpack --env prod --config webpack.dev.js",
     "test": "node_modules/jest/bin/jest.js",
-    "test:silent": "NODE_SHOWCONSOLE=\"NO\" npm run test"
+    "test:silent": "NODE_HIDECONSOLE=true npm run test"
   },
   "jest": {
     "moduleNameMapper": {
