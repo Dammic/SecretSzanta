@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import styles from './GameList.css'
+
 const GameListItemComponent = ({
     roomId,
     roomName,
@@ -8,12 +10,12 @@ const GameListItemComponent = ({
     onClick,
 }) => {
     return (
-        <div key={roomName} className="game-list-element">
-            <div className="game-element-container">
-                <div className="room-name">
+        <div key={roomName} className={styles.gameListElement}>
+            <div className={styles.gameElementContainer}>
+                <div>
                     <div>{roomName} |{playerCount}/9999</div>
                 </div>
-                <div className="join-button-area">
+                <div>
                     <button data-roomid={roomId} onClick={onClick}>
                         JOIN
                     </button>
