@@ -1,14 +1,14 @@
 .header-container {
     width: 100%;
-    height: 50px;
+    height: $header-height;
     position: sticky;
     top: 0;
     z-index: 40;
     background-color: $header-background;
     
     .header {
-        width: 80%;
         height: 100%;
+        width: 80%;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -18,28 +18,79 @@
         margin-right: auto;
 
         @include respond-to(medium) { 
-            width: 60% 
+            width: 60%;
         }
 
         .app-name {
            letter-spacing: -1px;
            font-weight: 700;
            font-size: 18px;
+           cursor: pointer;
+           @include respond-to(medium) { 
+               cursor: initial;
+           }
         }
-        .header-navigation > span {
-            margin: 0 15px;
-            transition: all .3s;
-            cursor: pointer;
-            border-bottom: 1px solid transparent;
+        .header-navigation {
+            max-width: 1040px;
 
-            &:not(.active):hover {
-                color:$header-navigation-font-hover;
-                border-color: $header-navigation-font-hover;
+            &.is-open {
+                .header-navigation-links {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
             }
+            .menu-icon {
+                font-size: 24px;
+                cursor: pointer;
+                @include respond-to(medium) { 
+                    display: none;
+                }
+            }
+            .header-navigation-links {
+                pointer-events: none;
+                transition: opacity 0.3s;
+                opacity: 0;
+                position: fixed;
+                background-color: $header-mobile-bg;
+                top: $header-height;
+                height: calc(100vh - #{$header-height});
+                width: 100vw;
+                left: 0;
+                display: flex;           
+                flex-direction: column;
+                align-items: center;
+                padding-top: 30px;
+                font-size: 20px;
 
-            &.active {
-                color:$header-navigation-font-active;
-                border-color: $header-navigation-font-active;
+                @include respond-to(medium) { 
+                    pointer-events: auto;
+                    opacity: 1;
+                    position: initial;
+                    background-color: transparent;
+                    top: 0;
+                    height: inherit;
+                    display: initial;
+                    padding-top: 0;
+                    font-size: 18px;
+                }
+
+                & > span {
+                    margin: 0 15px;
+                    transition: all .3s;
+                    cursor: pointer;
+                    border-bottom: 1px solid transparent;
+                    margin-top: 20px;
+
+                    &:not(.active):hover {
+                        color:$header-navigation-font-hover;
+                        border-color: $header-navigation-font-hover;
+                    }
+
+                    &.active {
+                        color:$header-navigation-font-active;
+                        border-color: $header-navigation-font-active;
+                    }
+                }
             }
         }
     }
