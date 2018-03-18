@@ -2,7 +2,6 @@ const { forEach, get } = require('lodash')
 const { SocketEvents, PlayerRole, GamePhases, PlayerAffilications, PolicyCards } = require('../Dictionary')
 const { getCurrentTimestamp } = require('../utils/utils')
 const SocketEventsUtils = require('../utils/SocketEventsUtils')
-console.info(SocketEventsUtils)
 
 const PhaseSocketEvents = (io, RoomsManager) => {
     const socketEventsUtils = SocketEventsUtils(io, RoomsManager)

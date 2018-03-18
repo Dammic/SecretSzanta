@@ -78,7 +78,6 @@ const SocketEventsUtils = (io, RoomsManager) => {
             const isFacist = policy === PolicyCards.FacistPolicy
             RoomsManager.enactPolicy(socket.currentRoom, policy)
             socketEventsUtils.sendMessage(socket, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
-            console.info(policy)
             io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
                 data: {
                     policy,
@@ -97,7 +96,7 @@ const SocketEventsUtils = (io, RoomsManager) => {
                 if (failedElectionsCount >= 3) {
                     socketEventsUtils.resetElectionTracker(socket, failedElectionsCount)
 
-                    const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)
+                    const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)[0]
                     socketEventsUtils.enactPolicy(socket, topCard)
 
                 } else {
