@@ -12,29 +12,27 @@ const GameListComponent = ({
     onClick,
 }) => {
     return (
-        <div className="game-room">
-            <div className="game-list-container">
-                <div className="first-column">
-                    <div className="game-list">
-                        {map(rooms, room => (
-                            <GameListItemComponent
-                                key={room.roomId}
-                                roomId={room.roomId}
-                                roomName={room.roomName}
-                                playerCount={room.playerCount}
-                                onClick={onClick}
-                            />
-                        ))}
-                    </div>
+        <div className="game-list-container">
+            <div className="first-column">
+                <div className="game-list">
+                    {map(rooms, room => (
+                        <GameListItemComponent
+                            key={room.roomId}
+                            roomId={room.roomId}
+                            roomName={room.roomName}
+                            playerCount={room.playerCount}
+                            onClick={onClick}
+                        />
+                    ))}
                 </div>
-                <div className="second-column">
-                    <div className="utils-row">
-                        <span className="ellipsis">Hello <b>{userName}</b>!</span>
-                        <TopNavbar />
-                    </div>
-                    <PlayersList />
-                    <Chat />
+            </div>
+            <div className="second-column">
+                <div className="utils-row">
+                    <span className="ellipsis">Hello <b>{userName}</b>!</span>
+                    <TopNavbar />
                 </div>
+                <PlayersList />
+                <Chat />
             </div>
         </div>
     )
