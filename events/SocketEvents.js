@@ -61,9 +61,10 @@ module.exports = function (io) {
             presidentEmit(SocketEvents.ServerWaitingForVeto)
             chancellorEmit(SocketEvents.ServerWaitingForVeto)
             const onGameResume = (socket) => {
-                phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
                     phaseSocketEvents.startChancellorChoicePhase(socket);
-                })
+                }
             }
             socketEventsUtils.resumeGame(
                 socket,
@@ -105,7 +106,8 @@ module.exports = function (io) {
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
                 socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, false)
 
-                phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
                         data: {
                             facist: RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy),
@@ -114,7 +116,7 @@ module.exports = function (io) {
                     })
 
                     socketEventsUtils.resumeGame(socket, { delay: 5000, func: phaseSocketEvents.startChancellorChoicePhase })
-                })
+                }
             } else {
                 const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
                 socketEventsUtils.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
@@ -246,13 +248,12 @@ module.exports = function (io) {
 
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
-                    phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
+                    const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                    if (!shouldGameFinish) {
                         socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startPresidentPolicyChoice })
-                    })
-                } else {
-                    phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
-                        socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
-                    })
+                    }
+                } else if (!shouldGameFinish) {
+                    socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
                 }
 
                 io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
@@ -297,9 +298,10 @@ module.exports = function (io) {
             } else if (choice === PolicyCards.FacistPolicy) {
                 socketEvents.checkForImmediateSuperpowersOrContinue(socket)
             } else {
-                phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
+                const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+                if (!shouldGameFinish) {
                     socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
-                });
+                }
             }
         },
 
@@ -333,9 +335,10 @@ module.exports = function (io) {
                 },
             })
 
-            phaseSocketEvents.checkIfGameShouldFinish(socket, () => {
+            const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
+            if (!shouldGameFinish) {
                 socketEventsUtils.resumeGame(socket, { delay: 4000, func: phaseSocketEvents.startChancellorChoicePhase })
-            })
+            }
         },
         kickPlayer: (socket, { playerName }, permanently = false) => {
             const hasGameBegan = RoomsManager.getGamePhase(socket.currentRoom) !== GamePhases.GAME_PHASE_NEW

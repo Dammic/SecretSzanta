@@ -1,4 +1,4 @@
-const { forEach, get } = require('lodash')
+const { forEach, get, map, pick } = require('lodash')
 const { SocketEvents, PlayerRole, GamePhases, PlayerAffilications, PolicyCards } = require('../Dictionary')
 const { getCurrentTimestamp } = require('../utils/utils')
 const SocketEventsUtils = require('../utils/SocketEventsUtils')
@@ -134,15 +134,15 @@ const PhaseSocketEvents = (io, RoomsManager) => {
             })
         },
 
-        checkIfGameShouldFinish: (socket, onContinueCallback) => {
+        checkIfGameShouldFinish: (socket)  => {
             const { winningSide, reason } = RoomsManager.checkWinConditions(socket.currentRoom)
             if (winningSide) {
                 const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
                 socketEventsUtils.sendMessage(socket, { content: `${winningSideName} have won - ${reason}` })
                 phaseSocketEvents.endGame(socket, winningSide)
-            } else {
-                onContinueCallback()
+                return true
             }
+            return false;
         },
     }
     return phaseSocketEvents
