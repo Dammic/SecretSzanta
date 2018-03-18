@@ -13,7 +13,7 @@ const {
     ErrorTypes,
     WinReasons,
 } = require('../Dictionary')
-const { logInfo } = require('../utils/utils')
+const { logInfo, logError } = require('../utils/utils')
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -470,15 +470,23 @@ class RoomsManager {
     /**********************************************/
     /*******************policies*******************/
     /**********************************************/
+    moveCard(sourcePile, destinationPile, card) {
+        if (!includes(sourcePile, card)) {
+            logError({}, `moveCard function: wanted to move card ${card} which don't exist in source pile`)
+            return
+        }
+        pullAt(sourcePile, indexOf(sourcePile, card));
+        destinationPile.push(card);
+    }
 
     enactPolicy(roomName, card) {
-        this.rooms_props[roomName].policiesPile.push(card)
-        this.rooms_props[roomName].drawnCards = []
+        const { drawnCards, policiesPile } = this.rooms_props[roomName]
+        RoomsManager.moveCard( drawnCards, policiesPile, card)
+        RoomsManager.discardAllCards(roomName)
     }
     discardPolicy(roomName, card) {
-        const { drawnCards } = this.rooms_props[roomName]
-        pullAt(drawnCards, indexOf(drawnCards, card))
-        this.rooms_props[roomName].discardPile.push(card)
+        const { drawnCards, discardPile } = this.rooms_props[roomName]
+        RoomsManager.moveCard(drawnCards, discardPile)
     }
 
     discardAllCards(roomName) {
@@ -490,25 +498,30 @@ class RoomsManager {
     discardPolicyByVeto(roomName) {
         const { policiesPile, discardPile } = this.rooms_props[roomName]
         const discardedPolicy = take(policiesPile, 1)[0]
-        this.rooms_props[roomName].policiesPile = dropRight(policiesPile, 1)
-        discardPile.push(discardedPolicy)
+        RoomsManager.moveCard(policiesPile, discardPile, discardedPolicy)
     }
 
     getDrawnCards(roomName) {
         return this.rooms_props[roomName].drawnCards
     }
+
+    reShuffle(roomName) {
+        const room = this.rooms_props[roomName]
+         
+        room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
+        room.discardPile = []
+    }
+
     takeChoicePolicyCards(roomName, amount) {
         const room = this.rooms_props[roomName]
+
+        if (size(room.drawPile) < amount) this.reShuffle(roomName)
 
         const policies = take(room.drawPile, amount)
         room.drawPile = drop(room.drawPile, amount)
         room.drawnCards = policies
 
-        const drawPileLength = size(room.drawPile)
-        if (drawPileLength < amount || drawPileLength < 3) {
-            room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
-            room.discardPile = []
-        }
+        if (size(room.drawPile) < 3) this.reShuffle(roomName)
         return policies
     }
     peekPolicyCards(roomName) {
