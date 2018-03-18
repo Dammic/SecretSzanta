@@ -25,7 +25,6 @@ $modal-background: #D8D9D0;
 $modal-close-mark: #3C3939;
 $modal-font: #474242;
 $modal-title: #C8C9BE;
-$modal-border: #B6B7AC;
 
 $game-list-elements-separator: #999999;
 $game-list-first-column-bg: #3F3A3A;
@@ -94,5 +93,7 @@ $player-bubble-triangle-size: $player-bubble-height/2;
 $player-bubble-original-position: 85%;
 $player-bubble-activated-position: 100%;
 
-$header-height: 50px;
+$voting-modal-player-width-medium: 140px;
+$voting-modal-player-width-small: 100px;
 
+$header-height: 50px;

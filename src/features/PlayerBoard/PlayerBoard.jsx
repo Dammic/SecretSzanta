@@ -22,6 +22,7 @@ export class PlayerBoard extends React.PureComponent {
         liberalPoliciesCount: PropTypes.number,
         trackerPosition: PropTypes.number,
         boardType: PropTypes.string,
+        isModalVisible: PropTypes.bool,
         choiceMode: PropTypes.shape({
             isVisible: PropTypes.bool,
             selectablePlayers: PropTypes.arrayOf(PropTypes.string),
@@ -113,7 +114,16 @@ export class PlayerBoard extends React.PureComponent {
     }
 
     render() {
-        const { choiceMode, playersDict, userName, liberalPoliciesCount, facistPoliciesCount, trackerPosition, boardType } = this.props
+        const {
+            choiceMode,
+            playersDict,
+            userName,
+            liberalPoliciesCount,
+            facistPoliciesCount,
+            trackerPosition,
+            boardType,
+            isModalVisible,
+        } = this.props
         const playersWithoutMe = reject(playersDict, { playerName: userName })
         const players = map(playersWithoutMe, player => this.makePlayer(player))
         const left = []
@@ -142,11 +152,12 @@ export class PlayerBoard extends React.PureComponent {
             trackerMoved={this.state.trackerMoved}
             renderFascistPlayerBoard={this.getFascistPlayerBoard}
             isPlayerboardHidden={!!boardType}
+            isModalVisible={isModalVisible}
         />)
     }
 }
 
-const mapStateToProps = ({ user, room, players }) => ({
+const mapStateToProps = ({ user, room, players, modal }) => ({
     userName: user.userName,
     playersDict: room.playersDict,
     facistPoliciesCount: room.facistPoliciesCount,
@@ -155,6 +166,7 @@ const mapStateToProps = ({ user, room, players }) => ({
     choiceModeContext: room.choiceModeContext,
     boardType: room.boardType,
     choiceMode: players.choiceMode,
+    isModalVisible: modal.isVisible,
 })
 
 const mapDispatchToProps = dispatch => ({

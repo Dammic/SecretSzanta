@@ -1,6 +1,7 @@
 .voting-modal {
     .voting-intro {
         text-align: center;
+        padding-top: 10px;
     }
 
     .voting-info-container {
@@ -12,12 +13,19 @@
             display: flex;
             flex-direction: column;
             text-align: center;
+            width: $voting-modal-player-width-small;
+            @include respond-to(medium) { 
+                width: $voting-modal-player-width-medium;
+            }
             .voting-info-avatar {
-                height: 160px;
-                width: 140px;
+                height: 120px;
+                width: inherit;
+                @include respond-to(medium) { 
+                    height: 160px;
+                }
             }
             .voting-info-role {
-                width: 140px;
+                width: inherit;
                 height: 30px;
             }
         }
