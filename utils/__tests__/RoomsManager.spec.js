@@ -2,11 +2,13 @@ const { cloneDeep, size, times, forEach, reduce, countBy } = require('lodash')
 const { GamePhases, PlayerRole, PlayerBoards, PolicyCards } = require('../../Dictionary')
 let RoomsManager;
 
+
 describe('RoomsManager', () => {
     beforeEach(() => {
         RoomsManager = new (require('../RoomsManager'))()
         RoomsManager.initializeRoom('testRoom')
         RoomsManager.players = {}
+        
     });
     afterEach(() => {
         // this tests if the function did not override different room than it should
@@ -435,6 +437,36 @@ describe('RoomsManager', () => {
             initialRoomProps.previousPresidentNameBackup = null
 
             expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+        })
+    })
+
+    describe('moveCard', () => {
+        test('Policy card is removed from drawn card pile and added to discard pile', () => {
+            const room = RoomsManager.rooms_props['testRoom']
+            room.drawPile = [PolicyCards.LiberalPolicy]
+            room.discardPile = []
+            RoomsManager.moveCard(room.drawPile, room.discardPile, room.drawPile[0])
+            expect(room.drawPile).toEqual([])
+            expect(room.discardPile).toEqual([PolicyCards.LiberalPolicy])
+        })
+
+        test('Non-existing policy in source pile is not moved to other pile', () => {
+            const room = RoomsManager.rooms_props['testRoom']
+            room.drawPile = []
+            room.discardPile = []
+            RoomsManager.moveCard(room.drawPile, room.discardPile, PolicyCards.LiberalPolicy)
+            expect(room.drawPile).toEqual([])
+            expect(room.discardPile).toEqual([])
+        })
+
+        test('Only chosen policy is moved to another pile', () => {
+            const room = RoomsManager.rooms_props['testRoom']
+            room.drawPile = [PolicyCards.LiberalPolicy, PolicyCards.FacistPolicy]
+            room.discardPile = []
+            const cardToStay = room.drawPile[1]
+            RoomsManager.moveCard(room.drawPile, room.discardPile, room.drawPile[0])
+            expect(room.drawPile).toEqual([cardToStay])
+            expect(room.discardPile).toEqual([PolicyCards.LiberalPolicy])
         })
     })
 
