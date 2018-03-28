@@ -1,8 +1,10 @@
 import React from 'react'
 
+import styles from './HowToPlay.css'
+
 const HowToPlayComponent = () => {
     return (
-        <div className="how-to-play">
+        <div className={styles.howToPlay}>
             HowToPlay
         </div>
     )

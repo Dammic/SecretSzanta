@@ -2,11 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import { Button } from '../Shared/Buttons'
+
+import styles from './Timer.css'
+
 const TimerComponent = ({ secondsRemaining, isVetoUnlocked, onVetoClick }) => {
     return (
-        <div className={classNames('timer', { visible: secondsRemaining })}>
+        <div className={classNames(styles.timer, { [styles.visible]: secondsRemaining })}>
             <strong>{secondsRemaining}</strong>s remaining
-            {isVetoUnlocked && <a role="button" tabIndex="0" className="btn veto" onClick={onVetoClick}>veto</a>}
+            {isVetoUnlocked && <Button className={styles.veto} onClick={onVetoClick}>veto</Button>}
         </div>
     )
 }

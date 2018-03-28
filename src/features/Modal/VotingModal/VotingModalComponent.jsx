@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { PlayerRole } from '../../../../Dictionary'
-import { Button } from '../../Shared/Button/Button'
+import { FancyButton } from '../../Shared/Buttons'
 import { getAvatar } from '../../../utils/avatarsHelper'
 import PresidentRoleImage from '../../../static/President.png'
 import ChancellorRoleImage from '../../../static/Chancellor.png'
@@ -36,8 +36,8 @@ const VotingModalComponent = ({
             <div className="voting-intro">The president nominates <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
             <div className="voting-intro">Do you agree?</div>
             <div className="voting-buttons-container">
-                <Button onClick={onYesVote} label="Jaa!" />
-                <Button onClick={onNoVote} label="Nein!" />
+                <FancyButton onClick={onYesVote}>Jaa!</FancyButton>
+                <FancyButton onClick={onNoVote}>Nein!</FancyButton>
             </div>
         </div>
     )

@@ -1,0 +1,10 @@
+@import 'variables/variables.css';
+
+.primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-font-color);
+
+    &:hover {
+        background-color: var(--button-primary-bg-hover);
+    }
+}

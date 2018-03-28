@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { includes } from 'lodash'
 import { PlayerAffilications, GamePhases } from '../../../Dictionary'
+import { Button } from '../Shared/Buttons'
 import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComponent'
 
 const UIBoxComponent = ({
@@ -24,23 +25,23 @@ const UIBoxComponent = ({
         : 'liberal'
     )
 
-    const Button = (label, onClick) => (
-        <a key={`${label}`} role="button" tabIndex="0" className="btn" onClick={onClick}>{`${label}`}</a>
+    const renderButton = (label, onClick) => (
+        <Button key={`${label}`} onClick={onClick}>{label}</Button>
     )
 
     const ownersButtons = [
-        gamePhase === GamePhases.GAME_PHASE_NEW && Button("start", onStartGame),
-        Button("voting", onStartVote),
-        Button("kick", onKickPlayer),
-        Button("ban", onBanPlayer),
-    ];
+        gamePhase === GamePhases.GAME_PHASE_NEW && renderButton('start', onStartGame),
+        renderButton('voting', onStartVote),
+        renderButton('kick', onKickPlayer),
+        renderButton('ban', onBanPlayer),
+    ]
     return (
         <div className="ui-box">
             <div className="game-controls">
                 <div className="buttons">
-                    <a className="btn" onClick={onShowAffiliationClick}>
+                    <Button onClick={onShowAffiliationClick}>
                         roles<i className={classNames('fa fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} aria-hidden="true" />
-                    </a>
+                    </Button>
                     {isOwner && ownersButtons}
                 </div>
             </div>

@@ -4,7 +4,7 @@ import { PlayerAffilications } from '../../../../Dictionary'
 import { getAvatar } from '../../../utils/avatarsHelper'
 import FacistMembershipImage from '../../../static/Facist_Membership.png'
 import LiberalMembershipImage from '../../../static/Liberal_Membership.png'
-import { Button } from '../../Shared/Button/Button'
+import { FancyButton } from '../../Shared/Buttons'
 
 const PeekAffiliationModal = ({
     avatarNumber,
@@ -22,10 +22,9 @@ const PeekAffiliationModal = ({
                 </div>
                 <span className="player-info__name">{playerName}</span>
             </div>
-            <Button
-                onClick={closeModal}
-                label="Acknowledged"
-            />
+            <FancyButton onClick={closeModal}>
+                Acknowledged
+            </FancyButton>
         </div>
     )
 }

@@ -1,0 +1,7 @@
+@import 'variables/variables.css';
+
+.landingPage {
+    color: var(--site-font-color);
+    background-color: var(--landing-page-bg);
+    min-height: 100vh;
+}

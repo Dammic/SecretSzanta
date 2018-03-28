@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from '../../Shared/Button/Button'
+import { FancyButton } from '../../Shared/Buttons'
 
 const HaltModalComponent = ({
     hasGameEnded,
@@ -12,12 +12,13 @@ const HaltModalComponent = ({
 }) => {
     const pauseGameReason = hasGameEnded ? 'The game has ended!' : `The owner ${ownerName} has paused the game.`
     const renderButton = (label, onClick) => (
-        <Button
+        <FancyButton
             key={label}
             className="owner-button"
-            label={label}
             onClick={onClick}
-        />
+        >
+            {label}
+        </FancyButton>
     )
 
     return (
