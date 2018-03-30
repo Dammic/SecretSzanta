@@ -1,3 +1,5 @@
+@import 'variables/variables.css';
+
 .notifications {
     z-index: 60;
     position: fixed;
@@ -10,9 +12,7 @@
     height: 30px;
     border-radius: 5px;
     background-color: $notification-information-color;
-
     margin: 10px 0px;
-
     padding-left: 10px;
     padding-top: 10px;
 
@@ -20,13 +20,13 @@
         background-color: $notification-error-color;
         color: $notification-font;
     }
+}
 
-    &-exit {
-        position: absolute;
-        top: 25%;
-        right: 5px;
+.exit {
+    position: absolute;
+    top: 25%;
+    right: 5px;
 
-        color: black;
-        text-align: center;
-    }
+    color: black;
+    text-align: center;
 }

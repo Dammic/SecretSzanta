@@ -6,6 +6,8 @@ import FacistMembershipImage from '../../../static/Facist_Membership.png'
 import LiberalMembershipImage from '../../../static/Liberal_Membership.png'
 import { FancyButton } from '../../Shared/Buttons'
 
+import styles from './PeekAffiliationModal.css'
+
 const PeekAffiliationModal = ({
     avatarNumber,
     playerName,
@@ -14,13 +16,13 @@ const PeekAffiliationModal = ({
 }) => {
     const membershipImage = (affiliation === PlayerAffilications.FACIST_AFFILIATION ? FacistMembershipImage : LiberalMembershipImage)
     return (
-        <div className="peek-affiliation-modal">
-            <div className="player-info">
-                <div className="player-images">
-                    <img className="card" alt="player avatar" src={getAvatar(`liberal-${avatarNumber}`)} />
-                    <img className="card" alt="membership" src={membershipImage} />
+        <div className={styles.peekAffiliationModal}>
+            <div className={styles.playerInfo}>
+                <div className={styles.playerImages}>
+                    <img className={styles.card} alt="player avatar" src={getAvatar(`liberal-${avatarNumber}`)} />
+                    <img className={styles.card} alt="membership" src={membershipImage} />
                 </div>
-                <span className="player-info__name">{playerName}</span>
+                <span className={styles.playerInfoName}>{playerName}</span>
             </div>
             <FancyButton onClick={closeModal}>
                 Acknowledged

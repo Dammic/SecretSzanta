@@ -5,6 +5,7 @@ import GameListItemComponent from './GameListItemComponent'
 import TopNavbar from './TopNavbar/TopNavbar'
 import PlayersList from './PlayersList/PlayersList'
 import Chat from '../UIBox/Chat/Chat'
+import { EllipsisText } from '../Shared/EllipsisText'
 
 import styles from './GameList.css'
 
@@ -30,7 +31,7 @@ const GameListComponent = ({
             </div>
             <div className={styles.secondColumn}>
                 <div className={styles.utilsRow}>
-                    <span className="ellipsis">Hello <b>{userName}</b>!</span>
+                    <EllipsisText>Hello <b>{userName}</b>!</EllipsisText>
                     <TopNavbar />
                 </div>
                 <PlayersList />

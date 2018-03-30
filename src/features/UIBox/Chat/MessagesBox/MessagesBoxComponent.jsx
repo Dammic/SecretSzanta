@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import classNames from 'classnames/bind'
 
+import styles from './MessagesBox.css'
+
 const MessagesBoxComponent = ({
     messages = [],
     setMessagesBoxRef,
@@ -10,14 +12,14 @@ const MessagesBoxComponent = ({
     const buildMessage = (message, index) => {
         const { time, author, content } = message
         return (
-            <div key={index} className={classNames('message', { 'server-message': !author })}>
+            <div key={index} className={classNames(styles.message, { [styles.serverMessage]: !author })}>
                 [{time}]{author ? ` ${author}: ` : ':'} {content}
             </div>
         )
     }
 
     return (
-        <div className="messages-box" ref={setMessagesBoxRef}>
+        <div className={styles.messagesBox} ref={setMessagesBoxRef}>
             {map(messages, (message, index) => buildMessage(message, index))}
         </div>
     )

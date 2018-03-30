@@ -1,6 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { Icon } from '../../../Shared/Icon'
+
+import styles from './ChatForm.css'
+
 const ChatComponent = ({
     sendMessage,
     typedMessage,
@@ -8,10 +12,10 @@ const ChatComponent = ({
     handleFormKeyPress,
 }) => {
     return (
-        <div className="chat-form">
-            <input className="send-input" value={typedMessage} onChange={changeMessageText} onKeyPress={handleFormKeyPress} autoFocus />
-            <div className="send-button" onClick={sendMessage}>
-                <i className="fa fa-envelope" aria-hidden="true" />
+        <div className={styles.chatForm}>
+            <input className={styles.sendInput} value={typedMessage} onChange={changeMessageText} onKeyPress={handleFormKeyPress} autoFocus />
+            <div className={styles.sendButton} onClick={sendMessage}>
+                <Icon name="fa-envelope" />
             </div>
         </div>
     )

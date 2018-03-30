@@ -1,0 +1,81 @@
+@import 'variables/variables.css';
+
+.loginPage {
+    background-color: var(--login-page-bg);
+}
+
+.loginFormContainer {
+    height: 700px;
+    background: radial-gradient(var(--login-page-form-start-bg, var(--login-page-form-end-bg)));
+    clip-path: polygon(
+        0 0, /* left top */
+        100% 0, /* right top */ 
+        100% 45%, /* right bottom */
+        0 100% /* left bottom */
+    );
+}
+
+.loginForm {
+    margin-left: 20%;
+    padding-top: 150px;
+}
+
+.loginInputGroup {
+    display: flex; 
+}
+
+.formText {
+    max-width: 300px;
+}
+
+.userName {
+    font-weight: 700; 
+}
+.changeNickname {
+    cursor: pointer;
+    color: var(--login-page-change-name-font);
+    transition: all .3s;
+    &:hover {
+        color: var(--login-page-change-name-font-hover);
+    }
+}
+
+
+.homeContent {
+    background-color: var(--login-page-content-bg);
+    height: 1000px;
+}
+
+.homeImageLarge {
+    position: absolute;
+    top: 315px;
+    right: 100px;
+    max-height: 250px;
+    max-width: 150px;
+    transform: rotate(-16deg);
+    z-index: 1;
+    box-shadow: -10px 10px 5px 0px rgba(0,0,0,0.75);
+
+    @media (--tablet) { 
+        top: 195px;
+        max-height: 400px;
+        max-width: 300px;
+    }
+}
+
+.homeImageSmall {
+    position: absolute;
+    top: 450px;
+    right: 180px;
+    max-height: 200px;
+    max-width: 100px;
+    transform: rotate(-16deg);
+    box-shadow: -10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+
+    @media (--tablet) { 
+        max-height: 300px;
+        max-width: 200px;
+        top: 400px;
+        right: 250px;
+    }
+}

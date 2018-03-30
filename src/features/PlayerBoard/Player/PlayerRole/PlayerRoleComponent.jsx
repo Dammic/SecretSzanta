@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { PlayerRole } from '../../../../../Dictionary'
 
+import styles from './PlayerRole.css'
+
 const roleChancellorPicture = require('../../../../static/Chancellor.png')
 const rolePresidentPicture = require('../../../../static/President.png')
 const rolePreviousChancellorPicture = require('../../../../static/PreviousChancelor.png')
@@ -27,7 +29,7 @@ const PlayerRoleComponent = ({
         default:
             rolePicture = ''
     }
-    return (role ? <img className="role" src={rolePicture} alt="" /> : null)
+    return (role ? <img className={styles.role} src={rolePicture} alt="" /> : null)
 }
 
 PlayerRoleComponent.propTypes = {

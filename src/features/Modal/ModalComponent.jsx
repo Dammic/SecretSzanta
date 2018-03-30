@@ -2,6 +2,7 @@ import React from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { Scrollbars } from 'react-custom-scrollbars'
 import classNames from 'classnames/bind'
+import { Icon } from '../Shared/Icon'
 
 const ModalComponent = ({
     isVisible,
@@ -23,7 +24,7 @@ const ModalComponent = ({
                 <div className={classNames('modal-content')}>
                     {isCloseButtonShown && (
                         <a className="modal-close-button" onClick={closeModal}>
-                            <i className="fa fa-times" />
+                            <Icon name="fa-times" />
                         </a>
                     )}
                     <div className="modal-title">{title}</div>

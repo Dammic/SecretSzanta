@@ -1,24 +1,25 @@
-.winning-modal {
+@import 'variables/variables.css';
+
+.winningModal {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
+}
+.list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+}
 
-    &-list {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 50%;
-
-        .avatar-name {
-            width: 100%;
-            text-align: center;
-        }
-    }
+.avatarName {
+    width: 100%;
+    text-align: center;
 }
 
 @keyframes dance {
@@ -40,14 +41,14 @@
     100% { transform: rotate(-45deg) translateY(10px); opacity: 0.0; }
 }
 
-.winner-dance {
+.winnerDance {
     animation-name: dance;
     animation-duration: 1s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
 
-.loser-sorrow {
+.loserSorrow {
     animation-name: sorrow;
     animation-duration: 1s;
     animation-iteration-count: infinite;

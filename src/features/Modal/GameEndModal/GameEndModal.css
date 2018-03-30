@@ -1,0 +1,14 @@
+.gameEndModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+    flex-wrap: wrap;
+}
+
+.playerContainer {
+    margin : 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

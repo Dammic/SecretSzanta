@@ -1,4 +1,4 @@
-.halt-body {
+.haltBody {
     height: 100%;
     width: 100%;
     display: flex;
@@ -8,11 +8,11 @@
     & > i {
         font-size: 50px;
     }
-    .info {
-        font-size: 40px;
-    }
-    .owner-button {
-        width: 40%;
-        text-align: center;
-    }
+}
+.info {
+    font-size: 40px;
+}
+.ownerButton {
+    width: 40%;
+    text-align: center;
 }

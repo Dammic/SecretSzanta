@@ -2,7 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { map } from 'lodash'
+
 import { Views } from '../../../Dictionary'
+import { Icon } from '../Shared/Icon'
+
+import styles from './Header.css'
 
 const HeaderComponent = ({
     setView,
@@ -39,16 +43,20 @@ const HeaderComponent = ({
         delete views[Views.Lobby]
     }
 
-    const headerNavigationClasses = classNames('header-navigation', { 'is-open': isMobileNavOpen })
-    const menuIconClasses = classNames('fa', { 'fa-bars': !isMobileNavOpen, 'fa-times': isMobileNavOpen }, 'menu-icon')
+    const headerNavigationClasses = classNames(styles.headerNavigation, { [styles.isOpen]: isMobileNavOpen })
+    const menuIconClasses = classNames({ 'fa-bars': !isMobileNavOpen, 'fa-times': isMobileNavOpen })
 
     return (
-        <div className="header-container">
-            <div className="header">
-                <span className="app-name" onClick={closeMobileNavigation}>Secret Hitler</span>
+        <div className={styles.headerContainer}>
+            <div className={styles.header}>
+                <span className={styles.appName} onClick={closeMobileNavigation}>Secret Hitler</span>
                 <div className={headerNavigationClasses}>
-                    <i className={menuIconClasses} onClick={isMobileNavOpen ? closeMobileNavigation : openMobileNavigation} />
-                    <div className="header-navigation-links">
+                    <Icon
+                        name={menuIconClasses}
+                        onClick={isMobileNavOpen ? closeMobileNavigation : openMobileNavigation}
+                        className={styles.menuIcon}
+                    />
+                    <div className={styles.headerNavigationLinks}>
                         {map(views, renderNavigationLink)}
                     </div>
                 </div>

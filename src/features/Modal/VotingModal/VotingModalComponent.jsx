@@ -5,6 +5,10 @@ import { FancyButton } from '../../Shared/Buttons'
 import { getAvatar } from '../../../utils/avatarsHelper'
 import PresidentRoleImage from '../../../static/President.png'
 import ChancellorRoleImage from '../../../static/Chancellor.png'
+import { Icon } from '../../Shared/Icon'
+import { EllipsisText } from '../../Shared/EllipsisText'
+
+import styles from './VotingModal.css'
 
 const VotingModalComponent = ({
     onYesVote,
@@ -14,32 +18,32 @@ const VotingModalComponent = ({
 }) => {
     const renderPlayer = (avatarNumber, role, playerName) => {
         return (
-            <div className="voting-info-player">
-                <img className="voting-info-avatar" src={getAvatar(`liberal-${avatarNumber}`)}></img>
-                <img className="voting-info-role" src={(role === PlayerRole.ROLE_PRESIDENT ? PresidentRoleImage : ChancellorRoleImage)}></img>
-                <span className="ellipsis">{playerName}</span>
+            <div className={styles.votingInfoPlayer}>
+                <img className={styles.votingInfoAvatar} src={getAvatar(`liberal-${avatarNumber}`)}></img>
+                <img className={styles.votingInfoRole} src={(role === PlayerRole.ROLE_PRESIDENT ? PresidentRoleImage : ChancellorRoleImage)}></img>
+                <EllipsisText>{playerName}</EllipsisText>
             </div>
         )
     }
     if (!chancellorCandidate || !president) return null
 
     return (
-        <div className="voting-modal">
-            <div className="voting-info-container">
+        <React.Fragment>
+            <div className={styles.votingInfoContainer}>
                 {renderPlayer(president.avatarNumber, PlayerRole.ROLE_PRESIDENT, president.playerName)}
-                <div className="choice-order-container">
-                    <div><i className="fa fa-angle-double-right" aria-hidden="true" /></div>
+                <div className={styles.choiceOrderContainer}>
+                    <div><Icon name="fa-angle-double-right" /></div>
                     <div>Nominates</div>
                 </div>
                 {renderPlayer(chancellorCandidate.avatarNumber, PlayerRole.ROLE_CHANCELLOR, chancellorCandidate.playerName)}
             </div>
-            <div className="voting-intro">The president nominates <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
-            <div className="voting-intro">Do you agree?</div>
-            <div className="voting-buttons-container">
+            <div className={styles.votingIntro}>The president nominates <strong>{chancellorCandidate.playerName}</strong> for a new chancellor!</div>
+            <div className={styles.votingIntro}>Do you agree?</div>
+            <div className={styles.votingButtonsContainer}>
                 <FancyButton onClick={onYesVote}>Jaa!</FancyButton>
                 <FancyButton onClick={onNoVote}>Nein!</FancyButton>
             </div>
-        </div>
+        </React.Fragment>
     )
 }
 

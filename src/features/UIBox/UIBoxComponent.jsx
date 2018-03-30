@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { includes } from 'lodash'
 import { PlayerAffilications, GamePhases } from '../../../Dictionary'
 import { Button } from '../Shared/Buttons'
+import { Icon } from '../Shared/Icon'
 import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComponent'
 
 const UIBoxComponent = ({
@@ -40,7 +41,7 @@ const UIBoxComponent = ({
             <div className="game-controls">
                 <div className="buttons">
                     <Button onClick={onShowAffiliationClick}>
-                        roles<i className={classNames('fa fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} aria-hidden="true" />
+                        roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} />
                     </Button>
                     {isOwner && ownersButtons}
                 </div>

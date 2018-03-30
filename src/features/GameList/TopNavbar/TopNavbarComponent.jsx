@@ -1,13 +1,13 @@
 import React from 'react'
 
-import styles from './TopNavbar.css'
-
 import { Button } from '../../Shared/Buttons'
+
+import styles from './TopNavbar.css'
 
 export const TopNavbarComponent = ({
     onShowModal,
 }) => (
-    <div className={topBar}>
+    <div className={styles.topBar}>
         <Button onClick={onShowModal}>New room</Button>
     </div>
 )

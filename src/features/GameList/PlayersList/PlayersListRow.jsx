@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getAvatar } from '../../../utils/avatarsHelper'
+import { EllipsisText } from '../../Shared/EllipsisText'
 
 const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
     return (
@@ -11,13 +12,13 @@ const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
                 src={getAvatar(`liberal-${avatarNumber}`)}
                 alt="Player avatar"
             />
-            <span className="player-name ellipsis">{playerName}</span>
+            <EllipsisText className="player-name">{playerName}</EllipsisText>
             {currentRoom && (
                 <Fragment>
-                    <span className="room-name ellipsis">
+                    <EllipsisText className="room-name">
                         <span>room:{' '}</span>
                         <b className="room-name-text">{currentRoom}</b>
-                    </span>
+                    </EllipsisText>
                     <span className="room-name mobile">Busy</span>
                 </Fragment>
             )}

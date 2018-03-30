@@ -1,0 +1,15 @@
+.createGameModal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.inputField {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.createButton {
+    margin-top: 10px;
+    width: 50%;
+}

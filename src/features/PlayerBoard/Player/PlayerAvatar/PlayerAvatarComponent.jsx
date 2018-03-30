@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getAvatar } from '../../../../utils/avatarsHelper'
+import { Icon } from '../../../Shared/Icon'
+
+import styles from './PlayerAvatar.css'
 
 const PlayerAvatarComponent = ({
     liberalAvatar,
@@ -15,11 +18,11 @@ const PlayerAvatarComponent = ({
     const facistAvatarPicture = getAvatar(`fascist-${facistAvatar}`)
 
     return (
-        <div className={classNames('avatar-wrapper', className, { dead: isDead })}>
-            {isOwner && <i className="fa fa-bolt owner-icon" aria-hidden="true" />}
-            {isPlayerWaitedFor && <i className="fa fa-clock-o selecting-wait-icon" aria-hidden="true" />}
-            {facistAvatar && <img className="portrait facist-portrait" src={facistAvatarPicture} alt="Player facist avatar" />}
-            <img className="portrait" src={liberalAvatarPicture} alt="Player liberal avatar" />
+        <div className={classNames(styles.avatarWwrapper, className, { [styles.dead]: isDead })}>
+            {isOwner && <Icon name="fa-bolt" className={styles.ownerIcon} />}
+            {isPlayerWaitedFor && <Icon name="fa-clock-o" className={styles.selectingWaitIcon} />}
+            {facistAvatar && <img className={classNames(styles.portrait, styles.facistPortrait)} src={facistAvatarPicture} alt="Player facist avatar" />}
+            <img className={styles.portrait} src={liberalAvatarPicture} alt="Player liberal avatar" />
         </div>
     )
 }

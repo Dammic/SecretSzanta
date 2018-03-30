@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FancyButton } from '../../Shared/Buttons'
+import { Icon } from '../../Shared/Icon'
+
+import styles from './HaltModal.css'
 
 const HaltModalComponent = ({
     hasGameEnded,
@@ -14,7 +17,7 @@ const HaltModalComponent = ({
     const renderButton = (label, onClick) => (
         <FancyButton
             key={label}
-            className="owner-button"
+            className={styles.ownerButton}
             onClick={onClick}
         >
             {label}
@@ -22,9 +25,9 @@ const HaltModalComponent = ({
     )
 
     return (
-        <div className="halt-body">
-            <i className="fa fa-pause" aria-hidden="true" />
-            <span className="info">{pauseGameReason}</span>
+        <div className={styles.haltBody}>
+            <Icon name="fa-pause" />
+            <span className={styles.info}>{pauseGameReason}</span>
             {isOwner && [
                 renderButton('Resume game', onResumeGame),
                 renderButton('Invite players', onInvitePlayers),
