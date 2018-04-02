@@ -43,7 +43,7 @@
     border-width: 2px;
     border-color: rgba(0,0,0,.5);
     background-clip: padding-box;
-    /* background-image: url("../static/curtain.png"); */
+    background-image: url("../../../static/curtain.png");
 
     &.left {
         transform: translateX(0);
