@@ -2,18 +2,21 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import styles from './CurtainWrapper.css'
+
 class CurtainWrapper extends PureComponent {
     static propTypes = {
         isHidden: PropTypes.bool,
-        customClass: PropTypes.string,
+        isFascist: PropTypes.bool,
     }
+
     render() {
-        const { isHidden, customClass } = this.props
+        const { isHidden, isFascist } = this.props
         return (
-            <div className={classNames('curtain', customClass)}>
-                <div className="curtain__wrapper">
-                    <div className={classNames('curtain__panel curtain__panel--left', { hidden: isHidden })} />
-                    <div className={classNames('curtain__panel curtain__panel--right', { hidden: isHidden })} />
+            <div className={classNames(styles.curtain, { [styles.liberal]: !isFascist, [styles.fascist]: isFascist })}>
+                <div className={styles.curtainWrapper}>
+                    <div className={classNames(styles.curtainPanel, styles.left, { [styles.hidden]: isHidden })} />
+                    <div className={classNames(styles.curtainPanel, styles.right, { [styles.hidden]: isHidden })} />
                 </div>
             </div>
         )

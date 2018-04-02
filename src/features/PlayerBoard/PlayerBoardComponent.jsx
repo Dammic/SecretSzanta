@@ -60,7 +60,7 @@ const PlayerBoardComponent = ({
                 {renderPlayers(playersMiddle, 'players-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
-                    <CurtainWrapper isHidden={isPlayerboardHidden} customClass="curtain__panel--liberal" />
+                    <CurtainWrapper isHidden={isPlayerboardHidden} />
                     <img src={liberalPolicies} />
                     <div className="policy-card-liberal">
                         {renderPolicies(policiesLiberalCount, 'liberal')}
@@ -69,7 +69,7 @@ const PlayerBoardComponent = ({
                 </div>
 
                 <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
-                    <CurtainWrapper isHidden={isPlayerboardHidden} customClass="curtain__panel--fascist" />
+                    <CurtainWrapper isHidden={isPlayerboardHidden} isFascist />
                     <img src={renderFascistPlayerBoard()} />
                     <div className="policy-card-fascist">
                         {renderPolicies(policiesFacistCount, 'facist')}
