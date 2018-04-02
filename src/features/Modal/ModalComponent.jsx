@@ -1,11 +1,13 @@
 import React from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { CSSTransition } from 'react-transition-group'
 import { Scrollbars } from 'react-custom-scrollbars'
 import classNames from 'classnames/bind'
 import { Icon } from '../Shared/Icon'
 
+import styles from './Modal.css'
+
 const ModalComponent = ({
-    isVisible,
+    isVisible = false,
     title,
     overlayClosesModal,
     isCloseButtonShown,
@@ -13,26 +15,35 @@ const ModalComponent = ({
     closeModal,
     child,
 }) => {
-    if (!isVisible) return (
-        <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={0} transitionLeaveTimeout={0} />
-    );
+    const overlayClasses = classNames(styles.modalOverlay, { [styles.opaque]: isOverlayOpaque })
 
-    const overlayClasses = classNames('overlay modal-overlay', { opaque: isOverlayOpaque })
     return (
-        <ReactCSSTransitionGroup transitionName="modal" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
-            <div className="modal-container">
-                <div className={classNames('modal-content')}>
+        <CSSTransition
+            in={isVisible}
+            timeout={700}
+            unmountOnExit
+            mountOnEnter
+            appear
+            classNames={{
+                enter: styles.modalEnter,
+                enterActive: styles.modalEnterActive,
+                exit: styles.modalExit,
+                exitActive: styles.modalExitActive,
+            }}
+        >
+            <div className={styles.modalContainer}>
+                <div className={styles.modalContent}>
                     {isCloseButtonShown && (
-                        <a className="modal-close-button" onClick={closeModal}>
+                        <a className={styles.modalCloseButton} onClick={closeModal}>
                             <Icon name="fa-times" />
                         </a>
                     )}
-                    <div className="modal-title">{title}</div>
-                    <div className="modal-body">{child}</div>
+                    <div className={styles.modalTitle}>{title}</div>
+                    <div className={styles.modalBody}>{child}</div>
                 </div>
                 <a className={overlayClasses} onClick={overlayClosesModal ? closeModal : null} />
             </div>
-        </ReactCSSTransitionGroup>
+        </CSSTransition>
     )
 }
 

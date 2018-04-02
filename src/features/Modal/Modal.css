@@ -1,0 +1,88 @@
+@import 'variables/variables.css';
+
+.modalContainer {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    z-index: 30;
+    top: 0;
+    left: 0;
+}
+
+.modalOverlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 40;
+    background-color: rgba(0, 0, 0, 0.25);
+    &.opaque {
+        background-color: rgba(0, 0, 0, 0.75);
+    }
+}
+.modalContent {
+    position: relative;
+    top: -10%;
+    z-index: 9999;
+    width: 90%;
+    max-width: 600px;
+    min-height: 40%;
+    max-height: 70%;
+    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.75);
+    background-color: var(--modal-background);
+    color: var(--modal-font);
+    border-radius: 8px;
+    overflow: auto;
+
+    @media (--tablet) { 
+        width: 60%;
+    }
+
+    & > div {
+        margin-bottom: 20px !important;
+        overflow-x: hidden !important;
+    }
+}
+
+.modalTitle {
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+    background-color: var(--modal-title);
+    width: 100%;
+    box-sizing: border-box;
+
+}
+.modalBody {
+    position: relative;
+    padding: 15px;
+}
+.modalCloseButton {
+    font-size: 18px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    color: var(--modal-close-mark);
+    z-index: 10000;
+    cursor: pointer;
+}
+
+/* animations for modal */
+.modalEnter {
+    opacity: 0;
+}
+
+.modalEnterActive {
+    opacity: 1;
+    transition: opacity 400ms ease-in;
+}
+
+.modalExit {
+    opacity: 1;
+}
+
+.modalExitActive {
+    opacity: 0;
+    transition: opacity 300ms ease-in;
+}

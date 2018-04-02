@@ -1,7 +1,3 @@
-@mixin main-font() {
-    font-family: 'Alegreya', serif;
-}
-
 @mixin respond-to($breakpoint) {
   @if $breakpoint == "small" {
     @media (min-width: 767px) {

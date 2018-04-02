@@ -13,7 +13,8 @@ import News from './StaticPages/News/News'
 import HowToPlayComponent from './StaticPages/HowToPlay/HowToPlayComponent'
 import AboutComponent from './StaticPages/About/AboutComponent'
 
-import '../../styles/main.scss';
+import '../../styles/main.scss'
+import '../../styles/globals/globals.css'
 import styles from './LandingPage.css'
 
 export class LandingPage extends React.PureComponent {

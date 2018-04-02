@@ -99,6 +99,8 @@
 
     --header-height: 50px;
 
+    --default-blur: blur(3px);
+
 
     /********************
     *        Media      *
