@@ -1,0 +1,76 @@
+@import 'variables/variables.css';
+
+.playersList {
+    height: unset;
+    flex-grow: 1;
+    overflow: auto;
+    background-color: var(--players-list-bg);
+    margin-top: 5px;
+    padding: 0 10px 10px 10px;
+    color: var(--players-list-font);
+}
+
+.category {
+    text-align: right;
+    height: 20px;
+    border-bottom: 1px solid var(--players-list-element-border);
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-top: 5px;
+    background-color: var(--players-list-category-bg);
+
+    & > span {
+        margin-right: 5px;
+        font-size: 13px;
+    }
+}
+
+.playerRow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    border-bottom: 1px solid var(--players-list-element-border);
+}
+
+.avatar {
+    height: 30px;
+    width: 30px;
+    border-radius: 50px;
+    display: none;
+    @media (--tablet) { 
+        display: initial; 
+    }
+}
+
+.playerNname {
+    margin: 0 10px;
+    max-width: 70%;
+
+    @media (--tablet) { 
+        display: initial;
+        max-width: 50%;
+    }
+}
+
+.roomName {
+    font-size: 12px;
+    max-width: 33%;
+    position: absolute;
+    right: 0px;
+    display: none;
+    @media (--tablet) { 
+        display: initial;
+    }
+
+    &.mobile {
+        display: unset;
+        @media (--tablet) { 
+            display: none;
+        }
+    }
+}
+
+.roomNameText {
+    font-size: 13px; 
+}

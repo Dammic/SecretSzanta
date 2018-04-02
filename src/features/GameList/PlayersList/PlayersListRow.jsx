@@ -4,22 +4,24 @@ import classNames from 'classnames'
 import { getAvatar } from '../../../utils/avatarsHelper'
 import { EllipsisText } from '../../Shared/EllipsisText'
 
+import styles from './PlayersList.css'
+
 const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
     return (
-        <div className={classNames('player-row', { busy: !!currentRoom })}>
+        <div className={classNames(styles.playerRow, { [styles.busy]: !!currentRoom })}>
             <img
-                className="avatar"
+                className={styles.avatar}
                 src={getAvatar(`liberal-${avatarNumber}`)}
                 alt="Player avatar"
             />
-            <EllipsisText className="player-name">{playerName}</EllipsisText>
+            <EllipsisText className={styles.playerName}>{playerName}</EllipsisText>
             {currentRoom && (
                 <Fragment>
-                    <EllipsisText className="room-name">
+                    <EllipsisText className={styles.roomName}>
                         <span>room:{' '}</span>
-                        <b className="room-name-text">{currentRoom}</b>
+                        <b className={styles.roomNameText}>{currentRoom}</b>
                     </EllipsisText>
-                    <span className="room-name mobile">Busy</span>
+                    <span className={classNames(styles.roomName, styles.mobile)}>Busy</span>
                 </Fragment>
             )}
         </div>

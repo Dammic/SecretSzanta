@@ -4,9 +4,11 @@ import PlayerBoard from '../PlayerBoard/PlayerBoard'
 import Chat from '../UIBox/Chat/Chat'
 import Timer from '../Timer/Timer'
 
+import styles from './GameRoom.css'
+
 const GameRoomComponent = () => {
     return (
-        <div className="game-room">
+        <div className={styles.gameRoom}>
             <PlayerBoard />
             <UIBox />
             <Chat />
