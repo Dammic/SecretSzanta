@@ -5,6 +5,8 @@ import { isUndefined } from 'lodash'
 import PlayerAvatarComponent from './PlayerAvatar/PlayerAvatarComponent'
 import PlayerRoleComponent from './PlayerRole/PlayerRoleComponent'
 
+import styles from './Player.css'
+
 const PlayerComponent = ({
     playerName,
     liberalAvatar,
@@ -20,9 +22,9 @@ const PlayerComponent = ({
     isOwner,
 }) => {
     return (
-        <div className="player">
+        <div className={styles.player}>
             <div
-                className={classNames('player-wrapper', { selectable: isSelectable, blurred: isChoiceModeVisible && !isSelectable })}
+                className={classNames(styles.playerWrapper, { [styles.selectable]: isSelectable, [styles.blurred]: isChoiceModeVisible && !isSelectable })}
                 data-playername={playerName}
                 onClick={isSelectable ? onChoiceModeSelect : null}
             >

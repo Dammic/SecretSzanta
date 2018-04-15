@@ -482,7 +482,7 @@ class RoomsManager {
     enactPolicy(roomName, card) {
         const { drawnCards, policiesPile } = this.rooms_props[roomName]
         this.moveCard( drawnCards, policiesPile, card)
-        RoomsManager.discardAllCards(roomName)
+        this.discardAllCards(roomName)
     }
     discardPolicy(roomName, card) {
         const { drawnCards, discardPile } = this.rooms_props[roomName]
@@ -507,7 +507,7 @@ class RoomsManager {
 
     reShuffle(roomName) {
         const room = this.rooms_props[roomName]
-         
+
         room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
         room.discardPile = []
     }

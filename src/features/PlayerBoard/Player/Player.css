@@ -1,0 +1,152 @@
+@import 'variables/variables.css';
+
+:root {
+    --bubbleTriangle: {
+        content: "";
+        position: absolute;
+        display: block;
+
+        width: 0;
+        height: 0;
+    }
+
+    --bubble: {
+        opacity: 0;
+        position: absolute;
+        z-index: 1;
+        padding: 6px;
+
+        width: var(--player-bubble-width);
+        height: var(--player-bubble-height);
+        
+        max-width: 10vw;
+
+        background-color: var(--player-bubble-color);
+        transition: all 0.7s; 
+
+        border: 1px solid var(--player-bubble-color);
+        border-radius: var(--player-bubble-radius);
+    }
+}
+
+.player {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 0 1 33%;
+}
+
+
+.bubbleLeft {
+    @apply --bubble;
+    vertical-align: center;
+    left: var(--player-bubble-original-position);
+    top: 0px;
+
+    &:before {
+        @apply --bubbleTriangle;
+        right: 95%;
+
+        border-top: var(--player-bubble-triangle-size) solid transparent;
+        border-bottom: var(--player-bubble-triangle-size) solid transparent;
+        border-right: var(--player-bubble-triangle-size) solid var(--player-bubble-color);
+    }
+
+    &.active {
+        opacity: 1;
+        left: var(--player-bubble-activated-position);
+    }
+}
+
+.bubbleRight {
+    @apply --bubble;
+    right: var(--player-bubble-original-position);
+    top: 0px;
+
+    &:after {
+        @apply --bubbleTriangle;
+        vertical-align: center;
+        left: 95%;
+
+        border-top: var(--player-bubble-triangle-size) solid transparent;
+        border-bottom: var(--player-bubble-triangle-size) solid transparent;
+        border-left: var(--player-bubble-triangle-size) solid var(--player-bubble-color);
+    }
+
+    &.active {
+        opacity: 1;
+        right: var(--player-bubble-activated-position);
+    }
+}
+
+.bubbleTop {
+    @apply --bubble;
+    top: var(--player-bubble-original-position);
+    
+    &:before {
+        @apply --bubbleTriangle;
+
+        bottom: 95%;
+        border-bottom: var(--player-bubble-triangle-size) solid var(--player-bubble-color);
+        border-right: var(--player-bubble-triangle-size) solid transparent;
+        border-left: var(--player-bubble-triangle-size) solid transparent;
+    }
+
+    &.active {
+        opacity: 1;
+        top: var(--player-bubble-activated-position);
+    }
+}
+
+.playerWrapper {
+    text-align: center;
+    position: relative;
+    max-width: var(--player-image-width);
+    &.selectable {
+        z-index: 30;
+        cursor: pointer;
+        border: 1px yellow solid;
+        transition: 0.3s filter linear; 
+
+        &:before,
+        &:after {
+          position: absolute;
+          content: "";
+          transition: all .25s;
+          width: 10%;
+          height: 33%;
+        }
+
+        &:before {
+          border-bottom: 2px solid yellow;
+          border-left: 2px solid yellow;
+          left: -10px;
+          bottom: -10px;
+        }
+
+        &:after {
+          border-top: 2px solid yellow;
+          border-right: 2px solid yellow;
+          top: -10px;
+          right: -10px;
+        }
+
+        &:hover {
+            filter: brightness(1.2);
+            &:before, &:after {
+                width: 112%;
+                height: 120%;
+            }
+        }
+
+        & * {
+            pointer-events: none; 
+        }
+    }
+}
+
+.blurred {
+    filter: var(--default-blur);
+}
