@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types'
 import classNames from 'classnames/bind'
 import { Icon } from '../Shared/Icon'
 
-import { styles } from './Notifications.css'
+import styles  from './Notifications.css'
 
 export default class NotificationPanel extends PureComponent {
     static propTypes = {

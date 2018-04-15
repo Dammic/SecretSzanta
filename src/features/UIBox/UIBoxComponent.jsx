@@ -7,6 +7,8 @@ import { Button } from '../Shared/Buttons'
 import { Icon } from '../Shared/Icon'
 import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComponent'
 
+import styles from './UIBox.css'
+
 const UIBoxComponent = ({
     onStartVote,
     onStartGame,
@@ -22,8 +24,8 @@ const UIBoxComponent = ({
 }) => {
     const facistsKinds = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
     const affiliationClassName = (includes(facistsKinds, affiliation)
-        ? 'facist'
-        : 'liberal'
+        ? styles.facist
+        : styles.liberal
     )
 
     const renderButton = (label, onClick) => (
@@ -37,24 +39,26 @@ const UIBoxComponent = ({
         renderButton('ban', onBanPlayer),
     ]
     return (
-        <div className="ui-box">
-            <div className="game-controls">
-                <div className="buttons">
+        <div className={styles.uiBox}>
+            <div className={styles.gameControls}>
+                <div className={styles.buttons}>
                     <Button onClick={onShowAffiliationClick}>
-                        roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} />
+                        <span>
+                            roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} />
+                        </span>
                     </Button>
                     {isOwner && ownersButtons}
                 </div>
             </div>
-            <div className={classNames('submenu', { hidden: isAffiliationHidden })}>
-                <div className="affiliation-cards">
-                    <span className={classNames('card', affiliationClassName)} />
-                    <span className="card">
+            <div className={classNames(styles.submenu, { [styles.hidden]: isAffiliationHidden })}>
+                <div className={styles.affiliationCards}>
+                    <span className={classNames(styles.card, affiliationClassName)} />
+                    <span className={styles.card}>
                         {getPlayerCard()}
                     </span>
                 </div>
-                <div className="role-wrapper">
-                    <PlayerRoleComponent role={role} />
+                <div className={styles.roleWrapper}>
+                    <PlayerRoleComponent role={role} className={styles.uiBoxRole} />
                 </div>
             </div>
         </div>

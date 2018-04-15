@@ -3,7 +3,8 @@
 .playersList {
     height: unset;
     flex-grow: 1;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     background-color: var(--players-list-bg);
     margin-top: 5px;
     padding: 0 10px 10px 10px;
@@ -43,7 +44,7 @@
     }
 }
 
-.playerNname {
+.playerName {
     margin: 0 10px;
     max-width: 70%;
 

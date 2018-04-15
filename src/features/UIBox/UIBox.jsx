@@ -7,6 +7,8 @@ import PlayerAvatarComponent from '../PlayerBoard/Player/PlayerAvatar/PlayerAvat
 import { toggleAffiliationMenu } from '../../ducks/userDuck'
 import { startGame, startKickPlayerMode, startBanPlayerMode, startVoting } from '../../gameLogic/ownerActions'
 
+import styles from './UIBox.css'
+
 export class UIBox extends React.PureComponent {
     onKickPlayer = () => startKickPlayerMode(this.props.userName, this.props.playersWithoutMe)
 
@@ -28,6 +30,7 @@ export class UIBox extends React.PureComponent {
                 facistAvatar={facistAvatar}
                 isOwner={isOwner}
                 isDead={isDead}
+                className={styles.uiBoxAvatar}
             />
         )
     }

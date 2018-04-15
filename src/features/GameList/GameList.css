@@ -62,4 +62,5 @@
     margin-left: 2px;
     height: 220px;
     width: auto;
+    flex-shrink: 0;
 }
