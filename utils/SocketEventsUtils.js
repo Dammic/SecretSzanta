@@ -85,7 +85,7 @@ const SocketEventsUtils = (io, RoomsManager) => {
             })
         },
 
-        checkIfTrackerPositionShouldUpdate: (socket, isSuccess) => {
+        updateTrackerPositionIfNecessary: (socket, isSuccess) => {
             if (isSuccess) {
                 const trackerPosition = RoomsManager.getFailedElectionsCount(socket.currentRoom)
                 socketEventsUtils.resetElectionTracker(socket, trackerPosition)

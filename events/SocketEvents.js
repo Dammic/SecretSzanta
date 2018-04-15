@@ -104,7 +104,7 @@ module.exports = function (io) {
                 socketEventsUtils.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
                 socketEventsUtils.clearNextPhaseTimeout()
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
-                socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, false)
+                socketEventsUtils.updateTrackerPositionIfNecessary(socket, false)
 
                 const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
                 if (!shouldGameFinish) {
@@ -244,7 +244,7 @@ module.exports = function (io) {
                 `
                 socketEventsUtils.sendMessage(socket, { content: votingResultMessage })
 
-                socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, hasVotingSucceed)
+                socketEventsUtils.updateTrackerPositionIfNecessary(socket, hasVotingSucceed)
 
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
