@@ -5,20 +5,20 @@
     position: fixed;
 }
 
-.notification-panel {
+.notificationPanel {
     position: relative;
     width: 50vw;
     left: 25vw;
     height: 30px;
     border-radius: 5px;
-    background-color: $notification-information-color;
+    background-color: var(--notification-information-color);
     margin: 10px 0px;
     padding-left: 10px;
     padding-top: 10px;
 
     &.error {
-        background-color: $notification-error-color;
-        color: $notification-font;
+        background-color: var(--notification-error-color);
+        color: var(--notification-font);
     }
 }
 

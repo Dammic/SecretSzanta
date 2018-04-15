@@ -63,7 +63,7 @@
         }
         & .uiBoxAvatar {
             height: 100%;
-            & .portrait {
+            & img {
                 max-width: unset;
                 width: 100%;
                 height: inherit;
@@ -80,4 +80,8 @@
     & .uiBoxRole {
         width: 100%; 
     }
+}
+
+.menuArrowIcon {
+    display: inline;
 }

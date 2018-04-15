@@ -44,7 +44,7 @@ const UIBoxComponent = ({
                 <div className={styles.buttons}>
                     <Button onClick={onShowAffiliationClick}>
                         <span>
-                            roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} />
+                            roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} className={styles.menuArrowIcon} />
                         </span>
                     </Button>
                     {isOwner && ownersButtons}

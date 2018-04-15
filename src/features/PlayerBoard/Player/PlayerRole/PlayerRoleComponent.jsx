@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import { PlayerRole } from '../../../../../Dictionary'
 
 import styles from './PlayerRole.css'
@@ -11,6 +12,7 @@ const rolePreviousPresidentPicture = require('../../../../static/PreviousPreside
 
 const PlayerRoleComponent = ({
     role,
+    className,
 }) => {
     let rolePicture
     switch (role) {
@@ -29,10 +31,11 @@ const PlayerRoleComponent = ({
         default:
             rolePicture = ''
     }
-    return (role ? <img className={styles.role} src={rolePicture} alt="" /> : null)
+    return (role ? <img className={classNames(styles.role, className)} src={rolePicture} alt="" /> : null)
 }
 
 PlayerRoleComponent.propTypes = {
     role: PropTypes.string,
+    className: PropTypes.string,
 }
 export default PlayerRoleComponent
