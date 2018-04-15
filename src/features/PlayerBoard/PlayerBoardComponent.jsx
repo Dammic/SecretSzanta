@@ -9,6 +9,8 @@ import facistCard from '../../static/facistcard.png'
 import liberalPolicies from '../../static/liberalpolicies.png'
 import CurtainWrapper from './CurtainWrapper/CurtainWrapper'
 
+import styles from './PlayerBoard.css'
+
 const PlayerBoardComponent = ({
     playersLeft = [],
     playersMiddle = [],
@@ -50,34 +52,34 @@ const PlayerBoardComponent = ({
     }
 
     const trackerFromLeftStyle = { left: `${37 + trackerPosition * 8}%` }
-    const playerBoardClasses = classNames('player-board', { blurred: isModalVisible })
+    const playerBoardClasses = classNames(styles.playerBoard, { [styles.blurred]: isModalVisible })
 
     return (
         <div className={playerBoardClasses}>
-            {isChoiceModeVisible && <div className="overlay choice-overlay" />}
-            {renderPlayers(playersLeft, 'players-container', PlayerDirection.PLAYER_DIRECTION_LEFT)}
-            <div className="central-part">
-                {renderPlayers(playersMiddle, 'players-container-middle', PlayerDirection.PLAYER_DIRECTION_UP)}
+            {isChoiceModeVisible && <div className={styles.choiceOverlay} />}
+            {renderPlayers(playersLeft, styles.playersContainer, PlayerDirection.PLAYER_DIRECTION_LEFT)}
+            <div className={styles.centralPart}>
+                {renderPlayers(playersMiddle, styles.playersContainerMiddle, PlayerDirection.PLAYER_DIRECTION_UP)}
 
-                <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
+                <div className={classNames(styles.policy, { [styles.blurred]: isChoiceModeVisible })}>
                     <CurtainWrapper isHidden={isPlayerboardHidden} />
                     <img src={liberalPolicies} />
-                    <div className="policy-card-liberal">
+                    <div className={styles.policyCardLiberal}>
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
-                    <div className={classNames('tracker', { moving: trackerMoved })} style={trackerFromLeftStyle} />
+                    <div className={classNames(styles.tracker, { [styles.moving]: trackerMoved })} style={trackerFromLeftStyle} />
                 </div>
 
-                <div className={classNames('policy', { blurred: isChoiceModeVisible })}>
+                <div className={classNames(styles.policy, { [styles.blurred]: isChoiceModeVisible })}>
                     <CurtainWrapper isHidden={isPlayerboardHidden} isFascist />
                     <img src={renderFascistPlayerBoard()} />
-                    <div className="policy-card-fascist">
+                    <div className={styles.policyCardFascist}>
                         {renderPolicies(policiesFacistCount, 'facist')}
                     </div>
                 </div>
             </div>
 
-            {renderPlayers(playersRight, 'players-container', PlayerDirection.PLAYER_DIRECTION_RIGHT)}
+            {renderPlayers(playersRight, styles.playersContainer, PlayerDirection.PLAYER_DIRECTION_RIGHT)}
         </div>
     )
 }

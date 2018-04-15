@@ -29,16 +29,6 @@
     }
 }
 
-.player {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex: 0 1 33%;
-}
-
-
 .bubbleLeft {
     @apply --bubble;
     vertical-align: center;
@@ -145,6 +135,15 @@
             pointer-events: none; 
         }
     }
+}
+
+.player {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 0 1 33%;
 }
 
 .blurred {

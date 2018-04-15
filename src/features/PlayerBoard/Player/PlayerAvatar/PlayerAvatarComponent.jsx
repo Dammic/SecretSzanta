@@ -18,7 +18,7 @@ const PlayerAvatarComponent = ({
     const facistAvatarPicture = getAvatar(`fascist-${facistAvatar}`)
 
     return (
-        <div className={classNames(styles.avatarWwrapper, className, { [styles.dead]: isDead })}>
+        <div className={classNames(styles.avatarWrapper, className, { [styles.dead]: isDead })}>
             {isOwner && <Icon name="fa-bolt" className={styles.ownerIcon} />}
             {isPlayerWaitedFor && <Icon name="fa-clock-o" className={styles.selectingWaitIcon} />}
             {facistAvatar && <img className={classNames(styles.portrait, styles.facistPortrait)} src={facistAvatarPicture} alt="Player facist avatar" />}
