@@ -481,12 +481,12 @@ class RoomsManager {
 
     enactPolicy(roomName, card) {
         const { drawnCards, policiesPile } = this.rooms_props[roomName]
-        RoomsManager.moveCard( drawnCards, policiesPile, card)
-        RoomsManager.discardAllCards(roomName)
+        this.moveCard( drawnCards, policiesPile, card)
+        this.discardAllCards(roomName)
     }
     discardPolicy(roomName, card) {
         const { drawnCards, discardPile } = this.rooms_props[roomName]
-        RoomsManager.moveCard(drawnCards, discardPile)
+        this.moveCard(drawnCards, discardPile)
     }
 
     discardAllCards(roomName) {
@@ -498,7 +498,7 @@ class RoomsManager {
     discardPolicyByVeto(roomName) {
         const { policiesPile, discardPile } = this.rooms_props[roomName]
         const discardedPolicy = take(policiesPile, 1)[0]
-        RoomsManager.moveCard(policiesPile, discardPile, discardedPolicy)
+        this.moveCard(policiesPile, discardPile, discardedPolicy)
     }
 
     getDrawnCards(roomName) {

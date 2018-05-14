@@ -327,6 +327,7 @@ module.exports = function (io) {
             )
 
             RoomsManager.kickPlayer(socket.currentRoom, playerName, permanently)
+            socketEventsUtils.clearNextPhaseTimeout()
 
             io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
                 data: {
