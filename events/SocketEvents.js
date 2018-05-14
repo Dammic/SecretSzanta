@@ -272,8 +272,6 @@ module.exports = function (io) {
             const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
             if (isVetoUnlocked) {
                 socketEvents.triggerVetoPrompt(socket)
-            } else if (choice === PolicyCards.FacistPolicy) {
-                checkForImmediateSuperpowersOrContinue(socket)
             } else {
                 const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
                 if (!shouldGameFinish) {

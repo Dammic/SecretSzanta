@@ -47,6 +47,7 @@ const PhaseSocketEvents = (io, RoomsManager) => {
         },
 
         startChancellorChoicePhase: (socket, designatedPresidentName = null) => {
+            if (RoomsManager.getGamePhase(socket.currentRoom) === GamePhases.GAME_PHASE_SUPERPOWER) return
             RoomsManager.startChancellorChoicePhase(socket.currentRoom, designatedPresidentName)
             const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
 
