@@ -3,5 +3,5 @@
 .gameRoom {
     position: relative;
     height: 100vh;
-    background: radial-gradient(var(--game-room-start-bg, var(--game-room-end-bg)));
+    background: radial-gradient(var(--game-room-start-bg), var(--game-room-end-bg));
 }
