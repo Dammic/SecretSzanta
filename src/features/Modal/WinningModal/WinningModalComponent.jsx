@@ -9,7 +9,7 @@ const WinningModalComponent = ({ winners, losers }) => {
         <div className={styles.winningModal}>
             <div className={styles.list}>
                 {map(winners, winner => (
-                    <div className={styles.winnerDance}>
+                    <div key={winner.playerName} className={styles.winnerDance}>
                         <div className={styles.avatarName}>{winner.playerName}</div>
                         <PlayerAvatarComponent
                             key={winner.playerName}
@@ -21,7 +21,7 @@ const WinningModalComponent = ({ winners, losers }) => {
             </div>
             <div className={styles.list}>
                 {map(losers, loser => (
-                    <div>
+                    <div key={loser.playerName}>
                         <div className={styles.avatarName}>{loser.playerName}</div>
                         <PlayerAvatarComponent
                             key={loser.playerName}

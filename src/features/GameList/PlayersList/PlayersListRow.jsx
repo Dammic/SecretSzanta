@@ -16,13 +16,13 @@ const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
             />
             <EllipsisText className={styles.playerName}>{playerName}</EllipsisText>
             {currentRoom && (
-                <Fragment>
-                    <EllipsisText className={styles.roomName}>
+                <EllipsisText className={styles.roomName}>
+                    <span>
                         <span>room:{' '}</span>
                         <b className={styles.roomNameText}>{currentRoom}</b>
-                    </EllipsisText>
-                    <span className={classNames(styles.roomName, styles.mobile)}>Busy</span>
-                </Fragment>
+                    </span>
+                </EllipsisText>
+                <span className={classNames(styles.roomName, styles.mobile)}>Busy</span>
             )}
         </div>
     )
