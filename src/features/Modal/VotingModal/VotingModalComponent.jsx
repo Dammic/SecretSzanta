@@ -6,8 +6,8 @@ import { getAvatar } from '../../../utils/avatarsHelper'
 import PresidentRoleImage from '../../../static/President.png'
 import ChancellorRoleImage from '../../../static/Chancellor.png'
 import { Icon } from '../../Shared/Icon'
-import { EllipsisText } from '../../Shared/EllipsisText'
 
+import commonStyles from '../../Shared/CommonStyles/commonStyles.css'
 import styles from './VotingModal.css'
 
 const VotingModalComponent = ({
@@ -21,7 +21,7 @@ const VotingModalComponent = ({
             <div className={styles.votingInfoPlayer}>
                 <img className={styles.votingInfoAvatar} src={getAvatar(`liberal-${avatarNumber}`)}></img>
                 <img className={styles.votingInfoRole} src={(role === PlayerRole.ROLE_PRESIDENT ? PresidentRoleImage : ChancellorRoleImage)}></img>
-                <EllipsisText>{playerName}</EllipsisText>
+                <span className={commonStyles.ellipsis}>{playerName}</span>
             </div>
         )
     }

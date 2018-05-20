@@ -2,9 +2,9 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getAvatar } from '../../../utils/avatarsHelper'
-import { EllipsisText } from '../../Shared/EllipsisText'
 
 import styles from './PlayersList.css'
+import commonStyles from '../../Shared/CommonStyles/commonStyles.css'
 
 const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
     return (
@@ -14,15 +14,17 @@ const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
                 src={getAvatar(`liberal-${avatarNumber}`)}
                 alt="Player avatar"
             />
-            <EllipsisText className={styles.playerName}>{playerName}</EllipsisText>
+            <span className={classNames(commonStyles.ellipsis, styles.playerName)}>{playerName}</span>
             {currentRoom && (
-                <EllipsisText className={styles.roomName}>
-                    <span>
-                        <span>room:{' '}</span>
-                        <b className={styles.roomNameText}>{currentRoom}</b>
+                <Fragment>
+                    <span className={classNames(commonStyles.ellipsis, styles.roomName)}>
+                        <span>
+                            <span>room:{' '}</span>
+                            <b className={styles.roomNameText}>{currentRoom}</b>
+                        </span>
                     </span>
-                </EllipsisText>
-                <span className={classNames(styles.roomName, styles.mobile)}>Busy</span>
+                    <span className={classNames(styles.roomName, styles.mobile)}>Busy</span>
+                </Fragment>
             )}
         </div>
     )
