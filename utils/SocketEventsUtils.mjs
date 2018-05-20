@@ -1,6 +1,8 @@
-const { pick, map } = require('lodash')
-const { SocketEvents, PlayerAffilications, PolicyCards, GlobalRoomName } = require('../Dictionary')
-const { getCurrentTimestamp } = require('./utils')
+import lodash from 'lodash'
+import { SocketEvents, PlayerAffilications, PolicyCards, GlobalRoomName } from '../Dictionary'
+import { getCurrentTimestamp } from './utils'
+
+const { pick, map } = lodash
 
 let cancelTimeoutToken
 
@@ -117,5 +119,5 @@ const SocketEventsUtils = (io, RoomsManager) => {
     return socketEventsUtils
 }
 
-module.exports = SocketEventsUtils
+export default SocketEventsUtils
 

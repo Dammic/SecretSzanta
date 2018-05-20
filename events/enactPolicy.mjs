@@ -1,7 +1,7 @@
-const { PolicyCards, PlayerBoards, SocketEvents } = require('../Dictionary')
-const { getCurrentTimestamp } = require('../utils/utils')
+import { PolicyCards, PlayerBoards, SocketEvents } from '../Dictionary'
+import { getCurrentTimestamp } from '../utils/utils'
 
-module.exports = function (io, RoomsManager, phaseSocketEvents, socketEventsUtils) {
+const enactPolicy = function (io, RoomsManager, phaseSocketEvents, socketEventsUtils) {
     const policyLogic = {
         updateTrackerPositionIfNecessary: (socket, isSuccess) => {
             if (isSuccess) {
@@ -71,3 +71,5 @@ module.exports = function (io, RoomsManager, phaseSocketEvents, socketEventsUtil
 
     return policyLogic
 }
+
+export default enactPolicy
