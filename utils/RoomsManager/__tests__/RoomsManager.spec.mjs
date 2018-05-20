@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } from '../../Dictionary'
+import { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } from '../../../Dictionary'
 import RoomsManagerModule from '../RoomsManager'
 import roomsStore from '../roomsStore'
 let RoomsManager;

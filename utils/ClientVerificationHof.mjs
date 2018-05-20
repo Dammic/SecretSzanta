@@ -1,26 +1,27 @@
 import lodash from 'lodash'
 import { SocketEvents, ErrorMessages } from '../Dictionary'
+import { isRoomOwner, getPresident, getChancellor } from './RoomsManager'
 
 const { forEach, pick, get } = lodash
 
-const ClientVerificationHof = (RoomsManager) => {
+const ClientVerificationHof = () => {
     const availableChecks = {
         isOwner: (socket) => {
             const { currentRoom, currentPlayerName } = socket
-            if (!RoomsManager.isRoomOwner(currentRoom, currentPlayerName)) {
+            if (!isRoomOwner(currentRoom, currentPlayerName)) {
                 throw Error(ErrorMessages.notOwner)
             }
         },
         isPresident: (socket) => {
             const { currentRoom, currentPlayerName } = socket
-            const president = RoomsManager.getPresident(currentRoom)
+            const president = getPresident(currentRoom)
             if (get(president, 'playerName') !== currentPlayerName ) {
                 throw Error(ErrorMessages.notPresident)
             }
         },
         isChancellor: (socket) => {
             const { currentRoom, currentPlayerName } = socket
-            const chancellor = RoomsManager.getChancellor(currentRoom)
+            const chancellor = getChancellor(currentRoom)
             if (get(chancellor, 'playerName') !== currentPlayerName ) {
                 throw Error(ErrorMessages.notChancellor)
             }
