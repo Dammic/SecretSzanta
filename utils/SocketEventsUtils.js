@@ -74,41 +74,6 @@ const SocketEventsUtils = (io, RoomsManager) => {
             }
         },
 
-        enactPolicy: (socket, policy) => {
-            const isFacist = policy === PolicyCards.FacistPolicy
-            RoomsManager.enactPolicy(socket.currentRoom, policy)
-            socketEventsUtils.sendMessage(socket, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
-                data: {
-                    policy,
-                },
-            })
-        },
-
-        checkIfTrackerPositionShouldUpdate: (socket, isSuccess) => {
-            if (isSuccess) {
-                const trackerPosition = RoomsManager.getFailedElectionsCount(socket.currentRoom)
-                socketEventsUtils.resetElectionTracker(socket, trackerPosition)
-            } else {
-                RoomsManager.increaseFailedElectionsCount(socket.currentRoom)
-                socketEventsUtils.sendMessage(socket, { content: 'The failed elections tracker has increased!' })
-                const failedElectionsCount = RoomsManager.getFailedElectionsCount(socket.currentRoom)
-                if (failedElectionsCount >= 3) {
-                    socketEventsUtils.resetElectionTracker(socket, failedElectionsCount)
-
-                    const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)[0]
-                    socketEventsUtils.enactPolicy(socket, topCard)
-
-                } else {
-                    io.sockets.in(socket.currentRoom).emit(SocketEvents.IncreaseTrackerPosition, {
-                        data: {
-                            timestamp: getCurrentTimestamp(),
-                        },
-                    })
-                }
-            }
-        },
-
         switchRooms: (socket, startRoom, targetRoom) => {
             if (startRoom) {
                 socket.leave(startRoom)
