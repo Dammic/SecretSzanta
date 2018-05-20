@@ -486,7 +486,7 @@ class RoomsManager {
     }
     discardPolicy(roomName, card) {
         const { drawnCards, discardPile } = this.rooms_props[roomName]
-        this.moveCard(drawnCards, discardPile)
+        this.moveCard(drawnCards, discardPile, card)
     }
 
     discardAllCards(roomName) {

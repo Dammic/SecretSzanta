@@ -499,6 +499,18 @@ describe('RoomsManager', () => {
         })
     })
 
+    const checkIfRoomsCardsMatch = (first, second) => checkIfCardsMatch(
+        [
+            ...first.drawPile,
+            ...first.discardPile,
+            ...first.drawnCards,
+        ], [
+            ...second.drawPile,
+            ...second.discardPile,
+            ...second.drawnCards,
+        ],
+    )
+
     describe('reShuffle', () => {
         test('The same cards stay after reShuffle', () => {
             RoomsManager.drawPile = [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy]
@@ -516,17 +528,6 @@ describe('RoomsManager', () => {
     })
 
     describe('takeChoicePolicyCards', () => {
-        const checkIfRoomsCardsMatch = (first, second) => checkIfCardsMatch(
-            [
-                ...first.drawPile,
-                ...first.discardPile,
-                ...first.drawnCards,
-            ], [
-                ...second.drawPile,
-                ...second.discardPile,
-                ...second.drawnCards,
-            ]
-        )
         test('Should take 1 out of 4 cards', () => {
             RoomsManager.rooms_props['testRoom'].drawPile = [
                 PolicyCards.FacistPolicy,
@@ -664,6 +665,74 @@ describe('RoomsManager', () => {
             expect(checkIfCardsMatch(
                 [ PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy ],
                 RoomsManager.rooms_props['testRoom'].drawnCards,
+            )).toEqual(true)
+        })
+    })
+
+    describe('discardPolicy', () => {
+        test(`If no card is passed then it reports error, any pile isn't changed`, () => {
+            const { testRoom } = RoomsManager.rooms_props;
+            testRoom.drawPile = [
+                ...times(3, () => PolicyCards.FacistPolicy),
+                ...times(2, () => PolicyCards.LiberalPolicy),
+            ]
+            const initialRoomProps = cloneDeep(testRoom)
+
+            RoomsManager.discardPolicy('testRoom', undefined)
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                testRoom,
+            )).toEqual(true)
+
+            expect(checkIfCardsMatch(
+                initialRoomProps.drawPile,
+                testRoom.drawPile,
+            )).toEqual(true)
+
+            expect(checkIfCardsMatch(
+                initialRoomProps.discardPile,
+                testRoom.discardPile,
+            )).toEqual(true)
+        })
+
+        test('Should move chosen card from drawn cards pile to discard pile', () => {
+            const testRoom = RoomsManager.rooms_props.testRoom
+            testRoom.drawPile = [
+                ...times(3, () => PolicyCards.FacistPolicy),
+                ...times(2, () => PolicyCards.LiberalPolicy),
+            ]
+            const initialRoomProps = cloneDeep(testRoom)
+
+            RoomsManager.discardPolicy('testRoom', testRoom.drawPile[3])
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                testRoom,
+            )).toEqual(true)
+        })
+
+        test('If card does not exist in draw pile, then error is reported and any pile is not changed', () => {
+            const { testRoom } = RoomsManager.rooms_props;
+            testRoom.drawPile = [
+                ...times(3, () => PolicyCards.FacistPolicy),
+            ]
+            const notPresentCard = PolicyCards.LiberalPolicy
+            const initialRoomProps = cloneDeep(testRoom)
+
+            RoomsManager.discardPolicy('testRoom', notPresentCard)
+
+            expect(checkIfRoomsCardsMatch(
+                initialRoomProps,
+                testRoom,
+            )).toEqual(true)
+
+            expect(checkIfCardsMatch(
+                initialRoomProps.drawPile,
+                testRoom.drawPile,
+            )).toEqual(true)
+
+            expect(checkIfCardsMatch(
+                initialRoomProps.discardPile,
+                testRoom.discardPile,
             )).toEqual(true)
         })
     })
