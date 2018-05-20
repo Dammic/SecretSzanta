@@ -20,6 +20,20 @@
     "moduleNameMapper": {
       "^.+\\.(css|less|scss)$": "babel-jest"
     },
+    "testMatch": [
+        "**/__tests__/**/*.?(m)js?(x)",
+        "**/?(*.)(spec|test).?(m)js?(x)"
+    ],
+    "moduleFileExtensions": [
+        "js",
+        "json",
+        "jsx",
+        "node",
+        "mjs"
+    ],
+    "transform": {
+        ".mjs": "babel-jest"
+    },
     "setupFiles": [
       "raf/polyfill",
       "./setupTests.js"
@@ -55,10 +69,10 @@
     "socket.io-client": "1.7.3"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.40",
-    "@babel/plugin-proposal-class-properties": "7.0.0-beta.40",
-    "@babel/preset-env": "7.0.0-beta.40",
-    "@babel/preset-react": "7.0.0-beta.40",
+    "@babel/core": "7.0.0-beta.47",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.47",
+    "@babel/preset-env": "7.0.0-beta.47",
+    "@babel/preset-react": "7.0.0-beta.47",
     "autoprefixer": "6.7.7",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "8.2.2",

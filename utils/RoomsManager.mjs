@@ -10,10 +10,7 @@ import {
     WinReasons,
 } from '../Dictionary'
 import { logInfo, logError } from '../utils/utils'
-
-const roomsStore = {
-
-}
+import roomsStore from './roomsStore'
 
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
