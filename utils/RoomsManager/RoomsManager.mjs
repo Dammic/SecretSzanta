@@ -10,8 +10,7 @@ import {
     WinReasons,
 } from '../../Dictionary'
 import { logInfo, logError } from '../../utils/utils'
-import roomsStore from '../roomsStore'
-import playersStore from '../playersStore'
+import { roomsStore } from '../../stores'
 
 const {
     reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
@@ -555,33 +554,6 @@ export const getPlayerboardType = (roomName) => {
 /**********************************************/
 /*****************playersList******************/
 /**********************************************/
-export const getPlayersList = () => {
-    return playersStore
-}
-
-export const getPlayerFromPlayersList = (userName) => {
-    return playersStore[userName]
-}
-
-export const isInPlayersList = (userName) => {
-    return !!playersStore[userName]
-}
-
-export const addPlayerToPlayersList = (userName) => {
-    playersStore[userName] = {
-        avatarNumber: random(1, 6),
-        playerName: userName,
-        currentRoom: null,
-    }
-}
-export const removePlayerFromPlayersList = (userName) => {
-    if (userName) {
-        delete playersStore[userName]
-    }
-}
-export const updatePlayerRoom = (userName, newRoomName) => {
-    playersStore[userName].currentRoom = (newRoomName === GlobalRoomName ? '' : newRoomName)
-}
 export const setPresidentBackup = (roomName) => {
     const currentPresident = getPresident(roomName)
     roomsStore[roomName].previousPresidentNameBackup = currentPresident.playerName

@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } from '../../../Dictionary'
 import RoomsManagerModule from '../RoomsManager'
-import roomsStore from '../roomsStore'
+import { roomsStore } from '../../../stores'
 let RoomsManager;
 
 const { cloneDeep, size, times, forEach, reduce, countBy } = lodash

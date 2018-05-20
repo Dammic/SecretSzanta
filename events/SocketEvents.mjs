@@ -39,20 +39,19 @@ import {
     getPlayersCount,
     getFacists,
     removeRoom,
-    removePlayerFromPlayersList,
     initializeRoom,
     getRoomDetailsForLobby,
     isInBlackList,
-    addPlayer,
-    getPlayerInfo,
     vote,
     getRemainingVotesCount,
+    addPlayer,
     didAllVote,
     getVotingResult,
     setChancellor,
     getVotes,
     getChancellor,
     getDrawnCards,
+    getPlayerInfo,
     getPresident,
     discardPolicy,
     killPlayer,
@@ -61,10 +60,14 @@ import {
     discardAllCards,
     chooseNextPresident,
     initializeVoting,
-    isInPlayersList,
-    addPlayerToPlayersList,
     isVetoUnlocked,
 } from '../utils/RoomsManager'
+
+import {
+    isInPlayersList,
+    addPlayerToPlayersList,
+    removePlayerFromPlayersList,
+} from '../utils/PlayersManager'
 
 const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = lodash
 

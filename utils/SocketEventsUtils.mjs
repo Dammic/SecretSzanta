@@ -3,13 +3,14 @@ import { SocketEvents, PlayerAffilications, PolicyCards, GlobalRoomName } from '
 import { getCurrentTimestamp } from './utils'
 import {
     resetFailedElectionsCount,
+    getRoomsList,
     getRoomDetailsForLobby,
+} from './RoomsManager'
+import {
     updatePlayerRoom,
     getPlayersList,
-    getRoomsList,
     getPlayerFromPlayersList,
-} from './RoomsManager'
-
+} from './PlayersManager'
 const { pick, map } = lodash
 
 let cancelTimeoutToken
