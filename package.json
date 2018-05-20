@@ -86,7 +86,7 @@
     "fs": "0.0.1-security",
     "html-webpack-plugin": "2.30.1",
     "image-webpack-loader": "3.4.2",
-    "jest": "22.4.2",
+    "jest": "22.4.4",
     "merge-stream": "1.0.1",
     "node-sass": "4.9.0",
     "nodemon": "1.12.1",
