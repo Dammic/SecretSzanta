@@ -1,23 +1,27 @@
-const { cloneDeep, size, times, forEach, reduce, countBy } = require('lodash')
-const { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } = require('../../Dictionary')
+import lodash from 'lodash'
+import { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } from '../../Dictionary'
+import RoomsManagerModule from '../RoomsManager'
+import roomsStore from '../roomsStore'
 let RoomsManager;
+
+const { cloneDeep, size, times, forEach, reduce, countBy } = lodash
 
 
 describe('RoomsManager', () => {
     beforeEach(() => {
-        RoomsManager = new (require('../RoomsManager'))()
+        RoomsManager = new RoomsManagerModule()
         RoomsManager.initializeRoom('testRoom')
         RoomsManager.players = {}
         
     });
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(RoomsManager.rooms_props)).toEqual(1)
+        expect(size(roomsStore)).toEqual(1)
     });
     describe('initializeRoom', () => {
         test('should create room with owner', () => {
             RoomsManager.initializeRoom('testRoom', 'owner', 8, 'password')
-            const roomProps = RoomsManager.rooms_props.testRoom
+            const roomProps = roomsStore.testRoom
             expect(roomProps).toBeDefined()
 
             expect(roomProps).toEqual({
@@ -43,7 +47,7 @@ describe('RoomsManager', () => {
         })
         test('should create room without owner', () => {
             RoomsManager.initializeRoom('testRoom')
-            const roomProps = RoomsManager.rooms_props.testRoom
+            const roomProps = roomsStore.testRoom
             expect(roomProps).toBeDefined()
 
             expect(roomProps).toEqual({
@@ -70,21 +74,21 @@ describe('RoomsManager', () => {
     })
     describe('isInBlackList', () => {
         test('if blacklist is empty, should return false', () => {
-            const roomProps = RoomsManager.rooms_props
+            const roomProps = roomsStore
             roomProps['testRoom'].blackList = []
 
             expect(RoomsManager.isInBlackList('testRoom', 'ala')).toEqual(false)
         })
 
         test('if blacklist contains the user, should return true', () => {
-            const roomProps = RoomsManager.rooms_props;
+            const roomProps = roomsStore;
             roomProps['testRoom'].blackList = ['ala', 'ola']
 
             expect(RoomsManager.isInBlackList('testRoom', 'ala' )).toEqual(true)
         })
 
         test('if blacklist contains some users but not this one, should return false', () => {
-            const roomProps = RoomsManager.rooms_props
+            const roomProps = roomsStore
             roomProps['testRoom'].blackList = ['olga', 'ola']
 
             expect(RoomsManager.isInBlackList('testRoom', 'ala' )).toEqual(false)
@@ -93,32 +97,32 @@ describe('RoomsManager', () => {
 
     describe('toggleVeto', () => {
         test('should set isVetoUnlocked to true and not mess other things up', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.isVetoUnlocked = true
             RoomsManager.toggleVeto('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
     })
 
     describe('addVetoVote', () => {
         test('should be able to add president vote into votes ', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.vetoVotes = [PlayerRole.ROLE_PRESIDENT]
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
             
             RoomsManager.addVetoVote('testRoom', 'ala')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
         test('should be able to add chancellor vote into votes ', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR]
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
             
             RoomsManager.addVetoVote('testRoom', 'ala')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
         test('should be able to add chancellor and president votes into votes ', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
 
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
@@ -126,11 +130,11 @@ describe('RoomsManager', () => {
 
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
             RoomsManager.addVetoVote('testRoom', 'ola')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should be able to add president and chancellor votes into votes ', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.vetoVotes = [PlayerRole.ROLE_PRESIDENT, PlayerRole.ROLE_CHANCELLOR]
 
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PRESIDENT
@@ -139,11 +143,11 @@ describe('RoomsManager', () => {
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
             RoomsManager.addVetoVote('testRoom', 'ala')
 
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should not add more than 2 votes ever', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
 
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_CHANCELLOR
@@ -154,11 +158,11 @@ describe('RoomsManager', () => {
             RoomsManager.addVetoVote('testRoom', 'iza')
             RoomsManager.addVetoVote('testRoom', 'aza')
 
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('non-president and non-chancellor cannot vote for veto', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.vetoVotes = []
 
             RoomsManager.getPlayerRole = () => null
@@ -168,7 +172,7 @@ describe('RoomsManager', () => {
             RoomsManager.getPlayerRole = () => PlayerRole.ROLE_PREVIOUS_PRESIDENT
             RoomsManager.addVetoVote('testRoom', 'ola')
 
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
     })
 
@@ -196,17 +200,17 @@ describe('RoomsManager', () => {
         }
         forEach(expectedResults, (expectedBoardSize, playersCount) => {
             test(`Should set ${expectedBoardSize} for ${playersCount} players`, () => {
-                RoomsManager.rooms_props['testRoom'].playersDict = generatePlayersDict(playersCount)
-                const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+                roomsStore['testRoom'].playersDict = generatePlayersDict(playersCount)
+                const initialRoomProps = cloneDeep(roomsStore['testRoom'])
                 initialRoomProps.boardType = expectedBoardSize
                 RoomsManager.setPlayerboardType('testRoom')
-                expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+                expect(initialRoomProps).toEqual(roomsStore['testRoom'])
             })
         })
     })
     describe('getPlayerboardType', () => {
-        test('should retrieve the boardType from rooms_props', () => {
-            const roomProps = RoomsManager.rooms_props
+        test('should retrieve the boardType from roomsStore', () => {
+            const roomProps = roomsStore
             roomProps['testRoom'].boardType = PlayerBoards.SmallBoard
 
             expect(RoomsManager.getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
@@ -214,169 +218,169 @@ describe('RoomsManager', () => {
     })
     describe('chooseNextPresident', () => {
         test('should choose next new president (normal flow, 3 players)', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {}
-            RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
+            roomsStore['testRoom'].playersDict = {}
+            roomsStore['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
                 role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 1,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
+            roomsStore['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
                 role: null,
                 slotNumber: 2,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
+            roomsStore['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
                 role: null,
                 slotNumber: 3,
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.playersDict.player1.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             initialRoomProps.playersDict.player2.role = PlayerRole.ROLE_PRESIDENT
             RoomsManager.chooseNextPresident('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should choose next new president (normal flow, 3 players, 2 -> 3)', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {}
-            RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
+            roomsStore['testRoom'].playersDict = {}
+            roomsStore['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
                 role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
                 slotNumber: 1,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
+            roomsStore['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
                 role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 2,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
+            roomsStore['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
                 role: null,
                 slotNumber: 3,
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.playersDict.player1.role = null
             initialRoomProps.playersDict.player2.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             initialRoomProps.playersDict.player3.role = PlayerRole.ROLE_PRESIDENT
             RoomsManager.chooseNextPresident('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should choose next new president (normal flow, 3 players, 3 -> 1, should use modulo)', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {}
-            RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
+            roomsStore['testRoom'].playersDict = {}
+            roomsStore['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
                 role: null,
                 slotNumber: 1,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
+            roomsStore['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
                 role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
                 slotNumber: 2,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
+            roomsStore['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
                 role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 3,
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.playersDict.player1.role = PlayerRole.ROLE_PRESIDENT
             initialRoomProps.playersDict.player2.role = null
             initialRoomProps.playersDict.player3.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             RoomsManager.chooseNextPresident('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should choose next new president (normal flow, 3 players, 1 -> 3, should ommit dead)', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {}
-            RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
+            roomsStore['testRoom'].playersDict = {}
+            roomsStore['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
                 role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 1,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
+            roomsStore['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
                 role: null,
                 isDead: true,
                 slotNumber: 2,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
+            roomsStore['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
                 role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
                 slotNumber: 3,
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.playersDict.player1.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             initialRoomProps.playersDict.player2.role = null
             initialRoomProps.playersDict.player3.role = PlayerRole.ROLE_PRESIDENT
             RoomsManager.chooseNextPresident('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should choose next new president (normal flow, 3 players, 2 -> 1, should ommit dead and use modulo)', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {}
-            RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
+            roomsStore['testRoom'].playersDict = {}
+            roomsStore['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
                 role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
                 slotNumber: 1,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
+            roomsStore['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
                 role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 2,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
+            roomsStore['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
                 role: null,
                 isDead: true,
                 slotNumber: 3,
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.playersDict.player1.role = PlayerRole.ROLE_PRESIDENT
             initialRoomProps.playersDict.player2.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             initialRoomProps.playersDict.player3.role = null
             RoomsManager.chooseNextPresident('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should choose next new president (special flow, 4 players, 1 -> 2 -> 2 (and 2nd was special president))', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {}
-            RoomsManager.rooms_props['testRoom'].previousPresidentNameBackup = 'player1'
-            RoomsManager.rooms_props['testRoom'].playersDict.player1 = {
+            roomsStore['testRoom'].playersDict = {}
+            roomsStore['testRoom'].previousPresidentNameBackup = 'player1'
+            roomsStore['testRoom'].playersDict.player1 = {
                 playerName: 'player1',
                 role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
                 slotNumber: 1,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player2 = {
+            roomsStore['testRoom'].playersDict.player2 = {
                 playerName: 'player2',
                 role: PlayerRole.ROLE_PRESIDENT,
                 slotNumber: 2,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player3 = {
+            roomsStore['testRoom'].playersDict.player3 = {
                 playerName: 'player3',
                 role: null,
                 slotNumber: 3,
             }
-            RoomsManager.rooms_props['testRoom'].playersDict.player4 = {
+            roomsStore['testRoom'].playersDict.player4 = {
                 playerName: 'player4',
                 role: null,
                 isDead: true,
                 slotNumber: 4,
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.playersDict.player1.role = null
             initialRoomProps.playersDict.player2.role = PlayerRole.ROLE_PRESIDENT
             initialRoomProps.playersDict.player3.role = null
             initialRoomProps.playersDict.player4.role = null
             initialRoomProps.previousPresidentNameBackup = null
             RoomsManager.chooseNextPresident('testRoom')
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
     })
 
     describe('startChancellorChoicePhase', () => {
         test('should set president backup and president if designatedPresidentName is passed', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 player1: {
                     playerName: 'player1',
                     role: PlayerRole.ROLE_PRESIDENT,
@@ -393,56 +397,56 @@ describe('RoomsManager', () => {
                     slotNumber: 1,
                 }
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             RoomsManager.startChancellorChoicePhase('testRoom', 'player3')
             initialRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             initialRoomProps.previousPresidentNameBackup = 'player1'
             initialRoomProps.playersDict.player1.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             initialRoomProps.playersDict.player3.role = PlayerRole.ROLE_PRESIDENT
 
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
 
         test('should call chooseNextPresident', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             RoomsManager.chooseNextPresident = jest.fn()
             RoomsManager.startChancellorChoicePhase('testRoom')
             initialRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             expect(RoomsManager.chooseNextPresident.mock.calls.length).toBe(1)
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
     })
 
     describe('setPresidentBackup', () => {
         test('Should set president backup', () => {
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 player1: {
                     playerName: 'player1',
                     role: PlayerRole.ROLE_PRESIDENT,
                     slotNumber: 1,
                 },
             }
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             RoomsManager.setPresidentBackup('testRoom')
             initialRoomProps.previousPresidentNameBackup = 'player1'
 
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
     })
 
     describe('resetPresidentBackup', () => {
         test('Should reset president backup', () => {
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             RoomsManager.resetPresidentBackup('testRoom')
             initialRoomProps.previousPresidentNameBackup = null
 
-            expect(initialRoomProps).toEqual(RoomsManager.rooms_props['testRoom'])
+            expect(initialRoomProps).toEqual(roomsStore['testRoom'])
         })
     })
 
     describe('moveCard', () => {
         test('Policy card is removed from drawn card pile and added to discard pile', () => {
-            const room = RoomsManager.rooms_props['testRoom']
+            const room = roomsStore['testRoom']
             room.drawPile = [PolicyCards.LiberalPolicy]
             room.discardPile = []
             RoomsManager.moveCard(room.drawPile, room.discardPile, room.drawPile[0])
@@ -451,7 +455,7 @@ describe('RoomsManager', () => {
         })
 
         test('Non-existing policy in source pile is not moved to other pile', () => {
-            const room = RoomsManager.rooms_props['testRoom']
+            const room = roomsStore['testRoom']
             room.drawPile = []
             room.discardPile = []
             RoomsManager.moveCard(room.drawPile, room.discardPile, PolicyCards.LiberalPolicy)
@@ -460,7 +464,7 @@ describe('RoomsManager', () => {
         })
 
         test('Only chosen policy is moved to another pile', () => {
-            const room = RoomsManager.rooms_props['testRoom']
+            const room = roomsStore['testRoom']
             room.drawPile = [PolicyCards.LiberalPolicy, PolicyCards.FacistPolicy]
             room.discardPile = []
             const cardToStay = room.drawPile[1]
@@ -515,7 +519,7 @@ describe('RoomsManager', () => {
         test('The same cards stay after reShuffle', () => {
             RoomsManager.drawPile = [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy]
             RoomsManager.discardPile = [PolicyCards.LiberalPolicy]
-            const room = RoomsManager.rooms_props['testRoom']
+            const room = roomsStore['testRoom']
             const initialRoom = cloneDeep(room)
             RoomsManager.reShuffle('testRoom')
             expect(room.discardPile).toEqual([])
@@ -529,14 +533,14 @@ describe('RoomsManager', () => {
 
     describe('takeChoicePolicyCards', () => {
         test('Should take 1 out of 4 cards', () => {
-            RoomsManager.rooms_props['testRoom'].drawPile = [
+            roomsStore['testRoom'].drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            RoomsManager.rooms_props['testRoom'].discardPile = [PolicyCards.FacistPolicy]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            roomsStore['testRoom'].discardPile = [PolicyCards.FacistPolicy]
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
@@ -548,24 +552,24 @@ describe('RoomsManager', () => {
             
             expect(checkIfRoomsCardsMatch(
                 initialRoomProps,
-                RoomsManager.rooms_props['testRoom'],
+                roomsStore['testRoom'],
             )).toEqual(true)
 
-            expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
+            expect(roomsStore['testRoom']).toEqual(initialRoomProps)
         })
         test('Should take 2 out of 4 cards and shuffle the rest with discards', () => {
-            RoomsManager.rooms_props['testRoom'].drawPile = [
+            roomsStore['testRoom'].drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            RoomsManager.rooms_props['testRoom'].discardPile = [
+            roomsStore['testRoom'].discardPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.drawPile = [
                 PolicyCards.LiberalPolicy,
                 PolicyCards.LiberalPolicy,
@@ -579,22 +583,22 @@ describe('RoomsManager', () => {
 
             expect(checkIfRoomsCardsMatch(
                 initialRoomProps,
-                RoomsManager.rooms_props['testRoom'],
+                roomsStore['testRoom'],
             )).toEqual(true)
 
-            initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
-            expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
-            expect(RoomsManager.rooms_props['testRoom'].drawPile.length).toEqual(5)
+            initialRoomProps.drawPile = roomsStore['testRoom'].drawPile
+            expect(roomsStore['testRoom']).toEqual(initialRoomProps)
+            expect(roomsStore['testRoom'].drawPile.length).toEqual(5)
         })
 
         test('Should take 1 out of 1 cards and shuffle the rest with discards', () => {
-            RoomsManager.rooms_props['testRoom'].drawPile = [PolicyCards.LiberalPolicy]
-            RoomsManager.rooms_props['testRoom'].discardPile = [
+            roomsStore['testRoom'].drawPile = [PolicyCards.LiberalPolicy]
+            roomsStore['testRoom'].discardPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
@@ -606,26 +610,26 @@ describe('RoomsManager', () => {
 
             expect(checkIfRoomsCardsMatch(
                 initialRoomProps,
-                RoomsManager.rooms_props['testRoom'],
+                roomsStore['testRoom'],
             )).toEqual(true)
 
-            initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
-            expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
-            expect(RoomsManager.rooms_props['testRoom'].drawPile.length).toEqual(3)
+            initialRoomProps.drawPile = roomsStore['testRoom'].drawPile
+            expect(roomsStore['testRoom']).toEqual(initialRoomProps)
+            expect(roomsStore['testRoom'].drawPile.length).toEqual(3)
         })
 
         test('Should take 1 out of 3 cards and shuffle the rest with discards', () => {
-            RoomsManager.rooms_props['testRoom'].drawPile = [
+            roomsStore['testRoom'].drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            RoomsManager.rooms_props['testRoom'].discardPile = [
+            roomsStore['testRoom'].discardPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             initialRoomProps.drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
@@ -639,39 +643,39 @@ describe('RoomsManager', () => {
 
             expect(checkIfRoomsCardsMatch(
                 initialRoomProps,
-                RoomsManager.rooms_props['testRoom'],
+                roomsStore['testRoom'],
             )).toEqual(true)
 
-            initialRoomProps.drawPile = RoomsManager.rooms_props['testRoom'].drawPile
-            expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
-            expect(RoomsManager.rooms_props['testRoom'].drawPile.length).toEqual(5)
+            initialRoomProps.drawPile = roomsStore['testRoom'].drawPile
+            expect(roomsStore['testRoom']).toEqual(initialRoomProps)
+            expect(roomsStore['testRoom'].drawPile.length).toEqual(5)
         })
         test('Should take 3 cards, but first shuffle, because there is only one available on draw pile', () => {
-            RoomsManager.rooms_props['testRoom'].drawPile = [
+            roomsStore['testRoom'].drawPile = [
                 PolicyCards.FacistPolicy,
             ] 
-            RoomsManager.rooms_props['testRoom'].discardPile = [
+            roomsStore['testRoom'].discardPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.LiberalPolicy,
             ]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
 
             RoomsManager.takeChoicePolicyCards('testRoom', 3)
 
             expect(checkIfRoomsCardsMatch(
                 initialRoomProps,
-                RoomsManager.rooms_props['testRoom'],
+                roomsStore['testRoom'],
             )).toEqual(true)
             expect(checkIfCardsMatch(
                 [ PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy ],
-                RoomsManager.rooms_props['testRoom'].drawnCards,
+                roomsStore['testRoom'].drawnCards,
             )).toEqual(true)
         })
     })
 
     describe('discardPolicy', () => {
         test(`If no card is passed then it reports error, any pile isn't changed`, () => {
-            const { testRoom } = RoomsManager.rooms_props;
+            const { testRoom } = roomsStore;
             testRoom.drawPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
@@ -696,7 +700,7 @@ describe('RoomsManager', () => {
         })
 
         test('Should move chosen card from drawn cards pile to discard pile', () => {
-            const testRoom = RoomsManager.rooms_props.testRoom
+            const testRoom = roomsStore.testRoom
             testRoom.drawPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
@@ -711,7 +715,7 @@ describe('RoomsManager', () => {
         })
 
         test('If card does not exist in draw pile, then error is reported and any pile is not changed', () => {
-            const { testRoom } = RoomsManager.rooms_props;
+            const { testRoom } = roomsStore;
             testRoom.drawPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
             ]
@@ -739,22 +743,22 @@ describe('RoomsManager', () => {
 
     describe('peekPolicyCards', () => {
         test('Should return 3 cards but not modify anything', () => {
-            RoomsManager.rooms_props['testRoom'].drawPile = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy]
-            const initialRoomProps = cloneDeep(RoomsManager.rooms_props['testRoom'])
+            roomsStore['testRoom'].drawPile = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy]
+            const initialRoomProps = cloneDeep(roomsStore['testRoom'])
             const peekedCards = RoomsManager.peekPolicyCards('testRoom')
 
-            expect(RoomsManager.rooms_props['testRoom']).toEqual(initialRoomProps)
+            expect(roomsStore['testRoom']).toEqual(initialRoomProps)
             expect(peekedCards).toEqual([PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy])
         })
     })
 
     describe('checkWinConditions', () => {
         test('Should return liberal affiliation if liberal policies count === 5', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(2, () => PolicyCards.FacistPolicy),
                 ...times(5, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: false,
                     role: null,
@@ -769,11 +773,11 @@ describe('RoomsManager', () => {
         })
 
         test('Should return liberal affiliation if liberal policies count < 5, but hitler is dead', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(2, () => PolicyCards.FacistPolicy),
                 ...times(4, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: true,
                     role: null,
@@ -788,11 +792,11 @@ describe('RoomsManager', () => {
         })
 
         test('Should not return liberal affiliation if liberal policies count < 5, but hitler is alive', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(2, () => PolicyCards.FacistPolicy),
                 ...times(4, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: false,
                     role: null,
@@ -807,11 +811,11 @@ describe('RoomsManager', () => {
         })
 
         test('Should return fascist affiliation if fascist policies count === 6', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(6, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: false,
                     role: null,
@@ -826,11 +830,11 @@ describe('RoomsManager', () => {
         })
 
         test('Should return fascist affiliation if fascist policies === 4 AND hitler is chancellor', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(4, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: false,
                     role: PlayerRole.ROLE_CHANCELLOR,
@@ -845,11 +849,11 @@ describe('RoomsManager', () => {
         })
 
         test('Should return fascist affiliation if fascist policies === 5 AND hitler is chancellor', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(5, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: false,
                     role: PlayerRole.ROLE_CHANCELLOR,
@@ -864,11 +868,11 @@ describe('RoomsManager', () => {
         })
 
         test('Should not return fascist affiliation if fascist policies < 4 AND hitler is chancellor', () => {
-            RoomsManager.rooms_props['testRoom'].policiesPile = [
+            roomsStore['testRoom'].policiesPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
             ]
-            RoomsManager.rooms_props['testRoom'].playersDict = {
+            roomsStore['testRoom'].playersDict = {
                 hitlerTestPlayer: {
                     isDead: false,
                     role: PlayerRole.ROLE_CHANCELLOR,

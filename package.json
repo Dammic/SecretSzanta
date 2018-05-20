@@ -8,8 +8,8 @@
     "build:dll": "rimraf public && webpack --config webpack.dll.js",
     "build": "webpack --config webpack.dev.js",
     "build:watch": "webpack --config webpack.dev.js --watch --progress",
-    "run": "node server.js",
-    "run:dev": "nodemon server.js --watch utils/ --watch events/ --watch server.js",
+    "run": "node --experimental-modules server.mjs",
+    "run:dev": "nodemon --experimental-modules server.mjs --watch utils/ --watch events/ --watch server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
     "build:prod": "rimraf public && webpack --env prod --config webpack.dev.js",
@@ -19,6 +19,20 @@
   "jest": {
     "moduleNameMapper": {
       "^.+\\.(css|less|scss)$": "babel-jest"
+    },
+    "testMatch": [
+        "**/__tests__/**/*.?(m)js?(x)",
+        "**/?(*.)(spec|test).?(m)js?(x)"
+    ],
+    "moduleFileExtensions": [
+        "js",
+        "json",
+        "jsx",
+        "node",
+        "mjs"
+    ],
+    "transform": {
+        ".mjs": "babel-jest"
     },
     "setupFiles": [
       "raf/polyfill",
@@ -55,10 +69,10 @@
     "socket.io-client": "1.7.3"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.40",
-    "@babel/plugin-proposal-class-properties": "7.0.0-beta.40",
-    "@babel/preset-env": "7.0.0-beta.40",
-    "@babel/preset-react": "7.0.0-beta.40",
+    "@babel/core": "7.0.0-beta.47",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.47",
+    "@babel/preset-env": "7.0.0-beta.47",
+    "@babel/preset-react": "7.0.0-beta.47",
     "autoprefixer": "6.7.7",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "8.2.2",

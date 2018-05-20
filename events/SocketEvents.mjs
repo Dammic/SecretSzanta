@@ -1,9 +1,9 @@
-const {
+import {
     getCurrentTimestamp,
     logInfo,
     logError,
-} = require('../utils/utils')
-const {
+} from '../utils/utils'
+import {
     SocketEvents,
     GamePhases,
     PlayerAffilications,
@@ -14,15 +14,18 @@ const {
     PolicyCards,
     GlobalRoomName,
     PlayerBoards,
-} = require('../Dictionary')
-const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = require('lodash')
-const ClientVerificationHof = require('../utils/ClientVerificationHof')
-const RoomsManager = new (require('../utils/RoomsManager'))()
-const SocketEventsUtils = require('../utils/SocketEventsUtils')
-const PhaseSocketEvents = require('./PhaseSocketEvents')
-const EnactPolicyModule = require('./enactPolicy')
+} from '../Dictionary'
+import lodash from 'lodash'
+import ClientVerificationHof from '../utils/ClientVerificationHof'
+import RoomsManagerModule from '../utils/RoomsManager'
+import SocketEventsUtils from '../utils/SocketEventsUtils'
+import PhaseSocketEvents from './PhaseSocketEvents'
+import EnactPolicyModule from './enactPolicy'
 
-module.exports = function (io) {
+const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = lodash
+const RoomsManager = new RoomsManagerModule()
+
+export default function (io) {
     const phaseSocketEvents = PhaseSocketEvents(io, RoomsManager)
     const socketEventsUtils = SocketEventsUtils(io, RoomsManager)
     const {

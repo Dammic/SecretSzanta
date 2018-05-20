@@ -93,7 +93,7 @@ module.exports = {
     ],
     module: {
         rules: [{
-            test: /\.js$/,
+            test: /\.js$|\.mjs$/,
             include: [
                 path.join(__dirname, 'src'), // important for performance!
             ],
@@ -186,6 +186,6 @@ module.exports = {
         }],
     },
     resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js', '.jsx', '.mjs'],
     },
 }

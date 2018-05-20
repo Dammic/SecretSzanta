@@ -1,5 +1,7 @@
-const { forEach, pick, get } = require('lodash')
-const { SocketEvents, ErrorMessages } = require('../Dictionary')
+import lodash from 'lodash'
+import { SocketEvents, ErrorMessages } from '../Dictionary'
+
+const { forEach, pick, get } = lodash
 
 const ClientVerificationHof = (RoomsManager) => {
     const availableChecks = {
@@ -38,5 +40,5 @@ const ClientVerificationHof = (RoomsManager) => {
     }
 }
 
-module.exports = ClientVerificationHof
+export default ClientVerificationHof
 
