@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { size } from 'lodash'
 import { roomsStore } from '../../../stores'
 
 import {
@@ -12,8 +12,6 @@ import {
     getOtherAlivePlayers,
 } from '../players'
 import { initializeRoom } from '../rooms'
-
-const { size } = lodash
 
 // TODO: add missing tests
 // addPlayer,

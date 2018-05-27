@@ -1,15 +1,13 @@
-import lodash from 'lodash'
+import { size } from 'lodash'
 import { PlayerAffilications } from '../../../Dictionary'
 import { roomsStore } from '../../../stores'
 
 import {
     getFacists,
     getLiberals,
-    getHitler
+    getHitler,
 } from '../secretRoles'
 import { initializeRoom } from '../rooms'
-
-const { size } = lodash
 
 // TODO: not implemented tests:
 // getFacists,
@@ -33,11 +31,11 @@ describe('secretRoles', () => {
                 },
                 fascistPlayer: {
                     playerName: 'fascistPlayer',
-                    affiliation: PlayerAffilications.FACIST_AFFILIATION
+                    affiliation: PlayerAffilications.FACIST_AFFILIATION,
                 },
                 liberalPlayer: {
                     playerName: 'liberalPlayer',
-                    affiliation: PlayerAffilications.LIBERAL_AFFILIATION
+                    affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
                 },
             }
             expect(getHitler('testRoom')).toEqual(testRoom.playersDict.hitlerPlayer)
@@ -47,11 +45,11 @@ describe('secretRoles', () => {
             testRoom.playersDict = {
                 fascistPlayer: {
                     playerName: 'fascistPlayer',
-                    affiliation: PlayerAffilications.FACIST_AFFILIATION
+                    affiliation: PlayerAffilications.FACIST_AFFILIATION,
                 },
                 liberalPlayer: {
                     playerName: 'liberalPlayer',
-                    affiliation: PlayerAffilications.LIBERAL_AFFILIATION
+                    affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
                 },
             }
             expect(getHitler('testRoom')).toEqual(undefined)

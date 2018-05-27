@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, size, times, forEach, reduce } from 'lodash'
 import { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } from '../../../Dictionary'
 import { roomsStore } from '../../../stores'
 import {
@@ -17,8 +17,6 @@ import {
     removeRoom,
 } from '../rooms'
 
-const { cloneDeep, size, times, forEach, reduce } = lodash
-
 // TODO: not implmenented tests:
 // startGame,
 // getRoomsList,
@@ -33,11 +31,11 @@ const { cloneDeep, size, times, forEach, reduce } = lodash
 describe('RoomsManager', () => {
     beforeEach(() => {
         initializeRoom('testRoom')
-    });
+    })
     afterEach(() => {
         // this tests if the function did not override different room than it should
         expect(size(roomsStore)).toEqual(1)
-    });
+    })
     describe('initializeRoom', () => {
         test('should create room with owner', () => {
             initializeRoom('testRoom', 'owner', 8, 'password')

@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { size } from 'lodash'
 import { roomsStore } from '../../../stores'
 
 import {
@@ -7,8 +7,6 @@ import {
     resetFailedElectionsCount,
 } from '../elections'
 import { initializeRoom } from '../rooms'
-
-const { size } = lodash
 
 describe('elections', () => {
     beforeEach(() => {

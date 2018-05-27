@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, size, times, countBy } from 'lodash'
 import {
     reShuffle,
     getDrawnCards,
@@ -15,8 +15,6 @@ import { initializeRoom } from '../rooms'
 
 import { PolicyCards } from '../../../Dictionary'
 import { roomsStore } from '../../../stores'
-
-const { cloneDeep, size, times, countBy } = lodash
 
 // TODO: functions that are not tested:
 // getDrawnCards,
@@ -72,11 +70,11 @@ describe('helper function checkIfCardsMatch', () => {
 describe('policies', () => {
     beforeEach(() => {
         initializeRoom('testRoom')
-    });
+    })
     afterEach(() => {
         // this tests if the function did not override different room than it should
         expect(size(roomsStore)).toEqual(1)
-    });
+    })
 
     describe('reShuffle', () => {
         test('The same cards stay after reShuffle', () => {

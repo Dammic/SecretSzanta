@@ -62,7 +62,7 @@ export {
 export {
     getFacists,
     getLiberals,
-    getHitler
+    getHitler,
 } from './secretRoles'
 export {
     addPlayer,

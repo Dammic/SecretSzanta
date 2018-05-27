@@ -1,7 +1,5 @@
-import lodash from 'lodash'
+import { size } from 'lodash'
 import { roomsStore } from '../../../stores'
-
-const { size } = lodash
 
 import {
     initializeVoting,
@@ -42,11 +40,11 @@ describe('voting', () => {
             testRoom.votes = {
                 ala: true,
                 ula: false,
-                iza: true
+                iza: true,
             }
             const result = didAllVote('testRoom')
             expect(result).toEqual(true)
-        }) 
+        })
 
         test('not all eligible voted', () => {
             const { testRoom } = roomsStore
@@ -57,7 +55,7 @@ describe('voting', () => {
             }
             testRoom.votes = {
                 ala: true,
-                iza: true
+                iza: true,
             }
             const result = didAllVote('testRoom')
             expect(result).toEqual(false)

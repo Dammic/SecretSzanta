@@ -1,5 +1,5 @@
-import { roomsStore } from '../../stores'
 import lodash from 'lodash'
+import { roomsStore } from '../../stores'
 
 import {
     getPlayerRole,

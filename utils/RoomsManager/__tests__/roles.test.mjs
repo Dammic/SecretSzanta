@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, size } from 'lodash'
 import { PlayerRole } from '../../../Dictionary'
 import { roomsStore } from '../../../stores'
 
@@ -15,8 +15,6 @@ import {
     resetPresidentBackup,
 } from '../roles'
 import { initializeRoom } from '../rooms'
-
-const { cloneDeep, size } = lodash
 
 // TODO: Not implemented tests
 // getPlayerRole,

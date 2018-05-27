@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, size } from 'lodash'
 import { GamePhases, PlayerRole } from '../../../Dictionary'
 import { roomsStore } from '../../../stores'
 
@@ -9,8 +9,6 @@ import {
     startChancellorChoicePhase,
 } from '../gamePhases'
 import { initializeRoom } from '../rooms'
-
-const { cloneDeep, size } = lodash
 
 // TODO: not implemented functions
 // getGamePhase,
@@ -43,7 +41,7 @@ describe('gamePhases', () => {
                     playerName: 'player3',
                     role: null,
                     slotNumber: 1,
-                }
+                },
             }
             const preparedRoomProps = cloneDeep(testRoom)
             startChancellorChoicePhase('testRoom', 'player3')

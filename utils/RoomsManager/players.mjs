@@ -3,6 +3,7 @@ import lodash from 'lodash'
 import { GamePhases, PlayerAffilications, ErrorTypes } from '../../Dictionary'
 import { setGamePhase } from './gamePhases'
 import { logInfo } from '../utils'
+
 const {
     reject,
     tail,
