@@ -1,9 +1,9 @@
-const {
+import {
     getCurrentTimestamp,
     logInfo,
     logError,
-} = require('../utils/utils')
-const {
+} from '../utils/utils'
+import {
     SocketEvents,
     GamePhases,
     PlayerAffilications,
@@ -14,44 +14,25 @@ const {
     PolicyCards,
     GlobalRoomName,
     PlayerBoards,
-} = require('../Dictionary')
-const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = require('lodash')
-const ClientVerificationHof = require('../utils/ClientVerificationHof')
-const RoomsManager = new (require('../utils/RoomsManager'))()
-const SocketEventsUtils = require('../utils/SocketEventsUtils')
-const PhaseSocketEvents = require('./PhaseSocketEvents')
+} from '../Dictionary'
+import lodash from 'lodash'
+import ClientVerificationHof from '../utils/ClientVerificationHof'
+import RoomsManagerModule from '../utils/RoomsManager'
+import SocketEventsUtils from '../utils/SocketEventsUtils'
+import PhaseSocketEvents from './PhaseSocketEvents'
+import EnactPolicyModule from './enactPolicy'
 
-module.exports = function (io) {
-    const socketEventsUtils = SocketEventsUtils(io, RoomsManager)
+const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = lodash
+const RoomsManager = new RoomsManagerModule()
+
+export default function (io) {
     const phaseSocketEvents = PhaseSocketEvents(io, RoomsManager)
+    const socketEventsUtils = SocketEventsUtils(io, RoomsManager)
+    const {
+        enactPolicy, checkForImmediateSuperpowersOrContinue,
+        updateTrackerPositionIfNecessary,
+    } = EnactPolicyModule(io, RoomsManager, phaseSocketEvents, socketEventsUtils)
     const socketEvents = {
-        checkForImmediateSuperpowersOrContinue: (socket) => {
-            const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
-            const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom)
-            if (fascistPolicyCount === 1 && playerboardType === PlayerBoards.LargeBoard) {
-                phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
-            } else if (fascistPolicyCount === 2 && playerboardType !== PlayerBoards.SmallBoard) {
-                phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
-            } else if (fascistPolicyCount === 3) {
-                if (playerboardType === PlayerBoards.SmallBoard) {
-                    // President will see top 3 cards from the drawPile deck
-                    phaseSocketEvents.startPeekCardsPhase(socket)
-                } else {
-                    // President will designate next president superpower
-                    phaseSocketEvents.startDesignateNextPresidentPhase(socket)
-                }
-            // 4th power is always kill on each board
-            } else if (fascistPolicyCount === 4) {
-                phaseSocketEvents.startKillPhase(socket)
-            // 5th power is always kill AND veto power unlock
-            } else if (fascistPolicyCount === 5) {
-                RoomsManager.toggleVeto(socket.currentRoom)
-                socketEventsUtils.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
-                phaseSocketEvents.startKillPhase(socket)
-            } else {
-                socketEventsUtils.resumeGame(socket, { delay: 3000, func: phaseSocketEvents.startChancellorChoicePhase })
-            }
-        },
         triggerVetoPrompt: (socket) => {
             RoomsManager.setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
             RoomsManager.clearVetoVotes(socket.currentRoom)
@@ -104,7 +85,7 @@ module.exports = function (io) {
                 socketEventsUtils.sendMessage(socket, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
                 socketEventsUtils.clearNextPhaseTimeout()
                 RoomsManager.discardPolicyByVeto(socket.currentRoom)
-                socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, false)
+                updateTrackerPositionIfNecessary(socket, false)
 
                 const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
                 if (!shouldGameFinish) {
@@ -244,7 +225,7 @@ module.exports = function (io) {
                 `
                 socketEventsUtils.sendMessage(socket, { content: votingResultMessage })
 
-                socketEventsUtils.checkIfTrackerPositionShouldUpdate(socket, hasVotingSucceed)
+                updateTrackerPositionIfNecessary(socket, hasVotingSucceed)
 
                 if (hasVotingSucceed) {
                     RoomsManager.setChancellor(socket.currentRoom)
@@ -289,13 +270,11 @@ module.exports = function (io) {
         },
 
         choosePolicyChancellor: (socket, choice) => {
-            socketEventsUtils.enactPolicy(socket, choice)
+            enactPolicy(socket, choice)
 
             const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
             if (isVetoUnlocked) {
                 socketEvents.triggerVetoPrompt(socket)
-            } else if (choice === PolicyCards.FacistPolicy) {
-                socketEvents.checkForImmediateSuperpowersOrContinue(socket)
             } else {
                 const shouldGameFinish = phaseSocketEvents.checkIfGameShouldFinish(socket)
                 if (!shouldGameFinish) {

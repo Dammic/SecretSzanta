@@ -1,6 +1,8 @@
-const moment = require('moment')
-const { pad } = require('lodash')
-const { MessagesTypes } = require('../Dictionary')
+import moment from 'moment'
+import lodash from 'lodash'
+import { MessagesTypes } from '../Dictionary'
+
+const { pad } = lodash
 
 const getCurrentTimestamp = () => Math.floor(Date.now() / 1000)
 
@@ -13,7 +15,7 @@ const logInfo = (contextData, message) => log(contextData, MessagesTypes.INFO, m
 
 const logError = (contextData, message) => log(contextData, MessagesTypes.ERROR, message)
 
-module.exports = {
+export {
     getCurrentTimestamp,
     log,
     logInfo,

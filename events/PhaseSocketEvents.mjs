@@ -1,7 +1,9 @@
-const { forEach, get, map, pick } = require('lodash')
-const { SocketEvents, PlayerRole, GamePhases, PlayerAffilications, PolicyCards } = require('../Dictionary')
-const { getCurrentTimestamp } = require('../utils/utils')
-const SocketEventsUtils = require('../utils/SocketEventsUtils')
+import lodash from 'lodash'
+import { SocketEvents, PlayerRole, GamePhases, PlayerAffilications, PolicyCards } from '../Dictionary'
+import { getCurrentTimestamp } from '../utils/utils'
+import SocketEventsUtils from '../utils/SocketEventsUtils'
+
+const { forEach, get, map, pick } = lodash
 
 const PhaseSocketEvents = (io, RoomsManager) => {
     const socketEventsUtils = SocketEventsUtils(io, RoomsManager)
@@ -47,6 +49,7 @@ const PhaseSocketEvents = (io, RoomsManager) => {
         },
 
         startChancellorChoicePhase: (socket, designatedPresidentName = null) => {
+            if (RoomsManager.getGamePhase(socket.currentRoom) === GamePhases.GAME_PHASE_SUPERPOWER) return
             RoomsManager.startChancellorChoicePhase(socket.currentRoom, designatedPresidentName)
             const playersChoices = RoomsManager.getChancellorChoices(socket.currentRoom)
 
@@ -149,5 +152,4 @@ const PhaseSocketEvents = (io, RoomsManager) => {
     return phaseSocketEvents
 }
 
-module.exports = PhaseSocketEvents
-
+export default PhaseSocketEvents
