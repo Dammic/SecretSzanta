@@ -1,9 +1,5 @@
-const {
-    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
-    filter, includes, forEach, random, slice, times, map, head,
-    find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf, dropRight,
-} = require('lodash')
-const {
+import lodash from 'lodash'
+import {
     GamePhases,
     PlayerRole,
     PlayerAffilications,
@@ -12,8 +8,15 @@ const {
     PlayerBoards,
     ErrorTypes,
     WinReasons,
-} = require('../Dictionary')
-const { logInfo, logError } = require('../utils/utils')
+} from '../Dictionary'
+import { logInfo, logError } from '../utils/utils'
+import roomsStore from './roomsStore'
+
+const {
+    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
+    filter, includes, forEach, random, slice, times, map, head,
+    find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf, dropRight,
+} = lodash
 
 /**
  * This function contains methods to manage rooms variables and rooms.
@@ -22,7 +25,6 @@ const { logInfo, logError } = require('../utils/utils')
 class RoomsManager {
     constructor() {
         this.players = {}
-        this.rooms_props = {}
     }
 
     /**
@@ -39,7 +41,7 @@ class RoomsManager {
             currentPlayerName: ownerName,
         }, 'New room was created by the player')
 
-        this.rooms_props[roomName] = {
+        roomsStore[roomName] = {
             ownerName,
             freeSlots,
             playersDict: {},
@@ -63,15 +65,15 @@ class RoomsManager {
     }
 
     isInBlackList(roomName, playerName) {
-        const { blackList } = this.rooms_props[roomName]
+        const { blackList } = roomsStore[roomName]
         return includes(blackList, playerName)
     }
 
     toggleVeto(roomName) {
-        this.rooms_props[roomName].isVetoUnlocked = true
+        roomsStore[roomName].isVetoUnlocked = true
     }
     addVetoVote(roomName, playerName) {
-        const { vetoVotes } = this.rooms_props[roomName]
+        const { vetoVotes } = roomsStore[roomName]
         const playerRole = this.getPlayerRole(roomName, playerName)
         if (
             includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)
@@ -81,27 +83,27 @@ class RoomsManager {
         }
     }
     didVetoSucceed(roomName) {
-        const { vetoVotes } = this.rooms_props[roomName]
+        const { vetoVotes } = roomsStore[roomName]
         return size(vetoVotes) === 2
     }
     getVetoVotes(roomName) {
-        return this.rooms_props[roomName].vetoVotes
+        return roomsStore[roomName].vetoVotes
     }
     clearVetoVotes(roomName) {
-        this.rooms_props[roomName].vetoVotes = []
+        roomsStore[roomName].vetoVotes = []
     }
 
     isVetoUnlocked(roomName) {
-        return this.rooms_props[roomName].isVetoUnlocked
+        return roomsStore[roomName].isVetoUnlocked
     }
 
     getPlayerRole(roomName, playerName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         return get(playersDict, `${playerName}.role`)
     }
 
     setChancellor(roomName) {
-        const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
+        const { playersDict, chancellorCandidateName } = roomsStore[roomName]
 
         const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
         if (previousChancellor) {
@@ -119,21 +121,21 @@ class RoomsManager {
     }
 
     getChancellor(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const chancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
 
         return (chancellor ? pick(chancellor, ['playerName', 'avatarNumber']) : null)
     }
 
     getChancellorCandidateInfo(roomName) {
-        const { playersDict, chancellorCandidateName } = this.rooms_props[roomName]
+        const { playersDict, chancellorCandidateName } = roomsStore[roomName]
         const chancellorCandidate = playersDict[chancellorCandidateName]
 
         return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
     }
 
     setPresident(roomName, presidentName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
 
         const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
         if (previousPresident) {
@@ -150,14 +152,14 @@ class RoomsManager {
     }
 
     getPresident(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
 
         return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
     }
 
     chooseNextPresident(roomName) {
-        const { playersDict, previousPresidentNameBackup } = this.rooms_props[roomName]
+        const { playersDict, previousPresidentNameBackup } = roomsStore[roomName]
         const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
 
         const lastPresidentIndex = (previousPresidentNameBackup
@@ -172,9 +174,9 @@ class RoomsManager {
     }
 
     startGame(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
-        this.rooms_props[roomName].gamePhase = GamePhases.START_GAME
-        this.rooms_props[roomName].failedElectionsCount = 0
+        const { playersDict } = roomsStore[roomName]
+        roomsStore[roomName].gamePhase = GamePhases.START_GAME
+        roomsStore[roomName].failedElectionsCount = 0
         this.setPlayerboardType(roomName)
         forEach(playersDict, player => player.affiliation = PlayerAffilications.LIBERAL_AFFILIATION)
 
@@ -195,8 +197,8 @@ class RoomsManager {
         // creating policy cards
         const fascistCards = fill(Array(11), PolicyCards.FacistPolicy)
         const liberalCards = fill(Array(6), PolicyCards.LiberalPolicy)
-        this.rooms_props[roomName] = {
-            ...this.rooms_props[roomName],
+        roomsStore[roomName] = {
+            ...roomsStore[roomName],
             drawPile: shuffle(concat(fascistCards, liberalCards)),
             drawnCards: [],
             discardPile: [],
@@ -205,7 +207,7 @@ class RoomsManager {
     }
 
     getFacists(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const facistsDict = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
         return map(
             filter(playersDict, player => includes(facistsDict, player.affiliation)),
@@ -213,16 +215,16 @@ class RoomsManager {
         )
     }
     getLiberals(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         return filter(playersDict, { affiliation: PlayerAffilications.LIBERAL_AFFILIATION })
     }
     getHitler(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         return find(playersDict, { affiliation: PlayerAffilications.HITLER_AFFILIATION })
     }
 
     startChancellorChoicePhase(roomName, designatedPresidentName) {
-        this.rooms_props[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
+        roomsStore[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
         if (designatedPresidentName) {
             this.setPresidentBackup(roomName)
             this.setPresident(roomName, designatedPresidentName)
@@ -232,7 +234,7 @@ class RoomsManager {
     }
 
     getChancellorChoices(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const chancellorChoices = []
         forEach(playersDict, (player) => {
             if (isNil(player.role) && !player.isDead) {
@@ -245,59 +247,59 @@ class RoomsManager {
     /***********Voting***********/
 
     initializeVoting(roomName, chancellorCandidateName) {
-        this.rooms_props[roomName].votes = {}
-        this.rooms_props[roomName].chancellorCandidateName = chancellorCandidateName
+        roomsStore[roomName].votes = {}
+        roomsStore[roomName].chancellorCandidateName = chancellorCandidateName
     }
 
     vote(roomName, playerName, value) {
-        const { playersDict, votes } = this.rooms_props[roomName]
+        const { playersDict, votes } = roomsStore[roomName]
         if (!playersDict[playerName].isDead) {
             votes[playerName] = value
         }
     }
 
     didAllVote(roomName) {
-        const { votes, playersDict } = this.rooms_props[roomName]
+        const { votes, playersDict } = roomsStore[roomName]
         const votingPlayers = reject(playersDict, { isDead: true })
         return size(votes) === size(votingPlayers)
     }
 
     getRemainingVotesCount(roomName) {
-        const { votes, playersDict } = this.rooms_props[roomName]
+        const { votes, playersDict } = roomsStore[roomName]
         const votingPlayers = reject(playersDict, { isDead: true })
         return size(votingPlayers) - size(votes)
     }
 
     getVotes(roomName) {
-        return this.rooms_props[roomName].votes
+        return roomsStore[roomName].votes
     }
 
     getFailedElections(roomName) {
-        return this.rooms_props[roomName].failedElectionsCount
+        return roomsStore[roomName].failedElectionsCount
     }
 
     getVotingResult(roomName) {
-        const { votes } = this.rooms_props[roomName]
+        const { votes } = roomsStore[roomName]
         const votesCount = countBy(votes)
         return ((votesCount[true] > votesCount[false]) || !votesCount[false])
     }
 
     increaseFailedElectionsCount(roomName) {
-        const room = this.rooms_props[roomName]
+        const room = roomsStore[roomName]
         room.failedElectionsCount += 1
     }
     getFailedElectionsCount(roomName) {
-        const { failedElectionsCount } = this.rooms_props[roomName]
+        const { failedElectionsCount } = roomsStore[roomName]
         return failedElectionsCount
     }
     resetFailedElectionsCount(roomName) {
-        this.rooms_props[roomName].failedElectionsCount = 0
+        roomsStore[roomName].failedElectionsCount = 0
     }
 
     /****************************/
 
     getRoomsList() {
-        return mapValues(this.rooms_props, (room, key) => ({
+        return mapValues(roomsStore, (room, key) => ({
             roomId: key,
             roomName: key,
             maxPlayers: room.maxPlayers,
@@ -305,7 +307,7 @@ class RoomsManager {
         }))
     }
     getRoomDetailsForLobby(roomName) {
-        const room = this.rooms_props[roomName]
+        const room = roomsStore[roomName]
         if (!room) return null
         return {
             roomName,
@@ -322,7 +324,7 @@ class RoomsManager {
             gamePhase,
             failedElectionsCount,
             boardType,
-        } = this.rooms_props[roomName]
+        } = roomsStore[roomName]
         return {
             maxPlayers,
             gamePhase,
@@ -337,7 +339,7 @@ class RoomsManager {
         }
     }
     getGamePhase(roomName) {
-        return this.rooms_props[roomName].gamePhase
+        return roomsStore[roomName].gamePhase
     }
 
     /**
@@ -348,7 +350,7 @@ class RoomsManager {
      * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
      */
     addPlayer(roomName, playerName, socket) {
-        const { playersDict, freeSlots, gamePhase } = this.rooms_props[roomName]
+        const { playersDict, freeSlots, gamePhase } = roomsStore[roomName]
         const nextEmptySlot = freeSlots[0]
 
         if (!includes([GamePhases.GAME_PHASE_NEW, GamePhases.Paused], gamePhase)) {
@@ -375,7 +377,7 @@ class RoomsManager {
             emit: socket.emit.bind(socket),
         }
         playersDict[playerName] = newPlayer
-        this.rooms_props[roomName].freeSlots = tail(freeSlots)
+        roomsStore[roomName].freeSlots = tail(freeSlots)
     }
 
     /**
@@ -384,7 +386,7 @@ class RoomsManager {
      * @param {String} playerName - name of the player to be removed from the room
      */
     removePlayer(roomName, playerName) {
-        const { playersDict, freeSlots, ownerName } = this.rooms_props[roomName]
+        const { playersDict, freeSlots, ownerName } = roomsStore[roomName]
         const player = playersDict[playerName]
 
         if (player) {
@@ -394,7 +396,7 @@ class RoomsManager {
     }
 
     getPlayerInfo(roomName, playerName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const player = playersDict[playerName]
 
         return (player
@@ -409,47 +411,47 @@ class RoomsManager {
      * @returns {Boolean} - true if created, false if not created
      */
     isRoomPresent(roomName) {
-        return !isNil(this.rooms_props[roomName])
+        return !isNil(roomsStore[roomName])
     }
 
     getRoomOwner(roomName) {
-        const { playersDict, ownerName } = this.rooms_props[roomName]
+        const { playersDict, ownerName } = roomsStore[roomName]
         return playersDict[ownerName]
     }
 
     isRoomOwner(roomName, playerName) {
-        return playerName === this.rooms_props[roomName].ownerName
+        return playerName === roomsStore[roomName].ownerName
     }
 
     findNewRoomOwner(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const newOwner = sample(playersDict)
-        this.rooms_props[roomName].ownerName = get(newOwner, 'playerName')
+        roomsStore[roomName].ownerName = get(newOwner, 'playerName')
         return newOwner
     }
 
     getPlayersCount(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         return size(playersDict)
     }
 
     setGamePhase(roomName, newPhase) {
-        this.rooms_props[roomName].gamePhase = newPhase
+        roomsStore[roomName].gamePhase = newPhase
     }
 
     getRoleSocket(roomName, role) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         return find(playersDict, { role }).emit
     }
 
     getOtherAlivePlayers(roomName, currentPlayerName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
         return playersChoices
     }
 
     killPlayer(roomName, playerName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
 
         const player = find(playersDict, { playerName })
         if (player) {
@@ -457,7 +459,7 @@ class RoomsManager {
         }
     }
     kickPlayer(roomName, playerName, banned) {
-        const { playersDict, blackList } = this.rooms_props[roomName]
+        const { playersDict, blackList } = roomsStore[roomName]
 
         if (banned) {
             blackList.push(playerName)
@@ -480,40 +482,40 @@ class RoomsManager {
     }
 
     enactPolicy(roomName, card) {
-        const { drawnCards, policiesPile } = this.rooms_props[roomName]
+        const { drawnCards, policiesPile } = roomsStore[roomName]
         this.moveCard( drawnCards, policiesPile, card)
         this.discardAllCards(roomName)
     }
     discardPolicy(roomName, card) {
-        const { drawnCards, discardPile } = this.rooms_props[roomName]
-        this.moveCard(drawnCards, discardPile)
+        const { drawnCards, discardPile } = roomsStore[roomName]
+        this.moveCard(drawnCards, discardPile, card)
     }
 
     discardAllCards(roomName) {
-        const room = this.rooms_props[roomName]
+        const room = roomsStore[roomName]
         room.discardPile = [...room.discardPile, ...room.drawnCards]
         room.drawnCards = []
     }
 
     discardPolicyByVeto(roomName) {
-        const { policiesPile, discardPile } = this.rooms_props[roomName]
+        const { policiesPile, discardPile } = roomsStore[roomName]
         const discardedPolicy = take(policiesPile, 1)[0]
         this.moveCard(policiesPile, discardPile, discardedPolicy)
     }
 
     getDrawnCards(roomName) {
-        return this.rooms_props[roomName].drawnCards
+        return roomsStore[roomName].drawnCards
     }
 
     reShuffle(roomName) {
-        const room = this.rooms_props[roomName]
-
+        const room = roomsStore[roomName]
+         
         room.drawPile = shuffle(concat(room.drawPile, room.discardPile))
         room.discardPile = []
     }
 
     takeChoicePolicyCards(roomName, amount) {
-        const room = this.rooms_props[roomName]
+        const room = roomsStore[roomName]
 
         if (size(room.drawPile) < amount) this.reShuffle(roomName)
 
@@ -525,20 +527,20 @@ class RoomsManager {
         return policies
     }
     peekPolicyCards(roomName) {
-        const { drawPile } = this.rooms_props[roomName]
+        const { drawPile } = roomsStore[roomName]
         return take(drawPile, 3)
     }
     getPolicyCardsCount(roomName, policyType) {
-        const { policiesPile } = this.rooms_props[roomName]
+        const { policiesPile } = roomsStore[roomName]
         return size(filter(policiesPile, policy => policy === policyType))
     }
 
     removeRoom(roomName) {
-        delete this.rooms_props[roomName]
+        delete roomsStore[roomName]
     }
 
     setPlayerboardType(roomName) {
-        const { playersDict } = this.rooms_props[roomName]
+        const { playersDict } = roomsStore[roomName]
         const playersCount = size(playersDict)
         let boardType
         if (playersCount <= 6) {
@@ -548,10 +550,10 @@ class RoomsManager {
         } else if (playersCount <= 10) {
             boardType = PlayerBoards.LargeBoard
         }
-        this.rooms_props[roomName].boardType = boardType
+        roomsStore[roomName].boardType = boardType
     }
     getPlayerboardType(roomName) {
-        return this.rooms_props[roomName].boardType
+        return roomsStore[roomName].boardType
     }
 
     /**********************************************/
@@ -586,14 +588,14 @@ class RoomsManager {
     }
     setPresidentBackup(roomName) {
         const currentPresident = this.getPresident(roomName)
-        this.rooms_props[roomName].previousPresidentNameBackup = currentPresident.playerName
+        roomsStore[roomName].previousPresidentNameBackup = currentPresident.playerName
     }
     resetPresidentBackup(roomName) {
-        this.rooms_props[roomName].previousPresidentNameBackup = null
+        roomsStore[roomName].previousPresidentNameBackup = null
     }
 
     checkWinConditions(roomName) {
-        const { playersDict } = this.rooms_props[roomName];
+        const { playersDict } = roomsStore[roomName];
         const hitler = find(playersDict, (player => player.affiliation === PlayerAffilications.HITLER_AFFILIATION))
         const fascistPoliciesCount = this.getPolicyCardsCount(roomName, PolicyCards.FacistPolicy);
         const liberalPoliciesCount = this.getPolicyCardsCount(roomName, PolicyCards.LiberalPolicy);
@@ -611,4 +613,4 @@ class RoomsManager {
 
 }
 
-module.exports = RoomsManager
+export default RoomsManager

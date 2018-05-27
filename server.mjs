@@ -1,12 +1,14 @@
-const path = require('path')
-const Server = require('http').Server
-const Express = require('express')
-const expressStaticGzip = require('express-static-gzip');
-const SocketEvents = require('./events/SocketEvents')
+import path from 'path'
+import http from 'http'
+import Express from 'express'
+import expressStaticGzip from 'express-static-gzip'
+import SocketEvents from './events/SocketEvents'
+import SocketIO from 'socket.io'
 
 // initialize the server and configure support for ejs templates
+const __dirname = path.dirname(new URL(import.meta.url).pathname)
 const app = new Express()
-const server = new Server(app)
+const server = new http.Server(app)
 
 // routes
 
@@ -14,7 +16,7 @@ const server = new Server(app)
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 // socket.io
-const io = require('socket.io')(server)
+const io = SocketIO(server)
 
 SocketEvents(io)
 

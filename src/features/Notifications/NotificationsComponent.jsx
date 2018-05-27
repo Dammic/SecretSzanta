@@ -1,7 +1,7 @@
 import React from 'react'
 import { map } from 'lodash'
 import NotificationPanel from './NotificationPanel'
-import { MessagesTypes } from '../../../Dictionary.js'
+import { MessagesTypes } from '../../../Dictionary'
 
 import styles from './Notifications.css'
 
