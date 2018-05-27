@@ -1,5 +1,6 @@
-import { roomsStore } from '../../stores'
 import lodash from 'lodash'
+import { roomsStore } from '../../stores'
+import { logError } from '../../utils/utils'
 
 const {
     filter,
@@ -18,25 +19,25 @@ export const moveCard = (sourcePile, destinationPile, card) => {
         logError({}, `moveCard function: wanted to move card ${card} which don't exist in source pile`)
         return
     }
-    pullAt(sourcePile, indexOf(sourcePile, card));
-    destinationPile.push(card);
-}
-
-export const enactPolicy = (roomName, card) => {
-    const { drawnCards, policiesPile } = roomsStore[roomName]
-    moveCard( drawnCards, policiesPile, card)
-    discardAllCards(roomName)
-}
-
-export const discardPolicy = (roomName, card) => {
-    const { drawnCards, discardPile } = roomsStore[roomName]
-    moveCard(drawnCards, discardPile, card)
+    pullAt(sourcePile, indexOf(sourcePile, card))
+    destinationPile.push(card)
 }
 
 export const discardAllCards = (roomName) => {
     const room = roomsStore[roomName]
     room.discardPile = [...room.discardPile, ...room.drawnCards]
     room.drawnCards = []
+}
+
+export const enactPolicy = (roomName, card) => {
+    const { drawnCards, policiesPile } = roomsStore[roomName]
+    moveCard(drawnCards, policiesPile, card)
+    discardAllCards(roomName)
+}
+
+export const discardPolicy = (roomName, card) => {
+    const { drawnCards, discardPile } = roomsStore[roomName]
+    moveCard(drawnCards, discardPile, card)
 }
 
 export const discardPolicyByVeto = (roomName) => {

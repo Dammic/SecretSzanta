@@ -1,4 +1,4 @@
-export * from './RoomsManager'
+export * from './rooms'
 export * from './policies'
 export * from './veto'
 export * from './voting'

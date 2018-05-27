@@ -9,67 +9,16 @@ import {
 } from '../../Dictionary'
 
 import {
-    reShuffle,
-    getDrawnCards,
-    discardPolicyByVeto,
-    discardAllCards,
-    discardPolicy,
-    enactPolicy,
-    moveCard,
-    takeChoicePolicyCards,
     getPolicyCardsCount,
 } from './policies'
 
-import {
-    toggleVeto,
-    addVetoVote,
-    didVetoSucceed,
-    getVetoVotes,
-    clearVetoVotes,
-    isVetoUnlocked,
-} from './veto'
-
-import {
-    getPlayerRole,
-    setChancellor,
-    getChancellor,
-    getChancellorCandidateInfo,
-    setPresident,
-    getPresident,
-    chooseNextPresident,
-    getRoleSocket,
-    setPresidentBackup,
-    resetPresidentBackup, 
-} from './roles'
-
-import {
-    addPlayer,
-    removePlayer,
-    getPlayerInfo,
-    isRoomOwner,
-    killPlayer,
-    kickPlayer,
-    isInBlackList,
-    getOtherAlivePlayers,
-} from './players'
-
-import {
-    initializeVoting,
-    vote,
-    didAllVote,
-    getRemainingVotesCount,
-    getVotes,
-    getVotingResult,
-    getChancellorChoices,
-} from './voting'
-
-import { logInfo, logError } from '../../utils/utils'
+import { logInfo } from '../../utils/utils'
 import { roomsStore } from '../../stores'
 
 const {
-    reject, findIndex, sortBy, values, tail, countBy, mapValues, isNil, isEmpty,
-    filter, includes, forEach, random, slice, times, map, head,
-    find, pick, shuffle, size, sample, get, concat, fill, take, drop, pullAt, indexOf, dropRight,
+    values, mapValues, isNil,
+    forEach, random, slice, times, map,
+    find, pick, shuffle, size, sample, get, concat, fill,
 } = lodash
 
 /**

@@ -74,6 +74,9 @@ export const getPresident = (roomName) => {
 
     return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
 }
+export const resetPresidentBackup = (roomName) => {
+    roomsStore[roomName].previousPresidentNameBackup = null
+}
 export const chooseNextPresident = (roomName) => {
     const { playersDict, previousPresidentNameBackup } = roomsStore[roomName]
     const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
@@ -96,7 +99,3 @@ export const setPresidentBackup = (roomName) => {
     const currentPresident = getPresident(roomName)
     roomsStore[roomName].previousPresidentNameBackup = currentPresident.playerName
 }
-export const resetPresidentBackup = (roomName) => {
-    roomsStore[roomName].previousPresidentNameBackup = null
-}
-
