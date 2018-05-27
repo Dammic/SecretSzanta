@@ -128,7 +128,8 @@ describe('RoomsManager', () => {
     })
     describe('getPlayerboardType', () => {
         test('should retrieve the boardType from roomsStore', () => {
-            roomsStore['testRoom'].boardType = PlayerBoards.SmallBoard
+            const { testRoom } = roomsStore
+            testRoom.boardType = PlayerBoards.SmallBoard
 
             expect(getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
         })

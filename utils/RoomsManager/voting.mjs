@@ -9,7 +9,7 @@ const {
     size,
     includes,
     map,
-    filter
+    filter,
 } = lodash
 
 export const initializeVoting = (roomName, chancellorCandidateName) => {

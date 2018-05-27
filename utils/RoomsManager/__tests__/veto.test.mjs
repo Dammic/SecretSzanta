@@ -31,10 +31,11 @@ describe('veto', () => {
 
     describe('toggleVeto', () => {
         test('should set isVetoUnlocked to true and not mess other things up', () => {
-            const preparedRoomProps = cloneDeep(roomsStore['testRoom'])
+            const { testRoom } = roomsStore
+            const preparedRoomProps = cloneDeep(testRoom)
             preparedRoomProps.isVetoUnlocked = true
             toggleVeto('testRoom')
-            expect(preparedRoomProps).toEqual(roomsStore['testRoom'])
+            expect(preparedRoomProps).toEqual(testRoom)
         })
     })
 

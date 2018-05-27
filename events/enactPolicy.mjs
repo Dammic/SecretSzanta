@@ -1,6 +1,5 @@
 import { PolicyCards, PlayerBoards, SocketEvents } from '../Dictionary'
 import { getCurrentTimestamp } from '../utils/utils'
-
 import {
     getFailedElectionsCount,
     increaseFailedElectionsCount,
@@ -10,7 +9,7 @@ import {
     toggleVeto,
     enactPolicy,
     isVetoUnlocked,
-} from '../utils/RoomsManager' 
+} from '../utils/RoomsManager'
 
 export default function (io, phaseSocketEvents, socketEventsUtils) {
     const policyLogic = {

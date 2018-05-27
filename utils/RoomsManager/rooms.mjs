@@ -62,6 +62,19 @@ export const initializeRoom = (roomName, ownerName, maxPlayers = 10, password) =
     }
 }
 
+export const setPlayerboardType = (roomName) => {
+    const { playersDict } = roomsStore[roomName]
+    const playersCount = size(playersDict)
+    let boardType
+    if (playersCount <= 6) {
+        boardType = PlayerBoards.SmallBoard
+    } else if (playersCount <= 8) {
+        boardType = PlayerBoards.MediumBoard
+    } else if (playersCount <= 10) {
+        boardType = PlayerBoards.LargeBoard
+    }
+    roomsStore[roomName].boardType = boardType
+}
 
 export const startGame = (roomName) => {
     const { playersDict } = roomsStore[roomName]
@@ -169,19 +182,6 @@ export const removeRoom = (roomName) => {
     delete roomsStore[roomName]
 }
 
-export const setPlayerboardType = (roomName) => {
-    const { playersDict } = roomsStore[roomName]
-    const playersCount = size(playersDict)
-    let boardType
-    if (playersCount <= 6) {
-        boardType = PlayerBoards.SmallBoard
-    } else if (playersCount <= 8) {
-        boardType = PlayerBoards.MediumBoard
-    } else if (playersCount <= 10) {
-        boardType = PlayerBoards.LargeBoard
-    }
-    roomsStore[roomName].boardType = boardType
-}
 
 export const getPlayerboardType = (roomName) => {
     return roomsStore[roomName].boardType

@@ -1,3 +1,4 @@
+import lodash from 'lodash'
 import {
     getCurrentTimestamp,
     logInfo,
@@ -8,14 +9,11 @@ import {
     GamePhases,
     PlayerAffilications,
     ErrorMessages,
-    ErrorTypes,
     ErrorMappedMessages,
     PlayerRole,
     PolicyCards,
     GlobalRoomName,
-    PlayerBoards,
 } from '../Dictionary'
-import lodash from 'lodash'
 import ClientVerificationHof from '../utils/ClientVerificationHof'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import PhaseSocketEvents from './PhaseSocketEvents'
@@ -69,14 +67,14 @@ import {
     removePlayerFromPlayersList,
 } from '../utils/PlayersManager'
 
-const { isNil, includes, find, map, pick, get, mapValues, partial, partialRight, cloneDeep } = lodash
+const { isNil, includes, find, get, mapValues, partial, partialRight, cloneDeep } = lodash
 
 
 export default function (io) {
     const phaseSocketEvents = PhaseSocketEvents(io)
     const socketEventsUtils = SocketEventsUtils(io)
     const {
-        enactPolicyEvent, checkForImmediateSuperpowersOrContinue,
+        enactPolicyEvent,
         updateTrackerPositionIfNecessary,
     } = EnactPolicyModule(io, phaseSocketEvents, socketEventsUtils)
     const socketEvents = {

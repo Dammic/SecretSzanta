@@ -35,19 +35,22 @@ describe('players', () => {
 
     describe('isInBlackList', () => {
         test('if blacklist is empty, should return false', () => {
-            roomsStore['testRoom'].blackList = []
+            const { testRoom } = roomsStore
+            testRoom.blackList = []
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(false)
         })
 
         test('if blacklist contains the user, should return true', () => {
-            roomsStore['testRoom'].blackList = ['ala', 'ola']
+            const { testRoom } = roomsStore
+            testRoom.blackList = ['ala', 'ola']
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(true)
         })
 
         test('if blacklist contains some users but not this one, should return false', () => {
-            roomsStore['testRoom'].blackList = ['olga', 'ola']
+            const { testRoom } = roomsStore
+            testRoom.blackList = ['olga', 'ola']
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(false)
         })

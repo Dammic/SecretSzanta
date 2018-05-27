@@ -1,10 +1,8 @@
 import { roomsStore } from '../../stores'
 import lodash from 'lodash'
-import {
-    GamePhases,
-    PlayerAffilications,
-    ErrorTypes,
-} from '../../Dictionary'
+import { GamePhases, PlayerAffilications, ErrorTypes } from '../../Dictionary'
+import { setGamePhase } from './gamePhases'
+import { logInfo } from '../utils'
 const {
     reject,
     tail,
@@ -59,7 +57,7 @@ export const addPlayer = (roomName, playerName, socket) => {
  * @param {String} playerName - name of the player to be removed from the room
  */
 export const removePlayer = (roomName, playerName) => {
-    const { playersDict, freeSlots, ownerName } = roomsStore[roomName]
+    const { playersDict, freeSlots } = roomsStore[roomName]
     const player = playersDict[playerName]
 
     if (player) {

@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { SocketEvents, PlayerRole, GamePhases, PlayerAffilications, PolicyCards } from '../Dictionary'
+import { SocketEvents, PlayerRole, GamePhases, PlayerAffilications } from '../Dictionary'
 import { getCurrentTimestamp } from '../utils/utils'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import {
