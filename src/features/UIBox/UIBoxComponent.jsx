@@ -29,7 +29,7 @@ const UIBoxComponent = ({
     )
 
     const renderButton = (label, onClick) => (
-        <Button key={`${label}`} onClick={onClick}>{label}</Button>
+        <Button key={label} onClick={onClick}>{label}</Button>
     )
 
     const ownersButtons = [

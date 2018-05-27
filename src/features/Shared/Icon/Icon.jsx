@@ -1,14 +1,11 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-class Icon extends PureComponent {
-    render() {
-        const { onClick, className, name } = this.props
-        return (
-            <i className={classNames('fa', name, className)} onClick={onClick} />
-        )
-    }
+const Icon = ({ onClick, className, name }) => {
+    return (
+        <i className={classNames('fa', name, className)} onClick={onClick} />
+    )
 }
 
 Icon.propTypes = {
