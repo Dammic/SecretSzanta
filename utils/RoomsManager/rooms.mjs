@@ -182,6 +182,7 @@ export const removeRoom = (roomName) => {
     delete roomsStore[roomName]
 }
 
+
 export const getPlayerboardType = (roomName) => {
     return roomsStore[roomName].boardType
 }
