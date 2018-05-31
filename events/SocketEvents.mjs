@@ -454,14 +454,13 @@ export default function (io) {
         socket.currentPlayerName = ''
         socket.currentRoom = ''
 
-        const clientVerificationHof = ClientVerificationHof()
         const phaseSocketEventsCopy = cloneDeep(phaseSocketEvents)
-        phaseSocketEventsCopy.startGame = clientVerificationHof(['isOwner'], phaseSocketEventsCopy.startGame)
-        phaseSocketEventsCopy.endGame = clientVerificationHof(['isOwner'], phaseSocketEventsCopy.endGame)
-        socketEvents.kickPlayer = clientVerificationHof(['isOwner'], socketEvents.kickPlayer)
-        socketEvents.superpowerAffiliationPeekPlayer = clientVerificationHof(['isPresident'], socketEvents.superpowerAffiliationPeekPlayer)
-        socketEvents.endPeekPlayerSuperpower = clientVerificationHof(['isPresident'], socketEvents.endPeekPlayerSuperpower)
-        socketEvents.endPeekCardsPhase = clientVerificationHof(['isPresident'], socketEvents.endPeekCardsPhase)
+        phaseSocketEventsCopy.startGame = ClientVerificationHof(['isOwner'], phaseSocketEventsCopy.startGame)
+        phaseSocketEventsCopy.endGame = ClientVerificationHof(['isOwner'], phaseSocketEventsCopy.endGame)
+        socketEvents.kickPlayer = ClientVerificationHof(['isOwner'], socketEvents.kickPlayer)
+        socketEvents.superpowerAffiliationPeekPlayer = ClientVerificationHof(['isPresident'], socketEvents.superpowerAffiliationPeekPlayer)
+        socketEvents.endPeekPlayerSuperpower = ClientVerificationHof(['isPresident'], socketEvents.endPeekPlayerSuperpower)
+        socketEvents.endPeekCardsPhase = ClientVerificationHof(['isPresident'], socketEvents.endPeekCardsPhase)
 
         // to avoid creating new binded functions each time an action is made. This is made only once.
         // we need a way to pass socket object into those functions
