@@ -5,12 +5,26 @@
         "plugin:lodash/recommended",
         "plugin:jsx-a11y/recommended",
     ],
+    "settings": {
+        "import/resolver": {
+            "node": { "extensions": [".js", ".mjs"] }
+        }
+    },
     "rules": {
         "max-len": ["error", { "code": 120 }],
         "object-curly-newline": ["error", {
             "multiline": true,
             "consistent": true,
         }],
+        "import/extensions": [
+          "error",
+          "always",
+          {
+            "js": "never",
+            "jsx": "never",
+            "mjs": "never"
+          }
+        ],
         "indent": ["error", 4, {"SwitchCase": 1}],
         "semi": ["error", "never"],
         "linebreak-style": "off",
@@ -23,6 +37,10 @@
         "react",
         "lodash",
         "jsx-a11y",
+        "jest"
     ],
+    "env": {
+        "jest/globals": true
+    },
     "parser": "babel-eslint",
 }
