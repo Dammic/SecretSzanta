@@ -1,21 +1,31 @@
 import { PolicyCards, PlayerBoards, SocketEvents } from '../Dictionary'
 import { getCurrentTimestamp } from '../utils/utils'
+import {
+    getFailedElectionsCount,
+    increaseFailedElectionsCount,
+    takeChoicePolicyCards,
+    getPolicyCardsCount,
+    getPlayerboardType,
+    toggleVeto,
+    enactPolicy,
+    isVetoUnlocked,
+} from '../utils/RoomsManager'
 
-const enactPolicy = function (io, RoomsManager, phaseSocketEvents, socketEventsUtils) {
+export default function (io, phaseSocketEvents, socketEventsUtils) {
     const policyLogic = {
         updateTrackerPositionIfNecessary: (socket, isSuccess) => {
             if (isSuccess) {
-                const trackerPosition = RoomsManager.getFailedElectionsCount(socket.currentRoom)
+                const trackerPosition = getFailedElectionsCount(socket.currentRoom)
                 socketEventsUtils.resetElectionTracker(socket, trackerPosition)
             } else {
-                RoomsManager.increaseFailedElectionsCount(socket.currentRoom)
+                increaseFailedElectionsCount(socket.currentRoom)
                 socketEventsUtils.sendMessage(socket, { content: 'The failed elections tracker has increased!' })
-                const failedElectionsCount = RoomsManager.getFailedElectionsCount(socket.currentRoom)
+                const failedElectionsCount = getFailedElectionsCount(socket.currentRoom)
                 if (failedElectionsCount >= 3) {
                     socketEventsUtils.resetElectionTracker(socket, failedElectionsCount)
 
-                    const topCard = RoomsManager.takeChoicePolicyCards(socket.currentRoom, 1)[0]
-                    policyLogic.enactPolicy(socket, topCard)
+                    const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
+                    policyLogic.enactPolicyEvent(socket, topCard)
                 } else {
                     io.sockets.in(socket.currentRoom).emit(SocketEvents.IncreaseTrackerPosition, {
                         data: {
@@ -27,8 +37,8 @@ const enactPolicy = function (io, RoomsManager, phaseSocketEvents, socketEventsU
         },
 
         checkForImmediateSuperpowersOrContinue: (socket) => {
-            const fascistPolicyCount = RoomsManager.getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
-            const playerboardType = RoomsManager.getPlayerboardType(socket.currentRoom)
+            const fascistPolicyCount = getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
+            const playerboardType = getPlayerboardType(socket.currentRoom)
             if (fascistPolicyCount === 1 && playerboardType === PlayerBoards.LargeBoard) {
                 phaseSocketEvents.startPeekAffiliationSuperpowerPhase(socket)
             } else if (fascistPolicyCount === 2 && playerboardType !== PlayerBoards.SmallBoard) {
@@ -46,7 +56,7 @@ const enactPolicy = function (io, RoomsManager, phaseSocketEvents, socketEventsU
                 phaseSocketEvents.startKillPhase(socket)
                 // 5th power is always kill AND veto power unlock
             } else if (fascistPolicyCount === 5) {
-                RoomsManager.toggleVeto(socket.currentRoom)
+                toggleVeto(socket.currentRoom)
                 socketEventsUtils.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
                 phaseSocketEvents.startKillPhase(socket)
             } else {
@@ -54,9 +64,9 @@ const enactPolicy = function (io, RoomsManager, phaseSocketEvents, socketEventsU
             }
         },
 
-        enactPolicy: (socket, policy) => {
+        enactPolicyEvent: (socket, policy) => {
             const isFacist = policy === PolicyCards.FacistPolicy
-            RoomsManager.enactPolicy(socket.currentRoom, policy)
+            enactPolicy(socket.currentRoom, policy)
             socketEventsUtils.sendMessage(socket, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
             io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
                 data: {
@@ -64,12 +74,10 @@ const enactPolicy = function (io, RoomsManager, phaseSocketEvents, socketEventsU
                 },
             })
 
-            const isVetoUnlocked = RoomsManager.isVetoUnlocked(socket.currentRoom)
-            if (isFacist && !isVetoUnlocked) policyLogic.checkForImmediateSuperpowersOrContinue(socket)
+            const isVeto = isVetoUnlocked(socket.currentRoom)
+            if (isFacist && !isVeto ) policyLogic.checkForImmediateSuperpowersOrContinue(socket)
         },
     }
 
     return policyLogic
 }
-
-export default enactPolicy

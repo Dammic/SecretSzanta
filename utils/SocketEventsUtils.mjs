@@ -1,12 +1,21 @@
 import lodash from 'lodash'
 import { SocketEvents, PlayerAffilications, PolicyCards, GlobalRoomName } from '../Dictionary'
 import { getCurrentTimestamp } from './utils'
-
+import {
+    resetFailedElectionsCount,
+    getRoomsList,
+    getRoomDetailsForLobby,
+} from './RoomsManager'
+import {
+    updatePlayerRoom,
+    getPlayersList,
+    getPlayerFromPlayersList,
+} from './PlayersManager'
 const { pick, map } = lodash
 
 let cancelTimeoutToken
 
-const SocketEventsUtils = (io, RoomsManager) => {
+const SocketEventsUtils = (io) => {
     const facistSubproperties = ['playerName', 'affiliation', 'facistAvatar']
     const socketEventsUtils = {
         sendMessage: (socket, { content, author }) => {
@@ -70,7 +79,7 @@ const SocketEventsUtils = (io, RoomsManager) => {
                         trackerPositionBeforeReset: positionBeforeReset,
                     },
                 })
-                RoomsManager.resetFailedElectionsCount(socket.currentRoom)
+                resetFailedElectionsCount(socket.currentRoom)
                 const trackerMessage = `The failed elections tracker${positionBeforeReset === 3 ? ' has reached 3, so it' : ''} will be reset!`
                 socketEventsUtils.sendMessage(socket, { content: trackerMessage })
             }
@@ -86,7 +95,7 @@ const SocketEventsUtils = (io, RoomsManager) => {
                     io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
                         data: {
                             roomName: updatedRoom,
-                            room: RoomsManager.getRoomDetailsForLobby(updatedRoom),
+                            room: getRoomDetailsForLobby(updatedRoom),
                         },
                     })
                 }
@@ -94,14 +103,14 @@ const SocketEventsUtils = (io, RoomsManager) => {
             socket.currentRoom = targetRoom
             if (targetRoom) {
                 if (startRoom) {
-                    RoomsManager.updatePlayerRoom(socket.currentPlayerName, targetRoom)
+                    updatePlayerRoom(socket.currentPlayerName, targetRoom)
                 }
 
                 if (targetRoom === GlobalRoomName) {
                     socket.emit(SocketEvents.SyncLobby, {
                         data: {
-                            players: RoomsManager.getPlayersList(),
-                            rooms: RoomsManager.getRoomsList(),
+                            players: getPlayersList(),
+                            rooms: getRoomsList(),
                         },
                     })
                 }
@@ -111,7 +120,7 @@ const SocketEventsUtils = (io, RoomsManager) => {
             io.sockets.in(GlobalRoomName).emit(SocketEvents.PlayersListChanged, {
                 data: {
                     playerName: socket.currentPlayerName,
-                    player: RoomsManager.getPlayerFromPlayersList(socket.currentPlayerName),
+                    player: getPlayerFromPlayersList(socket.currentPlayerName),
                 },
             })
         },
