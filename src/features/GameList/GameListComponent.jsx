@@ -31,7 +31,7 @@ const GameListComponent = ({
             </div>
             <div className={styles.secondColumn}>
                 <div className={styles.utilsRow}>
-                    <span className={commonStyles.ellipsis}><span>Hello <b>{userName}</b>!</span></span>
+                    <span className={commonStyles.ellipsis}>Hello <b>{userName}</b>!</span>
                     <TopNavbar />
                 </div>
                 <PlayersList />

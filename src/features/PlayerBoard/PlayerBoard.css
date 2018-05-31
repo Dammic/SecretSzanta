@@ -3,27 +3,6 @@
 :root {
     --elementsWidth: 80%;
     --elementsHeight: 80%;
-
-    --policyCard: {
-        position: absolute;
-        display: flex;
-        height: var(--elementsHeight);
-        width: var(--elementsWidth);
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items:  center;
-
-        & img {
-            margin: 0 1.1%;
-            height: 51%;
-            width: 12%;
-            transition: all 0.5s;
-
-            &:hover {
-                opacity: 0.15;
-            }
-        }
-    }
 }
 
 .playerBoard {
@@ -106,13 +85,32 @@
     }
 }
 
+.policyCard {
+    position: absolute;
+    display: flex;
+    height: var(--elementsHeight);
+    width: var(--elementsWidth);
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items:  center;
+
+    & img {
+        margin: 0 1.1%;
+        height: 51%;
+        width: 12%;
+        transition: all 0.5s;
+
+        &:hover {
+            opacity: 0.15;
+        }
+    }
+}
+
 .policyCardLiberal {
-    @apply --policyCard;
     left: 21.5%;
 }
 
 .policyCardFascist {
-    @apply --policyCard;
     left: 16%;
 }
 

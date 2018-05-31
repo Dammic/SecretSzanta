@@ -64,7 +64,7 @@ const PlayerBoardComponent = ({
                 <div className={classNames(styles.policy, { [styles.blurred]: isChoiceModeVisible })}>
                     <CurtainWrapper isHidden={isPlayerboardHidden} />
                     <img src={liberalPolicies} />
-                    <div className={styles.policyCardLiberal}>
+                    <div className={classNames(styles.policyCard, styles.policyCardLiberal)}>
                         {renderPolicies(policiesLiberalCount, 'liberal')}
                     </div>
                     <div className={classNames(styles.tracker, { [styles.moving]: trackerMoved })} style={trackerFromLeftStyle} />
@@ -73,7 +73,7 @@ const PlayerBoardComponent = ({
                 <div className={classNames(styles.policy, { [styles.blurred]: isChoiceModeVisible })}>
                     <CurtainWrapper isHidden={isPlayerboardHidden} isFascist />
                     <img src={renderFascistPlayerBoard()} />
-                    <div className={styles.policyCardFascist}>
+                    <div className={classNames(styles.policyCard, styles.policyCardFascist)}>
                         {renderPolicies(policiesFacistCount, 'facist')}
                     </div>
                 </div>

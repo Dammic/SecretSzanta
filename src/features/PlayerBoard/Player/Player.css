@@ -1,42 +1,35 @@
 @import 'variables/variables.css';
 
-:root {
-    --bubbleTriangle: {
+.bubble {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+    padding: 6px;
+
+    width: var(--player-bubble-width);
+    height: var(--player-bubble-height);
+    
+    max-width: 10vw;
+
+    background-color: var(--player-bubble-color);
+    transition: all 0.7s; 
+
+    border: 1px solid var(--player-bubble-color);
+    border-radius: var(--player-bubble-radius);
+}
+
+.bubbleLeft {
+    vertical-align: center;
+    left: var(--player-bubble-original-position);
+    top: 0px;
+
+    &:before {
         content: "";
         position: absolute;
         display: block;
 
         width: 0;
         height: 0;
-    }
-
-    --bubble: {
-        opacity: 0;
-        position: absolute;
-        z-index: 1;
-        padding: 6px;
-
-        width: var(--player-bubble-width);
-        height: var(--player-bubble-height);
-        
-        max-width: 10vw;
-
-        background-color: var(--player-bubble-color);
-        transition: all 0.7s; 
-
-        border: 1px solid var(--player-bubble-color);
-        border-radius: var(--player-bubble-radius);
-    }
-}
-
-.bubbleLeft {
-    @apply --bubble;
-    vertical-align: center;
-    left: var(--player-bubble-original-position);
-    top: 0px;
-
-    &:before {
-        @apply --bubbleTriangle;
         right: 95%;
 
         border-top: var(--player-bubble-triangle-size) solid transparent;
@@ -51,12 +44,16 @@
 }
 
 .bubbleRight {
-    @apply --bubble;
     right: var(--player-bubble-original-position);
     top: 0px;
 
     &:after {
-        @apply --bubbleTriangle;
+        content: "";
+        position: absolute;
+        display: block;
+
+        width: 0;
+        height: 0;
         vertical-align: center;
         left: 95%;
 
@@ -72,11 +69,15 @@
 }
 
 .bubbleTop {
-    @apply --bubble;
     top: var(--player-bubble-original-position);
     
     &:before {
-        @apply --bubbleTriangle;
+        content: "";
+        position: absolute;
+        display: block;
+
+        width: 0;
+        height: 0;
 
         bottom: 95%;
         border-bottom: var(--player-bubble-triangle-size) solid var(--player-bubble-color);

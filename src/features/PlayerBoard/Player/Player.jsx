@@ -30,11 +30,11 @@ export class Player extends React.PureComponent {
 
         switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames(styles.bubbleLeft, { [styles.active]: isBubbleActive })
+                return classNames(styles.bubble, styles.bubbleLeft, { [styles.active]: isBubbleActive })
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames(styles.bubbleRight, { [styles.active]: isBubbleActive })
+                return classNames(styles.bubble, styles.bubbleRight, { [styles.active]: isBubbleActive })
             default:
-                return classNames(styles.bubbleTop, { [styles.active]: isBubbleActive })
+                return classNames(styles.bubble, styles.bubbleTop, { [styles.active]: isBubbleActive })
         }
     }
 
