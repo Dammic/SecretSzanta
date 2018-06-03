@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { includes } from 'lodash'
 import { PlayerAffilications, GamePhases } from '../../../Dictionary'
+import { Button } from '../Shared/Buttons'
+import { Icon } from '../Shared/Icon'
 import PlayerRoleComponent from '../PlayerBoard/Player/PlayerRole/PlayerRoleComponent'
+
+import styles from './UIBox.css'
 
 const UIBoxComponent = ({
     onStartVote,
@@ -20,39 +24,41 @@ const UIBoxComponent = ({
 }) => {
     const facistsKinds = [PlayerAffilications.FACIST_AFFILIATION, PlayerAffilications.HITLER_AFFILIATION]
     const affiliationClassName = (includes(facistsKinds, affiliation)
-        ? 'facist'
-        : 'liberal'
+        ? styles.facist
+        : styles.liberal
     )
 
-    const Button = (label, onClick) => (
-        <a key={`${label}`} role="button" tabIndex="0" className="btn" onClick={onClick}>{`${label}`}</a>
+    const renderButton = (label, onClick) => (
+        <Button key={label} onClick={onClick}>{label}</Button>
     )
 
     const ownersButtons = [
-        gamePhase === GamePhases.GAME_PHASE_NEW && Button("start", onStartGame),
-        Button("voting", onStartVote),
-        Button("kick", onKickPlayer),
-        Button("ban", onBanPlayer),
-    ];
+        gamePhase === GamePhases.GAME_PHASE_NEW && renderButton('start', onStartGame),
+        renderButton('voting', onStartVote),
+        renderButton('kick', onKickPlayer),
+        renderButton('ban', onBanPlayer),
+    ]
     return (
-        <div className="ui-box">
-            <div className="game-controls">
-                <div className="buttons">
-                    <a className="btn" onClick={onShowAffiliationClick}>
-                        roles<i className={classNames('fa fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} aria-hidden="true" />
-                    </a>
+        <div className={styles.uiBox}>
+            <div className={styles.gameControls}>
+                <div className={styles.buttons}>
+                    <Button onClick={onShowAffiliationClick}>
+                        <span>
+                            roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} className={styles.menuArrowIcon} />
+                        </span>
+                    </Button>
                     {isOwner && ownersButtons}
                 </div>
             </div>
-            <div className={classNames('submenu', { hidden: isAffiliationHidden })}>
-                <div className="affiliation-cards">
-                    <span className={classNames('card', affiliationClassName)} />
-                    <span className="card">
+            <div className={classNames(styles.submenu, { [styles.hidden]: isAffiliationHidden })}>
+                <div className={styles.affiliationCards}>
+                    <span className={classNames(styles.card, affiliationClassName)} />
+                    <span className={styles.card}>
                         {getPlayerCard()}
                     </span>
                 </div>
-                <div className="role-wrapper">
-                    <PlayerRoleComponent role={role} />
+                <div className={styles.roleWrapper}>
+                    <PlayerRoleComponent role={role} className={styles.uiBoxRole} />
                 </div>
             </div>
         </div>

@@ -1,8 +1,10 @@
 import React from 'react'
 
+import styles from './About.css'
+
 const AboutComponent = () => {
     return (
-        <div className="about">
+        <div className={styles.about}>
             About
         </div>
     )

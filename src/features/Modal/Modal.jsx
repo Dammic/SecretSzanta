@@ -42,9 +42,7 @@ class Modal extends React.PureComponent {
     render() {
         const { isVisible, title, overlayClosesModal, isCloseButtonShown, isOverlayOpaque, componentName, modalTmpData } = this.props
         const ModalInnerComponent = modalInnerComponents[componentName]
-        if (!ModalInnerComponent) {
-            return null
-        }
+
         return (
             <ModalComponent
                 isVisible={isVisible}
@@ -53,7 +51,7 @@ class Modal extends React.PureComponent {
                 isCloseButtonShown={isCloseButtonShown}
                 isOverlayOpaque={isOverlayOpaque}
                 closeModal={this.closeModal}
-                child={<ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} />}
+                child={ModalInnerComponent ? <ModalInnerComponent data={modalTmpData} closeModal={this.closeModal} /> : null}
             />
         )
     }

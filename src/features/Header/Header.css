@@ -1,0 +1,101 @@
+@import 'variables/variables.css';
+
+.headerContainer {
+    width: 100%;
+    height: var(--header-height);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: var(--header-background);
+}
+
+.header {
+    height: 100%;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (--tablet) {
+        width: 60%;
+    }
+}
+
+.appName {
+    letter-spacing: -1px;
+    font-weight: 700;
+    font-size: 18px;
+    cursor: pointer;
+    @media (--tablet) {
+        cursor: initial;
+    }
+}
+
+.headerNavigation {
+    max-width: 1040px;
+    &.isOpen {
+        & .headerNavigationLinks {
+            opacity: 1;
+            pointer-events: auto;
+        } 
+    }
+}
+
+.menuIcon {
+    font-size: 24px;
+    cursor: pointer;
+    @media (--tablet){ 
+        display: none;
+    }
+}
+
+.headerNavigationLinks {
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0;
+    position: fixed;
+    background-color: var(--header-mobile-bg);
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+    width: 100vw;
+    left: 0;
+    display: flex;           
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    font-size: 20px;
+
+    @media (--tablet) { 
+        pointer-events: auto;
+        opacity: 1;
+        position: initial;
+        background-color: transparent;
+        top: 0;
+        height: inherit;
+        display: initial;
+        padding-top: 0;
+        font-size: 18px;
+    }
+
+    & > span {
+        margin: 0 15px;
+        transition: all .3s;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+        margin-top: 20px;
+
+        &:not(.active):hover {
+            color:var(--header-navigation-font-hover);
+            border-color: var(--header-navigation-font-hover);
+        }
+
+        &.active {
+            color:var(--header-navigation-font-active);
+            border-color: var(--header-navigation-font-active);
+        }
+    }
+}

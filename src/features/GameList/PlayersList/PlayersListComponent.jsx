@@ -3,10 +3,12 @@ import PropTypes from 'prop-types'
 import { map, filter, reject, size } from 'lodash'
 import PlayersListRow from './PlayersListRow'
 
+import styles from './PlayersList.css'
+
 const PlayersListComponent = ({ players }) => {
     return (
-        <div className="players-list">
-            <div className="category">
+        <div className={styles.playersList}>
+            <div className={styles.category}>
                 <span>Online: <b>{size(players)}</b></span>
             </div>
             {map(filter(players, player => !!player.currentRoom), player => (

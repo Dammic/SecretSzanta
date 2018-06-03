@@ -168,6 +168,28 @@ module.exports = {
                 },
             ],
         }, {
+            test: /\.css$/,
+            include: [
+                path.join(__dirname, 'src'), // important for performance!
+            ],
+            use: [
+                {
+                    loader: 'style-loader',
+                }, {
+                    loader: 'css-loader',
+                    options: {
+                        importLoaders: 1,
+                        modules: true,
+                        localIdentName: '[name]__[local]___[hash:base64:5]',
+                    },
+                }, {
+                    loader: 'postcss-loader',
+                    options: {
+                        ident: 'postcss',
+                    },
+                },
+            ],
+        }, {
             test: /\.scss$/,
             include: [
                 path.join(__dirname, 'src'), // important for performance!
@@ -177,8 +199,6 @@ module.exports = {
                     loader: 'style-loader',
                 }, {
                     loader: 'css-loader',
-                }, {
-                    loader: 'postcss-loader',
                 }, {
                     loader: 'sass-loader',
                 },

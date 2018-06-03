@@ -3,22 +3,27 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getAvatar } from '../../../utils/avatarsHelper'
 
+import styles from './PlayersList.css'
+import commonStyles from '../../Shared/CommonStyles/commonStyles.css'
+
 const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
     return (
-        <div className={classNames('player-row', { busy: !!currentRoom })}>
+        <div className={classNames(styles.playerRow, { [styles.busy]: !!currentRoom })}>
             <img
-                className="avatar"
+                className={styles.avatar}
                 src={getAvatar(`liberal-${avatarNumber}`)}
                 alt="Player avatar"
             />
-            <span className="player-name ellipsis">{playerName}</span>
+            <span className={classNames(commonStyles.ellipsis, styles.playerName)}>{playerName}</span>
             {currentRoom && (
                 <Fragment>
-                    <span className="room-name ellipsis">
-                        <span>room:{' '}</span>
-                        <b className="room-name-text">{currentRoom}</b>
+                    <span className={classNames(commonStyles.ellipsis, styles.roomName)}>
+                        <span>
+                            <span>room:{' '}</span>
+                            <b className={styles.roomNameText}>{currentRoom}</b>
+                        </span>
                     </span>
-                    <span className="room-name mobile">Busy</span>
+                    <span className={classNames(styles.roomName, styles.mobile)}>Busy</span>
                 </Fragment>
             )}
         </div>

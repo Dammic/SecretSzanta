@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import classNames from 'classnames/bind'
+import classNames from 'classnames'
 import { isUndefined, get, includes } from 'lodash'
 import PlayerComponent from './PlayerComponent'
 import { PlayerDirection, GamePhases } from '../../../../Dictionary'
+
+import styles from './Player.css'
 
 export class Player extends React.PureComponent {
     static propTypes = {
@@ -28,11 +30,11 @@ export class Player extends React.PureComponent {
 
         switch (this.props.direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames('bubble-left', { active: isBubbleActive })
+                return classNames(styles.bubble, styles.bubbleLeft, { [styles.active]: isBubbleActive })
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames('bubble-right', { active: isBubbleActive })
+                return classNames(styles.bubble, styles.bubbleRight, { [styles.active]: isBubbleActive })
             default:
-                return classNames('bubble-top', { active: isBubbleActive })
+                return classNames(styles.bubble, styles.bubbleTop, { [styles.active]: isBubbleActive })
         }
     }
 

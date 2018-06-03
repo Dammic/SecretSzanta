@@ -13,7 +13,8 @@ import News from './StaticPages/News/News'
 import HowToPlayComponent from './StaticPages/HowToPlay/HowToPlayComponent'
 import AboutComponent from './StaticPages/About/AboutComponent'
 
-require('../../styles/main.scss')
+import '../../styles/globals.css'
+import styles from './LandingPage.css'
 
 export class LandingPage extends React.PureComponent {
     static propTypes = {
@@ -56,7 +57,7 @@ export class LandingPage extends React.PureComponent {
 
     render() {
         return (
-            <div className="landing-page">
+            <div className={styles.landingPage}>
                 <Notifications />
                 <SocketHandler />
                 <Modal />

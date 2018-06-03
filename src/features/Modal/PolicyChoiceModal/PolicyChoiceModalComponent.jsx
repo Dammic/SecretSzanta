@@ -1,11 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { map } from 'lodash'
 import { PolicyCards } from '../../../../Dictionary'
+import { FancyButton } from '../../Shared/Buttons'
+
+import styles from './PolicyChoiceModal.css'
 
 const liberalPolicy = require('../../../static/liberalcard.png')
 const fascistPolicy = require('../../../static/facistcard.png')
+
 
 const PolicyChoiceModalComponent = ({
     policies,
@@ -13,10 +17,10 @@ const PolicyChoiceModalComponent = ({
     selectable,
     onButtonClose,
 }) => {
-    const policyClasses = classNames('policy', { selectable })
+    const policyClasses = classNames(styles.policy, { [styles.selectable]: selectable })
     return (
-        <div className="policy-choice-modal">
-            <ul className="policy-list">
+        <div className={styles.policyChoiceModal}>
+            <ul className={styles.policyList}>
                 {map(policies, (choice, index) => {
                     const policy = (choice === PolicyCards.LiberalPolicy) ? liberalPolicy : fascistPolicy
                     return (
@@ -24,7 +28,14 @@ const PolicyChoiceModalComponent = ({
                     )
                 })}
             </ul>
-            {!selectable && <a className="fabulous-button lined thick acknowledge-button" onClick={onButtonClose}>Acknowledged</a>}
+            {!selectable && (
+                <FancyButton
+                    onClick={onButtonClose}
+                    className={styles.acknowledgeButton}
+                >
+                    Acknowledged
+                </FancyButton>
+            )}
         </div>
     )
 }

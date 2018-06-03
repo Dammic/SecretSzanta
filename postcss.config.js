@@ -1,5 +1,10 @@
 module.exports = {
-    plugins: [
-        require('autoprefixer')
-    ]
+    plugins: {
+        'postcss-import': {
+            path: './src/styles',
+        },
+        'postcss-cssnext': {
+            browsers: ['last 2 versions'],
+        },
+    },
 }

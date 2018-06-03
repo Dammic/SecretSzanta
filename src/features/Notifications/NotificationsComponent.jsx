@@ -3,6 +3,8 @@ import { map } from 'lodash'
 import NotificationPanel from './NotificationPanel'
 import { MessagesTypes } from '../../../Dictionary'
 
+import styles from './Notifications.css'
+
 const NotificationsComponent = ({ notifications, deleteNotification }) => {
     const renderPanel = (info) => {
         const isError = info.type === MessagesTypes.ERROR
@@ -19,7 +21,7 @@ const NotificationsComponent = ({ notifications, deleteNotification }) => {
     }
 
     return (
-        <div className="notifications" >
+        <div className={styles.notifications} >
             {map(notifications, renderPanel)}
         </div>
     )

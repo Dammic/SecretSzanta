@@ -3,7 +3,7 @@ import NewsComponent from './NewsComponent'
 
 class News extends PureComponent {
     render() {
-        return <NewsComponent /> 
+        return <NewsComponent />
     }
 }
 

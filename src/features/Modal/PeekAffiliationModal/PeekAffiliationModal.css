@@ -1,0 +1,26 @@
+.peekAffiliationModal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playerInfo {
+    margin-bottom: 10px;
+}
+.playerImages {
+    display: flex;
+    justify-content: center;
+}
+.playerInfoName {
+    display: block;
+    font-size: 20px;
+    text-align: center;
+}
+
+.card {
+    height: 160px;
+    width: 140px;
+    &:first-child {
+        margin-right: 10px; 
+    }
+}

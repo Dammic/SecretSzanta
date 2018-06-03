@@ -2,13 +2,15 @@ import React from 'react'
 import { map } from 'lodash'
 import PlayerAvatarComponent from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
 
+import styles from './WinningModal.css'
+
 const WinningModalComponent = ({ winners, losers }) => {
     return (
-        <div className="winning-modal">
-            <div className="winning-modal-list">
+        <div className={styles.winningModal}>
+            <div className={styles.list}>
                 {map(winners, winner => (
-                    <div className="winner-dance">
-                        <div className="avatar-name">{winner.playerName}</div>
+                    <div key={winner.playerName} className={styles.winnerDance}>
+                        <div className={styles.avatarName}>{winner.playerName}</div>
                         <PlayerAvatarComponent
                             key={winner.playerName}
                             liberalAvatar={winner.avatarNumber}
@@ -17,17 +19,17 @@ const WinningModalComponent = ({ winners, losers }) => {
                     </div>
                 ))}
             </div>
-            <div className="winning-modal-list">
+            <div className={styles.list}>
                 {map(losers, loser => (
-                    <div>
-                        <div className="avatar-name">{loser.playerName}</div>
+                    <div key={loser.playerName}>
+                        <div className={styles.avatarName}>{loser.playerName}</div>
                         <PlayerAvatarComponent
                             key={loser.playerName}
                             liberalAvatar={loser.avatarNumber}
                             facistAvatar={loser.facistAvatar}
-                            className="loser-sorrow"
+                            className={styles.loserSorrow}
                         />
-                        <div className="drop" />
+                        <div className={styles.drop} />
                     </div>
                 ))}
             </div>

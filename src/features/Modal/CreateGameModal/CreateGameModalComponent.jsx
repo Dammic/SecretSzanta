@@ -1,5 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Button } from '../../Shared/Buttons'
+
+import styles from './CreateGameModal.css'
 
 const CreateGameModalComponent = ({
     roomName,
@@ -9,16 +12,16 @@ const CreateGameModalComponent = ({
     onChange,
 }) => {
     return (
-        <div className="create-game-modal">
-            <div className="input-field">
+        <div className={styles.createGameModal}>
+            <div className={styles.inputField}>
                 {'Room Name:'}
                 <input name="roomName" type="text" value={roomName} onChange={onChange} />
             </div>
-            <div className="input-field">
+            <div className={styles.inputField}>
                 <div>Password<i>(optional)</i>:</div>
                 <input name="password" type="password" value={password} onChange={onChange} />
             </div>
-            <div className="input-field">
+            <div className={styles.inputField}>
                 {'Maximal number of players:'}
                 <input
                     name="maxPlayers"
@@ -29,7 +32,7 @@ const CreateGameModalComponent = ({
                     onChange={onChange}
                 />
             </div>
-            <button className="create-button" onClick={onCreate}>Create</button>
+            <Button className={styles.createButton} onClick={onCreate}>Create</Button>
         </div>
     )
 }

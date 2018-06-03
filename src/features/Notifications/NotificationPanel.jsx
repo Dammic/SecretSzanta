@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react'
 import { PropTypes } from 'prop-types'
 import classNames from 'classnames/bind'
+import { Icon } from '../Shared/Icon'
+
+import styles  from './Notifications.css'
 
 export default class NotificationPanel extends PureComponent {
     static propTypes = {
@@ -20,11 +23,9 @@ export default class NotificationPanel extends PureComponent {
     render() {
         const { isError, message } = this.props
         return (
-            <div className={classNames('notification-panel', { error: isError })}>
+            <div className={classNames(styles.notificationPanel, { [styles.error]: isError })}>
                 {message}
-                <div className="notification-panel-exit" tabIndex="0" role="button" onClick={this.handleClose}>
-                    <i className="fa fa-times" aria-hidden="true" />
-                </div>
+                <Icon name="fa-times" onClick={this.handleClose} className={styles.exit} />
             </div>
         )
     }

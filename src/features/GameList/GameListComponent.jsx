@@ -6,15 +6,18 @@ import TopNavbar from './TopNavbar/TopNavbar'
 import PlayersList from './PlayersList/PlayersList'
 import Chat from '../UIBox/Chat/Chat'
 
+import styles from './GameList.css'
+import commonStyles from '../Shared/CommonStyles/commonStyles.css'
+
 const GameListComponent = ({
     userName,
     rooms,
     onClick,
 }) => {
     return (
-        <div className="game-list-container">
-            <div className="first-column">
-                <div className="game-list">
+        <div className={styles.gameListContainer}>
+            <div className={styles.firstColumn}>
+                <div className={styles.gameList}>
                     {map(rooms, room => (
                         <GameListItemComponent
                             key={room.roomId}
@@ -26,13 +29,13 @@ const GameListComponent = ({
                     ))}
                 </div>
             </div>
-            <div className="second-column">
-                <div className="utils-row">
-                    <span className="ellipsis">Hello <b>{userName}</b>!</span>
+            <div className={styles.secondColumn}>
+                <div className={styles.utilsRow}>
+                    <span className={commonStyles.ellipsis}>Hello <b>{userName}</b>!</span>
                     <TopNavbar />
                 </div>
                 <PlayersList />
-                <Chat />
+                <Chat className={styles.lobbyChat} />
             </div>
         </div>
     )

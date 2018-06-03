@@ -1,0 +1,10 @@
+.chat {
+    width: 350px;
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    right: 2px;
+    position: absolute;
+    bottom: 0;
+    z-index: 30;
+}

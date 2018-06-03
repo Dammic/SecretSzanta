@@ -1,0 +1,56 @@
+@import 'variables/variables.css';
+
+.votingIntro {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.votingInfoContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15% 0 15%;
+}
+
+.votingInfoPlayer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: var(--voting-modal-player-width-small);
+    @media (--tablet) { 
+        width: var(--voting-modal-player-width-medium);
+    }
+}
+
+.votingInfoAvatar {
+    height: 120px;
+    width: inherit;
+    @media (--tablet) { 
+        height: 160px;
+    }
+}
+
+.votingInfoRole {
+    width: inherit;
+    height: 30px;
+}
+
+.choiceOrderContainer {
+    text-align: center;
+}
+
+.votingButtonsContainer {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 48% 49%;
+    grid-gap: 0 15px;
+    height: 80px;
+    margin-top: 30px;
+}
+
+.votingButton {
+    transition: all .2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
