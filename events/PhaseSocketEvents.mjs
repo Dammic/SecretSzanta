@@ -20,81 +20,45 @@ import {
     peekPolicyCards,
     checkWinConditions,
 } from '../utils/RoomsManager'
+import * as emits from './SocketEmits'
 
 const { forEach, get, map, pick } = lodash
 
-export const startGameEvent = (socket) => {
-    startGame(socket.currentRoom)
-    const facists = getFacists(socket.currentRoom)
+export const startGameEvent = ({ currentRoom, currentPlayerName }) => {
+    startGame(currentRoom)
+    const facists = getFacists(currentRoom)
 
     // just filtering out emit functions
-    const playerCount = getPlayersCount(socket.currentRoom)
+    const playerCount = getPlayersCount(currentRoom)
 
     forEach(facists, player => SocketEventsUtils.sendBecomeFascist(player, playerCount, facists))
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
-        data: {
-            playerName: socket.currentPlayerName,
-            timestamp: getCurrentTimestamp(),
-            boardType: getPlayerboardType(socket.currentRoom),
-        },
-    })
+    emits.emitStartGame(currentRoom, currentPlayerName)
 }
 
 export const endGame = (socket, whoWon) => {
     setGamePhase(socket.currentRoom, GamePhases.Ended)
 
-    const facists = getFacists(socket.currentRoom)
-    const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
-        data: {
-            whoWon,
-            facists: passedFacists,
-        },
-    })
+    emits.emitGameFinished(socket.currentRoom, whoWon);
 }
 
 export const startVotingPhaseVote = (socket, { playerName: chancellorName }) => {
     initializeVoting(socket.currentRoom, chancellorName)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
-        data: {
-            chancellorCandidate: chancellorName,
-            timestamp: getCurrentTimestamp(),
-        },
-    })
+    emits.emitVotingPhaseStart(socket.currentRoom, chancellorName);
 }
 
 export const startChancellorChoicePhaseEvent = (socket, designatedPresidentName = null) => {
     if (getGamePhase(socket.currentRoom) === GamePhases.GAME_PHASE_SUPERPOWER) return
     startChancellorChoicePhase(socket.currentRoom, designatedPresidentName)
-    const playersChoices = getChancellorChoices(socket.currentRoom)
 
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
-        data: {
-            playersChoices,
-            presidentName: getPresident(socket.currentRoom).playerName,
-            timestamp: getCurrentTimestamp(),
-        },
-    })
+    emits.emitChancellorChoicePhase(socket.currentRoom)
 }
 
 export const startPresidentPolicyChoice = (socket) => {
-    const presidentEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+    const presidentEmit = getRoleSocket(socket.currentRoom, 
 
     setGamePhase(socket.currentRoom, GamePhases.PresidentPolicyChoice)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.PresidentChoosePolicy, {
-        data: {
-            timestamp: getCurrentTimestamp(),
-            presidentName: getPresident(socket.currentRoom).playerName,
-            gamePhase: GamePhases.PresidentPolicyChoice,
-        },
-    })
-    presidentEmit(SocketEvents.ChoosePolicy, {
-        data: {
-            policyCards: takeChoicePolicyCards(socket.currentRoom, 3),
-            title: 'Discard one policy and pass the rest to the chancellor',
-            role: PlayerRole.ROLE_PRESIDENT,
-        },
-    })
+    emits.emitPresidentChoosePolicy(socket.currentRoom)
+    emits.emitChoosePolicy(socket.currentRoom)
 }
 
 export const startKillPhase = (socket) => {
