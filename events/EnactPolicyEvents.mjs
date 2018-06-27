@@ -1,5 +1,4 @@
-import { io } from '../io'
-import { PolicyCards, PlayerBoards, SocketEvents } from '../Dictionary'
+import { PolicyCards, PlayerBoards } from '../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import PhaseSocketEvents from './PhaseSocketEvents'
 import {

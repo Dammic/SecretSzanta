@@ -37,10 +37,6 @@ export const emitSetChooserPlayer = (socket, playerName) => {
     })
 }
 
-export const sendError = (socket, errorMessage) => {
-    socket.emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
-}
-
 export const resumeGame = (socket, { delay, func, customMessage }) => {
     if (delay) {
         sendMessage(socket, { content: customMessage || `Next phase will begin in ${delay / 1000} seconds!` })
@@ -129,7 +125,6 @@ export const switchRooms = (socket, startRoom, targetRoom) => {
 const SocketEventsUtils = {
     sendMessage,
     emitSetChooserPlayer,
-    sendError,
     resumeGame,
     clearNextPhaseTimeout,
     sendBecomeFascist,

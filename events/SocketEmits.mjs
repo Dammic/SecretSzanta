@@ -1,5 +1,5 @@
 import { io } from '../io'
-import { GamePhases, SocketEvents } from '../Dictionary'
+import { GamePhases, SocketEvents, PlayerRole, PolicyCards, GlobalRoomName } from '../Dictionary'
 import { getCurrentTimestamp } from '../utils/utils'
 import lodash from 'lodash'
 import {
@@ -29,6 +29,13 @@ import {
     getOtherAlivePlayers,
     peekPolicyCards,
     checkWinConditions,
+    getRoomDetails,
+    getPlayerInfo,
+    getRoomDetailsForLobby,
+    getRemainingVotesCount,
+    getChancellor,
+    getVotes,
+    getVotingResult
 } from '../utils/RoomsManager'
 
 const { forEach, get, map, pick } = lodash
@@ -85,8 +92,132 @@ export const emitPresidentChoosePolicy = (room) => emitToRoom(room, SocketEvents
 export const emitChoosePolicyToPresident = (room) => {
     const presidentEmit = getRoleSocket(room, PlayerRole.ROLE_PRESIDENT)
     emitToPlayer(presidentEmit, SocketEvents.ChoosePolicy, {
-            policyCards: takeChoicePolicyCards(socket.currentRoom, 3),
-            title: 'Discard one policy and pass the rest to the chancellor',
-            role: PlayerRole.ROLE_PRESIDENT,
+        policyCards: takeChoicePolicyCards(room, 3),
+        title: 'Discard one policy and pass the rest to the chancellor',
+        role: PlayerRole.ROLE_PRESIDENT,
+    })
+}
+
+export const emitKillSuperpowerUsed = (room) => {
+    const presidentName = get(getPresident(room), 'playerName')
+    const playersChoices = getOtherAlivePlayers(room, presidentName)
+
+    emitToRoom(room, SocketEvents.KillSuperpowerUsed, {
+        presidentName,
+        timestamp: getCurrentTimestamp(),
+        playersChoices,
+    })
+}
+
+export const emitDesignateNewPresident = (room) => {
+    const presidentName = get(getPresident(room), 'playerName')
+    const playersChoices = getOtherAlivePlayers(room, presidentName)
+
+    emitToRoom(room, SocketEvents.DesignateNextPresident, {
+        presidentName,
+        timestamp: getCurrentTimestamp(),
+        playersChoices,
+    })
+}
+
+export const emitSuperpowerAffiliationPeekPlayerChoose = (room) => {
+    const presidentEmit = getRoleSocket(room, PlayerRole.ROLE_PRESIDENT)
+
+    const presidentName = get(getPresident(room), 'playerName')
+    const playersChoices = getOtherAlivePlayers(room, presidentName)
+
+    emitToPlayer(presidentEmit, SocketEvents.SuperpowerAffiliationPeekPlayerChoose, {
+        playersChoices,
+    })
+}
+
+export const emitPeekCards = (room) => {
+    const presidentEmit = getRoleSocket(room, PlayerRole.ROLE_PRESIDENT)
+
+    emitToPlayer(presidentEmit, SocketEvents.PeekCards, {
+        timestamp: getCurrentTimestamp(),
+        cards: peekPolicyCards(room),
+    })
+}
+
+export const emitServerWaitingForVeto = (room, role) => {
+    const roleEmit = getRoleSocket(room, role)
+
+    emitToPlayer(roleEmit, SocketEvents.ServerWaitingForVeto)
+}
+
+export const emitSyncPolicies = (room) => emitToRoom(room, SocketEvents.SyncPolicies, {
+    facist: getPolicyCardsCount(room, PolicyCards.FacistPolicy),
+    liberal: getPolicyCardsCount(room, PolicyCards.LiberalPolicy),
+})
+
+export const emitClientLeaveRoom = (room, playerName) => emitToRoom(room, SocketEvents.CLIENT_LEAVE_ROOM, {
+    timestamp: getCurrentTimestamp(),
+    playerName,
+})
+
+export const emitRoomData = (room, emit) => {
+    const roomDetails = getRoomDetails(room)
+    emitToPlayer(emit, SocketEvents.CLIENT_GET_ROOM_DATA, {
+        ...roomDetails,
+    })
+}
+
+export const emitMessage = (room, emit = null, content, author = null) => {
+    const data = {
+        content,
+        author,
+        timestamp: getCurrentTimestamp(),
+    }
+
+    if (emit) {
+        emitToPlayer(emit, SocketEvents.CLIENT_SEND_MESSAGE, data)
+    } else {
+        emitToRoom(room, SocketEvents.CLIENT_SEND_MESSAGE, data)
+    }
+}
+
+export const emitRoomsListChanged = (changedRoom, targetRoom = null) => {
+    emitToRoom(GlobalRoomName, SocketEvents.RoomsListChanged, {
+        roomName: changedRoom,
+        room: targetRoom ? getRoomDetailsForLobby(targetRoom) : null,
+    })
+}
+
+export const emitAllowEnteringRoom = (room, emit) => {
+    emitToPlayer(emit, SocketEvents.AllowEnteringRoom, {
+        roomName: room,
+    })
+}
+
+export const emitClientJoinRoom = (room, playerName) => {
+    emitToRoom(room, SocketEvents.CLIENT_JOIN_ROOM, {
+        timestamp: getCurrentTimestamp(),
+        player: getPlayerInfo(room, playerName),
+    })
+}
+
+export const emitError = (emit, errorMessage) => {
+    emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
+}
+
+export const emitNewVote = (room, playerName) => {
+    emitToRoom(room, SocketEvents.VOTING_PHASE_NEWVOTE, {
+        playerName,
+        remaining: getRemainingVotesCount(room),
+        timestamp: getCurrentTimestamp(),
+    })
+}
+
+export const emitRevealVotingResult = (room) => {
+    const hasVotingSucceed = getVotingResult(room)
+
+    emitToRoom(room, SocketEvents.VOTING_PHASE_REVEAL, {
+        votes: getVotes(room),
+        timestamp: getCurrentTimestamp(),
+        newChancellor: (hasVotingSucceed
+            ? getChancellor(room).playerName
+            : null
+        ),
     })
 }

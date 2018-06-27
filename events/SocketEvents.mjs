@@ -63,6 +63,7 @@ import {
     initializeVoting,
     isVetoUnlocked,
 } from '../utils/RoomsManager'
+import * as emits from './SocketEmits'
 
 import {
     isInPlayersList,
@@ -76,10 +77,9 @@ export const triggerVetoPrompt = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
     clearVetoVotes(socket.currentRoom)
 
-    const presidentEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
-    const chancellorEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
-    presidentEmit(SocketEvents.ServerWaitingForVeto)
-    chancellorEmit(SocketEvents.ServerWaitingForVeto)
+    emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+    emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
+
     const onGameResume = (socket) => {
         const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
         if (!shouldGameFinish) {
@@ -101,19 +101,19 @@ export const veto = (socket) => {
     const gamePhase = getGamePhase(socket.currentRoom)
     if (gamePhase !== GamePhases.ServerWaitingForVeto) {
         logError(socket, 'Player tried to veto when the server was not waiting for it!')
-        SocketEventsUtils.sendError(socket, 'You cannot veto right now!')
+        emits.emitError(socket.emit, 'You cannot veto right now!')
         return
     }
     const vetoVotes = getVetoVotes(socket.currentRoom)
     const playerRole = getPlayerRole(socket.currentRoom, socket.currentPlayerName)
     if (includes(vetoVotes, playerRole)) {
         logError(socket, 'Player tried to vote twice!')
-        SocketEventsUtils.sendError(socket, 'You cannot veto twice!')
+        emits.emitError(socket.emit, 'You cannot veto twice!')
         return
     }
     if (!includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)) {
         logError(socket, `Player with role ${playerRole} tried to veto - only president and chancellor are allowed to!`)
-        SocketEventsUtils.sendError(socket, 'You must be a president or a chancellor to veto!')
+        emits.emitError(socket.emit, 'You must be a president or a chancellor to veto!')
         return
     }
     addVetoVote(socket.currentRoom, socket.currentPlayerName)
@@ -128,13 +128,7 @@ export const veto = (socket) => {
 
         const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
         if (!shouldGameFinish) {
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.SyncPolicies, {
-                data: {
-                    facist: getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy),
-                    liberal: getPolicyCardsCount(socket.currentRoom, PolicyCards.LiberalPolicy),
-                },
-            })
-
+            emits.emitSyncPolicies(socket.currentRoom)
             SocketEventsUtils.resumeGame(socket, { delay: 5000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
         }
     } else {
@@ -148,18 +142,12 @@ export const disconnect = (socket) => {
         const roomOwnerName = getRoomOwner(socket.currentRoom).playerName
 
         removePlayer(socket.currentRoom, socket.currentPlayerName)
-        io.sockets.in(socket.currentRoom).emit(SocketEvents.CLIENT_LEAVE_ROOM, {
-            data: {
-                timestamp: getCurrentTimestamp(),
-                playerName: socket.currentPlayerName,
-            },
-        })
+        emits.emitClientLeaveRoom(socket.currentRoom, socket.currentPlayerName)
 
         if (socket.currentPlayerName === roomOwnerName) {
             const newOwner = findNewRoomOwner(socket.currentRoom)
             if (!isNil(newOwner)) {
-                const roomDetails = getRoomDetails(socket.currentRoom)
-                newOwner.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
+                emits.emitRoomData(socket.currentRoom, newOwner.emit)
 
                 if (newOwner.affiliation === PlayerAffilications.FACIST_AFFILIATION
                     || newOwner.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
@@ -167,20 +155,9 @@ export const disconnect = (socket) => {
                     const fascists = getFacists(socket.currentRoom)
                     SocketEventsUtils.sendBecomeFascist(newOwner, playersCount, fascists)
                 }
-                newOwner.emit(SocketEvents.CLIENT_SEND_MESSAGE, {
-                    data: {
-                        content: 'You have become the new owner of this room!',
-                        author: null,
-                        timestamp: getCurrentTimestamp(),
-                    },
-                })
+                emits.emitMessage(socket.currentRoom, newOwner.emit, 'You have become the new owner of this room!')
             } else {
-                io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
-                    data: {
-                        roomName: socket.currentRoom,
-                        room: null,
-                    },
-                })
+                emits.emitRoomsListChanged(socket.currentRoom)
                 removeRoom(socket.currentRoom)
                 logInfo(socket, 'The room was permanently removed!')
             }
@@ -195,36 +172,28 @@ export const disconnect = (socket) => {
 export const joinRoom = (socket, { roomName }) => {
     if (!roomName || socket.currentRoom !== GlobalRoomName || !isRoomPresent(roomName)) {
         logError(socket, 'Player tried to enter nonexistent room!')
-        SocketEventsUtils.sendError(socket, 'The room does not exist!')
+        emits.emitError(socket.emit, 'The room does not exist!')
         return
     }
 
     if (isInBlackList(roomName, socket.currentPlayerName)) {
         logInfo(socket, 'Banned player tried to enter the room!')
-        SocketEventsUtils.sendError(socket, 'You are BANNED in this room by the owner!')
+        emits.emitError(socket.emit, 'You are BANNED in this room by the owner!')
         return
     }
 
     const addingError = addPlayer(roomName, socket.currentPlayerName, socket)
 
     if (addingError !== undefined) {
-        SocketEventsUtils.sendError(socket, ErrorMappedMessages[addingError])
+        emits.emitError(socket.emit, ErrorMappedMessages[addingError])
         return
     }
 
     SocketEventsUtils.switchRooms(socket, socket.currentRoom, roomName)
 
-    const roomDetails = getRoomDetails(roomName)
-
-    socket.emit(SocketEvents.AllowEnteringRoom, { data: { roomName: socket.currentRoom } })
-    socket.emit(SocketEvents.CLIENT_GET_ROOM_DATA, { data: roomDetails })
-
-    io.sockets.in(roomName).emit(SocketEvents.CLIENT_JOIN_ROOM, {
-        data: {
-            timestamp: getCurrentTimestamp(),
-            player: getPlayerInfo(roomName, socket.currentPlayerName),
-        },
-    })
+    emits.emitAllowEnteringRoom(socket.currentRoom, socket.emit)
+    emits.emitRoomData(socket.currentRoom, socket.emit)
+    emits.emitClientJoinRoom(socket.currentRoom, socket.currentPlayerName)
 }
 
 export const createRoom = (socket, { roomName, maxPlayers, password }) => {
@@ -232,30 +201,18 @@ export const createRoom = (socket, { roomName, maxPlayers, password }) => {
     if (roomName && !isRoomPresent(roomName)) {
         initializeRoom(roomName, socket.currentPlayerName, maxPlayers, password)
 
-        io.sockets.in(GlobalRoomName).emit(SocketEvents.RoomsListChanged, {
-            data: {
-                roomName,
-                room: getRoomDetailsForLobby(roomName),
-            },
-        })
+        emits.emitRoomsListChanged(roomName, roomName)
         joinRoom(socket, { roomName })
     } else {
         logError(socket, 'Selected room is already present! Cannot create a duplicate!')
-        socket.emit(SocketEvents.CLIENT_ERROR, {
-            error: 'You cannot create duplicate of this room!',
-        })
+        emits.emitError(socket.emit, 'You cannot create duplicate of this room!')
     }
 }
 
 export const voteEvent = (socket, { value }) => {
     vote(socket.currentRoom, socket.currentPlayerName, value)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_NEWVOTE, {
-        data: {
-            playerName: socket.currentPlayerName,
-            remaining: getRemainingVotesCount(socket.currentRoom),
-            timestamp: getCurrentTimestamp(),
-        },
-    })
+    emits.emitNewVote(socket.currentRoom, socket.currentPlayerName)
+
     if (didAllVote(socket.currentRoom)) {
         const hasVotingSucceed = getVotingResult(socket.currentRoom)
         const votingResultMessage = `Voting completed! ${hasVotingSucceed
@@ -275,16 +232,7 @@ export const voteEvent = (socket, { value }) => {
             SocketEventsUtils.resumeGame(socket, { delay: 3000, func: hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent })
         }
 
-        io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_REVEAL, {
-            data: {
-                votes: getVotes(socket.currentRoom),
-                timestamp: getCurrentTimestamp(),
-                newChancellor: (hasVotingSucceed
-                    ? getChancellor(socket.currentRoom).playerName
-                    : null
-                ),
-            },
-        })
+        emits.emitRevealVotingResult(socket.currentRoom)
     }
 }
 
@@ -413,7 +361,7 @@ export const selectName = (socket, { userName }) => {
         socket.currentPlayerName = userName
         SocketEventsUtils.switchRooms(socket, '', GlobalRoomName)
     } else {
-        SocketEventsUtils.sendError(socket, ErrorMessages.NameTaken)
+        emits.emitError(socket.emit, ErrorMessages.NameTaken)
     }
 }
 
