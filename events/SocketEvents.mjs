@@ -250,22 +250,14 @@ export const choosePolicyChancellor = (socket, choice) => {
     }
 }
 
-export const choosePolicyPresident = (socket, choice, drawnCards, chancellorName) => {
-    setGamePhase(socket.currentRoom, GamePhases.ChancellorPolicyChoice)
-    const chancellorEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.ChancellorChoosePolicy, {
-        data: {
-            timestamp: getCurrentTimestamp(),
-            chancellorName,
-        },
-    })
-    discardPolicy(socket.currentRoom, choice)
-    chancellorEmit(SocketEvents.ChoosePolicy, {
-        data: {
-            policyCards: drawnCards,
-            title: 'Choose policy to enact',
-        },
-    })
+export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
+    setGamePhase(currentRoom, GamePhases.ChancellorPolicyChoice)
+
+    emits.emitChancellorChoosePolicy(currentRoom, chancellorName)
+
+    discardPolicy(currentRoom, choice)
+
+    emits.emitChoosePolicyToChancellor(currentRoom, drawnCards)
 }
 
 export const choosePolicy = (socket, { choice }) => {
@@ -290,15 +282,7 @@ export const choosePolicy = (socket, { choice }) => {
 
 export const killPlayerEvent = (socket, { playerName }) => {
     killPlayer(socket.currentRoom, playerName)
-    const hitler = getHitler(socket.currentRoom)
-    const wasHitler = hitler.playerName === playerName
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKilled, {
-        data: {
-            wasHitler,
-            playerName,
-            timestamp: getCurrentTimestamp(),
-        },
-    })
+    emits.emitPlayerKilled(socket.currentRoom, playerName)
 
     const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
     if (shouldGameFinish) {
@@ -335,14 +319,8 @@ export const kickPlayerEvent = (socket, { playerName }, permanently = false) => 
     kickPlayer(socket.currentRoom, playerName, permanently)
     SocketEventsUtils.clearNextPhaseTimeout()
 
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.PlayerKicked, {
-        data: {
-            playerName,
-            timestamp: getCurrentTimestamp(),
-            wasBanned: permanently,
-            isOverlaysHidingNeeded,
-        },
-    })
+    emits.emitPlayerKicked(socket.currentRoom, playerName, permanently, isOverlaysHidingNeeded)
+
     const kickedSocket = find(io.sockets.in(socket.currentRoom).sockets, { currentPlayerName: playerName })
     SocketEventsUtils.switchRooms(kickedSocket, socket.currentRoom, GlobalRoomName)
 }
@@ -352,12 +330,12 @@ export const selectName = (socket, { userName }) => {
     if (!userName) {
         removePlayerFromPlayersList(socket.currentPlayerName)
         SocketEventsUtils.switchRooms(socket, GlobalRoomName, '')
-        socket.emit(SocketEvents.SelectName, { data: { userName: '' } })
+        emits.emitSelectName(socket.emit, '')
         socket.currentPlayerName = ''
     // selecting name
     } else if (!isInPlayersList(userName)) {
         addPlayerToPlayersList(userName)
-        socket.emit(SocketEvents.SelectName, { data: { userName } })
+        emits.emitSelectName(socket.emit, userName)
         socket.currentPlayerName = userName
         SocketEventsUtils.switchRooms(socket, '', GlobalRoomName)
     } else {
@@ -376,16 +354,8 @@ export const presidentDesignatedNextPresident = (socket, { playerName }) => {
 
 export const superpowerAffiliationPeekPlayer = (socket, { playerName }) => {
     SocketEventsUtils.sendMessage(socket, { content: `The president has choosen ${playerName} to be investigated and has now seen their affiliation!` })
-    const presidentEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
-    const selectedPlayerInfo = getPlayerInfo(socket.currentRoom, playerName)
-    if (selectedPlayerInfo.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
-        selectedPlayerInfo.affiliation = PlayerAffilications.FACIST_AFFILIATION
-    }
-    presidentEmit(SocketEvents.SuperpowerAffiliationPeekAffiliationReveal, {
-        data: {
-            playerInfo: selectedPlayerInfo,
-        },
-    })
+
+    emits.emitPeekAffiliation(socket.currentRoom, playerName)
 }
 
 export const endPeekPlayerSuperpower = (socket) => {
