@@ -20,10 +20,7 @@ export const startGameEvent = ({ currentRoom, currentPlayerName }) => {
     startGame(currentRoom)
     const facists = getFacists(currentRoom)
 
-    // just filtering out emit functions
-    const playerCount = getPlayersCount(currentRoom)
-
-    forEach(facists, player => SocketEventsUtils.sendBecomeFascist(player, playerCount, facists))
+    forEach(facists, player => emits.emitBecomeFascist(currentRoom, player, facists))
     emits.emitStartGame(currentRoom, currentPlayerName)
 }
 
@@ -64,22 +61,24 @@ export const startDesignateNextPresidentPhase = ({ currentRoom }) => {
 export const startPeekAffiliationSuperpowerPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekAffiliationSuperpowerPhase)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    SocketEventsUtils.sendMessage(
-        socket,
+    emits.emitMessage(
+        socket.currentRoom,
+        null,
         { content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' },
     )
-    SocketEventsUtils.emitSetChooserPlayer(socket, presidentName)
+    emits.emitSetChooserPlayer(socket.currentRoom, presidentName)
     emits.emitSuperpowerAffiliationPeekPlayerChoose(socket.currentRoom)
 }
 
 export const startPeekCardsPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    SocketEventsUtils.sendMessage(
-        socket,
+    emits.emitMessage(
+        socket.currentRoom,
+        null,
         { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' },
     )
-    SocketEventsUtils.emitSetChooserPlayer(socket, presidentName)
+    emits.emitSetChooserPlayer(socket.currentRoom, presidentName)
     emits.emitPeekCards(socket.currentRoom)
 }
 
@@ -90,7 +89,7 @@ export const checkIfGameShouldFinish = (socket) => {
     }
 
     const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
-    SocketEventsUtils.sendMessage(socket, { content: `${winningSideName} have won - ${reason}` })
+    emits.emitMessage(socket.currentRoom, null, { content: `${winningSideName} have won - ${reason}` })
     endGame(socket, winningSide)
     return true
 }

@@ -34,8 +34,9 @@ export const checkForImmediateSuperpowersOrContinue = (socket) => {
         // 5th power is always kill AND veto power unlock
     } else if (fascistPolicyCount === 5) {
         toggleVeto(socket.currentRoom)
-        SocketEventsUtils.sendMessage(
-            socket,
+        emits.emitMessage(
+            socket.currentRoom,
+            null,
             { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' },
         )
         PhaseSocketEvents.startKillPhase(socket)
@@ -47,7 +48,7 @@ export const checkForImmediateSuperpowersOrContinue = (socket) => {
 export const enactPolicyEvent = (socket, policy) => {
     const isFacist = policy === PolicyCards.FacistPolicy
     enactPolicy(socket.currentRoom, policy)
-    SocketEventsUtils.sendMessage(socket, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
+    emits.emitMessage(socket.currentRoom, null, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
     emits.emitNewPolicy(socket.currentRoom, policy)
 
     const isVeto = isVetoUnlocked(socket.currentRoom)
@@ -57,13 +58,13 @@ export const enactPolicyEvent = (socket, policy) => {
 export const updateTrackerPositionIfNecessary = (socket, isSuccess) => {
     if (isSuccess) {
         const trackerPosition = getFailedElectionsCount(socket.currentRoom)
-        SocketEventsUtils.resetElectionTracker(socket, trackerPosition)
+        if (trackerPosition > 0) SocketEventsUtils.resetElectionTracker(socket)
     } else {
         increaseFailedElectionsCount(socket.currentRoom)
-        SocketEventsUtils.sendMessage(socket, { content: 'The failed elections tracker has increased!' })
+        emits.emitMessage(socket.currentRoom, null, { content: 'The failed elections tracker has increased!' })
         const failedElectionsCount = getFailedElectionsCount(socket.currentRoom)
         if (failedElectionsCount >= 3) {
-            SocketEventsUtils.resetElectionTracker(socket, failedElectionsCount)
+            SocketEventsUtils.resetElectionTracker(socket)
 
             const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
             enactPolicyEvent(socket, topCard)
