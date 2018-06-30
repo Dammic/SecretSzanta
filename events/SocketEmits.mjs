@@ -1,19 +1,15 @@
 import { io } from '../io'
-import { GamePhases, SocketEvents, PlayerRole, PolicyCards, GlobalRoomName } from '../Dictionary'
+import { GamePhases, SocketEvents,PlayerAffilications, PlayerRole, PolicyCards, GlobalRoomName } from '../Dictionary'
 import { getCurrentTimestamp } from '../utils/utils'
 import lodash from 'lodash'
+
 import {
     getFailedElectionsCount,
     increaseFailedElectionsCount,
-    takeChoicePolicyCards,
     getPolicyCardsCount,
-    getPlayerboardType,
     toggleVeto,
     enactPolicy,
     isVetoUnlocked,
-} from '../utils/RoomsManager'
-
-import {
     getPlayersCount,
     startGame,
     getFacists,
@@ -36,14 +32,14 @@ import {
     getRemainingVotesCount,
     getChancellor,
     getVotes,
-    getVotingResult
+    getVotingResult,
     getHitler,
 } from '../utils/RoomsManager'
 import {
     updatePlayerRoom,
     getPlayersList,
     getPlayerFromPlayersList,
-} from './PlayersManager'
+} from '../utils/PlayersManager'
 
 const { forEach, get, map, pick } = lodash
 
@@ -165,7 +161,7 @@ export const emitRoomsListChanged = (changedRoom, targetRoom = null) => {
     })
 }
 
-export const emitPlayersListChanged = (playerName) = {
+export const emitPlayersListChanged = (playerName) => {
     emitToRoom(GlobalRoomName, SocketEvents.PlayersListChanged, {
         playerName,
         player: getPlayerFromPlayersList(playerName),

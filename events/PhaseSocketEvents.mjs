@@ -55,7 +55,7 @@ export const startKillPhase = ({ currentRoom }) => {
 
 export const startDesignateNextPresidentPhase = ({ currentRoom }) => {
     setGamePhase(currentRoom, GamePhases.DesignateNextPresidentPhase)
-    emits.emitToRoom(currentRoom)
+    emits.emitDesignateNewPresident(currentRoom)
 }
 
 export const startPeekAffiliationSuperpowerPhase = (socket) => {

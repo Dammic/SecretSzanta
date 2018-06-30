@@ -14,6 +14,8 @@ const initializeEvents = () => {
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
         socket.currentRoom = ''
+        // we expect to socket.emit work when passed as an argument
+        socket.emit = socket.emit.bind(socket)
 
         const phaseSocketEventsCopy = cloneDeep(PhaseSocketEvents)
         phaseSocketEventsCopy.startGameEvent = ClientVerificationHof(['isOwner'], phaseSocketEventsCopy.startGameEvent)
