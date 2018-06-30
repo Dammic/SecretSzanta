@@ -142,7 +142,7 @@ export const disconnect = (socket) => {
         const roomOwnerName = getRoomOwner(socket.currentRoom).playerName
 
         removePlayer(socket.currentRoom, socket.currentPlayerName)
-        emits.emitClientLeaveRoom(socket.currentRoom, socket.currentPlayerName)
+        emits.emitPlayerLeftRoom(socket.currentRoom, socket.currentPlayerName)
 
         if (socket.currentPlayerName === roomOwnerName) {
             const newOwner = findNewRoomOwner(socket.currentRoom)
@@ -152,7 +152,7 @@ export const disconnect = (socket) => {
                 if (newOwner.affiliation === PlayerAffilications.FACIST_AFFILIATION
                     || newOwner.affiliation === PlayerAffilications.HITLER_AFFILIATION) {
                     const fascists = getFacists(socket.currentRoom)
-                    emits.emitBecomeFascist(socket.currentRoom, newOwner, fascists)
+                    emits.emitBecomeFascistToPlayer(socket.currentRoom, newOwner, fascists)
                 }
                 emits.emitMessage(socket.currentRoom, newOwner.emit, 'You have become the new owner of this room!')
             } else {
@@ -192,7 +192,7 @@ export const joinRoom = (socket, { roomName }) => {
 
     emits.emitAllowEnteringRoom(socket.currentRoom, socket.emit)
     emits.emitRoomData(socket.currentRoom, socket.emit)
-    emits.emitClientJoinRoom(socket.currentRoom, socket.currentPlayerName)
+    emits.emitPlayerJoinedRoom(socket.currentRoom, socket.currentPlayerName)
 }
 
 export const createRoom = (socket, { roomName, maxPlayers, password }) => {
@@ -231,7 +231,7 @@ export const voteEvent = (socket, { value }) => {
             SocketEventsUtils.resumeGame(socket, { delay: 3000, func: hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent })
         }
 
-        emits.emitRevealVotingResult(socket.currentRoom)
+        emits.emitVotingResult(socket.currentRoom)
     }
 }
 
@@ -252,7 +252,7 @@ export const choosePolicyChancellor = (socket, choice) => {
 export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
     setGamePhase(currentRoom, GamePhases.ChancellorPolicyChoice)
 
-    emits.emitChancellorChoosePolicy(currentRoom, chancellorName)
+    emits.emitChancellorWillChoosePolicy(currentRoom, chancellorName)
 
     discardPolicy(currentRoom, choice)
 
@@ -329,12 +329,12 @@ export const selectName = (socket, { userName }) => {
     if (!userName) {
         removePlayerFromPlayersList(socket.currentPlayerName)
         SocketEventsUtils.switchRooms(socket, GlobalRoomName, '')
-        emits.emitSelectName(socket.emit, '')
+        emits.emitSelectNameToPlayer(socket.emit, '')
         socket.currentPlayerName = ''
     // selecting name
     } else if (!isInPlayersList(userName)) {
         addPlayerToPlayersList(userName)
-        emits.emitSelectName(socket.emit, userName)
+        emits.emitSelectNameToPlayer(socket.emit, userName)
         socket.currentPlayerName = userName
         SocketEventsUtils.switchRooms(socket, '', GlobalRoomName)
     } else {
@@ -344,7 +344,7 @@ export const selectName = (socket, { userName }) => {
 
 export const presidentDesignatedNextPresident = (socket, { playerName }) => {
     emits.emitMessage(socket.currentRoom, null, { content: `The president has designated ${playerName} as the next president for the next turn!` })
-    emits.emitSetChooserPlayer(socket.currentRoom, '')
+    emits.emitChooserPlayer(socket.currentRoom, '')
     SocketEventsUtils.resumeGame(socket, {
         delay: 4000,
         func: socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName),
@@ -354,17 +354,17 @@ export const presidentDesignatedNextPresident = (socket, { playerName }) => {
 export const superpowerAffiliationPeekPlayer = (socket, { playerName }) => {
     emits.emitMessage(socket.currentRoom, null, { content: `The president has choosen ${playerName} to be investigated and has now seen their affiliation!` })
 
-    emits.emitPeekAffiliationToPresident(socket.currentRoom, playerName)
+    emits.emitPlayerAffiliationToPresident(socket.currentRoom, playerName)
 }
 
 export const endPeekPlayerSuperpower = (socket) => {
-    emits.emitSetChooserPlayer(socket.currentRoom, '')
+    emits.emitChooserPlayer(socket.currentRoom, '')
     SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
 }
 
 export const endPeekCardsPhase = (socket) => {
     emits.emitMessage(socket.currentRoom, null, { content: 'The president has seen the top 3 policy cards' })
-    emits.emitSetChooserPlayer(socket.currentRoom, '')
+    emits.emitChooserPlayer(socket.currentRoom, '')
     SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
 }
 

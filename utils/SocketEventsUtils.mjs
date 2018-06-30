@@ -60,7 +60,7 @@ export const switchRooms = (socket, startRoom, targetRoom) => {
         }
 
         if (targetRoom === GlobalRoomName) {
-            emits.emitSyncLobby(socket.emit)
+            emits.emitSyncLobbyToPlayer(socket.emit)
         }
         socket.join(targetRoom)
         emits.emitMessage(socket.currentRoom, null, { content: `${socket.currentPlayerName} has joined the room` })

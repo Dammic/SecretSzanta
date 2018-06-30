@@ -125,6 +125,7 @@ export class SocketHandler extends React.PureComponent {
             const { presidentName, playersChoices, timestamp } = payload.data
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_SUPERPOWER })
             this.props.chatActions.addMessage({ timestamp, content: `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...` })
+            // TODO: Put logic related to president choose into other Event
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
                     context: ChoiceModeContexts.KillChoice,

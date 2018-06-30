@@ -20,7 +20,7 @@ export const startGameEvent = ({ currentRoom, currentPlayerName }) => {
     startGame(currentRoom)
     const facists = getFacists(currentRoom)
 
-    forEach(facists, player => emits.emitBecomeFascist(currentRoom, player, facists))
+    forEach(facists, player => emits.emitBecomeFascistToPlayer(currentRoom, player, facists))
     emits.emitStartGame(currentRoom, currentPlayerName)
 }
 
@@ -44,18 +44,18 @@ export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresi
 
 export const startPresidentPolicyChoice = ({ currentRoom }) => {
     setGamePhase(currentRoom, GamePhases.PresidentPolicyChoice)
-    emits.emitPresidentChoosePolicy(currentRoom)
+    emits.emitPresidentWillChoosePolicy(currentRoom)
     emits.emitChoosePolicyToPresident(currentRoom)
 }
 
 export const startKillPhase = ({ currentRoom }) => {
     setGamePhase(currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
-    emits.emitKillSuperpowerUsed(currentRoom)
+    emits.emitPresidentWillKillPlayer(currentRoom)
 }
 
 export const startDesignateNextPresidentPhase = ({ currentRoom }) => {
     setGamePhase(currentRoom, GamePhases.DesignateNextPresidentPhase)
-    emits.emitDesignateNewPresident(currentRoom)
+    emits.emitNewPresidentDesignated(currentRoom)
 }
 
 export const startPeekAffiliationSuperpowerPhase = (socket) => {
@@ -66,8 +66,8 @@ export const startPeekAffiliationSuperpowerPhase = (socket) => {
         null,
         { content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' },
     )
-    emits.emitSetChooserPlayer(socket.currentRoom, presidentName)
-    emits.emitSuperpowerAffiliationPeekPlayerChoose(socket.currentRoom)
+    emits.emitChooserPlayer(socket.currentRoom, presidentName)
+    emits.emitPeekAffiliationToPresident(socket.currentRoom)
 }
 
 export const startPeekCardsPhase = (socket) => {
@@ -78,8 +78,8 @@ export const startPeekCardsPhase = (socket) => {
         null,
         { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' },
     )
-    emits.emitSetChooserPlayer(socket.currentRoom, presidentName)
-    emits.emitPeekCards(socket.currentRoom)
+    emits.emitChooserPlayer(socket.currentRoom, presidentName)
+    emits.emitPeekCardsToPresident(socket.currentRoom)
 }
 
 export const checkIfGameShouldFinish = (socket) => {
