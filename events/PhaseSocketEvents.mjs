@@ -12,7 +12,7 @@ import {
     getPresident,
     checkWinConditions,
 } from '../utils/RoomsManager'
-import * as emits from './SocketEmits'
+import * as emits from './emits'
 
 const { forEach, get } = lodash
 
@@ -55,7 +55,7 @@ export const startKillPhase = ({ currentRoom }) => {
 
 export const startDesignateNextPresidentPhase = ({ currentRoom }) => {
     setGamePhase(currentRoom, GamePhases.DesignateNextPresidentPhase)
-    emits.emitNewPresidentDesignated(currentRoom)
+    emits.emitDesignateNextPresident(currentRoom)
 }
 
 export const startPeekAffiliationSuperpowerPhase = (socket) => {

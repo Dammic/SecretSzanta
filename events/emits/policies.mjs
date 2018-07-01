@@ -1,24 +1,13 @@
 import { SocketEvents, PlayerRole, PolicyCards } from '../../Dictionary'
-import { getCurrentTimestamp } from '../../utils/utils'
 
 import { emitToRoom, emitToPlayer } from './generic'
 import {
     getPolicyCardsCount,
     getRoleSocket,
     takeChoicePolicyCards,
-    peekPolicyCards,
 } from '../../utils/RoomsManager'
 
 export const emitNewPolicy = (room, policy) => emitToRoom(room, SocketEvents.NewPolicy, { policy })
-
-export const emitPeekCardsToPresident = (room) => {
-    const presidentEmit = getRoleSocket(room, PlayerRole.ROLE_PRESIDENT)
-
-    emitToPlayer(presidentEmit, SocketEvents.PeekCards, {
-        timestamp: getCurrentTimestamp(),
-        cards: peekPolicyCards(room),
-    })
-}
 
 export const emitSyncPolicies = (room) => emitToRoom(room, SocketEvents.SyncPolicies, {
     facist: getPolicyCardsCount(room, PolicyCards.FacistPolicy),
@@ -42,4 +31,3 @@ export const emitChoosePolicyToPresident = (room) => {
         role: PlayerRole.ROLE_PRESIDENT,
     })
 }
-

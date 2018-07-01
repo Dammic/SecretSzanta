@@ -63,7 +63,7 @@ import {
     initializeVoting,
     isVetoUnlocked,
 } from '../utils/RoomsManager'
-import * as emits from './SocketEmits'
+import * as emits from './emits'
 
 import {
     isInPlayersList,

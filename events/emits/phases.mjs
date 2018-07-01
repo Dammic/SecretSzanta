@@ -12,6 +12,7 @@ import {
 } from '../../utils/RoomsManager'
 
 const { map, pick } = lodash
+
 export const emitStartGame = (room, playerName) => emitToRoom(room, SocketEvents.START_GAME, {
     playerName,
     timestamp: getCurrentTimestamp(),
@@ -54,3 +55,4 @@ export const emitChancellorChoicePhase = (room) => emitToRoom(room, SocketEvents
     presidentName: getPresident(room).playerName,
     timestamp: getCurrentTimestamp(),
 })
+

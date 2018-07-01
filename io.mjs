@@ -4,7 +4,7 @@ import PhaseSocketEvents from './events/PhaseSocketEvents'
 import ClientVerificationHof from './utils/ClientVerificationHof'
 import { SocketEvents as SocketEventsDictionary } from './Dictionary'
 import socketEvents from './events/SocketEvents'
-import { emitMessage } from './events/SocketEmits'
+import { emitMessage } from './events/emits'
 
 const { cloneDeep, partial, mapValues, partialRight } = lodash
 

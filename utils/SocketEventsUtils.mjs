@@ -13,7 +13,7 @@ import {
     getPlayersList,
     getPlayerFromPlayersList,
 } from './PlayersManager'
-import * as emits from '../events/SocketEmits'
+import * as emits from '../events/emits'
 
 const { pick, map } = lodash
 

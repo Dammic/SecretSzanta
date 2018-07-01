@@ -11,7 +11,7 @@ import {
     enactPolicy,
     isVetoUnlocked,
 } from '../utils/RoomsManager'
-import * as emits from './SocketEmits'
+import * as emits from './emits'
 
 export const checkForImmediateSuperpowersOrContinue = (socket) => {
     const fascistPolicyCount = getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
