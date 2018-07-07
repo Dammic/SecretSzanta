@@ -3,24 +3,26 @@
 exports[`<MessagesBoxComponent /> renders 3 messages if there are any passed 1`] = `
 <MessagesBoxComponent
   component={
-    <div>
+    <div
+      className="messagesBox"
+    >
       <div
-        className=""
+        className="message"
         key="0"
       >
-        [02:08] Zion.Reichel12:  Liaison
+        [02:16] Zion.Reichel12:  Liaison
       </div>
       <div
-        className=""
+        className="message"
         key="1"
       >
-        [06:29] Audrey38:  Yen Operations
+        [06:36] Audrey38:  Yen Operations
       </div>
       <div
-        className=""
+        className="message"
         key="2"
       >
-        [15:50] Heather_Hahn20:  SSL Beauty
+        [15:58] Heather_Hahn20:  SSL Beauty
       </div>
     </div>
   }
@@ -30,30 +32,36 @@ exports[`<MessagesBoxComponent /> renders 3 messages if there are any passed 1`]
         Object {
           "author": "Zion.Reichel12",
           "content": "Liaison",
-          "time": "02:08",
+          "time": "02:16",
         },
         Object {
           "author": "Audrey38",
           "content": "Yen Operations",
-          "time": "06:29",
+          "time": "06:36",
         },
         Object {
           "author": "Heather_Hahn20",
           "content": "SSL Beauty",
-          "time": "15:50",
+          "time": "15:58",
         },
       ],
       "setMessagesBoxRef": [MockFunction],
     }
   }
 >
-  <div />
+  <div
+    className="messagesBox"
+  />
 </MessagesBoxComponent>
 `;
 
 exports[`<MessagesBoxComponent /> renders no messages if no messages have been passed 1`] = `
 <MessagesBoxComponent
-  component={<div />}
+  component={
+    <div
+      className="messagesBox"
+    />
+  }
   props={
     Object {
       "messages": null,
@@ -61,6 +69,8 @@ exports[`<MessagesBoxComponent /> renders no messages if no messages have been p
     }
   }
 >
-  <div />
+  <div
+    className="messagesBox"
+  />
 </MessagesBoxComponent>
 `;

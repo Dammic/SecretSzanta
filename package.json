@@ -18,8 +18,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^.+\\.(css|less|scss)$": "babel-jest",
-      "^.+\\.(css|scss)$": "identity-obj-proxy"
+      "^.+\\.css$": "identity-obj-proxy"
     },
     "testMatch": [
       "**/__tests__/**/*.?(m)js?(x)",
