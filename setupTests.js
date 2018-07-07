@@ -1,10 +1,9 @@
-const { configure } = require('enzyme');
-const Adapter = require('enzyme-adapter-react-16');
+import Enzyme, { shallow, render, mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 
 window.requestAnimationFrame = function (callback) {
   setTimeout(callback, 0);
   return 0;
-};
+}
 
-configure({ adapter: new Adapter() });
-
+Enzyme.configure({ adapter: new Adapter() })
