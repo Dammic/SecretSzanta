@@ -6,9 +6,7 @@ import ChatForm from './ChatForm/ChatForm'
 
 import styles from './Chat.css'
 
-const Chat = ({
-    className,
-}) => (
+const Chat = ({ className }) => (
     <div className={classNames(styles.chat, className)}>
         <MessagesBox />
         <ChatForm />
@@ -20,5 +18,3 @@ Chat.propTypes = {
     className: PropTypes.string,
 }
 export default Chat
-
-
