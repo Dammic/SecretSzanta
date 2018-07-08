@@ -1,76 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<MessagesBoxComponent /> renders 3 messages if there are any passed 1`] = `
-<MessagesBoxComponent
-  component={
-    <div
-      className="messagesBox"
-    >
-      <div
-        className="message"
-        key="0"
-      >
-        [02:16] Zion.Reichel12:  Liaison
-      </div>
-      <div
-        className="message"
-        key="1"
-      >
-        [06:36] Audrey38:  Yen Operations
-      </div>
-      <div
-        className="message"
-        key="2"
-      >
-        [15:58] Heather_Hahn20:  SSL Beauty
-      </div>
-    </div>
-  }
-  props={
-    Object {
-      "messages": Array [
-        Object {
-          "author": "Zion.Reichel12",
-          "content": "Liaison",
-          "time": "02:16",
-        },
-        Object {
-          "author": "Audrey38",
-          "content": "Yen Operations",
-          "time": "06:36",
-        },
-        Object {
-          "author": "Heather_Hahn20",
-          "content": "SSL Beauty",
-          "time": "15:58",
-        },
-      ],
-      "setMessagesBoxRef": [MockFunction],
-    }
-  }
+<div
+  className="messagesBox"
 >
   <div
-    className="messagesBox"
-  />
-</MessagesBoxComponent>
+    className="message"
+  >
+    [10:59] Mina12:  Liaison
+  </div>
+  <div
+    className="message"
+  >
+    [5:05] Grace.Dibbert:  matrix Suriname e-tailers
+  </div>
+  <div
+    className="message"
+  >
+    [16:31] Connor.Kihn2:  European Unit of Account 17(E.U.A.-17) vortals
+  </div>
+</div>
 `;
 
 exports[`<MessagesBoxComponent /> renders no messages if no messages have been passed 1`] = `
-<MessagesBoxComponent
-  component={
-    <div
-      className="messagesBox"
-    />
-  }
-  props={
-    Object {
-      "messages": null,
-      "setMessagesBoxRef": [MockFunction],
-    }
-  }
->
-  <div
-    className="messagesBox"
-  />
-</MessagesBoxComponent>
+<div
+  className="messagesBox"
+/>
 `;

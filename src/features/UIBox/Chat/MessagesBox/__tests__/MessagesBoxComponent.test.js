@@ -16,12 +16,12 @@ const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
 
 describe('<MessagesBoxComponent />', () => {
     it('renders 3 messages if there are any passed', () => {
-        const props = setupProps()
+        const { props } = setupProps()
         expectMatchingSnapshot(<MessagesBoxComponent {...props} />)
     })
 
     it('renders no messages if no messages have been passed', () => {
-        const props = setupProps({ messages: null })
+        const { props } = setupProps({ messages: null })
         expectMatchingSnapshot(<MessagesBoxComponent {...props} />)
     })
 
