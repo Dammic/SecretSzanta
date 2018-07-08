@@ -1,15 +1,16 @@
+import { map, reject } from 'lodash'
 import { invokeOnEvery } from '../utils/collectionsHelper'
 
 import { SocketEvents, ChoiceModeContexts } from '../../Dictionary'
 import { socket } from '../utils/SocketHandler'
 
-import { store } from '../AppClient'
+import { store } from '../store'
 import { toggleModal } from '../ducks/modalDuck'
 import * as playersActions from '../ducks/playersDuck'
 import * as roomActions from '../ducks/roomDuck'
 
-export function startGame(userName) {
-    socket.emit(SocketEvents.START_GAME, { playerName: userName })
+export function startGame() {
+    socket.emit(SocketEvents.START_GAME)
     store.dispatch(roomActions.resetTracker())
 }
 
@@ -27,10 +28,12 @@ export function openInvitePlayersScreen() {
 
 }
 
-// TODO: should take needed data by it self from tree, not from arguments
-export function startKickPlayerMode(userName, playersWithoutOwner) {
+export function startKickPlayerMode() {
+    const { user, room } = store.getState()
+    const playersWithoutOwner = map(reject(room.playersDict, { playerName: user.userName }), 'playerName')
+
     invokeOnEvery([
-        playersActions.setChooserPlayer({ playerName: userName }),
+        playersActions.setChooserPlayer({ playerName: user.userName }),
         playersActions.setChoiceMode({
             context: ChoiceModeContexts.KickChoice,
             selectablePlayers: playersWithoutOwner,
@@ -38,9 +41,12 @@ export function startKickPlayerMode(userName, playersWithoutOwner) {
     ], store.dispatch)
 }
 
-export function startBanPlayerMode(userName, playersWithoutOwner) {
+export function startBanPlayerMode() {
+    const { user, room } = store.getState()
+    const playersWithoutOwner = map(reject(room.playersDict, { playerName: user.userName }), 'playerName')
+
     invokeOnEvery([
-        playersActions.setChooserPlayer({ playerName: userName }),
+        playersActions.setChooserPlayer({ playerName: user.userName }),
         playersActions.setChoiceMode({
             context: ChoiceModeContexts.BanChoice,
             selectablePlayers: playersWithoutOwner,

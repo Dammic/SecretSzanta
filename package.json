@@ -19,7 +19,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^.+\\.css$": "identity-obj-proxy",
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy",
       "packages(.*)$": "<rootDir>/src/packages$1"
     },
     "testMatch": [

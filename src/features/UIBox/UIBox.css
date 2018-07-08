@@ -9,20 +9,6 @@
     max-height: 200px;
 }
 
-.gameControls {
-    display: flex;
-    width: 75px;
-    height: 100%;
-    z-index: 20;
-    background-color: var(--uibox-background);
-    position: absolute;
-}
-
-.buttons {
-    display: flex;
-    flex-direction: column;
-    width: 50px;
-}
 .sideButtons {
     display: flex;
     flex-direction: column;
@@ -80,8 +66,4 @@
     & .uiBoxRole {
         width: 100%; 
     }
-}
-
-.menuArrowIcon {
-    display: inline;
 }

@@ -7,7 +7,7 @@ import styles from './GameEndModal.css'
 export const GameEndModalComponent = ({ players }) => (
     <div className={styles.gameEndModal}>
         {map(players, player => (
-            <div className={styles.playerContainer}>
+            <div key={player.playerName} className={styles.playerContainer}>
                 <div>{player.playerName}</div>
                 <PlayerAvatar
                     liberalAvatar={player.avatarNumber}

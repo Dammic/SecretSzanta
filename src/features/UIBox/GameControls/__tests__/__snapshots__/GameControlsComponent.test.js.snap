@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GameControlsComponent /> renders left arrow if affiliation menu is shown, 1`] = `
+<div
+  className="gameControls"
+>
+  <div
+    className="buttons"
+  >
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      <span>
+        roles
+        <i
+          className="fa fa-fw fa-angle-left menuArrowIcon"
+        />
+      </span>
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      voting
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      kick
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      ban
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<GameControlsComponent /> renders right arrow if affiliation menu is hidden, and no owner buttons is user is not owner (and no start game button either) 1`] = `
+<div
+  className="gameControls"
+>
+  <div
+    className="buttons"
+  >
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      <span>
+        roles
+        <i
+          className="fa fa-fw fa-angle-right menuArrowIcon"
+        />
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<GameControlsComponent /> shows additional start button if game is at new phase and user is an owner 1`] = `
+<div
+  className="gameControls"
+>
+  <div
+    className="buttons"
+  >
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      <span>
+        roles
+        <i
+          className="fa fa-fw fa-angle-right menuArrowIcon"
+        />
+      </span>
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      start
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      voting
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      kick
+    </div>
+    <div
+      className="btn"
+      onClick={[MockFunction]}
+      role="button"
+      tabIndex="0"
+    >
+      ban
+    </div>
+  </div>
+</div>
+`;
