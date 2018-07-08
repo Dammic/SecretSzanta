@@ -7,7 +7,7 @@ import styles from './MessagesBox.css'
 
 const buildMessage = (message, index) => {
     const { time, author, content } = message
-    const displayedMessage = `[${time}]${author ? ` ${author}: ` : ':'} ${content}`
+    const displayedMessage = `[${time}]${author ? ` ${author}:` : ':'} ${content}`
 
     return (
         <div key={index} className={classNames(styles.message, { [styles.serverMessage]: !author })}>

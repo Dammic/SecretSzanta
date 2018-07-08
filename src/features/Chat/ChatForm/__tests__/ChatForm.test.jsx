@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { expectMatchingSnapshot } from 'packages/testUtils'
-import { SocketEvents } from '../../../../../../Dictionary'
-import { socket } from '../../../../../utils/SocketHandler'
+import { SocketEvents } from '../../../../../Dictionary'
+import { socket } from '../../../../utils/SocketHandler'
 import { ChatForm } from '../ChatForm'
 
 const setupProps = (propsOverrides = {}, renderMethod = shallow) => {

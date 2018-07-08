@@ -7,17 +7,22 @@ exports[`<MessagesBoxComponent /> renders 3 messages if there are any passed 1`]
   <div
     className="message"
   >
-    [10:59] Mina12:  Liaison
+    [10:59] Mina12: Liaison
   </div>
   <div
     className="message"
   >
-    [5:05] Grace.Dibbert:  matrix Suriname e-tailers
+    [5:05] Grace.Dibbert: matrix Suriname e-tailers
   </div>
   <div
     className="message"
   >
-    [16:31] Connor.Kihn2:  European Unit of Account 17(E.U.A.-17) vortals
+    [16:31] Connor.Kihn2: European Unit of Account 17(E.U.A.-17) vortals
+  </div>
+  <div
+    className="message serverMessage"
+  >
+    [10:59]: Liaison
   </div>
 </div>
 `;

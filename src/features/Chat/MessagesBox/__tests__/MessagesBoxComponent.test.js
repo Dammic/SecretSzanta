@@ -7,7 +7,7 @@ import MessagesBoxComponent from '../MessagesBoxComponent'
 const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
     const props = {
         setMessagesBoxRef: jest.fn(),
-        messages: arrayOf(aMessage, 3, { seed: 1 }),
+        messages: [...arrayOf(aMessage, 3, { seed: 1 }), aMessage({ author: null }, { seed: 1 })],
         ...propsOverrides,
     }
     const component = renderMethod(<MessagesBoxComponent { ...props } />)
