@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ChatFormComponent /> matches snapshot 1`] = `
+<div
+  className="chatForm"
+>
+  <input
+    className="sendInput"
+    onChange={[MockFunction]}
+    onKeyPress={[MockFunction]}
+    value="mockMessage"
+  />
+  <div
+    className="sendButton"
+    onClick={[MockFunction]}
+  >
+    <i
+      className="fa fa-envelope"
+    />
+  </div>
+</div>
+`;

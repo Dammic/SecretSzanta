@@ -10,22 +10,20 @@ const ChatComponent = ({
     typedMessage,
     changeMessageText,
     handleFormKeyPress,
-}) => {
-    return (
-        <div className={styles.chatForm}>
-            <input className={styles.sendInput} value={typedMessage} onChange={changeMessageText} onKeyPress={handleFormKeyPress} autoFocus />
-            <div className={styles.sendButton} onClick={sendMessage}>
-                <Icon name="fa-envelope" />
-            </div>
+}) => (
+    <div className={styles.chatForm}>
+        <input className={styles.sendInput} value={typedMessage} onChange={changeMessageText} onKeyPress={handleFormKeyPress} />
+        <div className={styles.sendButton} onClick={sendMessage}>
+            <Icon name="fa-envelope" />
         </div>
-    )
-}
+    </div>
+)
 
 ChatComponent.propTypes = {
-    sendMessage: PropTypes.func,
-    typedMessage: PropTypes.string,
-    changeMessageText: PropTypes.func,
-    handleFormKeyPress: PropTypes.func,
+    sendMessage: PropTypes.func.isRequired,
+    typedMessage: PropTypes.string.isRequired,
+    changeMessageText: PropTypes.func.isRequired,
+    handleFormKeyPress: PropTypes.func.isRequired,
 }
 export default ChatComponent
 
