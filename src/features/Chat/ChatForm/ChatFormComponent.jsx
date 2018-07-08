@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Icon } from '../../../Shared/Icon'
+import { Icon } from '../../Shared/Icon'
 
 import styles from './ChatForm.css'
 
-const ChatComponent = ({
+const ChatFormComponent = ({
     sendMessage,
     typedMessage,
     changeMessageText,
@@ -19,11 +19,12 @@ const ChatComponent = ({
     </div>
 )
 
-ChatComponent.propTypes = {
+ChatFormComponent.displayName = 'ChatFormComponent'
+ChatFormComponent.propTypes = {
     sendMessage: PropTypes.func.isRequired,
     typedMessage: PropTypes.string.isRequired,
     changeMessageText: PropTypes.func.isRequired,
     handleFormKeyPress: PropTypes.func.isRequired,
 }
-export default ChatComponent
+export default ChatFormComponent
 

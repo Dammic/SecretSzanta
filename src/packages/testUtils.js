@@ -12,5 +12,4 @@ export const expectMatchingSnapshot = (element) => {
 export const expectShallowMatchingSnapshot = (element) => {
     const renderedElement = shallowRenderer.render(element)
     expect(renderedElement).toMatchSnapshot()
-    renderedElement.unmount()
 }

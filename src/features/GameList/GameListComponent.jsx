@@ -4,7 +4,7 @@ import { map } from 'lodash'
 import GameListItemComponent from './GameListItemComponent'
 import TopNavbar from './TopNavbar/TopNavbar'
 import PlayersList from './PlayersList/PlayersList'
-import Chat from '../UIBox/Chat/Chat'
+import Chat from '../Chat/Chat'
 
 import styles from './GameList.css'
 import commonStyles from '../Shared/CommonStyles/commonStyles.css'
