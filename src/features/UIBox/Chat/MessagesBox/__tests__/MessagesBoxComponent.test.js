@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { expectMatchingSnapshot } from '../../../../../utils/testUtils'
+import { expectMatchingSnapshot } from 'packages/testUtils'
+import { aMessage, arrayOf } from 'packages/factories'
 import MessagesBoxComponent from '../MessagesBoxComponent'
-import { aMessage, arrayOf } from '../../../../../utils/factories'
 
 const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
     const props = {
