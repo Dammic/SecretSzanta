@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<UIBox /> matches snapshot 1`] = `
+<div
+  className="uiBox"
+>
+  <Connect(GameControls) />
+  <Connect(Submenu) />
+</div>
+`;

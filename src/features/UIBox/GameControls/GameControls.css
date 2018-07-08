@@ -18,3 +18,9 @@
 .menuArrowIcon {
     display: inline;
 }
+
+.sideButtons {
+    display: flex;
+    flex-direction: column;
+}
+
