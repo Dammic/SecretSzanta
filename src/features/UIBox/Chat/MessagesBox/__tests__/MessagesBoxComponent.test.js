@@ -24,9 +24,4 @@ describe('<MessagesBoxComponent />', () => {
         const { props } = setupProps({ messages: null })
         expectMatchingSnapshot(<MessagesBoxComponent {...props} />)
     })
-
-    it('calls setMessagesBoxRef function on render', () => {
-        const { props } = setupProps()
-        expect(props.setMessagesBoxRef).toHaveBeenCalled()
-    })
 })

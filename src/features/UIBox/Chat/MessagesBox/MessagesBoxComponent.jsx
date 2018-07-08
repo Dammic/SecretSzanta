@@ -16,18 +16,17 @@ const buildMessage = (message, index) => {
     )
 }
 
-const MessagesBoxComponent = ({
+const MessagesBoxComponent = React.forwardRef(({
     messages = [],
-    setMessagesBoxRef,
-}) => (
-    <div className={styles.messagesBox} ref={setMessagesBoxRef}>
+}, messagesBoxRef) => (
+    <div className={styles.messagesBox} ref={messagesBoxRef}>
         {map(messages, (message, index) => buildMessage(message, index))}
     </div>
-)
+))
 
+MessagesBoxComponent.displayName = 'MessagesBoxComponent'
 MessagesBoxComponent.propTypes = {
     messages: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
-    setMessagesBoxRef: PropTypes.func,
 }
 export default MessagesBoxComponent
 
