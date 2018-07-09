@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { includes } from 'lodash'
 import { PlayerAffilications } from '../../../../Dictionary'
-import PlayerRoleComponent from '../../PlayerBoard/Player/PlayerRole/PlayerRoleComponent'
-import PlayerAvatarComponent from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
+import PlayerRole from '../../PlayerBoard/Player/PlayerRole/PlayerRole'
+import PlayerAvatar from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatar'
 
 import styles from './Submenu.css'
 
@@ -12,9 +12,9 @@ const renderPlayerCard = (liberalAvatar, fascistAvatar, isOwner, isDead) => {
     if (!liberalAvatar) return null
 
     return (
-        <PlayerAvatarComponent
+        <PlayerAvatar
             liberalAvatar={liberalAvatar}
-            facistAvatar={fascistAvatar}
+            fascistAvatar={fascistAvatar}
             isOwner={isOwner}
             isDead={isDead}
             className={styles.uiBoxAvatar}
@@ -47,7 +47,7 @@ const SubmenuComponent = ({
                 </span>
             </div>
             <div className={styles.roleWrapper}>
-                <PlayerRoleComponent role={role} className={styles.uiBoxRole} />
+                <PlayerRole role={role} className={styles.uiBoxRole} />
             </div>
         </div>
     )

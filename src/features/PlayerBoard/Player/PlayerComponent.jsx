@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { isUndefined } from 'lodash'
-import PlayerAvatarComponent from './PlayerAvatar/PlayerAvatarComponent'
-import PlayerRoleComponent from './PlayerRole/PlayerRoleComponent'
+import PlayerAvatar from './PlayerAvatar/PlayerAvatar'
+import PlayerRole from './PlayerRole/PlayerRole'
 
 import styles from './Player.css'
 
@@ -30,14 +30,14 @@ const PlayerComponent = ({
             >
                 <div>{playerName}</div>
                 {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
-                <PlayerAvatarComponent
+                <PlayerAvatar
                     liberalAvatar={liberalAvatar}
-                    facistAvatar={facistAvatar}
+                    fascistAvatar={facistAvatar}
                     isDead={isDead}
                     isPlayerWaitedFor={isPlayerWaitedFor}
                     isOwner={isOwner}
                 />
-                <PlayerRoleComponent role={role} />
+                <PlayerRole role={role} />
             </div>
         </div>
     )
