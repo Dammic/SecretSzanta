@@ -6,15 +6,14 @@ import { Button } from '../Shared/Buttons'
 
 import styles from './Timer.css'
 
-const TimerComponent = ({ secondsRemaining, isVetoUnlocked, onVetoClick }) => {
-    return (
-        <div className={classNames(styles.timer, { [styles.visible]: secondsRemaining })}>
-            <strong>{secondsRemaining}</strong>s remaining
-            {isVetoUnlocked && <Button className={styles.veto} onClick={onVetoClick}>veto</Button>}
-        </div>
-    )
-}
+const TimerComponent = ({ secondsRemaining, isVetoUnlocked, onVetoClick }) => (
+    <div className={classNames(styles.timer, { [styles.visible]: !!secondsRemaining })}>
+        <strong>{secondsRemaining}</strong>s remaining
+        {isVetoUnlocked && <Button className={styles.veto} onClick={onVetoClick}>veto</Button>}
+    </div>
+)
 
+TimerComponent.displayName = 'TimerComponent'
 TimerComponent.propTypes = {
     secondsRemaining: PropTypes.number,
     onVetoClick: PropTypes.func,
