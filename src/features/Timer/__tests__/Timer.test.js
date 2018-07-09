@@ -19,7 +19,6 @@ const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
 describe('<Timer />', () => {
     it('clears interval when unmounting', () => {
         const { component } = setupProps()
-        const instance = component.instance()
         const clearIntervalMock = jest.spyOn(window, 'clearInterval').mockImplementationOnce(jest.fn())
 
         component.unmount()
