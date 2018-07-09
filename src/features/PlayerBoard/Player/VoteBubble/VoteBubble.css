@@ -1,0 +1,93 @@
+@import 'variables/variables.css';
+
+.bubble {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+    padding: 6px;
+
+    width: var(--player-bubble-width);
+    height: var(--player-bubble-height);
+    
+    max-width: 10vw;
+
+    background-color: var(--player-bubble-color);
+    transition: all 0.7s; 
+
+    border: 1px solid var(--player-bubble-color);
+    border-radius: var(--player-bubble-radius);
+}
+
+.bubbleLeft {
+    vertical-align: center;
+    left: var(--player-bubble-original-position);
+    top: 0px;
+
+    &:before {
+        content: "";
+        position: absolute;
+        display: block;
+
+        width: 0;
+        height: 0;
+        right: 95%;
+
+        border-top: var(--player-bubble-triangle-size) solid transparent;
+        border-bottom: var(--player-bubble-triangle-size) solid transparent;
+        border-right: var(--player-bubble-triangle-size) solid var(--player-bubble-color);
+    }
+
+    &.active {
+        opacity: 1;
+        left: var(--player-bubble-activated-position);
+    }
+}
+
+.bubbleRight {
+    right: var(--player-bubble-original-position);
+    top: 0px;
+
+    &:after {
+        content: "";
+        position: absolute;
+        display: block;
+
+        width: 0;
+        height: 0;
+        vertical-align: center;
+        left: 95%;
+
+        border-top: var(--player-bubble-triangle-size) solid transparent;
+        border-bottom: var(--player-bubble-triangle-size) solid transparent;
+        border-left: var(--player-bubble-triangle-size) solid var(--player-bubble-color);
+    }
+
+    &.active {
+        opacity: 1;
+        right: var(--player-bubble-activated-position);
+    }
+}
+
+.bubbleTop {
+    top: var(--player-bubble-original-position);
+    
+    &:before {
+        content: "";
+        position: absolute;
+        display: block;
+
+        width: 0;
+        height: 0;
+
+        bottom: 95%;
+        border-bottom: var(--player-bubble-triangle-size) solid var(--player-bubble-color);
+        border-right: var(--player-bubble-triangle-size) solid transparent;
+        border-left: var(--player-bubble-triangle-size) solid transparent;
+    }
+
+    &.active {
+        opacity: 1;
+        top: var(--player-bubble-activated-position);
+    }
+}
+
