@@ -207,5 +207,8 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.jsx', '.mjs'],
+        alias: {
+            packages: path.resolve('./src/packages')
+        },
     },
 }

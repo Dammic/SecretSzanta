@@ -4,28 +4,31 @@ import { connect } from 'react-redux'
 import MessagesBoxComponent from './MessagesBoxComponent'
 
 export class MessagesBox extends React.PureComponent {
+    static displayName = 'MessagesBox'
     static propTypes = {
         // redux
         messages: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
+    }
+
+    constructor() {
+        super()
+        this.messagesBoxRef = React.createRef()
     }
 
     componentDidUpdate() {
         this.scrollToBottomOfMessages()
     }
 
-    setMessagesBoxRef = (ref) => { this.messagesBoxRef = ref }
-
     scrollToBottomOfMessages = () => {
-        if (this.messagesBoxRef) {
-            this.messagesBoxRef.scrollTop = this.messagesBoxRef.scrollHeight
-        }
+        const { current } = this.messagesBoxRef
+        current.scrollTop = current.scrollHeight
     }
 
     render() {
         return (
             <MessagesBoxComponent
                 messages={this.props.messages}
-                setMessagesBoxRef={this.setMessagesBoxRef}
+                ref={this.messagesBoxRef}
             />
         )
     }

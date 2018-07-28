@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MessagesBoxComponent /> renders 3 messages if there are any passed 1`] = `
+<div
+  className="messagesBox"
+>
+  <div
+    className="message"
+  >
+    [10:59] Mina12: Liaison
+  </div>
+  <div
+    className="message"
+  >
+    [5:05] Grace.Dibbert: matrix Suriname e-tailers
+  </div>
+  <div
+    className="message"
+  >
+    [16:31] Connor.Kihn2: European Unit of Account 17(E.U.A.-17) vortals
+  </div>
+</div>
+`;
+
+exports[`<MessagesBoxComponent /> renders no messages if no messages have been passed 1`] = `
+<div
+  className="messagesBox"
+/>
+`;
+
+exports[`<MessagesBoxComponent /> renders server messages 1`] = `
+<div
+  className="messagesBox"
+>
+  <div
+    className="message"
+  >
+    [10:59] Mina12: Liaison
+  </div>
+  <div
+    className="message"
+  >
+    [5:05] Grace.Dibbert: matrix Suriname e-tailers
+  </div>
+  <div
+    className="message serverMessage"
+  >
+    [10:59]: Liaison
+  </div>
+</div>
+`;

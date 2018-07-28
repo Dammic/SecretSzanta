@@ -19,7 +19,7 @@ import { setChoiceMode, setChooserPlayer, hideChoiceMode } from '../ducks/player
 import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 
-export let socket
+export let socket = {}
 
 export class SocketHandler extends React.PureComponent {
     componentDidMount() {

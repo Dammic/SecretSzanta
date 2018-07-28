@@ -2,10 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import ChatFormComponent from './ChatFormComponent'
-import { SocketEvents } from '../../../../../Dictionary'
-import { socket } from '../../../../utils/SocketHandler'
+import { SocketEvents } from '../../../../Dictionary'
+import { socket } from '../../../utils/SocketHandler'
 
 export class ChatForm extends React.PureComponent {
+    static displayName = 'ChatForm'
     static propTypes = {
         // redux
         userName: PropTypes.string,
