@@ -1,5 +1,5 @@
 import React from 'react'
-import UIBox from '../UIBox/UIBox'
+import { UIBox } from '../UIBox'
 import PlayerBoard from '../PlayerBoard/PlayerBoard'
 import Chat from '../Chat/Chat'
 import Timer from '../Timer/Timer'

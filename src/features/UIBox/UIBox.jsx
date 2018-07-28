@@ -1,6 +1,6 @@
 import React from 'react'
-import GameControls from './GameControls/GameControls'
-import Submenu from './Submenu/Submenu'
+import { GameControls } from './GameControls'
+import { Submenu } from './Submenu'
 
 import styles from './UIBox.css'
 

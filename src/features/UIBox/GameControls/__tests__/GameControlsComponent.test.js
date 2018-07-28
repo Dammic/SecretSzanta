@@ -21,7 +21,7 @@ const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
 }
 
 describe('<GameControlsComponent />', () => {
-    it('renders right arrow if affiliation menu is hidden, and no owner buttons is user is not owner (and no start game button either)', () => {
+    it('renders right arrow if affiliation menu is hidden, and no owner buttons is user is not the owner (and no start game button either)', () => {
         const { props } = setupProps({ isAffiliationHidden: true, isOwner: false })
         expectMatchingSnapshot(<GameControlsComponent {...props} />)
     })

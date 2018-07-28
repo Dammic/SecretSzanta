@@ -14,7 +14,7 @@ import lobby from './ducks/lobbyDuck'
 /* eslint-disable no-underscore-dangle */
 
 export const history = createHistory()
-const middleware = routerMiddleware(history)
+const router = routerMiddleware(history)
 
 export const store = createStore(
     combineReducers({
@@ -30,7 +30,7 @@ export const store = createStore(
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     compose(
         applyMiddleware(thunk),
-        applyMiddleware(middleware),
+        applyMiddleware(router),
     ),
 )
 /* eslint-enable */
