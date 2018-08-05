@@ -18,6 +18,8 @@
     "test:silent": "NODE_HIDECONSOLE=true npm run test"
   },
   "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/",
     "moduleNameMapper": {
       ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy",
       ".+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
@@ -78,8 +80,8 @@
     "autoprefixer": "6.7.7",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "8.2.5",
-    "babel-jest": "23.2.0",
-    "babel-loader": "7.1.5",
+    "babel-jest": "23.4.2",
+    "babel-loader": "8.0.0-beta.4",
     "babel-plugin-lodash": "3.3.2",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
     "brotli-webpack-plugin": "0.5.0",
