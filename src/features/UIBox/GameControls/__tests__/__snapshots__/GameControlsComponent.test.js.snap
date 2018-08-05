@@ -48,7 +48,7 @@ exports[`<GameControlsComponent /> renders left arrow if affiliation menu is sho
 </div>
 `;
 
-exports[`<GameControlsComponent /> renders right arrow if affiliation menu is hidden, and no owner buttons is user is not owner (and no start game button either) 1`] = `
+exports[`<GameControlsComponent /> renders right arrow if affiliation menu is hidden, and no owner buttons if user is not the owner (and no start game button either) 1`] = `
 <div
   className="gameControls"
 >
