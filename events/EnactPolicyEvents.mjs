@@ -1,6 +1,4 @@
-import { io } from '../io'
-import { PolicyCards, PlayerBoards, SocketEvents } from '../Dictionary'
-import { getCurrentTimestamp } from '../utils/utils'
+import { PolicyCards, PlayerBoards } from '../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import PhaseSocketEvents from './PhaseSocketEvents'
 import {
@@ -13,6 +11,7 @@ import {
     enactPolicy,
     isVetoUnlocked,
 } from '../utils/RoomsManager'
+import * as emits from './emits'
 
 export const checkForImmediateSuperpowersOrContinue = (socket) => {
     const fascistPolicyCount = getPolicyCardsCount(socket.currentRoom, PolicyCards.FacistPolicy)
@@ -35,22 +34,26 @@ export const checkForImmediateSuperpowersOrContinue = (socket) => {
         // 5th power is always kill AND veto power unlock
     } else if (fascistPolicyCount === 5) {
         toggleVeto(socket.currentRoom)
-        SocketEventsUtils.sendMessage(socket, { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' })
+        emits.emitMessage(
+            socket.currentRoom,
+            null,
+            { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' },
+        )
         PhaseSocketEvents.startKillPhase(socket)
     } else {
         SocketEventsUtils.resumeGame(socket, { delay: 3000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
 }
 
+// TODO:
+// 1) divide this function onto enactPolicyEvent (4 lines) and checkForNextStep (rest)
+// 2) change checkForImmediateSupoerpowersOrContinue into checkForImmediateSupoerpowers. Return an object with info about superpowers
+// 3) steps: check if game should finish (if yes finish), check if there is any superpower (if yes trigger), otherwise resume game 
 export const enactPolicyEvent = (socket, policy) => {
     const isFacist = policy === PolicyCards.FacistPolicy
     enactPolicy(socket.currentRoom, policy)
-    SocketEventsUtils.sendMessage(socket, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.NewPolicy, {
-        data: {
-            policy,
-        },
-    })
+    emits.emitMessage(socket.currentRoom, null, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
+    emits.emitNewPolicy(socket.currentRoom, policy)
 
     const isVeto = isVetoUnlocked(socket.currentRoom)
     if (isFacist && !isVeto) checkForImmediateSuperpowersOrContinue(socket)
@@ -59,22 +62,18 @@ export const enactPolicyEvent = (socket, policy) => {
 export const updateTrackerPositionIfNecessary = (socket, isSuccess) => {
     if (isSuccess) {
         const trackerPosition = getFailedElectionsCount(socket.currentRoom)
-        SocketEventsUtils.resetElectionTracker(socket, trackerPosition)
+        if (trackerPosition > 0) SocketEventsUtils.resetElectionTracker(socket)
     } else {
         increaseFailedElectionsCount(socket.currentRoom)
-        SocketEventsUtils.sendMessage(socket, { content: 'The failed elections tracker has increased!' })
+        emits.emitMessage(socket.currentRoom, null, { content: 'The failed elections tracker has increased!' })
         const failedElectionsCount = getFailedElectionsCount(socket.currentRoom)
         if (failedElectionsCount >= 3) {
-            SocketEventsUtils.resetElectionTracker(socket, failedElectionsCount)
+            SocketEventsUtils.resetElectionTracker(socket)
 
             const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
             enactPolicyEvent(socket, topCard)
         } else {
-            io.sockets.in(socket.currentRoom).emit(SocketEvents.IncreaseTrackerPosition, {
-                data: {
-                    timestamp: getCurrentTimestamp(),
-                },
-            })
+            emits.emitIncreaseTrackerPosition(socket.currentRoom)
         }
     }
 }

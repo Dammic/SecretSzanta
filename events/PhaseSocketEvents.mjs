@@ -1,156 +1,85 @@
 import lodash from 'lodash'
-import { io } from '../io'
-import { SocketEvents, PlayerRole, GamePhases, PlayerAffilications } from '../Dictionary'
-import { getCurrentTimestamp } from '../utils/utils'
+import { GamePhases, PlayerAffilications } from '../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import {
     getPlayersCount,
     startGame,
     getFacists,
-    getPlayerboardType,
     setGamePhase,
     initializeVoting,
     getGamePhase,
     startChancellorChoicePhase,
-    getChancellorChoices,
     getPresident,
-    getRoleSocket,
-    takeChoicePolicyCards,
-    getOtherAlivePlayers,
-    peekPolicyCards,
     checkWinConditions,
 } from '../utils/RoomsManager'
+import * as emits from './emits'
 
-const { forEach, get, map, pick } = lodash
+const { forEach, get } = lodash
 
-export const startGameEvent = (socket) => {
-    startGame(socket.currentRoom)
-    const facists = getFacists(socket.currentRoom)
+export const startGameEvent = ({ currentRoom, currentPlayerName }) => {
+    startGame(currentRoom)
+    const facists = getFacists(currentRoom)
 
-    // just filtering out emit functions
-    const playerCount = getPlayersCount(socket.currentRoom)
-
-    forEach(facists, player => SocketEventsUtils.sendBecomeFascist(player, playerCount, facists))
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.START_GAME, {
-        data: {
-            playerName: socket.currentPlayerName,
-            timestamp: getCurrentTimestamp(),
-            boardType: getPlayerboardType(socket.currentRoom),
-        },
-    })
+    forEach(facists, player => emits.emitBecomeFascistToPlayer(currentRoom, player, facists))
+    emits.emitStartGame(currentRoom, currentPlayerName)
 }
 
-export const endGame = (socket, whoWon) => {
-    setGamePhase(socket.currentRoom, GamePhases.Ended)
+export const endGame = ({ currentRoom }, whoWon) => {
+    setGamePhase(currentRoom, GamePhases.Ended)
 
-    const facists = getFacists(socket.currentRoom)
-    const passedFacists = map(facists, facist => pick(facist, ['playerName', 'affiliation', 'facistAvatar']))
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.GameFinished, {
-        data: {
-            whoWon,
-            facists: passedFacists,
-        },
-    })
+    emits.emitGameFinished(currentRoom, whoWon)
 }
 
-export const startVotingPhaseVote = (socket, { playerName: chancellorName }) => {
-    initializeVoting(socket.currentRoom, chancellorName)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.VOTING_PHASE_START, {
-        data: {
-            chancellorCandidate: chancellorName,
-            timestamp: getCurrentTimestamp(),
-        },
-    })
+export const startVotingPhaseVote = ({ currentRoom }, { playerName: chancellorName }) => {
+    initializeVoting(currentRoom, chancellorName)
+    emits.emitVotingPhaseStart(currentRoom, chancellorName)
 }
 
-export const startChancellorChoicePhaseEvent = (socket, designatedPresidentName = null) => {
-    if (getGamePhase(socket.currentRoom) === GamePhases.GAME_PHASE_SUPERPOWER) return
-    startChancellorChoicePhase(socket.currentRoom, designatedPresidentName)
-    const playersChoices = getChancellorChoices(socket.currentRoom)
+export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresidentName = null) => {
+    if (getGamePhase(currentRoom) === GamePhases.GAME_PHASE_SUPERPOWER) return
+    startChancellorChoicePhase(currentRoom, designatedPresidentName)
 
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.CHANCELLOR_CHOICE_PHASE, {
-        data: {
-            playersChoices,
-            presidentName: getPresident(socket.currentRoom).playerName,
-            timestamp: getCurrentTimestamp(),
-        },
-    })
+    emits.emitChancellorChoicePhase(currentRoom)
 }
 
-export const startPresidentPolicyChoice = (socket) => {
-    const presidentEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
-
-    setGamePhase(socket.currentRoom, GamePhases.PresidentPolicyChoice)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.PresidentChoosePolicy, {
-        data: {
-            timestamp: getCurrentTimestamp(),
-            presidentName: getPresident(socket.currentRoom).playerName,
-            gamePhase: GamePhases.PresidentPolicyChoice,
-        },
-    })
-    presidentEmit(SocketEvents.ChoosePolicy, {
-        data: {
-            policyCards: takeChoicePolicyCards(socket.currentRoom, 3),
-            title: 'Discard one policy and pass the rest to the chancellor',
-            role: PlayerRole.ROLE_PRESIDENT,
-        },
-    })
+export const startPresidentPolicyChoice = ({ currentRoom }) => {
+    setGamePhase(currentRoom, GamePhases.PresidentPolicyChoice)
+    emits.emitPresidentWillChoosePolicy(currentRoom)
+    emits.emitChoosePolicyToPresident(currentRoom)
 }
 
-export const startKillPhase = (socket) => {
-    setGamePhase(socket.currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
-    const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    const playersChoices = getOtherAlivePlayers(socket.currentRoom, presidentName)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.KillSuperpowerUsed, {
-        data: {
-            presidentName,
-            timestamp: getCurrentTimestamp(),
-            playersChoices,
-        },
-    })
+export const startKillPhase = ({ currentRoom }) => {
+    setGamePhase(currentRoom, GamePhases.GAME_PHASE_SUPERPOWER)
+    emits.emitPresidentWillKillPlayer(currentRoom)
 }
 
-export const startDesignateNextPresidentPhase = (socket) => {
-    setGamePhase(socket.currentRoom, GamePhases.DesignateNextPresidentPhase)
-    const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    const playersChoices = getOtherAlivePlayers(socket.currentRoom, presidentName)
-    io.sockets.in(socket.currentRoom).emit(SocketEvents.DesignateNextPresident, {
-        data: {
-            presidentName,
-            timestamp: getCurrentTimestamp(),
-            playersChoices,
-        },
-    })
+export const startDesignateNextPresidentPhase = ({ currentRoom }) => {
+    setGamePhase(currentRoom, GamePhases.DesignateNextPresidentPhase)
+    emits.emitDesignateNextPresident(currentRoom)
 }
 
 export const startPeekAffiliationSuperpowerPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekAffiliationSuperpowerPhase)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    const presidentEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
-    const playersChoices = getOtherAlivePlayers(socket.currentRoom, presidentName)
-    SocketEventsUtils.sendMessage(socket, { content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' })
-    SocketEventsUtils.emitSetChooserPlayer(socket, presidentName)
-
-    presidentEmit(SocketEvents.SuperpowerAffiliationPeekPlayerChoose, {
-        data: {
-            playersChoices,
-        },
-    })
+    emits.emitMessage(
+        socket.currentRoom,
+        null,
+        { content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' },
+    )
+    emits.emitChooserPlayer(socket.currentRoom, presidentName)
+    emits.emitPeekAffiliationToPresident(socket.currentRoom)
 }
 
 export const startPeekCardsPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
-    const presidentEmit = getRoleSocket(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    SocketEventsUtils.sendMessage(socket, { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' })
-    SocketEventsUtils.emitSetChooserPlayer(socket, presidentName)
-
-    presidentEmit(SocketEvents.PeekCards, {
-        data: {
-            timestamp: getCurrentTimestamp(),
-            cards: peekPolicyCards(socket.currentRoom),
-        },
-    })
+    emits.emitMessage(
+        socket.currentRoom,
+        null,
+        { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' },
+    )
+    emits.emitChooserPlayer(socket.currentRoom, presidentName)
+    emits.emitPeekCardsToPresident(socket.currentRoom)
 }
 
 export const checkIfGameShouldFinish = (socket) => {
@@ -160,7 +89,7 @@ export const checkIfGameShouldFinish = (socket) => {
     }
 
     const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
-    SocketEventsUtils.sendMessage(socket, { content: `${winningSideName} have won - ${reason}` })
+    emits.emitMessage(socket.currentRoom, null, { content: `${winningSideName} have won - ${reason}` })
     endGame(socket, winningSide)
     return true
 }

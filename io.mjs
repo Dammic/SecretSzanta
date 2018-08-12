@@ -2,9 +2,9 @@ import lodash from 'lodash'
 import SocketIO from 'socket.io'
 import PhaseSocketEvents from './events/PhaseSocketEvents'
 import ClientVerificationHof from './utils/ClientVerificationHof'
-import SocketEventsUtils from './utils/SocketEventsUtils'
 import { SocketEvents as SocketEventsDictionary } from './Dictionary'
 import socketEvents from './events/SocketEvents'
+import { emitMessage } from './events/emits'
 
 const { cloneDeep, partial, mapValues, partialRight } = lodash
 
@@ -14,6 +14,8 @@ const initializeEvents = () => {
     io.on('connection', (socket) => {
         socket.currentPlayerName = ''
         socket.currentRoom = ''
+        // we expect to socket.emit work when passed as an argument
+        socket.emit = socket.emit.bind(socket)
 
         const phaseSocketEventsCopy = cloneDeep(PhaseSocketEvents)
         phaseSocketEventsCopy.startGameEvent = ClientVerificationHof(['isOwner'], phaseSocketEventsCopy.startGameEvent)
@@ -28,7 +30,7 @@ const initializeEvents = () => {
         const partialFunctions = mapValues({
             ...socketEvents,
             ...phaseSocketEventsCopy,
-            sendMessage: SocketEventsUtils.sendMessage,
+            sendMessage: (socket, ...rest) => emitMessage(socket.currentRoom, null, ...rest),
         }, func => partial(func, socket))
         partialFunctions.banPlayer = partialRight(partialFunctions.kickPlayerEvent, true)
 
