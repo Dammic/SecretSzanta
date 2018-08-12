@@ -5,6 +5,9 @@ import {
     chooseNextPresident,
     setPresidentBackup,
 } from './roles'
+import {
+    clearVetoVotes
+} from './veto'
 
 import {
     GamePhases,
@@ -20,6 +23,7 @@ export const setGamePhase = (roomName, newPhase) => {
 
 export const startChancellorChoicePhase = (roomName, designatedPresidentName) => {
     roomsStore[roomName].gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
+    clearVetoVotes(roomName)
     if (designatedPresidentName) {
         setPresidentBackup(roomName)
         setPresident(roomName, designatedPresidentName)

@@ -22,7 +22,7 @@ import { roomsStore } from '../../../stores'
 // discardAllCards,
 // enactPolicy,
 // getPolicyCardsCount,
-//
+// peekLastEnactedPolicyCard
 // helper function checkIfRoomsCardsMatch
 
 const checkIfCardsMatch = (expectedCards, receivedCards) => {

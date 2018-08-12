@@ -20,7 +20,7 @@ import PhaseSocketEvents from './PhaseSocketEvents'
 import {
     enactPolicyEvent,
     checkForNextStep,
-    updateTrackerPositionIfNecessary,
+    updateTrackerPosition,
 } from './EnactPolicyEvents'
 import {
     setGamePhase,
@@ -63,6 +63,8 @@ import {
     chooseNextPresident,
     initializeVoting,
     isVetoUnlocked,
+    checkIfGameShouldFinish,
+    getChancellorCandidateInfo,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
 
@@ -76,17 +78,19 @@ const { isNil, includes, find, get } = lodash
 
 export const triggerVetoPrompt = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
-    clearVetoVotes(socket.currentRoom)
 
     emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
     emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
 
     const onGameResume = (socket) => {
-        const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
+        const shouldGameFinish = checkIfGameShouldFinish(socket)
         if (!shouldGameFinish) {
             PhaseSocketEvents.startChancellorChoicePhaseEvent(socket)
+        } else {
+            PhaseSocketEvents.endGame(socket)
         }
     }
+
     SocketEventsUtils.resumeGame(
         socket,
         {
@@ -127,7 +131,7 @@ export const veto = (socket) => {
         discardPolicyByVeto(socket.currentRoom)
 
         // updateTrackerPosition doesn't resume game (it will always inc tracker from 0 to 1)
-        updateTrackerPositionIfNecessary(socket, false)
+        updateTrackerPosition(socket, false)
 
         // TODO: check if we need this resumeGame (and if we can move it somewhere else?)
         emits.emitSyncPolicies(socket.currentRoom)
@@ -215,30 +219,38 @@ export const voteEvent = (socket, { value }) => {
 
     if (didAllVote(socket.currentRoom)) {
         const hasVotingSucceed = getVotingResult(socket.currentRoom)
-        const votingResultMessage = `Voting completed! ${hasVotingSucceed
-            ? `${socket.currentPlayerName} has become the new chancellor!`
-            : 'The proposal has been rejected!'}
-        `
-        emits.emitMessage(socket.currentRoom, null, { content: votingResultMessage })
-        emits.emitVotingResult(socket.currentRoom)
 
         if (hasVotingSucceed) {
             setChancellor(socket.currentRoom)
         }
 
-        updateTrackerPositionIfNecessary(socket, hasVotingSucceed)
-        const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
-        if (!shouldGameFinish) {
-            // TODO: refactor updateTrackerPosition to only check or increase tracker. Shouldn't resume game
+        const chancellorCandidateName = get(getChancellorCandidateInfo(socket.currentRoom), 'playerName')
+        const votingResultMessage = `Voting completed! ${hasVotingSucceed
+            ? `${chancellorCandidateName} has become the new chancellor!`
+            : 'The proposal has been rejected!'}
+        `
+        emits.emitMessage(socket.currentRoom, null, { content: votingResultMessage })
+        emits.emitVotingResult(socket.currentRoom)
 
-            SocketEventsUtils.resumeGame(socket, { delay: 3000, func: hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent })
-        }
+        const hasPolicyBeenEnacted = updateTrackerPosition(socket, hasVotingSucceed)
+        checkForNextStep(
+            socket,
+            hasPolicyBeenEnacted,
+            hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent
+        )
     }
 }
 
 export const choosePolicyChancellor = (socket, choice) => {
     enactPolicyEvent(socket, choice)
-    checkForNextStep(socket, choice)
+
+    const isVeto = isVetoUnlocked(socket.currentRoom)
+
+    if (isVeto) {
+        triggerVetoPrompt(socket)
+    } else {
+        checkForNextStep(socket, true)
+    }
 }
 
 export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
@@ -275,12 +287,12 @@ export const killPlayerEvent = (socket, { playerName }) => {
     killPlayer(socket.currentRoom, playerName)
     emits.emitPlayerKilled(socket.currentRoom, playerName)
 
-    const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
+    const shouldGameFinish = checkIfGameShouldFinish(socket)
     if (shouldGameFinish) {
-        return
+        PhaseSocketEvents.endGame(socket)
+    } else {
+        SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
-
-    SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
 }
 
 export const kickIfPresident = (socket, playerName) => {

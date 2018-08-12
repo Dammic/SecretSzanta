@@ -70,6 +70,11 @@ export const takeChoicePolicyCards = (roomName, amount) => {
     return policies
 }
 
+export const peekLastEnactedPolicyCard = (roomName) => {
+    const { policiesPile } = roomsStore[roomName]
+    return policiesPile[policiesPile.length - 1]
+}
+
 export const peekPolicyCards = (roomName) => {
     const { drawPile } = roomsStore[roomName]
     return take(drawPile, 3)

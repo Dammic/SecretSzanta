@@ -27,6 +27,7 @@ import {
 // findNewRoomOwner,
 // getPlayersCount,
 // removeRoom,
+// checkIfGameShouldFinish
 
 describe('RoomsManager', () => {
     beforeEach(() => {

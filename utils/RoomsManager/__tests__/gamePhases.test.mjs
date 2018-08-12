@@ -64,5 +64,32 @@ describe('gamePhases', () => {
             expect(chooseNextPresidentMock).toHaveBeenCalled()
             expect(preparedRoomProps).toEqual(testRoom)
         })
+
+        test('clears veto votes', () => {
+            const { testRoom } = roomsStore
+            testRoom.playersDict = {
+                player1: {
+                    playerName: 'player1',
+                    role: PlayerRole.ROLE_PRESIDENT,
+                    slotNumber: 1,
+                },
+                player2: {
+                    playerName: 'player2',
+                    role: null,
+                    slotNumber: 1,
+                },
+                player3: {
+                    playerName: 'player3',
+                    role: null,
+                    slotNumber: 1,
+                },
+            }
+            testRoom.vetoVotes = ['a', 'b']
+            const preparedRoomProps = cloneDeep(testRoom)
+            startChancellorChoicePhase('testRoom')
+            preparedRoomProps.vetoVotes = []
+
+            expect(preparedRoomProps).toEqual(testRoom)
+        })
     })
 })

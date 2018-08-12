@@ -32,5 +32,6 @@ export {
     emitPlayerKilled,
     emitServerWaitingForVeto,
     emitPeekAffiliationToPresident,
+    emitPeekCardsToPresident,
 } from './superpowers'
 export { emitVotingResult, emitNewVote } from './voting'

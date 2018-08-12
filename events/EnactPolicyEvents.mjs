@@ -13,6 +13,9 @@ import {
     toggleVeto,
     enactPolicy,
     isVetoUnlocked,
+    getVetoVotes,
+    checkIfGameShouldFinish,
+    peekLastEnactedPolicyCard,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
 
@@ -62,48 +65,66 @@ export const enactPolicyEvent = (socket, policy) => {
     emits.emitNewPolicy(socket.currentRoom, policy)
 }
 
-export const checkForNextStep = (socket, policy) => {
-    const isFacist = policy === PolicyCards.FacistPolicy
-    const isVeto = isVetoUnlocked(socket.currentRoom)
+export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customResumeFunc = null) => {
+    const topCard = hasPolicyBeenEnacted ? peekLastEnactedPolicyCard(socket.currentRoom) : null
+    const isFacist = topCard === PolicyCards.FacistPolicy
     const activeSuperpowerCallback = isFacist ? checkForImmediateSuperpowers(socket) : null
 
-    if (isVeto) {
-        triggerVetoPrompt(socket)
-    } else if (activeSuperpowerCallback) {
+    if (activeSuperpowerCallback) {
         activeSuperpowerCallback(socket)
-    } else if (PhaseSocketEvents.checkIfGameShouldFinish(socket)) {
-        // TODO: move ending game logic here
-        return
+    } else if (checkIfGameShouldFinish(socket.currentRoom)) {
+        PhaseSocketEvents.endGame(socket)
     } else {
-        SocketEventsUtils.resumeGame(socket, { delay: 3000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
+        SocketEventsUtils.resumeGame(socket, { delay: 3000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
 }
 
-export const updateTrackerPositionIfNecessary = (socket, isSuccess) => {
-    if (isSuccess) {
+export const increaseElectionTracker = ({ currentRoom }) => {
+    increaseFailedElectionsCount(currentRoom)
+    emits.emitMessage(currentRoom, null, { content: 'The failed elections tracker has increased!' })
+}
+
+export const resetElectionTracker = (socket) => {
+    const trackerPosition = getFailedElectionsCount(socket.currentRoom)
+
+    SocketEventsUtils.resetFailedElectionsCount(socket.currentRoom)
+    emits.emitResetTracker()
+
+    const trackerMessage = `The failed elections tracker${trackerPosition === 3 ? ' has reached 3, so it' : ''} will be reset!`
+    emits.emitMessage(socket.currentRoom, null, { content: trackerMessage })
+}
+
+export const resetElectionTrackerAndEnactPolicy = (socket) => {
+    resetElectionTracker(socket)
+
+    const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
+    enactPolicyEvent(socket, topCard)
+}
+
+export const updateTrackerPosition = (socket, isSuccess) => {
+    if (isSuccess) { // rest election tracker
         const trackerPosition = getFailedElectionsCount(socket.currentRoom)
-        if (trackerPosition > 0) SocketEventsUtils.resetElectionTracker(socket)
+        if (trackerPosition > 0) resetElectionTracker(socket)
+        return false
     } else {
-        increaseFailedElectionsCount(socket.currentRoom)
-        emits.emitMessage(socket.currentRoom, null, { content: 'The failed elections tracker has increased!' })
+        increaseElectionTracker(socket)
         const failedElectionsCount = getFailedElectionsCount(socket.currentRoom)
         if (failedElectionsCount >= 3) {
-            SocketEventsUtils.resetElectionTracker(socket)
-
-            const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
-            enactPolicyEvent(socket, topCard)
-            checkForNextStep(socket, topCard)
-        } else {
-            emits.emitIncreaseTrackerPosition(socket.currentRoom)
+            resetElectionTrackerAndEnactPolicy(socket)
+            return true
         }
+        return false
     }
 }
 
 
 const EnactPolicyEvents = {
-    updateTrackerPositionIfNecessary,
+    updateTrackerPosition,
     checkForImmediateSuperpowers,
     enactPolicyEvent,
+    increaseElectionTracker,
+    resetElectionTracker,
+    resetElectionTrackerAndEnactPolicy
 }
 
 export default EnactPolicyEvents

@@ -12,6 +12,7 @@ export {
     findNewRoomOwner,
     getPlayersCount,
     removeRoom,
+    checkIfGameShouldFinish,
 } from './rooms'
 export {
     reShuffle,
@@ -21,6 +22,7 @@ export {
     discardPolicy,
     enactPolicy,
     moveCard,
+    peekLastEnactedPolicyCard,
     takeChoicePolicyCards,
     getPolicyCardsCount,
     peekPolicyCards,

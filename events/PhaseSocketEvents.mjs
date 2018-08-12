@@ -24,10 +24,14 @@ export const startGameEvent = ({ currentRoom, currentPlayerName }) => {
     emits.emitStartGame(currentRoom, currentPlayerName)
 }
 
-export const endGame = ({ currentRoom }, whoWon) => {
+export const endGame = ({ currentRoom }) => {
+    const { winningSide, reason } = checkWinConditions(currentRoom)
+    const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
+    emits.emitMessage(currentRoom, null, { content: `${winningSideName} have won - ${reason}` })
+
     setGamePhase(currentRoom, GamePhases.Ended)
 
-    emits.emitGameFinished(currentRoom, whoWon)
+    emits.emitGameFinished(currentRoom, winningSide)
 }
 
 export const startVotingPhaseVote = ({ currentRoom }, { playerName: chancellorName }) => {
@@ -82,19 +86,6 @@ export const startPeekCardsPhase = (socket) => {
     emits.emitPeekCardsToPresident(socket.currentRoom)
 }
 
-// TODO: remove side effects from this function
-export const checkIfGameShouldFinish = (socket) => {
-    const { winningSide, reason } = checkWinConditions(socket.currentRoom)
-    if (!winningSide) {
-        return false
-    }
-
-    const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
-    emits.emitMessage(socket.currentRoom, null, { content: `${winningSideName} have won - ${reason}` })
-    endGame(socket, winningSide)
-    return true
-}
-
 const PhaseSocketEvents = {
     startGameEvent,
     endGame,
@@ -105,7 +96,6 @@ const PhaseSocketEvents = {
     startDesignateNextPresidentPhase,
     startPeekAffiliationSuperpowerPhase,
     startPeekCardsPhase,
-    checkIfGameShouldFinish,
 }
 
 export default PhaseSocketEvents
