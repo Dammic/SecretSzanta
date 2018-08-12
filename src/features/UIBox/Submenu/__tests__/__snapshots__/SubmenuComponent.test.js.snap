@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SubmenuComponent /> matches snapshot, rendering hidden affiliation menu and liberal classname 1`] = `
+<div
+  className="submenu hidden"
+>
+  <div
+    className="affiliationCards"
+  >
+    <span
+      className="card liberal"
+    />
+    <span
+      className="card"
+    >
+      <PlayerAvatarComponent
+        className="uiBoxAvatar"
+        facistAvatar={1}
+        isDead={false}
+        isOwner={false}
+        liberalAvatar={1}
+      />
+    </span>
+  </div>
+  <div
+    className="roleWrapper"
+  >
+    <PlayerRoleComponent
+      className="uiBoxRole"
+      role={null}
+    />
+  </div>
+</div>
+`;
+
+exports[`<SubmenuComponent /> matches snapshot, rendering visible affiliation menu and fascist classname 1`] = `
+<div
+  className="submenu"
+>
+  <div
+    className="affiliationCards"
+  >
+    <span
+      className="card facist"
+    />
+    <span
+      className="card"
+    >
+      <PlayerAvatarComponent
+        className="uiBoxAvatar"
+        facistAvatar={1}
+        isDead={false}
+        isOwner={false}
+        liberalAvatar={1}
+      />
+    </span>
+  </div>
+  <div
+    className="roleWrapper"
+  >
+    <PlayerRoleComponent
+      className="uiBoxRole"
+      role={null}
+    />
+  </div>
+</div>
+`;
