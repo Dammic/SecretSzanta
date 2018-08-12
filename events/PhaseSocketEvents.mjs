@@ -82,6 +82,7 @@ export const startPeekCardsPhase = (socket) => {
     emits.emitPeekCardsToPresident(socket.currentRoom)
 }
 
+// TODO: remove side effects from this function
 export const checkIfGameShouldFinish = (socket) => {
     const { winningSide, reason } = checkWinConditions(socket.currentRoom)
     if (!winningSide) {

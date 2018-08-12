@@ -19,6 +19,7 @@ import SocketEventsUtils from '../utils/SocketEventsUtils'
 import PhaseSocketEvents from './PhaseSocketEvents'
 import {
     enactPolicyEvent,
+    checkForNextStep,
     updateTrackerPositionIfNecessary,
 } from './EnactPolicyEvents'
 import {
@@ -124,13 +125,13 @@ export const veto = (socket) => {
         emits.emitMessage(socket.currentRoom, null, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
         SocketEventsUtils.clearNextPhaseTimeout()
         discardPolicyByVeto(socket.currentRoom)
+
+        // updateTrackerPosition doesn't resume game (it will always inc tracker from 0 to 1)
         updateTrackerPositionIfNecessary(socket, false)
 
-        const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
-        if (!shouldGameFinish) {
-            emits.emitSyncPolicies(socket.currentRoom)
-            SocketEventsUtils.resumeGame(socket, { delay: 5000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
-        }
+        // TODO: check if we need this resumeGame (and if we can move it somewhere else?)
+        emits.emitSyncPolicies(socket.currentRoom)
+        SocketEventsUtils.resumeGame(socket, { delay: 5000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
     } else {
         const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
         emits.emitMessage(socket.currentRoom, null, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
@@ -219,34 +220,25 @@ export const voteEvent = (socket, { value }) => {
             : 'The proposal has been rejected!'}
         `
         emits.emitMessage(socket.currentRoom, null, { content: votingResultMessage })
-
-        updateTrackerPositionIfNecessary(socket, hasVotingSucceed)
+        emits.emitVotingResult(socket.currentRoom)
 
         if (hasVotingSucceed) {
             setChancellor(socket.currentRoom)
         }
 
+        updateTrackerPositionIfNecessary(socket, hasVotingSucceed)
         const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
         if (!shouldGameFinish) {
+            // TODO: refactor updateTrackerPosition to only check or increase tracker. Shouldn't resume game
+
             SocketEventsUtils.resumeGame(socket, { delay: 3000, func: hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent })
         }
-
-        emits.emitVotingResult(socket.currentRoom)
     }
 }
 
 export const choosePolicyChancellor = (socket, choice) => {
     enactPolicyEvent(socket, choice)
-
-    const isVeto = isVetoUnlocked(socket.currentRoom)
-    if (isVeto) {
-        triggerVetoPrompt(socket)
-    } else {
-        const shouldGameFinish = PhaseSocketEvents.checkIfGameShouldFinish(socket)
-        if (!shouldGameFinish) {
-            SocketEventsUtils.resumeGame(socket, { delay: 3000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
-        }
-    }
+    checkForNextStep(socket, choice)
 }
 
 export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
