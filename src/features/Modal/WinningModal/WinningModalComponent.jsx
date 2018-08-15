@@ -1,6 +1,6 @@
 import React from 'react'
 import { map } from 'lodash'
-import PlayerAvatarComponent from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatarComponent'
+import PlayerAvatar from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatar'
 
 import styles from './WinningModal.css'
 
@@ -11,10 +11,10 @@ const WinningModalComponent = ({ winners, losers }) => {
                 {map(winners, winner => (
                     <div key={winner.playerName} className={styles.winnerDance}>
                         <div className={styles.avatarName}>{winner.playerName}</div>
-                        <PlayerAvatarComponent
+                        <PlayerAvatar
                             key={winner.playerName}
                             liberalAvatar={winner.avatarNumber}
-                            facistAvatar={winner.facistAvatar}
+                            fascistAvatar={winner.facistAvatar}
                         />
                     </div>
                 ))}
@@ -23,10 +23,10 @@ const WinningModalComponent = ({ winners, losers }) => {
                 {map(losers, loser => (
                     <div key={loser.playerName}>
                         <div className={styles.avatarName}>{loser.playerName}</div>
-                        <PlayerAvatarComponent
+                        <PlayerAvatar
                             key={loser.playerName}
                             liberalAvatar={loser.avatarNumber}
-                            facistAvatar={loser.facistAvatar}
+                            fascistAvatar={loser.facistAvatar}
                             className={styles.loserSorrow}
                         />
                         <div className={styles.drop} />

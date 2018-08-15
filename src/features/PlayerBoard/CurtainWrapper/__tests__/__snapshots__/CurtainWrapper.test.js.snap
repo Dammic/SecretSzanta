@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CurtainWrapper /> fascist renders hidden curtains 1`] = `
+<div
+  className="curtain fascist"
+>
+  <div
+    className="curtainWrapper"
+  >
+    <div
+      className="curtainPanel left hidden"
+    />
+    <div
+      className="curtainPanel right hidden"
+    />
+  </div>
+</div>
+`;
+
+exports[`<CurtainWrapper /> fascist renders visible curtains 1`] = `
+<div
+  className="curtain fascist"
+>
+  <div
+    className="curtainWrapper"
+  >
+    <div
+      className="curtainPanel left"
+    />
+    <div
+      className="curtainPanel right"
+    />
+  </div>
+</div>
+`;
+
+exports[`<CurtainWrapper /> liberal renders hidden curtains 1`] = `
+<div
+  className="curtain liberal"
+>
+  <div
+    className="curtainWrapper"
+  >
+    <div
+      className="curtainPanel left hidden"
+    />
+    <div
+      className="curtainPanel right hidden"
+    />
+  </div>
+</div>
+`;
+
+exports[`<CurtainWrapper /> liberal renders visible curtains 1`] = `
+<div
+  className="curtain liberal"
+>
+  <div
+    className="curtainWrapper"
+  >
+    <div
+      className="curtainPanel left"
+    />
+    <div
+      className="curtainPanel right"
+    />
+  </div>
+</div>
+`;

@@ -13,9 +13,9 @@ exports[`<SubmenuComponent /> matches snapshot, rendering hidden affiliation men
     <span
       className="card"
     >
-      <PlayerAvatarComponent
+      <PlayerAvatar
         className="uiBoxAvatar"
-        facistAvatar={1}
+        fascistAvatar={1}
         isDead={false}
         isOwner={false}
         liberalAvatar={1}
@@ -25,7 +25,7 @@ exports[`<SubmenuComponent /> matches snapshot, rendering hidden affiliation men
   <div
     className="roleWrapper"
   >
-    <PlayerRoleComponent
+    <PlayerRole
       className="uiBoxRole"
       role={null}
     />
@@ -46,9 +46,9 @@ exports[`<SubmenuComponent /> matches snapshot, rendering visible affiliation me
     <span
       className="card"
     >
-      <PlayerAvatarComponent
+      <PlayerAvatar
         className="uiBoxAvatar"
-        facistAvatar={1}
+        fascistAvatar={1}
         isDead={false}
         isOwner={false}
         liberalAvatar={1}
@@ -58,7 +58,7 @@ exports[`<SubmenuComponent /> matches snapshot, rendering visible affiliation me
   <div
     className="roleWrapper"
   >
-    <PlayerRoleComponent
+    <PlayerRole
       className="uiBoxRole"
       role={null}
     />

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PrimaryButton /> matches snapshot 1`] = `
+<div
+  className="btn primary mockClassName"
+  role="button"
+  tabIndex="0"
+>
+  <span>
+    mockLabel
+  </span>
+</div>
+`;

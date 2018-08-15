@@ -18,6 +18,7 @@ const FancyButton = (props) => {
     )
 }
 
+FancyButton.displayName = 'FancyButton'
 FancyButton.propTypes = {
     children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     className: PropTypes.string,

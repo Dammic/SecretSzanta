@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TimerComponent /> shows timer when there are remaining seconds and veto button is not rendered 1`] = `
+<div
+  className="timer visible"
+>
+  <strong>
+    10
+  </strong>
+  s remaining
+</div>
+`;
+
+exports[`<TimerComponent /> shows timer when there are remaining seconds and veto button is rendered if there is veto possibility 1`] = `
+<div
+  className="timer visible"
+>
+  <strong>
+    10
+  </strong>
+  s remaining
+  <div
+    className="btn veto"
+    onClick={[MockFunction]}
+    role="button"
+    tabIndex="0"
+  >
+    veto
+  </div>
+</div>
+`;
+
+exports[`<TimerComponent /> timer is hidden when there are no seconds remaining and veto button is not rendered 1`] = `
+<div
+  className="timer"
+>
+  <strong>
+    0
+  </strong>
+  s remaining
+</div>
+`;

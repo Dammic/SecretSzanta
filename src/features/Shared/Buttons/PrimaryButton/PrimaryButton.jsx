@@ -18,6 +18,7 @@ const PrimaryButton = (props) => {
     )
 }
 
+PrimaryButton.displayName = 'PrimaryButton'
 PrimaryButton.propTypes = {
     children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
     className: PropTypes.string,

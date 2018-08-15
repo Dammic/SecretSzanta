@@ -6,33 +6,38 @@ import { Icon } from '../../../Shared/Icon'
 
 import styles from './PlayerAvatar.css'
 
-const PlayerAvatarComponent = ({
+const PlayerAvatar = ({
     liberalAvatar,
-    facistAvatar,
+    fascistAvatar,
     isDead,
     isPlayerWaitedFor,
     isOwner,
     className,
 }) => {
     const liberalAvatarPicture = getAvatar(`liberal-${liberalAvatar}`)
-    const facistAvatarPicture = getAvatar(`fascist-${facistAvatar}`)
+    const facistAvatarPicture = getAvatar(`fascist-${fascistAvatar}`)
+
+    if (!liberalAvatarPicture) {
+        return null
+    }
 
     return (
         <div className={classNames(styles.avatarWrapper, className, { [styles.dead]: isDead })}>
             {isOwner && <Icon name="fa-bolt" className={styles.ownerIcon} />}
             {isPlayerWaitedFor && <Icon name="fa-clock-o" className={styles.selectingWaitIcon} />}
-            {facistAvatar && <img className={classNames(styles.portrait, styles.facistPortrait)} src={facistAvatarPicture} alt="Player facist avatar" />}
+            {fascistAvatar && <img className={classNames(styles.portrait, styles.facistPortrait)} src={facistAvatarPicture} alt="Player facist avatar" />}
             <img className={styles.portrait} src={liberalAvatarPicture} alt="Player liberal avatar" />
         </div>
     )
 }
 
-PlayerAvatarComponent.propTypes = {
-    liberalAvatar: PropTypes.number,
-    facistAvatar: PropTypes.number,
+PlayerAvatar.displayName = 'PlayerAvatar'
+PlayerAvatar.propTypes = {
+    liberalAvatar: PropTypes.number.isRequired,
+    fascistAvatar: PropTypes.number,
     isDead: PropTypes.bool,
     isPlayerWaitedFor: PropTypes.bool,
     isOwner: PropTypes.bool,
     className: PropTypes.string,
 }
-export default PlayerAvatarComponent
+export default PlayerAvatar

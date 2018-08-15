@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FancyButton /> matches snapshot 1`] = `
+<div
+  className="btn fabulousButton linedThick mockClassName"
+  role="button"
+  tabIndex="0"
+>
+  <span>
+    mockLabel
+  </span>
+</div>
+`;

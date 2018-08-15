@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<VoteBubble /> does not render bubble at all if player has not voted (his voting value is undefined) 1`] = `null`;
+
+exports[`<VoteBubble /> renders active top bubble 1`] = `
+<div
+  className="bubble bubbleTop active"
+>
+  JA
+</div>
+`;
