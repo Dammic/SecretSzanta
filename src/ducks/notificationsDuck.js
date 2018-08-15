@@ -1,5 +1,6 @@
 import { handleActions, createAction } from 'redux-actions'
 import { reject } from 'lodash'
+import { MessagesTypes } from '../../Dictionary'
 
 // Actions
 const addNotification = createAction('info/ADD_NOTIFICATION')
@@ -8,6 +9,7 @@ const deleteNotification = createAction('info/DELETE_NOTIFICATION')
 const initialState = {
     currentID: 0,
     notifications: [],
+    statusNotification: null,
 }
 
 const actions = {
@@ -15,17 +17,27 @@ const actions = {
         const { notifications, currentID } = state
         const { type, message } = action.payload
         const newID = currentID + 1
+
+        const newNotification = {
+            id: newID,
+            type,
+            message,
+        }
+        console.log('Added new notif!', type, message)
+
         return {
             ...state,
             currentID: newID,
-            notifications: [
-                ...notifications,
-                {
-                    id: newID,
-                    type,
-                    message,
-                },
-            ],
+            ...(
+                type === MessagesTypes.STATUS
+                    ? { statusNotification: newNotification }
+                    : {
+                        notifications: [
+                            ...notifications,
+                            newNotification,
+                        ],
+                    }
+            ),
         }
     },
     [deleteNotification]: (state, action) => {

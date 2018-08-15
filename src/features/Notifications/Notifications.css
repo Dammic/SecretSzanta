@@ -11,15 +11,28 @@
     left: 25vw;
     height: 30px;
     border-radius: 5px;
-    background-color: var(--notification-information-color);
     margin: 10px 0px;
     padding-left: 10px;
     padding-top: 10px;
+    color: var(--notification-font);
+}
 
-    &.error {
-        background-color: var(--notification-error-color);
-        color: var(--notification-font);
-    }
+.info {
+    background-color: var(--notification-information-color);
+}
+
+.error {
+    background-color: var(--notification-error-color);
+    color: var(--notification-font);
+}
+
+.status {
+    margin: 0;
+    padding-top: 5px;
+    border-radius: 0px 0px 5px 5px;
+
+    background-color: var(--notification-status-color);
+    text-align: center;
 }
 
 .exit {

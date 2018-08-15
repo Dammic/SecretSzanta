@@ -76,6 +76,7 @@ export const PlayerAffilications = {
 export const MessagesTypes = {
     ERROR: 'ERROR',
     INFO: 'INFO',
+    STATUS: 'STATUS',
 }
 export const ErrorMessages = {
     notOwner: 'This action is forbidden! You are not the owner!',

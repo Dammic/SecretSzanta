@@ -208,7 +208,7 @@ export const createRoom = (socket, { roomName, maxPlayers, password }) => {
 export const voteEvent = (socket, { value }) => {
     vote(socket.currentRoom, socket.currentPlayerName, value)
     emits.emitNewVote(socket.currentRoom, socket.currentPlayerName)
-    emits.emitGameNotification(socket.currentRoom, MessagesTypes.INFO, `Player ${socket.currentPlayerName} has voted!`)
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, `Player ${socket.currentPlayerName} has voted!`)
 
     if (didAllVote(socket.currentRoom)) {
         const hasVotingSucceed = getVotingResult(socket.currentRoom)
