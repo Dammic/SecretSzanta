@@ -21,15 +21,20 @@ export class VoteBubble extends React.PureComponent {
 
     getVoteBubbleStyle = () => {
         const { direction } = this.props
+        let voteDirectionClassName
 
         switch (direction) {
             case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                return classNames(styles.bubble, styles.bubbleLeft, { [styles.active]: this.isBubbleActive() })
+                voteDirectionClassName = styles.bubbleLeft
+                break
             case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                return classNames(styles.bubble, styles.bubbleRight, { [styles.active]: this.isBubbleActive() })
+                voteDirectionClassName = styles.bubbleRight
+                break
             default:
-                return classNames(styles.bubble, styles.bubbleTop, { [styles.active]: this.isBubbleActive() })
+                voteDirectionClassName = styles.bubbleTop
         }
+
+        return classNames(styles.bubble, voteDirectionClassName, { [styles.active]: this.isBubbleActive() })
     }
 
     getVoteValue = () => {
