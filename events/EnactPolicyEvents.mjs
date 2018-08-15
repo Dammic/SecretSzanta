@@ -16,6 +16,7 @@ import {
     getVetoVotes,
     checkIfGameShouldFinish,
     peekLastEnactedPolicyCard,
+    resetFailedElectionsCount,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
 
@@ -87,7 +88,7 @@ export const increaseElectionTracker = ({ currentRoom }) => {
 export const resetElectionTracker = (socket) => {
     const trackerPosition = getFailedElectionsCount(socket.currentRoom)
 
-    SocketEventsUtils.resetFailedElectionsCount(socket.currentRoom)
+    resetFailedElectionsCount(socket.currentRoom)
     emits.emitResetTracker()
 
     const trackerMessage = `The failed elections tracker${trackerPosition === 3 ? ' has reached 3, so it' : ''} will be reset!`
