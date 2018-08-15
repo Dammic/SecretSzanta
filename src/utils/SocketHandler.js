@@ -57,6 +57,10 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
             this.props.chatActions.addMessage(payload.data)
         })
+        socket.on(SocketEvents.ClientGameNotification, (payload) => {
+            const { type, message } = payload.data
+            this.props.notificationsActions.addNotification({ type, message })
+        })
         socket.on(SocketEvents.VOTING_PHASE_START, (payload) => {
             const { chancellorCandidate, timestamp } = payload.data
             this.props.chatActions.addMessage({ timestamp, content: `The president has nominated ${chancellorCandidate} for chancellor.` })

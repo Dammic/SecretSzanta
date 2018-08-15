@@ -1,5 +1,5 @@
 export { emitIncreaseTrackerPosition, emitResetTracker } from './elections'
-export { emitToRoom, emitToPlayer, emitMessage, emitError } from './generic'
+export { emitToRoom, emitToPlayer, emitMessage, emitError, emitGameNotification } from './generic'
 export { emitSelectNameToPlayer, emitSyncLobbyToPlayer, emitPlayersListChanged, emitRoomsListChanged } from './lobby'
 export {
     emitChancellorChoicePhase,
