@@ -57,8 +57,6 @@ export const checkForImmediateSuperpowers = ({ currentRoom }) => {
     return null
 }
 
-// TODO:
-// 3) steps: check if game should finish (if yes finish), check if there is any superpower (if yes trigger), otherwise resume game (yes resume)
 export const enactPolicyEvent = (socket, policy) => {
     const isFacist = policy === PolicyCards.FacistPolicy
     enactPolicy(socket.currentRoom, policy)

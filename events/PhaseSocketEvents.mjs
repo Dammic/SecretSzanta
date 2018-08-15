@@ -16,12 +16,13 @@ import * as emits from './emits'
 
 const { forEach, get } = lodash
 
-export const startGameEvent = ({ currentRoom, currentPlayerName }) => {
+export const startGameEvent = ({ currentRoom }) => {
     startGame(currentRoom)
     const facists = getFacists(currentRoom)
 
     forEach(facists, player => emits.emitBecomeFascistToPlayer(currentRoom, player, facists))
-    emits.emitStartGame(currentRoom, currentPlayerName)
+
+    emits.emitStartGame(currentRoom)
 }
 
 export const endGame = ({ currentRoom }) => {

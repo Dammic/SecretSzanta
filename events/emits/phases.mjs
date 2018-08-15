@@ -1,8 +1,8 @@
-import { GamePhases, SocketEvents } from '../../Dictionary'
+import { GamePhases, SocketEvents, MessagesTypes } from '../../Dictionary'
 import { getCurrentTimestamp } from '../../utils/utils'
 import lodash from 'lodash'
 
-import { emitToRoom } from './generic'
+import { emitToRoom, emitGameNotification } from './generic'
 
 import {
     getFacists,
@@ -13,11 +13,11 @@ import {
 
 const { map, pick } = lodash
 
-export const emitStartGame = (room, playerName) => emitToRoom(room, SocketEvents.START_GAME, {
-    playerName,
-    timestamp: getCurrentTimestamp(),
-    boardType: getPlayerboardType(room),
-})
+export const emitStartGame = (room) => {
+    emitToRoom(room, SocketEvents.START_GAME, {
+        boardType: getPlayerboardType(room),
+    })
+}
 
 export const emitGameFinished = (room, whoWon) => {
     const facists = getFacists(room)
@@ -35,6 +35,7 @@ export const emitChancellorWillChoosePolicy = (room, chancellorName) => {
         chancellorName,
     })
 }
+
 export const emitPresidentWillChoosePolicy = (room) => emitToRoom(room, SocketEvents.PresidentChoosePolicy, {
     timestamp: getCurrentTimestamp(),
     presidentName: getPresident(room).playerName,
