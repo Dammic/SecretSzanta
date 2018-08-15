@@ -208,7 +208,6 @@ export const createRoom = (socket, { roomName, maxPlayers, password }) => {
 export const voteEvent = (socket, { value }) => {
     vote(socket.currentRoom, socket.currentPlayerName, value)
     emits.emitNewVote(socket.currentRoom, socket.currentPlayerName)
-    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, `Player ${socket.currentPlayerName} has voted!`)
 
     if (didAllVote(socket.currentRoom)) {
         const hasVotingSucceed = getVotingResult(socket.currentRoom)
@@ -217,12 +216,6 @@ export const voteEvent = (socket, { value }) => {
             setChancellor(socket.currentRoom)
         }
 
-        const chancellorCandidateName = get(getChancellorCandidateInfo(socket.currentRoom), 'playerName')
-        const votingResultMessage = `Voting completed! ${hasVotingSucceed
-            ? `${chancellorCandidateName} has become the new chancellor!`
-            : 'The proposal has been rejected!'}
-        `
-        emits.emitMessage(socket.currentRoom, null, { content: votingResultMessage })
         emits.emitVotingResult(socket.currentRoom)
 
         const hasPolicyBeenEnacted = updateTrackerPosition(socket, hasVotingSucceed)

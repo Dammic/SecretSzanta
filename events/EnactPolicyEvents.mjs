@@ -76,7 +76,7 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customRes
     } else if (checkIfGameShouldFinish(socket.currentRoom)) {
         PhaseSocketEvents.endGame(socket)
     } else {
-        SocketEventsUtils.resumeGame(socket, { delay: 3000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
+        SocketEventsUtils.resumeGame(socket, { delay: 10000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
 }
 
