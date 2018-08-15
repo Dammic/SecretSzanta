@@ -40,7 +40,6 @@ export const startVotingPhaseVote = ({ currentRoom }, { playerName: chancellorNa
 }
 
 export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresidentName = null) => {
-    if (getGamePhase(currentRoom) === GamePhases.GAME_PHASE_SUPERPOWER) return
     startChancellorChoicePhase(currentRoom, designatedPresidentName)
 
     emits.emitChancellorChoicePhase(currentRoom)
