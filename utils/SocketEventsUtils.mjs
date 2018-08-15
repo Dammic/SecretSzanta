@@ -33,16 +33,6 @@ export const clearNextPhaseTimeout = () => {
     clearTimeout(cancelTimeoutToken)
 }
 
-export const resetElectionTracker = (socket) => {
-    const trackerPosition = getFailedElectionsCount(socket.currentRoom)
-
-    resetFailedElectionsCount(socket.currentRoom)
-    emits.emitResetTracker()
-
-    const trackerMessage = `The failed elections tracker${trackerPosition === 3 ? ' has reached 3, so it' : ''} will be reset!`
-    emits.emitMessage(socket.currentRoom, null, { content: trackerMessage })
-}
-
 export const switchRooms = (socket, startRoom, targetRoom) => {
     if (startRoom) {
         socket.leave(startRoom)
@@ -71,7 +61,6 @@ export const switchRooms = (socket, startRoom, targetRoom) => {
 const SocketEventsUtils = {
     resumeGame,
     clearNextPhaseTimeout,
-    resetElectionTracker,
     switchRooms,
 }
 

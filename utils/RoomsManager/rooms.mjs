@@ -203,3 +203,8 @@ export const checkWinConditions = (roomName) => {
     }
     return { winningSide: null, reason: null }
 }
+
+export const checkIfGameShouldFinish = (roomName) => {
+    const { winningSide } = checkWinConditions(roomName)
+    return !!winningSide
+}

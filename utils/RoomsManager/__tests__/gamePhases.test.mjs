@@ -64,5 +64,19 @@ describe('gamePhases', () => {
             expect(chooseNextPresidentMock).toHaveBeenCalled()
             expect(preparedRoomProps).toEqual(testRoom)
         })
+
+        test('clears veto votes', () => {
+            const { testRoom } = roomsStore
+            testRoom.vetoVotes = ['a', 'b']
+            const preparedRoomProps = cloneDeep(testRoom)
+            jest.spyOn(roles, 'chooseNextPresident').mockImplementationOnce(jest.fn())
+
+            startChancellorChoicePhase('testRoom')
+
+            preparedRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
+            preparedRoomProps.vetoVotes = []
+
+            expect(preparedRoomProps).toEqual(testRoom)
+        })
     })
 })
