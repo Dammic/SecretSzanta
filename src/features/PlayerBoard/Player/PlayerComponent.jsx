@@ -29,7 +29,7 @@ const PlayerComponent = ({
                 onClick={isSelectable ? onChoiceModeSelect : null}
             >
                 <div>{playerName}</div>
-                <VoteBubble playerName={playerName} bubbleDirection={bubbleDirection} />
+                <VoteBubble playerName={playerName} direction={bubbleDirection} />
                 <PlayerAvatar
                     liberalAvatar={liberalAvatar}
                     fascistAvatar={facistAvatar}

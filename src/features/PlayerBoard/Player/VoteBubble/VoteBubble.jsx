@@ -7,6 +7,12 @@ import { PlayerDirection, GamePhases } from '../../../../../Dictionary'
 
 import styles from './VoteBubble.css'
 
+const bubbleStylesMapping = {
+    [PlayerDirection.PLAYER_DIRECTION_LEFT]: styles.bubbleLeft,
+    [PlayerDirection.PLAYER_DIRECTION_RIGHT]: styles.bubbleRight,
+    [PlayerDirection.PLAYER_DIRECTION_UP]: styles.bubbleTop,
+}
+
 export class VoteBubble extends React.PureComponent {
     static displayName = 'VoteBubble'
     static propTypes = {
@@ -21,20 +27,8 @@ export class VoteBubble extends React.PureComponent {
 
     getVoteBubbleStyle = () => {
         const { direction } = this.props
-        let voteDirectionClassName
-
-        switch (direction) {
-            case PlayerDirection.PLAYER_DIRECTION_LEFT:
-                voteDirectionClassName = styles.bubbleLeft
-                break
-            case PlayerDirection.PLAYER_DIRECTION_RIGHT:
-                voteDirectionClassName = styles.bubbleRight
-                break
-            default:
-                voteDirectionClassName = styles.bubbleTop
-        }
-
-        return classNames(styles.bubble, voteDirectionClassName, { [styles.active]: this.isBubbleActive() })
+        
+        return classNames(styles.bubble, bubbleStylesMapping[direction], { [styles.active]: this.isBubbleActive() })
     }
 
     getVoteValue = () => {

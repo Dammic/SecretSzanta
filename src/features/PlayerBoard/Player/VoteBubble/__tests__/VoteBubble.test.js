@@ -21,6 +21,7 @@ describe('<VoteBubble />', () => {
         const { props } = setupProps({
             votes: { mockPlayerName: true },
             gamePhase: GamePhases.GAME_PHASE_VOTING,
+            direction: PlayerDirection.PLAYER_DIRECTION_UP,
         })
 
         expectMatchingSnapshot(<VoteBubble {...props} />)
@@ -122,7 +123,7 @@ describe('<VoteBubble />', () => {
         describe('top', () => {
             it('renders inactive bubble', () => {
                 const { component } = setupProps({
-                    direction: PlayerDirection.PLAYER_DIRECTION_TOP,
+                    direction: PlayerDirection.PLAYER_DIRECTION_UP,
                 })
                 const instance = component.instance()
                 instance.isBubbleActive = () => false
@@ -132,7 +133,7 @@ describe('<VoteBubble />', () => {
 
             it('renders active bubble', () => {
                 const { component } = setupProps({
-                    direction: PlayerDirection.PLAYER_DIRECTION_TOP,
+                    direction: PlayerDirection.PLAYER_DIRECTION_UP,
                 })
                 const instance = component.instance()
                 instance.isBubbleActive = () => true
