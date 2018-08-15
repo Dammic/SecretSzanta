@@ -82,20 +82,11 @@ export const triggerVetoPrompt = (socket) => {
     emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
     emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
 
-    const onGameResume = (socket) => {
-        const shouldGameFinish = checkIfGameShouldFinish(socket)
-        if (!shouldGameFinish) {
-            PhaseSocketEvents.startChancellorChoicePhaseEvent(socket)
-        } else {
-            PhaseSocketEvents.endGame(socket)
-        }
-    }
-
     SocketEventsUtils.resumeGame(
         socket,
         {
             delay: 30000,
-            func: onGameResume,
+            func: checkForNextStep,
             customMessage: 'Due to veto power, the president and chancellor can now together veto the enacted policy. Next phase will begin in 30 seconds (assuming no veto will be reported)...',
         },
     )
@@ -135,7 +126,7 @@ export const veto = (socket) => {
 
         // TODO: check if we need this resumeGame (and if we can move it somewhere else?)
         emits.emitSyncPolicies(socket.currentRoom)
-        SocketEventsUtils.resumeGame(socket, { delay: 5000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
+        checkForNextStep(socket)
     } else {
         const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
         emits.emitMessage(socket.currentRoom, null, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
@@ -286,13 +277,7 @@ export const choosePolicy = (socket, { choice }) => {
 export const killPlayerEvent = (socket, { playerName }) => {
     killPlayer(socket.currentRoom, playerName)
     emits.emitPlayerKilled(socket.currentRoom, playerName)
-
-    const shouldGameFinish = checkIfGameShouldFinish(socket)
-    if (shouldGameFinish) {
-        PhaseSocketEvents.endGame(socket)
-    } else {
-        SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
-    }
+    checkForNextStep(socket)
 }
 
 export const kickIfPresident = (socket, playerName) => {
@@ -303,6 +288,8 @@ export const kickIfPresident = (socket, playerName) => {
     chooseNextPresident(socket.currentRoom)
     initializeVoting(socket.currentRoom) // resets chancellor player name
     setChancellor(socket.currentRoom)
+
+    // in future, the game will need to be rollbacked to latest biggest event, so leaving resumeGame for now
     SocketEventsUtils.resumeGame(socket, { delay: 1000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
     return true
 }
@@ -349,10 +336,9 @@ export const selectName = (socket, { userName }) => {
 export const presidentDesignatedNextPresident = (socket, { playerName }) => {
     emits.emitMessage(socket.currentRoom, null, { content: `The president has designated ${playerName} as the next president for the next turn!` })
     emits.emitChooserPlayer(socket.currentRoom, '')
-    SocketEventsUtils.resumeGame(socket, {
-        delay: 4000,
-        func: socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName),
-    })
+
+    const onResume = socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName)
+    checkForNextStep(socket, onResume)
 }
 
 export const superpowerAffiliationPeekPlayer = (socket, { playerName }) => {
@@ -363,13 +349,13 @@ export const superpowerAffiliationPeekPlayer = (socket, { playerName }) => {
 
 export const endPeekPlayerSuperpower = (socket) => {
     emits.emitChooserPlayer(socket.currentRoom, '')
-    SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
+    checkForNextStep(socket)
 }
 
 export const endPeekCardsPhase = (socket) => {
     emits.emitMessage(socket.currentRoom, null, { content: 'The president has seen the top 3 policy cards' })
     emits.emitChooserPlayer(socket.currentRoom, '')
-    SocketEventsUtils.resumeGame(socket, { delay: 4000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
+    checkForNextStep(socket)
 }
 
 const socketEvents = {
