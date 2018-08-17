@@ -1,10 +1,15 @@
 import moment from 'moment'
+import childProcess from 'child_process'
 import lodash from 'lodash'
 import { MessagesTypes } from '../Dictionary'
 
 const { pad } = lodash
 
 const getCurrentTimestamp = () => Math.floor(Date.now() / 1000)
+
+const getLatestGitCommitHash = () => childProcess
+    .execSync('git rev-parse HEAD')
+    .toString().trim().slice(0, 7);
 
 const log = ({ currentRoom, currentPlayerName }, messageType, message) => {
     if (process.env.NODE_HIDECONSOLE) return
@@ -17,6 +22,7 @@ const logError = (contextData, message) => log(contextData, MessagesTypes.ERROR,
 
 export {
     getCurrentTimestamp,
+    getLatestGitCommitHash,
     log,
     logInfo,
     logError,
