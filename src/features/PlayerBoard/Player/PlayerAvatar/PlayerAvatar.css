@@ -24,19 +24,15 @@
 
 .avatarWrapper {
     position: relative;
-    &:hover {
-        & .portrait {
-            &.facist-portrait {
-                opacity: 0.1; 
-            }
-        }
+    &:hover .fascistPortrait {
+        opacity: 0.1; 
     }
 }
 
 .portrait {
     width: var(--player-image-width);
     max-width: 130px;
-    &.facistPortrait {
+    &.fascistPortrait {
         position: absolute;
         height: 100%;
         width: 100%;
@@ -44,7 +40,6 @@
         z-index: 1;
     }
 }
-
 .selectingWaitIcon {
     color: var(--selecting-wait-icon-color);
     position: absolute;
