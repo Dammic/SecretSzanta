@@ -3,6 +3,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const CompressionPlugin = require('compression-webpack-plugin')
 const BrotliPlugin = require('brotli-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HappyPack = require('happypack')
+const happyThreadPool = HappyPack.ThreadPool({ size: 6 });
 
 const productionPlugins = [
     new CompressionPlugin({
@@ -20,9 +22,36 @@ const productionPlugins = [
 
 module.exports = (env, argv) => {
     console.log(`Using mode: [${argv.mode}]`)
+    const isProduction = argv.mode === 'production'
+
+    const imageLoaders = isProduction
+        ? [
+            { loader: 'file-loader' },
+            {
+                loader: 'image-webpack-loader',
+                options: {
+                    bypassOnDebug: true,
+                    mozjpeg: {
+                        progressive: true,
+                    },
+                    gifsicle: {
+                        interlaced: false,
+                    },
+                    optipng: {
+                        optimizationLevel: 4,
+                    },
+                    pngquant: {
+                        quality: '75-90',
+                        speed: 3,
+                    },
+                },
+            },
+        ]
+        : [{ loader: 'file-loader' }]
+
     return {
         cache: true,
-        // devtool: NODE_ENV === 'production' ? 'cheap-module-source-map' : 'source-map',
+        devtool: isProduction ? 'cheap-module-source-map' : 'source-map',
         watchOptions: {
             aggregateTimeout: 300,
             poll: 1000,
@@ -35,7 +64,7 @@ module.exports = (env, argv) => {
             path: path.join(__dirname, '.dist'),
             filename: '[name].js',
             chunkFilename: '[name].[chunkhash].bundle.js',
-            publicPath: '/'
+            publicPath: '/',
         },
         optimization: {
             runtimeChunk: 'single',
@@ -50,7 +79,52 @@ module.exports = (env, argv) => {
             },
         },
         plugins: [
-            ...(argv.mode === 'production' ? productionPlugins : []),
+            new HappyPack({
+                id: 'js',
+                threadPool: happyThreadPool,
+                loaders: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            plugins: ['lodash', '@babel/plugin-proposal-class-properties'],
+                            presets: [
+                                ['@babel/preset-env', {
+                                    targets: {
+                                        browsers: ['last 2 versions'],
+                                    },
+                                }],
+                                ['@babel/react'],
+                            ],
+                        },
+                    }
+                ],
+            }),
+            new HappyPack({
+                id: 'fonts',
+                threadPool: happyThreadPool,
+                loaders: ['url-loader'],
+            }),
+            new HappyPack({
+                id: 'css',
+                threadPool: happyThreadPool,
+                loaders: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                            modules: true,
+                            localIdentName: '[name]__[local]___[hash:base64:5]',
+                        },
+                    }, {
+                        loader: 'postcss-loader',
+                        options: {
+                            ident: 'postcss',
+                        },
+                    },
+                ],
+            }),
+            ...(isProduction ? productionPlugins : []),
             new HtmlWebpackPlugin({
                 template: 'views/index.html',
             }),
@@ -66,71 +140,16 @@ module.exports = (env, argv) => {
                     path.join(__dirname, 'src'), // important for performance!
                 ],
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        plugins: ['lodash', '@babel/plugin-proposal-class-properties'],
-                        presets: [
-                            ['@babel/preset-env', {
-                                targets: {
-                                    browsers: ['last 2 versions'],
-                                },
-                            }],
-                            ['@babel/react'],
-                        ],
-                    },
-                },
+                loader: 'happypack/loader?id=js',
             }, {
                 test: /\.(woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'url-loader',
+                loader: 'happypack/loader?id=fonts',
             }, {
                 test: /\.(jpe?g|png|gif|svg)$/i,
-                use: [
-                    {
-                        loader: 'file-loader',
-                    }, {
-                        loader: 'image-webpack-loader',
-                        options: {
-                            bypassOnDebug: true,
-                            mozjpeg: {
-                                progressive: true,
-                            },
-                            gifsicle: {
-                                interlaced: false,
-                            },
-                            optipng: {
-                                optimizationLevel: 4,
-                            },
-                            pngquant: {
-                                quality: '75-90',
-                                speed: 3,
-                            },
-                        },
-                    },
-                ],
+                use: imageLoaders,
             }, {
                 test: /\.css$/,
-                include: [
-                    path.join(__dirname, 'src'), // important for performance!
-                    path.join(__dirname, 'node_modules/font-awesome/css'),
-                ],
-                use: [
-                    {
-                        loader: 'style-loader',
-                    }, {
-                        loader: 'css-loader',
-                        options: {
-                            importLoaders: 1,
-                            modules: true,
-                            localIdentName: '[name]__[local]___[hash:base64:5]',
-                        },
-                    }, {
-                        loader: 'postcss-loader',
-                        options: {
-                            ident: 'postcss',
-                        },
-                    },
-                ],
+                loader: 'happypack/loader?id=css',
             }],
         },
         resolve: {
