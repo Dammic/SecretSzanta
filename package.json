@@ -12,7 +12,7 @@
     "run:dev": "nodemon --experimental-modules server.mjs --watch utils/ --watch events/ --watch server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
-    "build:prod": "rimraf public && webpack --mode production --config webpack.config.js",
+    "build:prod": "rimraf public && webpack --mode production --config webpack.config.js --progress",
     "test": "node_modules/jest/bin/jest.js",
     "test:fe": "node_modules/jest/bin/jest.js src/*",
     "test:silent": "NODE_HIDECONSOLE=true npm run test"
@@ -74,7 +74,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.47",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.47",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.47",
     "@babel/plugin-transform-modules-commonjs": "7.0.0-beta.52",
     "@babel/preset-env": "7.0.0-beta.47",
     "@babel/preset-react": "7.0.0-beta.47",
@@ -85,8 +85,8 @@
     "babel-loader": "8.0.0-beta.4",
     "babel-plugin-lodash": "3.3.2",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
-    "brotli-webpack-plugin": "0.5.0",
-    "compression-webpack-plugin": "1.1.3",
+    "brotli-webpack-plugin": "1.0.0",
+    "compression-webpack-plugin": "1.1.11",
     "css-loader": "0.26.4",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
@@ -105,7 +105,7 @@
     "faker": "4.1.0",
     "file-loader": "1.1.11",
     "fs": "0.0.1-security",
-    "html-webpack-plugin": "2.30.1",
+    "html-webpack-plugin": "4.0.0-alpha",
     "identity-obj-proxy": "3.0.0",
     "image-webpack-loader": "3.4.2",
     "jest": "23.3.0",
@@ -122,13 +122,11 @@
     "postcss-loader": "2.1.2",
     "react-test-renderer": "16.3.2",
     "regenerator-runtime": "0.11.1",
-    "sass-loader": "4.1.1",
     "style-loader": "0.13.2",
-    "uglifyjs-webpack-plugin": "1.2.2",
     "units-css": "0.4.0",
     "url-loader": "1.1.0",
     "webpack": "4.16.5",
     "webpack-bundle-analyzer": "2.13.1",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "3.1.0"
   }
 }

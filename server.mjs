@@ -13,12 +13,13 @@ const server = new http.Server(app)
 
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, '.dist'));
+
 // socket.io
 initializeIO(server)
 
 app.get('/', (req, res) => {
-    return res.sendFile('index.html', { root: `${__dirname}/views` })
+    return res.sendFile('index.html', { root: `${__dirname}/.dist` })
 })
 
 app.use(expressStaticGzip(path.join(__dirname, '/.dist'), {
@@ -29,7 +30,7 @@ app.use(expressStaticGzip(path.join(__dirname, '/.dist'), {
 app.get('*', (req, res, next) => {
     res.status(404)
     console.log(`404! Page not found! Original url: ${req.originalUrl}`)
-    return res.sendFile('index.html', { root: `${__dirname}/views` })
+    return res.sendFile('index.html', { root: `${__dirname}/.dist` })
 })
 
 // start the server
