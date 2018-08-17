@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
     return res.sendFile('index.html', { root: `${__dirname}/views` })
 })
 
-app.use(expressStaticGzip(path.join(__dirname, '/public'), {
+app.use(expressStaticGzip(path.join(__dirname, '/.dist'), {
     enableBrotli: true,
 }))
 

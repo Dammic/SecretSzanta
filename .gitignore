@@ -3,6 +3,7 @@
 lib
 node_modules
 public/
+.dist/
 babel_cache
 npm-debug.log
 yarn-error.log
