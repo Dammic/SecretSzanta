@@ -52,7 +52,7 @@
   ],
   "dependencies": {
     "classnames": "2.2.5",
-    "font-awesome": "^4.7.0",
+    "font-awesome": "4.7.0",
     "history": "4.7.2",
     "lodash": "4.17.10",
     "moment": "2.22.1",
