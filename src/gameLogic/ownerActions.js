@@ -19,10 +19,6 @@ export function resumeGame() {
     store.dispatch(toggleModal({ value: false }))
 }
 
-export function startVoting() {
-    socket.emit(SocketEvents.CHANCELLOR_CHOICE_PHASE)
-}
-
 // TODO
 export function openInvitePlayersScreen() {
 

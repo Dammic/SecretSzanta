@@ -14,6 +14,8 @@ import {
 const { map, pick } = lodash
 
 export const emitStartGame = (room) => {
+    const messageContent = 'The game has been started. Chancellor choice phase will begin in 10sec...'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
     emitToRoom(room, SocketEvents.START_GAME, {
         boardType: getPlayerboardType(room),
     })

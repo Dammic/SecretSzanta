@@ -21,7 +21,7 @@ let cancelTimeoutToken
 
 export const resumeGame = (socket, { delay, func, customMessage }) => {
     if (delay) {
-        emits.emitMessage(socket.currentRoom, null, { content: customMessage || `Next phase will begin in ${delay / 1000} seconds!` })
+        // emits.emitMessage(socket.currentRoom, null, { content: customMessage || `Next phase will begin in ${delay / 1000} seconds!` })
         cancelTimeoutToken = setTimeout(func.bind(null, socket), delay)
         emits.emitSetTimer(socket.currentRoom, delay)
     } else {

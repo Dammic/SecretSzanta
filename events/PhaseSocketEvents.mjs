@@ -16,13 +16,19 @@ import * as emits from './emits'
 
 const { forEach, get } = lodash
 
-export const startGameEvent = ({ currentRoom }) => {
-    startGame(currentRoom)
-    const facists = getFacists(currentRoom)
+export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresidentName = null) => {
+    startChancellorChoicePhase(currentRoom, designatedPresidentName)
+    emits.emitChancellorChoicePhase(currentRoom)
+}
 
-    forEach(facists, player => emits.emitBecomeFascistToPlayer(currentRoom, player, facists))
+export const startGameEvent = (socket) => {
+    startGame(socket.currentRoom)
+    const facists = getFacists(socket.currentRoom)
 
-    emits.emitStartGame(currentRoom)
+    forEach(facists, player => emits.emitBecomeFascistToPlayer(socket.currentRoom, player, facists))
+
+    emits.emitStartGame(socket.currentRoom)
+    SocketEventsUtils.resumeGame(socket, { delay: 10000, func: startChancellorChoicePhaseEvent })
 }
 
 export const endGame = ({ currentRoom }) => {
@@ -38,12 +44,6 @@ export const endGame = ({ currentRoom }) => {
 export const startVotingPhaseVote = ({ currentRoom }, { playerName: chancellorName }) => {
     initializeVoting(currentRoom, chancellorName)
     emits.emitVotingPhaseStart(currentRoom, chancellorName)
-}
-
-export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresidentName = null) => {
-    startChancellorChoicePhase(currentRoom, designatedPresidentName)
-
-    emits.emitChancellorChoicePhase(currentRoom)
 }
 
 export const startPresidentPolicyChoice = ({ currentRoom }) => {

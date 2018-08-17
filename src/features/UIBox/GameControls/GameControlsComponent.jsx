@@ -12,7 +12,6 @@ const renderButton = (label, onClick) => (
 )
 
 const GameControlsComponent = ({
-    onStartVote,
     onStartGame,
     onKickPlayer,
     onBanPlayer,
@@ -23,7 +22,6 @@ const GameControlsComponent = ({
 }) => {
     const ownersButtons = [
         gamePhase === GamePhases.GAME_PHASE_NEW && renderButton('start', onStartGame),
-        renderButton('voting', onStartVote),
         renderButton('kick', onKickPlayer),
         renderButton('ban', onBanPlayer),
     ]
@@ -44,7 +42,6 @@ const GameControlsComponent = ({
 
 GameControlsComponent.displayName = 'GameControlsComponent'
 GameControlsComponent.propTypes = {
-    onStartVote: PropTypes.func,
     onStartGame: PropTypes.func,
     onKickPlayer: PropTypes.func,
     onBanPlayer: PropTypes.func,
