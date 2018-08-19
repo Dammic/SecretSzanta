@@ -9,13 +9,16 @@ import {
     getPlayerboardType,
     getChancellorChoices,
     getPresident,
+    getRemainingVotesCount,
+    getRemainingVotingPlayers,
 } from '../../utils/RoomsManager'
 
-const { map, pick } = lodash
+const { map, pick, truncate } = lodash
 
 export const emitStartGame = (room) => {
     const messageContent = 'The game has been started. Chancellor choice phase will begin in 10sec...'
     emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+
     emitToRoom(room, SocketEvents.START_GAME, {
         boardType: getPlayerboardType(room),
     })
@@ -44,18 +47,30 @@ export const emitPresidentWillChoosePolicy = (room) => emitToRoom(room, SocketEv
     gamePhase: GamePhases.PresidentPolicyChoice,
 })
 
-export const emitVotingPhaseStart = (room, chancellorCandidateName) => emitToRoom(
-    room,
-    SocketEvents.VOTING_PHASE_START,
-    {
-        chancellorCandidate: chancellorCandidateName,
-        timestamp: getCurrentTimestamp(),
-    },
-)
+export const emitVotingPhaseStart = (room, chancellorCandidateName) => {
+    const remainingPlayers = getRemainingVotingPlayers(room)
+    const messageContent = `${getRemainingVotesCount(room)} votes left. Waiting for [${truncate(remainingPlayers.join(', '), 40)}]`
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
 
-export const emitChancellorChoicePhase = (room) => emitToRoom(room, SocketEvents.CHANCELLOR_CHOICE_PHASE, {
-    playersChoices: getChancellorChoices(room),
-    presidentName: getPresident(room).playerName,
-    timestamp: getCurrentTimestamp(),
-})
+    emitToRoom(
+        room,
+        SocketEvents.VOTING_PHASE_START,
+        {
+            chancellorCandidate: chancellorCandidateName,
+            timestamp: getCurrentTimestamp(),
+        },
+    )
+}
+
+export const emitChancellorChoicePhase = (room) => {
+    const presidentName = getPresident(room).playerName
+    const messageContent = `The president ${truncate(presidentName, 15)} is now choosing the candidate for next chancellor...`
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+
+    emitToRoom(room, SocketEvents.CHANCELLOR_CHOICE_PHASE, {
+        playersChoices: getChancellorChoices(room),
+        presidentName,
+        timestamp: getCurrentTimestamp(),
+    })
+}
 

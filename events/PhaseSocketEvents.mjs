@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { GamePhases, PlayerAffilications } from '../Dictionary'
+import { GamePhases, PlayerAffilications, MessagesTypes } from '../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import {
     getPlayersCount,
@@ -14,7 +14,7 @@ import {
 } from '../utils/RoomsManager'
 import * as emits from './emits'
 
-const { forEach, get } = lodash
+const { forEach, get, truncate } = lodash
 
 export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresidentName = null) => {
     startChancellorChoicePhase(currentRoom, designatedPresidentName)
@@ -34,19 +34,32 @@ export const startGameEvent = (socket) => {
 export const endGame = ({ currentRoom }) => {
     const { winningSide, reason } = checkWinConditions(currentRoom)
     const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
-    emits.emitMessage(currentRoom, null, { content: `${winningSideName} have won - ${reason}` })
+
+    const messageContent = `${winningSideName} have won - ${reason}`
+    emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
 
     setGamePhase(currentRoom, GamePhases.Ended)
 
     emits.emitGameFinished(currentRoom, winningSide)
 }
 
-export const startVotingPhaseVote = ({ currentRoom }, { playerName: chancellorName }) => {
-    initializeVoting(currentRoom, chancellorName)
-    emits.emitVotingPhaseStart(currentRoom, chancellorName)
+export const startVotingPhaseVote = (socket, { playerName: chancellorName }) => {
+    initializeVoting(socket.currentRoom, chancellorName)
+    const messageContent = `${truncate(chancellorName, 15)} has been nominated to be next chancellor. Voting phase will begin in 10 sec...`
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+
+    SocketEventsUtils.resumeGame(socket, {
+        delay: 10000,
+        func: () => {
+            emits.emitVotingPhaseStart(socket.currentRoom, chancellorName)
+        },
+    })
 }
 
 export const startPresidentPolicyChoice = ({ currentRoom }) => {
+    const messageContent = 'The president is now choosing which 2 policies the chancellor will choose from...'
+    emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
+
     setGamePhase(currentRoom, GamePhases.PresidentPolicyChoice)
     emits.emitPresidentWillChoosePolicy(currentRoom)
     emits.emitChoosePolicyToPresident(currentRoom)
@@ -65,11 +78,10 @@ export const startDesignateNextPresidentPhase = ({ currentRoom }) => {
 export const startPeekAffiliationSuperpowerPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekAffiliationSuperpowerPhase)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    emits.emitMessage(
-        socket.currentRoom,
-        null,
-        { content: 'The president has gained power to see affiliation of one player. Waiting for him to decide who to investigate...' },
-    )
+
+    const messageContent = 'The president has gained power to see affiliation of one choosen player. Waiting for his choice...'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+
     emits.emitChooserPlayer(socket.currentRoom, presidentName)
     emits.emitPeekAffiliationToPresident(socket.currentRoom)
 }
@@ -77,11 +89,10 @@ export const startPeekAffiliationSuperpowerPhase = (socket) => {
 export const startPeekCardsPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
-    emits.emitMessage(
-        socket.currentRoom,
-        null,
-        { content: 'The president has gained power to see next 3 cards, waiting for acknowledgement...' },
-    )
+
+    const messageContent = 'The president has gained power to see 3 top cards from policies pile. Waiting for confirmation...'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+
     emits.emitChooserPlayer(socket.currentRoom, presidentName)
     emits.emitPeekCardsToPresident(socket.currentRoom)
 }

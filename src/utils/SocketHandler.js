@@ -90,14 +90,12 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, (payload) => {
-            const { presidentName, playersChoices, timestamp } = payload.data
+            const { presidentName, playersChoices } = payload.data
 
             this.props.roomActions.chooseNewPresident({ newPresident: presidentName })
             this.props.roomActions.setVeto({ value: false })
             this.props.roomActions.resetVotes()
-            this.props.chatActions.addMessage({ timestamp, content: `${presidentName} has become the new president!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_CHANCELLOR_CHOICE })
-            this.props.chatActions.addMessage({ timestamp, content: `${presidentName} is now choosing a new chancellor...` })
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
