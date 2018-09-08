@@ -15,7 +15,7 @@ const PlayerAvatar = ({
     className,
 }) => {
     const liberalAvatarPicture = getAvatar(`liberal-${liberalAvatar}`)
-    const facistAvatarPicture = getAvatar(`fascist-${fascistAvatar}`)
+    const fascistAvatarPicture = getAvatar(`fascist-${fascistAvatar}`)
 
     if (!liberalAvatarPicture) {
         return null
@@ -25,7 +25,7 @@ const PlayerAvatar = ({
         <div className={classNames(styles.avatarWrapper, className, { [styles.dead]: isDead })}>
             {isOwner && <Icon name="fa-bolt" className={styles.ownerIcon} />}
             {isPlayerWaitedFor && <Icon name="fa-clock-o" className={styles.selectingWaitIcon} />}
-            {fascistAvatar && <img className={classNames(styles.portrait, styles.facistPortrait)} src={facistAvatarPicture} alt="Player facist avatar" />}
+            {fascistAvatar && <img className={classNames(styles.portrait, styles.fascistPortrait)} src={fascistAvatarPicture} alt="Player fascist avatar" />}
             <img className={styles.portrait} src={liberalAvatarPicture} alt="Player liberal avatar" />
         </div>
     )
