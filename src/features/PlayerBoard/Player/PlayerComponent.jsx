@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { isUndefined } from 'lodash'
 import PlayerAvatar from './PlayerAvatar/PlayerAvatar'
 import PlayerRole from './PlayerRole/PlayerRole'
 import VoteBubble from './VoteBubble/VoteBubble'
@@ -14,34 +13,30 @@ const PlayerComponent = ({
     liberalAvatar,
     facistAvatar,
     role,
+    onClick,
     isSelectable,
-    onChoiceModeSelect,
     isChoiceModeVisible,
     isDead,
-    isPlayerWaitedFor,
+    isWaitIconVisible,
     isOwner,
-}) => {
-    return (
-        <div className={styles.player}>
-            <div
-                className={classNames(styles.playerWrapper, { [styles.selectable]: isSelectable, [styles.blurred]: isChoiceModeVisible && !isSelectable })}
-                data-playername={playerName}
-                onClick={isSelectable ? onChoiceModeSelect : null}
-            >
-                <div>{playerName}</div>
-                <VoteBubble playerName={playerName} direction={bubbleDirection} />
-                <PlayerAvatar
-                    liberalAvatar={liberalAvatar}
-                    fascistAvatar={facistAvatar}
-                    isDead={isDead}
-                    isPlayerWaitedFor={isPlayerWaitedFor}
-                    isOwner={isOwner}
-                />
-                <PlayerRole role={role} />
-            </div>
-        </div>
-    )
-}
+}) => (
+    <div
+        className={classNames(styles.player, { [styles.selectable]: isSelectable, [styles.blurred]: isChoiceModeVisible && !isSelectable })}
+        data-playername={playerName}
+        onClick={onClick}
+    >
+        <div>{playerName}</div>
+        <VoteBubble playerName={playerName} direction={bubbleDirection} />
+        <PlayerAvatar
+            liberalAvatar={liberalAvatar}
+            fascistAvatar={facistAvatar}
+            isDead={isDead}
+            isWaitIconVisible={isWaitIconVisible}
+            isOwner={isOwner}
+        />
+        <PlayerRole role={role} />
+    </div>
+)
 
 PlayerComponent.displayName = 'PlayerComponent'
 PlayerComponent.propTypes = {
@@ -50,10 +45,10 @@ PlayerComponent.propTypes = {
     facistAvatar: PropTypes.number,
     role: PropTypes.string,
     isSelectable: PropTypes.bool,
-    onChoiceModeSelect: PropTypes.func,
+    onClick: PropTypes.func,
     isChoiceModeVisible: PropTypes.bool,
     isDead: PropTypes.bool,
-    isPlayerWaitedFor: PropTypes.bool,
+    isWaitIconVisible: PropTypes.bool,
     isOwner: PropTypes.bool,
     bubbleDirection: PropTypes.string,
 }

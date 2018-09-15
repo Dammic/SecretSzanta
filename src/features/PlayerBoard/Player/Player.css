@@ -1,6 +1,6 @@
 @import 'variables/variables.css';
 
-.playerWrapper {
+.player {
     text-align: center;
     position: relative;
     max-width: var(--player-image-width);
@@ -45,15 +45,6 @@
             pointer-events: none; 
         }
     }
-}
-
-.player {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex: 0 1 33%;
 }
 
 .blurred {

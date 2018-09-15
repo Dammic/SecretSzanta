@@ -24,28 +24,34 @@ export class Player extends React.PureComponent {
     }
 
     onPlayerClick = (event) => {
-        this.props.onChoiceModeSelect(event.target.getAttribute('data-playername'))
+        if (this.isSelectable()) {
+            this.props.onChoiceModeSelect(event.target.getAttribute('data-playername'))
+        }
     }
 
     isSelectable = () => {
-        const { choiceMode, player: { playerName } } = this.props
-        return choiceMode.isVisible && includes(choiceMode.selectablePlayers, playerName)
+        const { choiceMode, player: { playerName, isDead } } = this.props
+        return choiceMode.isVisible && includes(choiceMode.selectablePlayers, playerName) && !isDead
+    }
+
+    isWaitIconVisible = () => {
+        const {
+            gamePhase,
+            votes,
+            choiceMode: { chooserPlayerName },
+            player: { playerName, isDead },
+        } = this.props
+        return (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName)) && !isDead) ||
+            chooserPlayerName === playerName
     }
 
     render() {
         const {
-            gamePhase,
-            votes,
             roomOwnerName,
             direction,
-            choiceMode: { isVisible, chooserPlayerName },
+            choiceMode: { isVisible },
             player: { playerName, facistAvatar, avatarNumber, isDead, role },
         } = this.props
-        const isSelectable = this.isSelectable()
-        const isPlayerWaitedFor = (
-            (gamePhase === GamePhases.GAME_PHASE_VOTING && isUndefined(get(votes, playerName)) && !isDead) ||
-            chooserPlayerName === playerName
-        )
 
         return (
             <PlayerComponent
@@ -54,10 +60,10 @@ export class Player extends React.PureComponent {
                 facistAvatar={facistAvatar}
                 role={role}
                 isChoiceModeVisible={isVisible}
-                isSelectable={isSelectable && !isDead}
+                isSelectable={this.isSelectable()}
                 isDead={isDead}
-                onChoiceModeSelect={this.onPlayerClick}
-                isPlayerWaitedFor={isPlayerWaitedFor}
+                onClick={this.onPlayerClick}
+                isWaitIconVisible={this.isWaitIconVisible()}
                 isOwner={playerName === roomOwnerName}
                 bubbleDirection={direction}
             />

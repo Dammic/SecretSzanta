@@ -8,7 +8,7 @@ const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
         liberalAvatar: 1,
         fascistAvatar: null,
         isDead: false,
-        isPlayerWaitedFor: false,
+        isWaitIconVisible: false,
         isOwner: false,
         className: 'mockClassName',
         ...propsOverrides,
@@ -24,12 +24,12 @@ describe('<PlayerAvatar />', () => {
     })
 
     it('shows liberal avatar, fascist avatar, owner icon, waited for icon, dead classname for full data', () => {
-        const { props } = setupProps({ fascistAvatar: 21, isDead: true, isPlayerWaitedFor: true, isOwner: true })
+        const { props } = setupProps({ fascistAvatar: 21, isDead: true, isWaitIconVisible: true, isOwner: true })
         expectMatchingSnapshot(<PlayerAvatar {...props} />)
     })
 
     it('doesnt show fascist avatar, owner icon, waited for icon, dead classname for minimum data', () => {
-        const { props } = setupProps({ fascistAvatar: null, isDead: false, isPlayerWaitedFor: false, isOwner: false })
+        const { props } = setupProps({ fascistAvatar: null, isDead: false, isWaitIconVisible: false, isOwner: false })
         expectMatchingSnapshot(<PlayerAvatar {...props} />)
     })
 })
