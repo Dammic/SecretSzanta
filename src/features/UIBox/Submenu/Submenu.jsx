@@ -38,7 +38,7 @@ const mapStateToProps = ({ user, room }) => {
         affiliation: get(player, 'affiliation'),
         isAffiliationHidden: user.isAffiliationHidden,
         role: get(player, 'role'),
-        facistAvatar: get(player, 'facistAvatar'),
+        fascistAvatar: get(player, 'facistAvatar'),
         liberalAvatar: get(player, 'avatarNumber'),
         isOwner: room.ownerName === user.userName,
         isDead: get(player, 'isDead'),

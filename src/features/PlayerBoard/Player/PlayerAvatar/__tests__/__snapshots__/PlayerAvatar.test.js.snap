@@ -25,8 +25,8 @@ exports[`<PlayerAvatar /> shows liberal avatar, fascist avatar, owner icon, wait
     className="fa fa-clock-o selectingWaitIcon"
   />
   <img
-    alt="Player facist avatar"
-    className="portrait facistPortrait"
+    alt="Player fascist avatar"
+    className="portrait fascistPortrait"
     src="test-file-stub"
   />
   <img
