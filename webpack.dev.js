@@ -133,15 +133,8 @@ module.exports = {
                 },
             },
         }, {
-            test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            use: {
-                loader: 'url-loader?limit=10000&minetype=application/font-woff',
-            },
-        }, {
-            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            use: {
-                loader: 'file-loader',
-            },
+            test: /\.(woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            loader: 'url-loader',
         }, {
             test: /\.(jpe?g|png|gif|svg)$/i,
             use: [
@@ -171,6 +164,7 @@ module.exports = {
             test: /\.css$/,
             include: [
                 path.join(__dirname, 'src'), // important for performance!
+                path.join(__dirname, 'node_modules/font-awesome/css'),
             ],
             use: [
                 {
