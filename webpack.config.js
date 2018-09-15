@@ -4,7 +4,8 @@ const CompressionPlugin = require('compression-webpack-plugin')
 const BrotliPlugin = require('brotli-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HappyPack = require('happypack')
-const happyThreadPool = HappyPack.ThreadPool({ size: 6 });
+const happyThreadPool = HappyPack.ThreadPool({ size: 6 })
+const getLatestGitCommitHash = require('./utils/webpackUtils').getLatestGitCommitHash
 
 const productionPlugins = [
     new CompressionPlugin({
@@ -127,6 +128,9 @@ module.exports = (env, argv) => {
             ...(isProduction ? productionPlugins : []),
             new HtmlWebpackPlugin({
                 template: 'views/index.html',
+                data: {
+                    gitVersionHash: getLatestGitCommitHash(),
+                },
             }),
             // turn on for bundle size analytics
             // new BundleAnalyzerPlugin({
