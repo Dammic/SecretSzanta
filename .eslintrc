@@ -4,6 +4,7 @@
         "plugin:react/recommended",
         "plugin:lodash/recommended",
         "plugin:jsx-a11y/recommended",
+        "plugin:css-modules/recommended"
     ],
     "settings": {
         "import/resolver": {
@@ -37,7 +38,8 @@
         "react",
         "lodash",
         "jsx-a11y",
-        "jest"
+        "jest",
+        "css-modules"
     ],
     "env": {
         "jest/globals": true

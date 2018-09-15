@@ -85,9 +85,12 @@ module.exports = (env, argv) => {
                 threadPool: happyThreadPool,
                 loaders: [
                     {
+                        path: 'ts-loader',
+                        query: { happyPackMode: true },
+                    }, {
                         loader: 'babel-loader',
                         options: {
-                            plugins: ['lodash', '@babel/plugin-proposal-class-properties'],
+                            plugins: ['lodash', '@babel/plugin-transform-typescript', '@babel/plugin-proposal-class-properties'],
                             presets: [
                                 ['@babel/preset-env', {
                                     targets: {
@@ -97,7 +100,7 @@ module.exports = (env, argv) => {
                                 ['@babel/react'],
                             ],
                         },
-                    }
+                    },
                 ],
             }),
             new HappyPack({
@@ -139,7 +142,7 @@ module.exports = (env, argv) => {
         ],
         module: {
             rules: [{
-                test: /\.js$|\.mjs$/,
+                test: /\.js$|\.mjs$|\.ts$/,
                 include: [
                     path.join(__dirname, 'src'), // important for performance!
                 ],
@@ -157,7 +160,7 @@ module.exports = (env, argv) => {
             }],
         },
         resolve: {
-            extensions: ['.js', '.mjs'],
+            extensions: ['.js', '.mjs', '.ts'],
             alias: {
                 packages: path.resolve('./src/packages'),
             },

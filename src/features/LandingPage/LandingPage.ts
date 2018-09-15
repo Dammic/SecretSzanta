@@ -16,7 +16,11 @@ import AboutComponent from './StaticPages/About/AboutComponent'
 import '../../styles/globals.css'
 import styles from './LandingPage.css'
 
-export class LandingPage extends React.PureComponent {
+interface Props {
+    currentView: string,
+}
+
+export class LandingPage extends React.PureComponent<Props> {
     static propTypes = {
         currentView: PropTypes.string,
     }
