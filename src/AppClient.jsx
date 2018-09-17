@@ -13,7 +13,7 @@ render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
             <Switch>
-                <Route path="/" component={LandingPage} />
+                <Route exact path="/" component={LandingPage} />
                 <Route path="*" component={NotFound} />
             </Switch>
         </ConnectedRouter>
