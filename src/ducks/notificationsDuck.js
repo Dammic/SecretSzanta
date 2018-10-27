@@ -15,7 +15,7 @@ const initialState = {
 const actions = {
     [addNotification]: (state, action) => {
         const { notifications, currentID } = state
-        const { type, message } = action.payload
+        const { type, message, additional } = action.payload
         const newID = currentID + 1
 
         const newNotification = {
@@ -30,8 +30,11 @@ const actions = {
             currentID: newID,
             ...(
                 type === MessagesTypes.STATUS
-                    ? { statusNotification: newNotification }
-                    : {
+                    ? { statusNotification: {
+                            ...newNotification,
+                            additional,
+                        }
+                    } : {
                         notifications: [
                             ...notifications,
                             newNotification,

@@ -58,8 +58,9 @@ export class SocketHandler extends React.PureComponent {
             this.props.chatActions.addMessage(payload.data)
         })
         socket.on(SocketEvents.ClientGameNotification, (payload) => {
-            const { type, message } = payload.data
-            this.props.notificationsActions.addNotification({ type, message })
+            const { type, message, additional } = payload.data
+            console.log(additional)
+            this.props.notificationsActions.addNotification({ type, message, additional })
         })
         socket.on(SocketEvents.VOTING_PHASE_START, (payload) => {
             const { chancellorCandidate, timestamp } = payload.data
@@ -174,7 +175,7 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
-            
+  
             this.props.roomActions.revealFacists({ facists })
 
             if (!whoWon) {

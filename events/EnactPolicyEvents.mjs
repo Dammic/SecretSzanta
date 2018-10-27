@@ -73,9 +73,9 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customRes
     } else {
         if (!customResumeFunc) {
             const messageContent = 'The chancellor choise phase will begin in 10sec...'
-            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counterStart: 30 })
         }
-        SocketEventsUtils.resumeGame(socket, { delay: 10000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
+        SocketEventsUtils.resumeGame(socket, { delay: 30000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
 }
 
