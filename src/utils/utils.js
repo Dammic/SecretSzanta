@@ -1,18 +1,16 @@
 import React from 'react';
+import { trim } from 'lodash';
 
 export function replaceWithComponent(message) {
-    const regex = /(%\*?[^%]*\*?%)/g;
-    const matched = message.match(regex)
-    const reslt = message.split(regex).reduce((result, el, index) => {
-        console.log(el)
-        if (el === '%counter%') {
-            result.push(<span>counter</span>);
-        } else if (el[1] === '*') {
-            result.push(<b>{trim(el, '%*')}</b>);
+    const regex = /(%\*?[^%]*\*?%)/g
+    return message.split(regex).reduce((result, splittedPhrase, index) => {
+        if (splittedPhrase === '%counter%') {
+            result.push(<span>counter</span>)
+        } else if (splittedPhrase[1] === '*') {
+            result.push(<b>{trim(splittedPhrase, '%*')}</b>)
         } else {
-            result.push(<span>{el}</span>); 
+            result.push(<span>{splittedPhrase}</span>)
         }
-        return result;
+        return result
     }, [])
-    return reslt;
 }
