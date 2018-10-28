@@ -2,14 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-const Icon = ({ onClick, className, name }) => {
-    return (
-        <i className={classNames('fa', name, className)} onClick={onClick} />
-    )
-}
+import fontAwesome from 'font-awesome/css/font-awesome.css'
 
+const Icon = ({ onClick, className, name }) => (
+    <i className={classNames(fontAwesome.fa, fontAwesome[name], className)} onClick={onClick} />
+)
+
+Icon.displayName = 'Icon'
 Icon.propTypes = {
-    name: PropTypes.string,
+    name: PropTypes.string.isRequired,
     onClick: PropTypes.func,
     className: PropTypes.string,
 }

@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import styles from './CurtainWrapper.css'
 
 class CurtainWrapper extends PureComponent {
+    static displayName = 'CurtainWrapper'
     static propTypes = {
         isHidden: PropTypes.bool,
         isFascist: PropTypes.bool,

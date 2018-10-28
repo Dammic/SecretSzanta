@@ -2,18 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { isUndefined } from 'lodash'
-import PlayerAvatarComponent from './PlayerAvatar/PlayerAvatarComponent'
-import PlayerRoleComponent from './PlayerRole/PlayerRoleComponent'
+import PlayerAvatar from './PlayerAvatar/PlayerAvatar'
+import PlayerRole from './PlayerRole/PlayerRole'
+import VoteBubble from './VoteBubble/VoteBubble'
 
 import styles from './Player.css'
 
 const PlayerComponent = ({
     playerName,
+    bubbleDirection,
     liberalAvatar,
     facistAvatar,
     role,
-    voteBubbleStyle,
-    voteValue,
     isSelectable,
     onChoiceModeSelect,
     isChoiceModeVisible,
@@ -29,32 +29,32 @@ const PlayerComponent = ({
                 onClick={isSelectable ? onChoiceModeSelect : null}
             >
                 <div>{playerName}</div>
-                {!isUndefined(voteValue) && <div className={voteBubbleStyle}>{voteValue}</div>}
-                <PlayerAvatarComponent
+                <VoteBubble playerName={playerName} direction={bubbleDirection} />
+                <PlayerAvatar
                     liberalAvatar={liberalAvatar}
-                    facistAvatar={facistAvatar}
+                    fascistAvatar={facistAvatar}
                     isDead={isDead}
                     isPlayerWaitedFor={isPlayerWaitedFor}
                     isOwner={isOwner}
                 />
-                <PlayerRoleComponent role={role} />
+                <PlayerRole role={role} />
             </div>
         </div>
     )
 }
 
+PlayerComponent.displayName = 'PlayerComponent'
 PlayerComponent.propTypes = {
     playerName: PropTypes.string,
     liberalAvatar: PropTypes.number,
     facistAvatar: PropTypes.number,
     role: PropTypes.string,
-    voteBubbleStyle: PropTypes.string,
-    voteValue: PropTypes.string,
     isSelectable: PropTypes.bool,
     onChoiceModeSelect: PropTypes.func,
     isChoiceModeVisible: PropTypes.bool,
     isDead: PropTypes.bool,
     isPlayerWaitedFor: PropTypes.bool,
     isOwner: PropTypes.bool,
+    bubbleDirection: PropTypes.string,
 }
 export default PlayerComponent

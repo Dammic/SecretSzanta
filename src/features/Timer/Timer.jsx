@@ -7,6 +7,7 @@ import { setWaitTime, setVeto } from '../../ducks/roomDuck'
 import { socket } from '../../utils/SocketHandler'
 
 export class Timer extends React.PureComponent {
+    static displayName = 'Timer'
     static propTypes = {
         setVeto: PropTypes.func,
         setWaitTime: PropTypes.func,
@@ -29,17 +30,17 @@ export class Timer extends React.PureComponent {
         clearInterval(this.interval)
     }
 
+    onVetoClick = () => {
+        socket.emit(SocketEvents.VetoVoteRegistered)
+        this.props.setVeto({ value: false })
+    }
+
     tick = () => {
         this.setState({ secondsRemaining: this.state.secondsRemaining - 1 })
         if (this.state.secondsRemaining <= 0) {
             this.props.setWaitTime(0)
             clearInterval(this.interval)
         }
-    }
-
-    onVetoClick = () => {
-        socket.emit(SocketEvents.VetoVoteRegistered)
-        this.props.setVeto({ value: false })
     }
 
     render() {
