@@ -17,7 +17,7 @@ export const emitRemainingPlayersNotification = (room) => {
         const messageContent = '{votesLeftBold} votes left. Waiting for [{remainingPlayersBold}]'
         emitGameNotification(room, MessagesTypes.STATUS, messageContent, {
             votesLeftBold: getRemainingVotesCount(room),
-            remainingPlayersBold: `${truncate(remainingPlayers.join(', '), 40)}…`,
+            remainingPlayersBold: truncate(remainingPlayers.join(', '), 40),
         })
     }
 }
