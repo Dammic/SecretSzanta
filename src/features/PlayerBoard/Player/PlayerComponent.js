@@ -15,7 +15,7 @@ const PlayerComponent = ({
     facistAvatar,
     role,
     isSelectable,
-    onChoiceModeSelect,
+    onClick,
     isChoiceModeVisible,
     isDead,
     isPlayerWaitedFor,
@@ -25,8 +25,7 @@ const PlayerComponent = ({
         <div className={styles.player}>
             <div
                 className={classNames(styles.playerWrapper, { [styles.selectable]: isSelectable, [styles.blurred]: isChoiceModeVisible && !isSelectable })}
-                data-playername={playerName}
-                onClick={isSelectable ? onChoiceModeSelect : null}
+                onClick={e => onClick(e, playerName)}
             >
                 <div>{playerName}</div>
                 <VoteBubble playerName={playerName} direction={bubbleDirection} />
@@ -50,7 +49,7 @@ PlayerComponent.propTypes = {
     facistAvatar: PropTypes.number,
     role: PropTypes.string,
     isSelectable: PropTypes.bool,
-    onChoiceModeSelect: PropTypes.func,
+    onClick: PropTypes.func,
     isChoiceModeVisible: PropTypes.bool,
     isDead: PropTypes.bool,
     isPlayerWaitedFor: PropTypes.bool,

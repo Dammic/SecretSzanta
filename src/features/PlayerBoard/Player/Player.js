@@ -23,8 +23,8 @@ export class Player extends React.PureComponent {
         }),
     }
 
-    onPlayerClick = (event) => {
-        this.props.onChoiceModeSelect(event.target.getAttribute('data-playername'))
+    onPlayerClick = (_, playerName) => {
+        this.props.onChoiceModeSelect(playerName)
     }
 
     isSelectable = () => {
@@ -56,7 +56,7 @@ export class Player extends React.PureComponent {
                 isChoiceModeVisible={isVisible}
                 isSelectable={isSelectable && !isDead}
                 isDead={isDead}
-                onChoiceModeSelect={this.onPlayerClick}
+                onClick={isSelectable ? this.onPlayerClick : null}
                 isPlayerWaitedFor={isPlayerWaitedFor}
                 isOwner={playerName === roomOwnerName}
                 bubbleDirection={direction}
