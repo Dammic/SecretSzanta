@@ -3,14 +3,13 @@ import { getCurrentTimestamp } from '../../utils/utils'
 import lodash from 'lodash'
 
 import { emitToRoom, emitGameNotification } from './generic'
+import { emitRemainingPlayersNotification } from './voting'
 
 import {
     getFacists,
     getPlayerboardType,
     getChancellorChoices,
     getPresident,
-    getRemainingVotesCount,
-    getRemainingVotingPlayers,
 } from '../../utils/RoomsManager'
 
 const { map, pick, truncate } = lodash
@@ -48,12 +47,7 @@ export const emitPresidentWillChoosePolicy = (room) => emitToRoom(room, SocketEv
 })
 
 export const emitVotingPhaseStart = (room, chancellorCandidateName) => {
-    const remainingPlayers = getRemainingVotingPlayers(room)
-    const messageContent = '{votesLeftBold} votes left. Waiting for [{remainingPlayersBold}]'
-    emitGameNotification(room, MessagesTypes.STATUS, messageContent, {
-        votesLeftBold: getRemainingVotesCount(room),
-        remainingPlayersBold: `${truncate(remainingPlayers.join(', '), 40)}…`,
-    })
+    emitRemainingPlayersNotification(room)
 
     emitToRoom(
         room,

@@ -1,9 +1,6 @@
 import lodash from 'lodash'
 import { SocketEvents, MessagesTypes } from '../../Dictionary'
 import { emitToRoom, emitGameNotification } from './generic'
-
-const { truncate } = lodash
-
 import {
     getRemainingVotesCount,
     getRemainingVotingPlayers,
@@ -12,12 +9,21 @@ import {
     getVotingResult,
 } from '../../utils/RoomsManager'
 
-export const emitNewVote = (room, playerName) => {
+const { truncate } = lodash
+
+export const emitRemainingPlayersNotification = (room) => {
     const remainingPlayers = getRemainingVotingPlayers(room)
     if (remainingPlayers.length) {
-        const messageContent = `${getRemainingVotesCount(room)} votes left. Waiting for [${truncate(remainingPlayers.join(', '), 40)}]`
-        emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+        const messageContent = '{votesLeftBold} votes left. Waiting for [{remainingPlayersBold}]'
+        emitGameNotification(room, MessagesTypes.STATUS, messageContent, {
+            votesLeftBold: getRemainingVotesCount(room),
+            remainingPlayersBold: `${truncate(remainingPlayers.join(', '), 40)}…`,
+        })
     }
+}
+
+export const emitNewVote = (room, playerName) => {
+    emitRemainingPlayersNotification(room)
 
     emitToRoom(room, SocketEvents.VOTING_PHASE_NEWVOTE, {
         playerName,
