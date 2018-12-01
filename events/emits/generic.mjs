@@ -24,6 +24,6 @@ export const emitError = (emit, errorMessage) => {
     emit(SocketEvents.CLIENT_ERROR, { error: errorMessage })
 }
 
-export const emitGameNotification = (room, type, message, additional) => {
-    emitToRoom(room, SocketEvents.ClientGameNotification, { type, message, additional })
+export const emitGameNotification = (room, type, message, values) => {
+    emitToRoom(room, SocketEvents.ClientGameNotification, { type, message, values })
 }

@@ -16,8 +16,8 @@ import {
 const { map, pick, truncate } = lodash
 
 export const emitStartGame = (room) => {
-    const messageContent = 'The game has been started. Chancellor choice phase will begin in 10sec...'
-    emitGameNotification(room, MessagesTypes.STATUS, messageContent, { counterStart: 10 })
+    const messageContent = 'The game has been started. Chancellor choice phase will begin in {counter}...'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent, { counter: 10 })
 
     emitToRoom(room, SocketEvents.START_GAME, {
         boardType: getPlayerboardType(room),
@@ -49,8 +49,11 @@ export const emitPresidentWillChoosePolicy = (room) => emitToRoom(room, SocketEv
 
 export const emitVotingPhaseStart = (room, chancellorCandidateName) => {
     const remainingPlayers = getRemainingVotingPlayers(room)
-    const messageContent = `${getRemainingVotesCount(room)} votes left. Waiting for [${truncate(remainingPlayers.join(', '), 40)}]`
-    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+    const messageContent = '{votesLeftBold} votes left. Waiting for [{remainingPlayersBold}]'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent, {
+        votesLeftBold: getRemainingVotesCount(room),
+        remainingPlayersBold: `${truncate(remainingPlayers.join(', '), 40)}…`,
+    })
 
     emitToRoom(
         room,

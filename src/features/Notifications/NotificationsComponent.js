@@ -11,6 +11,7 @@ const NotificationsComponent = ({ notifications, statusNotification, deleteNotif
             <StatusNotification
                 id={statusNotification.id}
                 message={statusNotification.message}
+                values={statusNotification.values}
                 type={statusNotification.type}
                 additional={statusNotification.additional}
             />
