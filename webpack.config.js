@@ -59,7 +59,7 @@ module.exports = (env, argv) => {
             ignored: /node_modules/,
         },
         entry: {
-            app: path.join(__dirname, 'src', 'AppClient.jsx'),
+            app: path.join(__dirname, 'src', 'AppClient.js'),
         },
         output: {
             path: path.join(__dirname, '.dist'),
@@ -139,7 +139,7 @@ module.exports = (env, argv) => {
         ],
         module: {
             rules: [{
-                test: /\.js$|\.mjs|\.jsx$/,
+                test: /\.js$|\.mjs$/,
                 include: [
                     path.join(__dirname, 'src'), // important for performance!
                 ],
@@ -157,7 +157,7 @@ module.exports = (env, argv) => {
             }],
         },
         resolve: {
-            extensions: ['.js', '.jsx', '.mjs'],
+            extensions: ['.js', '.mjs'],
             alias: {
                 packages: path.resolve('./src/packages'),
             },
