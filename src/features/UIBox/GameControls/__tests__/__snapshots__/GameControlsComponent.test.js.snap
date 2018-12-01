@@ -26,14 +26,6 @@ exports[`<GameControlsComponent /> renders left arrow if affiliation menu is sho
       role="button"
       tabIndex="0"
     >
-      voting
-    </div>
-    <div
-      className="btn"
-      onClick={[MockFunction]}
-      role="button"
-      tabIndex="0"
-    >
       kick
     </div>
     <div
@@ -99,14 +91,6 @@ exports[`<GameControlsComponent /> shows additional start button if game is at n
       tabIndex="0"
     >
       start
-    </div>
-    <div
-      className="btn"
-      onClick={[MockFunction]}
-      role="button"
-      tabIndex="0"
-    >
-      voting
     </div>
     <div
       className="btn"
