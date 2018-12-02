@@ -22,10 +22,10 @@ export const replaceKeysWithComponent = (values) => {
     return fromPairs(map(values, (val, key) => {
         const lowercasedKey = key.toLowerCase()
         if (lowercasedKey.includes('bold')) {
-            return [key, <b>{val}</b>]
+            return [key, <b key={key}>{val}</b>]
         }
         if (lowercasedKey.includes('counter')) {
-            return [key, <Counter start={val} />]
+            return [key, <Counter key={key} start={val} />]
         }
         return [key, val]
     }))

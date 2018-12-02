@@ -26,11 +26,7 @@ export const vote = (roomName, playerName, value) => {
 }
 
 export const didAllVote = (roomName) => {
-    const { votes, playersDict } = roomsStore[roomName]
-    const votingPlayers = reject(playersDict, { isDead: true })
-    const votingPlayersNames = map(votingPlayers, 'playerName')
-    const filteredVotes = filter(votes, (_, key) => includes(votingPlayersNames, key))
-    return size(filteredVotes) === size(votingPlayers)
+    return size(getRemainingVotingPlayers(roomName)) === 0;
 }
 
 export const getRemainingVotesCount = (roomName) => {
@@ -41,9 +37,9 @@ export const getRemainingVotesCount = (roomName) => {
 
 export const getRemainingVotingPlayers = (roomName) => {
     const { votes, playersDict } = roomsStore[roomName]
-    const votedPlayers = keys(votes)
-    const remainingVotingPlayers = map(reject(playersDict, (_, playerName) => includes(votedPlayers, playerName)), 'playerName')
-    return remainingVotingPlayers
+    const votingPlayersNames = map(reject(playersDict, { isDead: true }), 'playerName')
+    const filteredVotes = reject(votingPlayersNames, (key) => includes(keys(votes), key))
+    return filteredVotes
 }
 
 export const getVotes = (roomName) => {

@@ -87,7 +87,6 @@ describe('voting', () => {
                 iza: { isDead: false, playerName: 'iza' },
             }
             testRoom.votes = {
-                ala: true,
                 ula: false,
             }
             const result = getRemainingVotingPlayers('testRoom')
@@ -103,7 +102,7 @@ describe('voting', () => {
             }
             testRoom.votes = {}
             const result = getRemainingVotingPlayers('testRoom')
-            expect(result).toEqual(['ala', 'ula', 'iza'])
+            expect(result).toEqual(['ula', 'iza'])
         })
     })
 })

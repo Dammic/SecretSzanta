@@ -359,7 +359,7 @@ export const selectName = (socket, { userName }) => {
 export const presidentDesignatedNextPresident = (socket, { playerName }) => {
     emits.emitChooserPlayer(socket.currentRoom, '')
 
-    const messageContent = '{playerName} has been designated as the next president for the next turn! Chancellor choice phase will begin in {counter}…'
+    const messageContent = '{playerNameBold} has been designated as the next president for the next turn! Chancellor choice phase will begin in {counter}…'
     emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
         playerNameBold: playerName,
         counter: 10,

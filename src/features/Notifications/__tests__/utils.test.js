@@ -10,9 +10,9 @@ describe('replaceKeysWithComponent', () => {
             bOlD: 'test3',
         })
         expect(keysWithReplacementElements).toEqual({
-            bold: <b>test</b>,
-            Bold: <b>test2</b>,
-            bOlD: <b>test3</b>,
+            bold: <b key="bold">test</b>,
+            Bold: <b key="Bold">test2</b>,
+            bOlD: <b key="bOlD">test3</b>,
         })
     })
 
@@ -23,9 +23,9 @@ describe('replaceKeysWithComponent', () => {
             coUNTER: 5,
         })
         expect(keysWithReplacementElements).toEqual({
-            counter: <Counter start={34} />,
-            Counter: <Counter start={3} />,
-            coUNTER: <Counter start={5} />,
+            counter: <Counter key="counter" start={34} />,
+            Counter: <Counter key="Counter" start={3} />,
+            coUNTER: <Counter key="coUNTER" start={5} />,
         })
     })
 
@@ -36,8 +36,8 @@ describe('replaceKeysWithComponent', () => {
             otherName: 34,
         })
         expect(keysWithReplacementElements).toEqual({
-            bold: <b>test</b>,
-            Counter: <Counter start={3} />,
+            bold: <b key="bold">test</b>,
+            Counter: <Counter key="Counter" start={3} />,
             otherName: 34,
         })
     })
