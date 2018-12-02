@@ -35,8 +35,11 @@ export const endGame = ({ currentRoom }) => {
     const { winningSide, reason } = checkWinConditions(currentRoom)
     const winningSideName = winningSide === PlayerAffilications.LIBERAL_AFFILIATION ? 'Liberals' : 'Fascists'
 
-    const messageContent = `${winningSideName} have won - ${reason}`
-    emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
+    const messageContent = '{winningSideNameBold} have won - {reasonBold}'
+    emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent, {
+        winningSideNameBold: winningSideName,
+        reasonBold: reason,
+    })
 
     setGamePhase(currentRoom, GamePhases.Ended)
 
@@ -45,8 +48,11 @@ export const endGame = ({ currentRoom }) => {
 
 export const startVotingPhaseVote = (socket, { playerName: chancellorName }) => {
     initializeVoting(socket.currentRoom, chancellorName)
-    const messageContent = `${truncate(chancellorName, 15)} has been nominated to be next chancellor. Voting phase will begin in 10 sec...`
-    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+    const messageContent = '{chancellorNameBold} has been nominated to be next chancellor. Voting phase will begin in {counter}…'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
+        counter: 10,
+        chancellorNameBold: truncate(chancellorName, 15),
+    })
 
     SocketEventsUtils.resumeGame(socket, {
         delay: 10000,
@@ -57,7 +63,7 @@ export const startVotingPhaseVote = (socket, { playerName: chancellorName }) => 
 }
 
 export const startPresidentPolicyChoice = ({ currentRoom }) => {
-    const messageContent = 'The president is now choosing which 2 policies the chancellor will choose from...'
+    const messageContent = 'The president is now choosing which 2 policies the chancellor will choose from…'
     emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
 
     setGamePhase(currentRoom, GamePhases.PresidentPolicyChoice)
@@ -79,7 +85,7 @@ export const startPeekAffiliationSuperpowerPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekAffiliationSuperpowerPhase)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
 
-    const messageContent = 'The president has gained power to see affiliation of one choosen player. Waiting for his choice...'
+    const messageContent = 'The president has gained power to see affiliation of one choosen player. Waiting for his choice…'
     emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
 
     emits.emitChooserPlayer(socket.currentRoom, presidentName)
@@ -90,7 +96,7 @@ export const startPeekCardsPhase = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.PeekCardsSuperpower)
     const presidentName = get(getPresident(socket.currentRoom), 'playerName')
 
-    const messageContent = 'The president has gained power to see 3 top cards from policies pile. Waiting for confirmation...'
+    const messageContent = 'The president has gained power to see 3 top cards from policies pile. Waiting for confirmation…'
     emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
 
     emits.emitChooserPlayer(socket.currentRoom, presidentName)

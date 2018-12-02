@@ -36,7 +36,7 @@
     background-color: var(--notification-status-color);
     text-align: center;
 
-    box-shadow: 0px 0px 28px #a9a9a9;
+    box-shadow: 0px 0px 28px #000000;
     font-size: 18px;
     color: #2D2A2A;
     height: auto;

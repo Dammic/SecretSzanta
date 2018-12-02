@@ -15,7 +15,7 @@ import {
 const { map, pick, truncate } = lodash
 
 export const emitStartGame = (room) => {
-    const messageContent = 'The game has been started. Chancellor choice phase will begin in {counter}...'
+    const messageContent = 'The game has been started. Chancellor choice phase will begin in {counter}…'
     emitGameNotification(room, MessagesTypes.STATUS, messageContent, { counter: 10 })
 
     emitToRoom(room, SocketEvents.START_GAME, {
@@ -61,8 +61,9 @@ export const emitVotingPhaseStart = (room, chancellorCandidateName) => {
 
 export const emitChancellorChoicePhase = (room) => {
     const presidentName = getPresident(room).playerName
-    const messageContent = `The president ${truncate(presidentName, 15)} is now choosing the candidate for next chancellor...`
-    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+    const truncatedPresidentName = truncate(presidentName, 15)
+    const messageContent = 'The president {presidentNameBold} is now choosing the candidate for next chancellor…'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent, { presidentNameBold: truncatedPresidentName })
 
     emitToRoom(room, SocketEvents.CHANCELLOR_CHOICE_PHASE, {
         playersChoices: getChancellorChoices(room),

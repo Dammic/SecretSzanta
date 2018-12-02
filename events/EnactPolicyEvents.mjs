@@ -72,8 +72,8 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customRes
         PhaseSocketEvents.endGame(socket)
     } else {
         if (!customResumeFunc) {
-            const messageContent = 'The chancellor choise phase will begin in 10sec...'
-            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counterStart: 30 })
+            const messageContent = 'The chancellor choise phase will begin in {counter}…'
+            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: 30 })
         }
         SocketEventsUtils.resumeGame(socket, { delay: 30000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
@@ -96,8 +96,8 @@ export const resetElectionTrackerAndEnactPolicy = (socket) => {
     const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
     const policyName = topCard === PolicyCards.FacistPolicy ? 'fascist' : 'liberal'
 
-    const messageContent = `The failed elections tracker has reached 3 and will be reset, enacting a ${policyName} policy!`
-    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+    const messageContent = 'The failed elections tracker has reached 3 and will be reset, enacting a {policyNameBold} policy!'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { policyNameBold: policyName })
 
     enactPolicyEvent(socket, topCard)
 }

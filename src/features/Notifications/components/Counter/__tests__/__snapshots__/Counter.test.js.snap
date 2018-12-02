@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Counter /> matches snapshot at beginning of countdown 1`] = `
+<span
+  className="counter"
+>
+  2sec
+</span>
+`;

@@ -33,11 +33,15 @@ export const emitNewVote = (room, playerName) => {
 export const emitVotingResult = (room) => {
     const hasVotingSucceed = getVotingResult(room)
     const newChancellor = hasVotingSucceed ? getChancellor(room).playerName : null
+    const truncatedChancellorName = truncate(newChancellor, 20)
 
     const messageContent = hasVotingSucceed
-        ? `Voting succeeded - ${truncate(newChancellor, 20)} became new chancellor. Policy enacting phase will begin in 10sec...`
-        : 'Voting failed! New voting round with new president will begin in 10sec...'
-    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+        ? 'Voting succeeded - {chancellorNameBold} became new chancellor. Policy enacting phase will begin in {counter}…'
+        : 'Voting failed! New voting round with new president will begin in {counter}…'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent, {
+        chancellorNameBold: truncatedChancellorName,
+        counter: 30,
+    })
 
     emitToRoom(room, SocketEvents.VOTING_PHASE_REVEAL, {
         votes: getVotes(room),

@@ -34,7 +34,7 @@ export class Counter extends React.PureComponent {
     render() {
         return (
             <span className={styles.counter}>
-                {this.state.counter}
+                {this.state.counter}sec
             </span>
         )
     }

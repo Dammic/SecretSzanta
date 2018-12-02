@@ -46,7 +46,7 @@ export const emitPresidentWillKillPlayer = (room) => {
     const presidentName = get(getPresident(room), 'playerName')
     const playersChoices = getOtherAlivePlayers(room, presidentName)
 
-    const messageContent = 'The president has gained power to kill one person! Now the victim is being choosen...'
+    const messageContent = 'The president has gained power to kill one person! Now the victim is being choosen…'
     emitGameNotification(room, MessagesTypes.STATUS, messageContent)
 
     emitToRoom(room, SocketEvents.KillSuperpowerUsed, {
@@ -71,7 +71,7 @@ export const emitDesignateNextPresident = (room) => {
     const presidentName = get(getPresident(room), 'playerName')
     const playersChoices = getOtherAlivePlayers(room, presidentName)
 
-    const messageContent = 'The president has gained power to designate next president for the next round. Waiting for him to choose the next president...'
+    const messageContent = 'The president has gained power to designate next president for the next round. Waiting for him to choose the next president…'
     emitGameNotification(room, MessagesTypes.STATUS, messageContent)
 
     emitToRoom(room, SocketEvents.DesignateNextPresident, {
