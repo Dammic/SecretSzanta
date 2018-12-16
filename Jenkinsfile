@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'sudo apt-get install libpng-dev'
+                sh 'apt-get install libpng-dev'
                 sh 'npm install' 
             }
         }
