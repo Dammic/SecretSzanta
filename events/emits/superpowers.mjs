@@ -1,6 +1,6 @@
-import { SocketEvents, PlayerAffilications, PlayerRole } from '../../Dictionary'
+import { SocketEvents, PlayerAffilications, PlayerRole, MessagesTypes } from '../../Dictionary'
 import { getCurrentTimestamp } from '../../utils/utils'
-import { emitToRoom, emitToPlayer } from './generic'
+import { emitToRoom, emitToPlayer, emitGameNotification } from './generic'
 import lodash from 'lodash'
 
 import {
@@ -46,6 +46,9 @@ export const emitPresidentWillKillPlayer = (room) => {
     const presidentName = get(getPresident(room), 'playerName')
     const playersChoices = getOtherAlivePlayers(room, presidentName)
 
+    const messageContent = 'The president has gained power to kill one person! Now the victim is being choosen…'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
+
     emitToRoom(room, SocketEvents.KillSuperpowerUsed, {
         presidentName,
         timestamp: getCurrentTimestamp(),
@@ -67,6 +70,9 @@ export const emitPlayerAffiliationToPresident = (room, selectedPlayerName) => {
 export const emitDesignateNextPresident = (room) => {
     const presidentName = get(getPresident(room), 'playerName')
     const playersChoices = getOtherAlivePlayers(room, presidentName)
+
+    const messageContent = 'The president has gained power to designate next president for the next round. Waiting for him to choose the next president…'
+    emitGameNotification(room, MessagesTypes.STATUS, messageContent)
 
     emitToRoom(room, SocketEvents.DesignateNextPresident, {
         presidentName,

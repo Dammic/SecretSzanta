@@ -40,6 +40,7 @@ export {
     vote,
     didAllVote,
     getRemainingVotesCount,
+    getRemainingVotingPlayers,
     getVotes,
     getVotingResult,
     getChancellorChoices,

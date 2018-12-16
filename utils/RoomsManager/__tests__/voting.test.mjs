@@ -6,6 +6,7 @@ import {
     vote,
     didAllVote,
     getRemainingVotesCount,
+    getRemainingVotingPlayers,
     getVotes,
     getVotingResult,
     getChancellorChoices,
@@ -74,6 +75,34 @@ describe('voting', () => {
             }
             const result = didAllVote('testRoom')
             expect(result).toEqual(false)
+        })
+    })
+
+    describe('getRemainingVotingPlayers', () => {
+        test('returns players that did not vote', () => {
+            const { testRoom } = roomsStore
+            testRoom.playersDict = {
+                ala: { isDead: true, playerName: 'ala' },
+                ula: { isDead: false, playerName: 'ula' },
+                iza: { isDead: false, playerName: 'iza' },
+            }
+            testRoom.votes = {
+                ula: false,
+            }
+            const result = getRemainingVotingPlayers('testRoom')
+            expect(result).toEqual(['iza'])
+        })
+
+        test('returns players that did not vote #2', () => {
+            const { testRoom } = roomsStore
+            testRoom.playersDict = {
+                ala: { isDead: true, playerName: 'ala' },
+                ula: { isDead: false, playerName: 'ula' },
+                iza: { isDead: false, playerName: 'iza' },
+            }
+            testRoom.votes = {}
+            const result = getRemainingVotingPlayers('testRoom')
+            expect(result).toEqual(['ula', 'iza'])
         })
     })
 })

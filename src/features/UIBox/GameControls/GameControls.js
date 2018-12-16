@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import GameControlsComponent from './GameControlsComponent'
 import { toggleAffiliationMenu } from '../../../ducks/userDuck'
-import { startGame, startKickPlayerMode, startBanPlayerMode, startVoting } from '../../../gameLogic/ownerActions'
+import { startGame, startKickPlayerMode, startBanPlayerMode } from '../../../gameLogic/ownerActions'
 
 export class GameControls extends React.PureComponent {
     static displayName = 'GameControls'
@@ -22,7 +22,6 @@ export class GameControls extends React.PureComponent {
         const { gamePhase, isAffiliationHidden, isOwner } = this.props
         return (
             <GameControlsComponent
-                onStartVote={startVoting}
                 onStartGame={startGame}
                 onKickPlayer={startKickPlayerMode}
                 onBanPlayer={startBanPlayerMode}

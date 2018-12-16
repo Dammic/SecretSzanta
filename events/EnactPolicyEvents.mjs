@@ -1,4 +1,4 @@
-import { PolicyCards, PlayerBoards } from '../Dictionary'
+import { PolicyCards, PlayerBoards, MessagesTypes } from '../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import PhaseSocketEvents from './PhaseSocketEvents'
 import {
@@ -46,23 +46,18 @@ export const checkForImmediateSuperpowers = ({ currentRoom }) => {
     if (fascistPolicyCount === 5) {
         return (socket) => {
             toggleVeto(socket.currentRoom)
-            emits.emitMessage(
-                socket.currentRoom,
-                null,
-                { content: 'The veto power has been unlocked! Now president or chancellor can veto any enacted policy!' },
-            )
-            PhaseSocketEvents.startKillPhase(socket)
+
+            const messageContent = 'The power of veto has been unlocked for next rounds!'
+            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+
+            SocketEventsUtils.resumeGame(socket, { delay: 5000, func: PhaseSocketEvents.startKillPhase })
         }
     }
     return null
 }
 
-// TODO:
-// 3) steps: check if game should finish (if yes finish), check if there is any superpower (if yes trigger), otherwise resume game (yes resume)
 export const enactPolicyEvent = (socket, policy) => {
-    const isFacist = policy === PolicyCards.FacistPolicy
     enactPolicy(socket.currentRoom, policy)
-    emits.emitMessage(socket.currentRoom, null, { content: `A ${isFacist ? 'facist' : 'liberal'} policy has been enacted!` })
     emits.emitNewPolicy(socket.currentRoom, policy)
 }
 
@@ -76,13 +71,16 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customRes
     } else if (checkIfGameShouldFinish(socket.currentRoom)) {
         PhaseSocketEvents.endGame(socket)
     } else {
-        SocketEventsUtils.resumeGame(socket, { delay: 3000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
+        if (!customResumeFunc) {
+            const messageContent = 'The chancellor choise phase will begin in {counter}…'
+            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: 30 })
+        }
+        SocketEventsUtils.resumeGame(socket, { delay: 30000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
     }
 }
 
 export const increaseElectionTracker = ({ currentRoom }) => {
     increaseFailedElectionsCount(currentRoom)
-    emits.emitMessage(currentRoom, null, { content: 'The failed elections tracker has increased!' })
 }
 
 export const resetElectionTracker = (socket) => {
@@ -90,15 +88,17 @@ export const resetElectionTracker = (socket) => {
 
     resetFailedElectionsCount(socket.currentRoom)
     emits.emitResetTracker()
-
-    const trackerMessage = `The failed elections tracker${trackerPosition === 3 ? ' has reached 3, so it' : ''} will be reset!`
-    emits.emitMessage(socket.currentRoom, null, { content: trackerMessage })
 }
 
 export const resetElectionTrackerAndEnactPolicy = (socket) => {
     resetElectionTracker(socket)
 
     const topCard = takeChoicePolicyCards(socket.currentRoom, 1)[0]
+    const policyName = topCard === PolicyCards.FacistPolicy ? 'fascist' : 'liberal'
+
+    const messageContent = 'The failed elections tracker has reached 3 and will be reset, enacting a {policyNameBold} policy!'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { policyNameBold: policyName })
+
     enactPolicyEvent(socket, topCard)
 }
 

@@ -57,10 +57,12 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.CLIENT_SEND_MESSAGE, (payload) => {
             this.props.chatActions.addMessage(payload.data)
         })
+        socket.on(SocketEvents.ClientGameNotification, (payload) => {
+            const { type, message, values } = payload.data
+            this.props.notificationsActions.addNotification({ type, message, values })
+        })
         socket.on(SocketEvents.VOTING_PHASE_START, (payload) => {
             const { chancellorCandidate, timestamp } = payload.data
-            this.props.chatActions.addMessage({ timestamp, content: `The president has nominated ${chancellorCandidate} for chancellor.` })
-            this.props.chatActions.addMessage({ timestamp, content: `Voting phase has begun - vote for the new parliment!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_VOTING })
             this.cancelEveryGameChoice()
 
@@ -75,10 +77,9 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.START_GAME, (payload) => {
-            const { playerName, timestamp, boardType } = payload.data
+            const { boardType } = payload.data
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.START_GAME })
             this.props.roomActions.setBoardType({ newBoardType: boardType })
-            this.props.chatActions.addMessage({ timestamp, content: `${playerName} has started the game.` })
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
             const { newChancellor } = payload.data
@@ -87,14 +88,12 @@ export class SocketHandler extends React.PureComponent {
             }
         })
         socket.on(SocketEvents.CHANCELLOR_CHOICE_PHASE, (payload) => {
-            const { presidentName, playersChoices, timestamp } = payload.data
+            const { presidentName, playersChoices } = payload.data
 
             this.props.roomActions.chooseNewPresident({ newPresident: presidentName })
             this.props.roomActions.setVeto({ value: false })
             this.props.roomActions.resetVotes()
-            this.props.chatActions.addMessage({ timestamp, content: `${presidentName} has become the new president!` })
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_CHANCELLOR_CHOICE })
-            this.props.chatActions.addMessage({ timestamp, content: `${presidentName} is now choosing a new chancellor...` })
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
@@ -108,12 +107,11 @@ export class SocketHandler extends React.PureComponent {
             this.props.roomActions.revealFacists({ facists })
         })
         socket.on(SocketEvents.VOTING_PHASE_NEWVOTE, (payload) => {
-            const { playerName, remaining, timestamp } = payload.data
+            const { playerName } = payload.data
             this.props.roomActions.registerVote({ playerName })
-            this.props.chatActions.addMessage({ timestamp, content: `${playerName} has voted. ${remaining} ${remaining === 1 ? 'vote' : 'votes'} left...` })
         })
         socket.on(SocketEvents.VOTING_PHASE_REVEAL, (payload) => {
-            const { votes, timestamp, newChancellor } = payload.data
+            const { votes } = payload.data
             this.props.roomActions.revealVotes({ newVotes: votes })
         })
 
@@ -124,7 +122,6 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.KillSuperpowerUsed, (payload) => {
             const { presidentName, playersChoices, timestamp } = payload.data
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.GAME_PHASE_SUPERPOWER })
-            this.props.chatActions.addMessage({ timestamp, content: `The president has gained enough power to kill a foe! Waiting for ${presidentName} to select the victim...` })
             // TODO: Put logic related to president choose into other Event
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
@@ -137,7 +134,6 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.DesignateNextPresident, (payload) => {
             const { presidentName, playersChoices, timestamp } = payload.data
             this.props.roomActions.changeGamePhase({ gamePhase: GamePhases.DesignateNextPresidentPhase })
-            this.props.chatActions.addMessage({ timestamp, content: 'Because 3 fascist policies have been enacted, the president will now choose its successor...' })
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             if (presidentName === this.props.userName) {
                 this.props.playersActions.setChoiceMode({
@@ -149,9 +145,6 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.PlayerKilled, (payload) => {
             const { playerName, wasHitler, timestamp } = payload.data
-            if (!wasHitler) {
-                this.props.chatActions.addMessage({ timestamp, content: `The president has killed ${playerName}... It turned out the killed foe was not Hitler, unfortunately` })
-            }
             this.props.roomActions.killPlayer({ playerName })
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {
@@ -181,7 +174,7 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.GameFinished, (payload) => {
             const { whoWon, facists } = payload.data
-            
+  
             this.props.roomActions.revealFacists({ facists })
 
             if (!whoWon) {
@@ -233,13 +226,11 @@ export class SocketHandler extends React.PureComponent {
 
         socket.on(SocketEvents.PresidentChoosePolicy, ({ data: { timestamp, presidentName, gamePhase } }) => {
             this.props.roomActions.changeGamePhase({ gamePhase })
-            this.props.chatActions.addMessage({ timestamp, content: 'The president is now discarding one policy out of three...' })
             this.props.playersActions.setChooserPlayer({ playerName: presidentName })
             this.props.roomActions.resetVotes()
         })
 
         socket.on(SocketEvents.ChancellorChoosePolicy, ({ data: { timestamp, chancellorName } }) => {
-            this.props.chatActions.addMessage({ timestamp, content: 'The president has discarded one policy. Now the chancellor will enact one of two remaining policies...' })
             this.props.playersActions.setChooserPlayer({ playerName: chancellorName })
         })
 

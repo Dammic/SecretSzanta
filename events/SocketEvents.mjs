@@ -7,6 +7,7 @@ import {
 } from '../utils/utils'
 import {
     SocketEvents,
+    MessagesTypes,
     GamePhases,
     PlayerAffilications,
     ErrorMessages,
@@ -74,10 +75,13 @@ import {
     removePlayerFromPlayersList,
 } from '../utils/PlayersManager'
 
-const { isNil, includes, find, get } = lodash
+const { isNil, includes, find, get, truncate } = lodash
 
 export const triggerVetoPrompt = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
+
+    const messageContent = 'The president and chancellor can now veto the enacted policy for {counter}. Otherwise the chancellor choice phase will begin.'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: 30 })
 
     emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
     emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
@@ -86,8 +90,7 @@ export const triggerVetoPrompt = (socket) => {
         socket,
         {
             delay: 30000,
-            func: checkForNextStep,
-            customMessage: 'Due to veto power, the president and chancellor can now together veto the enacted policy. Next phase will begin in 30 seconds (assuming no veto will be reported)...',
+            func: checkForNextStep
         },
     )
 }
@@ -117,7 +120,10 @@ export const veto = (socket) => {
     const roleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'president' : 'chancellor'
     if (didVetoSucceed(socket.currentRoom)) {
         setGamePhase(socket.currentRoom, GamePhases.ServerAcceptedVeto)
-        emits.emitMessage(socket.currentRoom, null, { content: `The ${roleString} invoked veto for the enacted policy as well! The enacted policy has been rejected!` })
+
+        const messageContent = 'The {roleBold} invoked veto for the enacted policy as well! The enacted policy has been rejected!'
+        emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { roleBold: roleString })
+
         SocketEventsUtils.clearNextPhaseTimeout()
         discardPolicyByVeto(socket.currentRoom)
 
@@ -126,10 +132,16 @@ export const veto = (socket) => {
 
         // TODO: check if we need this resumeGame (and if we can move it somewhere else?)
         emits.emitSyncPolicies(socket.currentRoom)
-        checkForNextStep(socket)
+
+        SocketEventsUtils.resumeGame(socket, { delay: 5000, func: checkForNextStep })
     } else {
         const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
-        emits.emitMessage(socket.currentRoom, null, { content: `The ${roleString} invoked veto for the enacted policy! Will the ${missingVetoRoleString} call veto as well?` })
+
+        const messageContent = 'The {roleBold} has proposed veto for the enacted policy! Waiting for {missingRoleBold} to decide!'
+        emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
+            roleBold: roleString,
+            missingRoleBold: missingVetoRoleString,
+        })
     }
 }
 
@@ -215,33 +227,41 @@ export const voteEvent = (socket, { value }) => {
             setChancellor(socket.currentRoom)
         }
 
-        const chancellorCandidateName = get(getChancellorCandidateInfo(socket.currentRoom), 'playerName')
-        const votingResultMessage = `Voting completed! ${hasVotingSucceed
-            ? `${chancellorCandidateName} has become the new chancellor!`
-            : 'The proposal has been rejected!'}
-        `
-        emits.emitMessage(socket.currentRoom, null, { content: votingResultMessage })
         emits.emitVotingResult(socket.currentRoom)
 
         const hasPolicyBeenEnacted = updateTrackerPosition(socket, hasVotingSucceed)
-        checkForNextStep(
-            socket,
-            hasPolicyBeenEnacted,
-            hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent
-        )
+        SocketEventsUtils.resumeGame(socket, {
+            delay: hasPolicyBeenEnacted ? 5000 : 0,
+            func: () => {
+                checkForNextStep(
+                    socket,
+                    hasPolicyBeenEnacted,
+                    hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent
+                )
+            },
+        })
     }
 }
 
 export const choosePolicyChancellor = (socket, choice) => {
     enactPolicyEvent(socket, choice)
 
-    const isVeto = isVetoUnlocked(socket.currentRoom)
+    const policyName = choice === PolicyCards.FacistPolicy ? 'fascist' : 'liberal'
+    const messageContent = 'A {policyNameBold} policy has been enacted!'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { policyNameBold: policyName })
 
-    if (isVeto) {
-        triggerVetoPrompt(socket)
-    } else {
-        checkForNextStep(socket, true)
-    }
+    SocketEventsUtils.resumeGame(socket, {
+        delay: 5000,
+        func: () => {
+            const isVeto = isVetoUnlocked(socket.currentRoom)
+            if (isVeto) {
+                triggerVetoPrompt(socket)
+            } else {
+                checkForNextStep(socket, true)
+            }
+        }
+    })
+
 }
 
 export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
@@ -250,6 +270,9 @@ export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chanc
     emits.emitChancellorWillChoosePolicy(currentRoom, chancellorName)
 
     discardPolicy(currentRoom, choice)
+
+    const messageContent = 'The chancellor will now enact one of the 2 policies passed by the president…'
+    emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
 
     emits.emitChoosePolicyToChancellor(currentRoom, drawnCards)
 }
@@ -334,15 +357,23 @@ export const selectName = (socket, { userName }) => {
 }
 
 export const presidentDesignatedNextPresident = (socket, { playerName }) => {
-    emits.emitMessage(socket.currentRoom, null, { content: `The president has designated ${playerName} as the next president for the next turn!` })
     emits.emitChooserPlayer(socket.currentRoom, '')
+
+    const messageContent = '{playerNameBold} has been designated as the next president for the next turn! Chancellor choice phase will begin in {counter}…'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
+        playerNameBold: playerName,
+        counter: 10,
+    })
 
     const onResume = socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName)
     checkForNextStep(socket, onResume)
 }
 
 export const superpowerAffiliationPeekPlayer = (socket, { playerName }) => {
-    emits.emitMessage(socket.currentRoom, null, { content: `The president has choosen ${playerName} to be investigated and has now seen their affiliation!` })
+    const messageContent = 'The president will now see {playerNameBold} affiliation. Waiting for his acknowledgement…'
+    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
+        playerNameBold: truncate(playerName, 15),
+    })
 
     emits.emitPlayerAffiliationToPresident(socket.currentRoom, playerName)
 }
@@ -353,7 +384,6 @@ export const endPeekPlayerSuperpower = (socket) => {
 }
 
 export const endPeekCardsPhase = (socket) => {
-    emits.emitMessage(socket.currentRoom, null, { content: 'The president has seen the top 3 policy cards' })
     emits.emitChooserPlayer(socket.currentRoom, '')
     checkForNextStep(socket)
 }

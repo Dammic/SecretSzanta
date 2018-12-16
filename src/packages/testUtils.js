@@ -13,3 +13,5 @@ export const expectShallowMatchingSnapshot = (element) => {
     const renderedElement = shallowRenderer.render(element)
     expect(renderedElement).toMatchSnapshot()
 }
+
+export const asyncWait = () => new Promise(resolve => setTimeout(process.nextTick(resolve)))

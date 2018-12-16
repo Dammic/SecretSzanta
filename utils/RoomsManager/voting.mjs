@@ -10,6 +10,7 @@ const {
     includes,
     map,
     filter,
+    keys,
 } = lodash
 
 export const initializeVoting = (roomName, chancellorCandidateName) => {
@@ -25,17 +26,20 @@ export const vote = (roomName, playerName, value) => {
 }
 
 export const didAllVote = (roomName) => {
-    const { votes, playersDict } = roomsStore[roomName]
-    const votingPlayers = reject(playersDict, { isDead: true })
-    const votingPlayersNames = map(votingPlayers, 'playerName')
-    const filteredVotes = filter(votes, (_, key) => includes(votingPlayersNames, key))
-    return size(filteredVotes) === size(votingPlayers)
+    return size(getRemainingVotingPlayers(roomName)) === 0;
 }
 
 export const getRemainingVotesCount = (roomName) => {
     const { votes, playersDict } = roomsStore[roomName]
     const votingPlayers = reject(playersDict, { isDead: true })
     return size(votingPlayers) - size(votes)
+}
+
+export const getRemainingVotingPlayers = (roomName) => {
+    const { votes, playersDict } = roomsStore[roomName]
+    const votingPlayersNames = map(reject(playersDict, { isDead: true }), 'playerName')
+    const filteredVotes = reject(votingPlayersNames, (key) => includes(keys(votes), key))
+    return filteredVotes
 }
 
 export const getVotes = (roomName) => {

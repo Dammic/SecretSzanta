@@ -10,6 +10,7 @@ export const SocketEvents = {
     ServerWaitingForVeto: 'SERVER_WAITING_FOR_VETO',
     VetoVoteRegistered: 'VETO_VOTE_REGISTERED',
     CLIENT_SEND_MESSAGE: 'CLIENT_SEND_MESSAGE',
+    ClientGameNotification: 'CLIENT_GAME_NOTIFICATION',
     CLIENT_JOIN_ROOM: 'CLIENT_JOIN_ROOM',
     CLIENT_LEAVE_ROOM: 'CLIENT_LEAVE_ROOM',
     CLIENT_GET_ROOM_DATA: 'CLIENT_GET_ROOM_DATA',
@@ -75,6 +76,7 @@ export const PlayerAffilications = {
 export const MessagesTypes = {
     ERROR: 'ERROR',
     INFO: 'INFO',
+    STATUS: 'STATUS',
 }
 export const ErrorMessages = {
     notOwner: 'This action is forbidden! You are not the owner!',

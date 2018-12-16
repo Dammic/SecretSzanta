@@ -1,30 +1,31 @@
 import React from 'react'
 import { map } from 'lodash'
 import NotificationPanel from './NotificationPanel'
-import { MessagesTypes } from '../../../Dictionary'
+import { StatusNotification } from './StatusNotification'
 
 import styles from './Notifications.css'
 
-const NotificationsComponent = ({ notifications, deleteNotification }) => {
-    const renderPanel = (info) => {
-        const isError = info.type === MessagesTypes.ERROR
-
-        return (
+const NotificationsComponent = ({ notifications, statusNotification, deleteNotification }) => (
+    <div className={styles.notifications} >
+        {statusNotification &&
+            <StatusNotification
+                id={statusNotification.id}
+                message={statusNotification.message}
+                values={statusNotification.values}
+                type={statusNotification.type}
+                additional={statusNotification.additional}
+            />
+        }
+        {map(notifications, info => (
             <NotificationPanel
                 key={`panel-${info.id}`}
                 id={info.id}
                 message={info.message}
-                isError={isError}
+                type={info.type}
                 deleteNotification={deleteNotification}
             />
-        )
-    }
-
-    return (
-        <div className={styles.notifications} >
-            {map(notifications, renderPanel)}
-        </div>
-    )
-}
+        ))}
+    </div>
+)
 
 export default NotificationsComponent
