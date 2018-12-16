@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:11.4-slim' 
+            image 'mhart/alpine-node:11' 
             args '-p 3001:3001' 
         }
     }
