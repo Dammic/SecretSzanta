@@ -13,6 +13,7 @@ import {
     checkWinConditions,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
+import { TimeDelay } from './consts.mjs'
 
 const { forEach, get, truncate } = lodash
 
@@ -28,7 +29,7 @@ export const startGameEvent = (socket) => {
     forEach(facists, player => emits.emitBecomeFascistToPlayer(socket.currentRoom, player, facists))
 
     emits.emitStartGame(socket.currentRoom)
-    SocketEventsUtils.resumeGame(socket, { delay: 10000, func: startChancellorChoicePhaseEvent })
+    SocketEventsUtils.resumeGame(socket, { delay: TimeDelay.MEDIUM_DELAY, func: startChancellorChoicePhaseEvent })
 }
 
 export const endGame = ({ currentRoom }) => {
@@ -55,7 +56,7 @@ export const startVotingPhaseVote = (socket, { playerName: chancellorName }) => 
     })
 
     SocketEventsUtils.resumeGame(socket, {
-        delay: 10000,
+        delay: TimeDelay.MEDIUM_DELAY,
         func: () => {
             emits.emitVotingPhaseStart(socket.currentRoom, chancellorName)
         },
