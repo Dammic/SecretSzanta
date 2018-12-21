@@ -35,7 +35,7 @@ describe('<ChatForm />', () => {
     })
 
     it('sendMessage is called when user presses enter on input', () => {
-        const { component } = setupProps(null, mount)
+        const { component } = setupProps({}, mount)
         const messageInput = component.find('input')
         const instance = component.instance()
         instance.sendMessage = jest.fn()
