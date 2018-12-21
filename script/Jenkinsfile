@@ -19,3 +19,41 @@ pipeline {
         }
     }
 }
+
+pipeline {
+    agent {
+        docker {
+            image 'node:current' 
+            args '-p 3001:3001' 
+        }
+    }
+    stages {
+        stage('Ssh into astralfox') {
+            steps {
+                sh 'ssh dammic@192.168.1.18'
+                sh 'cd projects/SecretSzanta'
+                sh 'git checkout master'
+                sh 'git pull origin master'
+            } 
+
+        }
+        stage('Build') { 
+            steps {
+                sh 'rm -rf node_modules'
+                sh 'npm install'
+                sh 'npm run build:prod'
+            }
+        }
+        stage('Test') { 
+            steps {
+                sh 'npm run test'
+            }
+        }
+        stage('restart server') {
+            steps {
+                sh 'lsof -i4 :3000'
+                sh 'npm run run'
+            }
+        }
+    }
+}
