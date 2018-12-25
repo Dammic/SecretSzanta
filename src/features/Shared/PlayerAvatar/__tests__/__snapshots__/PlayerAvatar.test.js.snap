@@ -9,13 +9,27 @@ exports[`<PlayerAvatar /> doesnt show fascist avatar, owner icon, waited for ico
     className="portrait"
     src="test-file-stub"
   />
-  <PlayerRole />
+  <PlayerRole
+    role="ROLE_CHANCELLOR"
+  />
+</div>
+`;
+
+exports[`<PlayerAvatar /> doesnt show role ribbon if user is dead 1`] = `
+<div
+  className="avatarWrapper mockClassName dead"
+>
+  <img
+    alt="Player liberal avatar"
+    className="portrait"
+    src="test-file-stub"
+  />
 </div>
 `;
 
 exports[`<PlayerAvatar /> returns null if liberalAvatarPicture doesnt exist 1`] = `null`;
 
-exports[`<PlayerAvatar /> shows liberal avatar, fascist avatar, owner icon, waited for icon, dead classname and no role for full data 1`] = `
+exports[`<PlayerAvatar /> shows liberal avatar, fascist avatar, owner icon, waited for icon, dead classname and role ribbon for full data 1`] = `
 <div
   className="avatarWrapper mockClassName dead"
 >

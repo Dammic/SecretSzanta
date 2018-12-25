@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { includes } from 'lodash'
 import { PlayerAffilications } from '../../../../Dictionary'
-import PlayerAvatar from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatar'
+import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 
 import styles from './Submenu.css'
 

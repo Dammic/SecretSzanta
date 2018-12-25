@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { PlayerRole } from '../../../../Dictionary'
 import { FancyButton } from '../../Shared/Buttons'
-import PlayerAvatar from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatar'
+import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 import { Icon } from '../../Shared/Icon'
 
 import commonStyles from '../../Shared/CommonStyles/commonStyles.css'

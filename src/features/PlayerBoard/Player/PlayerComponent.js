@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import PlayerAvatar from './PlayerAvatar/PlayerAvatar'
+import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 import VoteBubble from './VoteBubble/VoteBubble'
 
 import styles from './Player.css'

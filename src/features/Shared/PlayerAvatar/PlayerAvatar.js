@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { getAvatar } from '../../../../utils/avatarsHelper'
-import { Icon } from '../../../Shared/Icon'
-import { PlayerRole } from './PlayerRole/PlayerRole'
+import { getAvatar } from '../../../utils/avatarsHelper'
+import { Icon } from '../../Shared/Icon'
+import { PlayerRole } from './PlayerRole'
 
 import styles from './PlayerAvatar.css'
 
@@ -44,4 +44,5 @@ PlayerAvatar.propTypes = {
     isOwner: PropTypes.bool,
     className: PropTypes.string,
 }
-export default PlayerAvatar
+
+export { PlayerAvatar }

@@ -2,8 +2,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { forEach } from 'lodash'
 import { expectMatchingSnapshot } from 'packages/testUtils'
-import { PlayerRole as PlayerRoleDict } from '../../../../../../../Dictionary'
-import PlayerRole from '../PlayerRole'
+import { PlayerRole as PlayerRoleDict } from '../../../../../../Dictionary'
+import { PlayerRole } from '../PlayerRole'
 
 const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
     const props = {

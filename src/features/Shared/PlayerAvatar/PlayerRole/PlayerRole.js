@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { PlayerRole as PlayerRoleDict } from '../../../../../../Dictionary'
+import { PlayerRole as PlayerRoleDict } from '../../../../../Dictionary'
 
 import styles from './PlayerRole.css'
 
@@ -40,4 +40,3 @@ PlayerRole.propTypes = {
 }
 
 export { PlayerRole }
-export default PlayerRole
