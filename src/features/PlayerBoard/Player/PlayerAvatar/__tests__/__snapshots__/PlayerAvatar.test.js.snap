@@ -9,20 +9,23 @@ exports[`<PlayerAvatar /> doesnt show fascist avatar, owner icon, waited for ico
     className="portrait"
     src="test-file-stub"
   />
+  <PlayerRole />
 </div>
 `;
 
 exports[`<PlayerAvatar /> returns null if liberalAvatarPicture doesnt exist 1`] = `null`;
 
-exports[`<PlayerAvatar /> shows liberal avatar, fascist avatar, owner icon, waited for icon, dead classname for full data 1`] = `
+exports[`<PlayerAvatar /> shows liberal avatar, fascist avatar, owner icon, waited for icon, dead classname and no role for full data 1`] = `
 <div
   className="avatarWrapper mockClassName dead"
 >
-  <i
-    className="fa fa-bolt ownerIcon"
+  <Icon
+    className="ownerIcon"
+    name="fa-bolt"
   />
-  <i
-    className="fa fa-clock-o selectingWaitIcon"
+  <Icon
+    className="selectingWaitIcon"
+    name="fa-clock-o"
   />
   <img
     alt="Player fascist avatar"

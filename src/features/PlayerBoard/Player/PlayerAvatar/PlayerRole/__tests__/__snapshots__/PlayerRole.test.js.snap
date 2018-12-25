@@ -4,34 +4,50 @@ exports[`<PlayerRole /> returns null if role is incorrect 1`] = `null`;
 
 exports[`<PlayerRole /> returns null if role is not defined 1`] = `null`;
 
-exports[`<PlayerRole /> returns proper images if role is one of correct roles 1`] = `
-<img
-  alt="ROLE_CHANCELLOR"
-  className="role mockClassName"
-  src="test-file-stub"
-/>
+exports[`<PlayerRole /> returns proper ribbon classes for correct roles 1`] = `
+<div
+  className="ribbon"
+>
+  <span
+    className="roleName chancellor"
+  >
+    Chancellor
+  </span>
+</div>
 `;
 
-exports[`<PlayerRole /> returns proper images if role is one of correct roles 2`] = `
-<img
-  alt="ROLE_PRESIDENT"
-  className="role mockClassName"
-  src="test-file-stub"
-/>
+exports[`<PlayerRole /> returns proper ribbon classes for correct roles 2`] = `
+<div
+  className="ribbon"
+>
+  <span
+    className="roleName"
+  >
+    President
+  </span>
+</div>
 `;
 
-exports[`<PlayerRole /> returns proper images if role is one of correct roles 3`] = `
-<img
-  alt="ROLE_PREVIOUS_CHANCELLOR"
-  className="role mockClassName"
-  src="test-file-stub"
-/>
+exports[`<PlayerRole /> returns proper ribbon classes for correct roles 3`] = `
+<div
+  className="ribbon"
+>
+  <span
+    className="roleName previous"
+  >
+    P. Chancellor
+  </span>
+</div>
 `;
 
-exports[`<PlayerRole /> returns proper images if role is one of correct roles 4`] = `
-<img
-  alt="ROLE_PREVIOUS_PRESIDENT"
-  className="role mockClassName"
-  src="test-file-stub"
-/>
+exports[`<PlayerRole /> returns proper ribbon classes for correct roles 4`] = `
+<div
+  className="ribbon"
+>
+  <span
+    className="roleName previous"
+  >
+    P. President
+  </span>
+</div>
 `;
