@@ -22,6 +22,16 @@
     }
 }
 
+.avatar {
+    width: var(--voting-modal-player-width-small);
+    max-width: var(--voting-modal-player-width-small);
+
+    @media (--tablet) { 
+        width: var(--voting-modal-player-width-medium);
+        max-width: var(--voting-modal-player-width-medium);
+    }
+}
+
 .votingInfoAvatar {
     height: 120px;
     width: inherit;

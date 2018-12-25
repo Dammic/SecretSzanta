@@ -2,9 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { PlayerRole } from '../../../../Dictionary'
 import { FancyButton } from '../../Shared/Buttons'
-import { getAvatar } from '../../../utils/avatarsHelper'
-import PresidentRoleImage from '../../../static/President.png'
-import ChancellorRoleImage from '../../../static/Chancellor.png'
+import PlayerAvatar from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatar'
 import { Icon } from '../../Shared/Icon'
 
 import commonStyles from '../../Shared/CommonStyles/commonStyles.css'
@@ -19,8 +17,11 @@ const VotingModalComponent = ({
     const renderPlayer = (avatarNumber, role, playerName) => {
         return (
             <div className={styles.votingInfoPlayer}>
-                <img className={styles.votingInfoAvatar} src={getAvatar(`liberal-${avatarNumber}`)}></img>
-                <img className={styles.votingInfoRole} src={(role === PlayerRole.ROLE_PRESIDENT ? PresidentRoleImage : ChancellorRoleImage)}></img>
+                <PlayerAvatar
+                    liberalAvatar={avatarNumber}
+                    role={role}
+                    className={styles.avatar}
+                />
                 <span className={commonStyles.ellipsis}>{playerName}</span>
             </div>
         )
