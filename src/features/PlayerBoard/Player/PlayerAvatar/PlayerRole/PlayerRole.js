@@ -12,6 +12,8 @@ const roleMapping = {
     [PlayerRoleDict.ROLE_PREVIOUS_PRESIDENT]: 'P. President',
 }
 
+const previousRoles = [PlayerRoleDict.ROLE_PREVIOUS_CHANCELLOR, PlayerRoleDict.ROLE_PREVIOUS_PRESIDENT]
+
 const PlayerRole = ({ role }) => {
     if (!role || !roleMapping[role]) {
         return null
@@ -20,6 +22,7 @@ const PlayerRole = ({ role }) => {
     const roleName = roleMapping[role]
     const ribbonNameClassNames = classNames(styles.roleName, {
         [styles.chancellor]: role === PlayerRoleDict.ROLE_CHANCELLOR,
+        [styles.previous]: previousRoles.includes(role),
     })
 
     return (

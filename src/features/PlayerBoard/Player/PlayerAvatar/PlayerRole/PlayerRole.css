@@ -52,13 +52,32 @@
 
 .chancellor {
     background: linear-gradient(#CB5B5B 0%, #843636 100%);
+
+    &::after, &::before {
+        border-top: 3px solid #843636;
+    }
+
     &::after {
-        border-left: 3px solid transparent;
         border-right: 3px solid #843636;
     }
 
     &::before {
         border-left: 3px solid #843636;
-        border-right: 3px solid transparent;
+    }
+}
+
+.previous {
+    background: linear-gradient(#8CCACF 0%, #7C9296 100%);
+
+    &::after, &::before {
+        border-top: 3px solid #7C9296;
+    }
+
+    &::after {
+        border-right: 3px solid #7C9296;
+    }
+
+    &::before {
+        border-left: 3px solid #7C9296;
     }
 }
