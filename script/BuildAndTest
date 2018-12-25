@@ -12,7 +12,7 @@ pipeline {
                 sh 'npm run build:prod'
             }
         }
-        stage('Test' ) { 
+        stage('Test') { 
             steps {
                 sh 'npm run test'
             }
