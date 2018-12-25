@@ -5,27 +5,8 @@ pipeline {
             args '-p 3001:3001' 
         }
     }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'npm install'
-                sh 'npm run build:prod'
-            }
-        }
-        stage('Test') { 
-            steps {
-                sh 'npm run test'
-            }
-        }
-    }
-}
-
-pipeline {
-    agent {
-        docker {
-            image 'node:current' 
-            args '-p 3001:3001' 
-        }
+    parameters {
+        string(name: 'branchName', defaultValue: 'master', description: 'Branch to deploy (default master)')
     }
     stages {
         stage('Ssh into astralfox') {
@@ -35,7 +16,6 @@ pipeline {
                 sh 'git checkout master'
                 sh 'git pull origin master'
             } 
-
         }
         stage('Build') { 
             steps {
@@ -57,3 +37,4 @@ pipeline {
         }
     }
 }
+
