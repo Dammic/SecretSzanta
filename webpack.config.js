@@ -12,7 +12,7 @@ const productionPlugins = [
         algorithm: 'gzip',
         regExp: /\.js$|\.css$|\.html$/,
         threshold: 1,
-    })
+    }),
 ]
 
 module.exports = (env, argv) => {
@@ -91,7 +91,7 @@ module.exports = (env, argv) => {
                                 ['@babel/react'],
                             ],
                         },
-                    }
+                    },
                 ],
             }),
             new HappyPack({
@@ -115,6 +115,7 @@ module.exports = (env, argv) => {
                         loader: 'postcss-loader',
                         options: {
                             ident: 'postcss',
+                            // sourceMap: true,
                         },
                     },
                 ],
