@@ -1,11 +1,9 @@
-import React  from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
 
 import styles from './GameList.css'
 
-
-// TODO: TODO: TODO: USECALLBACK!!!!
 export const GameListComponent = ({ rooms, onClick }) => (
     <div className={styles.gameList}>
         {map(rooms, ({ roomName, playerCount, roomId }) => (
@@ -15,7 +13,7 @@ export const GameListComponent = ({ rooms, onClick }) => (
                         <div>{roomName} |{playerCount}/9999</div>
                     </div>
                     <div>
-                        <button onClick={() => onClick(roomId)}>
+                        <button onClick={React.useCallback(() => onClick(roomId), [roomId])}>
                             JOIN
                         </button>
                     </div>

@@ -19,12 +19,12 @@ describe('<GameList />', () => {
     describe('setRoomName', () => {
         it('is emits a proper event when clicking on the first elements join button', () => {
             const { props, component } = setupProps()
-            const firstRoom = Object.keys(props.rooms)[0];
+            const firstRoomName = Object.keys(props.rooms)[0]
 
             const expectedSocketParams = [
-                SocketEvents.SocketEvents.CLIENT_JOIN_ROOM,
+                SocketEvents.CLIENT_JOIN_ROOM,
                 {
-                    roomName: firstRoom.roomName
+                    roomName: props.rooms[firstRoomName].roomId,
                 },
             ]
 
