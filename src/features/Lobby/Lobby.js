@@ -1,7 +1,7 @@
 import React from 'react'
 import { GameList } from './components/GameList'
 import { TopNavbar } from './components/TopNavbar'
-import PlayersList from './components/PlayersList/PlayersList'
+import { PlayersList } from './components/PlayersList'
 import Chat from '../Chat/Chat'
 
 import styles from './Lobby.css'

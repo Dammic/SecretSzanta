@@ -23,3 +23,23 @@ export const aRoomsList = (propsOverrides, options = { seed: null }) => {
     return keyBy(arrayOf(aRoom, 3, options), 'roomId')
 }
 
+export const aPlayer = (propsOverrides, options = { seed: null }) => {
+    if (options.seed) {
+        faker.seed(options.seed)
+    }
+
+    return {
+        playerName: faker.internet.userName(),
+        avatarNumber: faker.random.number({ min: 1, max: 6 }),
+        currentRoom: faker.random.word(),
+        ...propsOverrides,
+    }
+}
+
+export const aPlayersList = (propsOverrides, options = { seed: null }) => {
+    if (options.seed) {
+        faker.seed(options.seed)
+    }
+
+    return keyBy(arrayOf(aPlayer, 3, options), 'playerName')
+}

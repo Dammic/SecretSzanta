@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PlayersListRow /> matches snapshot - renders user with current room 1`] = `
+<div
+  className="playerRow busy"
+>
+  <img
+    alt="Player avatar"
+    className="avatar"
+    src="test-file-stub"
+  />
+  <span
+    className="ellipsis playerName"
+  >
+    mockPlayerName
+  </span>
+  <React.Fragment>
+    <span
+      className="ellipsis roomName"
+    >
+      <span>
+        <span>
+          room:
+           
+        </span>
+        <b
+          className="roomNameText"
+        >
+          mockCurrentRoom
+        </b>
+      </span>
+    </span>
+    <span
+      className="roomName mobile"
+    >
+      Busy
+    </span>
+  </React.Fragment>
+</div>
+`;
+
+exports[`<PlayersListRow /> matches snapshot - renders user without current room 1`] = `
+<div
+  className="playerRow"
+>
+  <img
+    alt="Player avatar"
+    className="avatar"
+    src="test-file-stub"
+  />
+  <span
+    className="ellipsis playerName"
+  >
+    mockPlayerName
+  </span>
+</div>
+`;
