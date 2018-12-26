@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { setModal } from '../../../../ducks/modalDuck'
 import { TopNavbarComponent } from './TopNavbarComponent'
 
-class TopNavbar extends PureComponent {
+export class TopNavbar extends PureComponent {
     static propTypes = {
         setModal: PropTypes.func,
         userName: PropTypes.string,

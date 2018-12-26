@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NoResults /> matches snapshot 1`] = `
+<div
+  className="noResults"
+>
+  <span
+    className="noResultsText"
+  >
+    srry no rooms
+  </span>
+</div>
+`;

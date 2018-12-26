@@ -4,21 +4,17 @@ import PropTypes from 'prop-types'
 import { size } from 'lodash'
 import { socket } from '../../../../utils/SocketHandler'
 import { SocketEvents } from '../../../../../Dictionary'
-import { setRoomName } from '../../../../ducks/userDuck'
 import { GameListComponent } from './GameListComponent'
 import { NoResults } from './components/NoResults'
+
+const joinRoom = (roomId) => {
+    socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { roomName: roomId })
+}
 
 export class GameList extends React.PureComponent {
     static propTypes = {
         // redux
         rooms: PropTypes.objectOf(PropTypes.any),
-        setRoom: PropTypes.func.isRequired,
-    }
-
-    setRoomName = (event) => {
-        const roomId = event.target.attributes.getNamedItem('data-roomid').value
-        this.props.setRoom({ roomName: roomId })
-        socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { roomName: roomId })
     }
 
     render() {
@@ -29,7 +25,7 @@ export class GameList extends React.PureComponent {
         }
 
         return (
-            <GameListComponent rooms={rooms} onClick={this.setRoomName} />
+            <GameListComponent rooms={rooms} onClick={joinRoom} />
         )
     }
 }
@@ -38,8 +34,4 @@ const mapStateToProps = ({ lobby }) => ({
     rooms: lobby.roomsList,
 })
 
-const mapDispatchToProps = dispatch => ({
-    setRoom: roomId => dispatch(setRoomName(roomId)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(GameList)
+export default connect(mapStateToProps)(GameList)
