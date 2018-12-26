@@ -95,11 +95,6 @@ module.exports = (env, argv) => {
                 ],
             }),
             new HappyPack({
-                id: 'fonts',
-                threadPool: happyThreadPool,
-                loaders: ['url-loader'],
-            }),
-            new HappyPack({
                 id: 'css',
                 threadPool: happyThreadPool,
                 loaders: [
@@ -141,8 +136,10 @@ module.exports = (env, argv) => {
                 exclude: /node_modules/,
                 loader: 'happypack/loader?id=js',
             }, {
-                test: /\.(woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'happypack/loader?id=fonts',
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [
+                    'file-loader?limit=10000',
+                ],
             }, {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 use: imageLoaders,
