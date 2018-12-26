@@ -1,7 +1,6 @@
 const path = require('path')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionPlugin = require('compression-webpack-plugin')
-const BrotliPlugin = require('brotli-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HappyPack = require('happypack')
 const happyThreadPool = HappyPack.ThreadPool({ size: 6 })
@@ -11,11 +10,6 @@ const productionPlugins = [
     new CompressionPlugin({
         asset: '[path].gz[query]',
         algorithm: 'gzip',
-        regExp: /\.js$|\.css$|\.html$/,
-        threshold: 1,
-    }),
-    new BrotliPlugin({
-        asset: '[path].br[query]',
         regExp: /\.js$|\.css$|\.html$/,
         threshold: 1,
     }),
@@ -97,13 +91,8 @@ module.exports = (env, argv) => {
                                 ['@babel/react'],
                             ],
                         },
-                    }
+                    },
                 ],
-            }),
-            new HappyPack({
-                id: 'fonts',
-                threadPool: happyThreadPool,
-                loaders: ['url-loader'],
             }),
             new HappyPack({
                 id: 'css',
@@ -121,6 +110,7 @@ module.exports = (env, argv) => {
                         loader: 'postcss-loader',
                         options: {
                             ident: 'postcss',
+                            // sourceMap: true,
                         },
                     },
                 ],
@@ -146,8 +136,10 @@ module.exports = (env, argv) => {
                 exclude: /node_modules/,
                 loader: 'happypack/loader?id=js',
             }, {
-                test: /\.(woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'happypack/loader?id=fonts',
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [
+                    'file-loader?limit=10000',
+                ],
             }, {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 use: imageLoaders,
