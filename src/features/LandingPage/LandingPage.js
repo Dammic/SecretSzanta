@@ -48,7 +48,7 @@ export class LandingPage extends React.PureComponent {
         }
 
         return (
-            <div>
+            <div className={styles.page}>
                 <Header />
                 {returnedView}
             </div>
