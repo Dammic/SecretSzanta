@@ -17,7 +17,7 @@ exports[`<TopNavbarComponent /> matches snapshot 1`] = `
     <Button
       onClick={[MockFunction]}
     >
-      New room
+      New Room
     </Button>
   </div>
 </div>

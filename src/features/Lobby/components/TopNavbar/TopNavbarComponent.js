@@ -9,7 +9,7 @@ export const TopNavbarComponent = ({ onShowModal, userName }) => (
     <div className={styles.topBar}>
         <span className={commonStyles.ellipsis}>Hello <b>{userName}</b>!</span>
         <div>
-            <Button onClick={onShowModal}>New room</Button>
+            <Button onClick={onShowModal}>New Room</Button>
         </div>
     </div>
 )

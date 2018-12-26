@@ -5,9 +5,14 @@ exports[`<NoResults /> matches snapshot 1`] = `
   className="noResults"
 >
   <span
-    className="noResultsText"
+    className="noResultsHeadline"
   >
-    srry no rooms
+    No rooms found at this moment
+  </span>
+  <span
+    className="noResultsParagraph"
+  >
+    Click on the 'New Room' button to your right to create a new room
   </span>
 </div>
 `;
