@@ -1,7 +1,6 @@
 const path = require('path')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionPlugin = require('compression-webpack-plugin')
-const BrotliPlugin = require('brotli-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HappyPack = require('happypack')
 const happyThreadPool = HappyPack.ThreadPool({ size: 6 })
@@ -11,11 +10,6 @@ const productionPlugins = [
     new CompressionPlugin({
         asset: '[path].gz[query]',
         algorithm: 'gzip',
-        regExp: /\.js$|\.css$|\.html$/,
-        threshold: 1,
-    }),
-    new BrotliPlugin({
-        asset: '[path].br[query]',
         regExp: /\.js$|\.css$|\.html$/,
         threshold: 1,
     }),
@@ -116,6 +110,7 @@ module.exports = (env, argv) => {
                         loader: 'postcss-loader',
                         options: {
                             ident: 'postcss',
+                            // sourceMap: true,
                         },
                     },
                 ],
