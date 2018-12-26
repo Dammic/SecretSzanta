@@ -22,9 +22,7 @@ app.get('/', (req, res) => {
     return res.sendFile('index.html', { root: distDirName })
 })
 
-app.use(expressStaticGzip(distDirName, {
-    enableBrotli: true,
-}))
+app.use(expressStaticGzip(distDirName))
 
 // universal routing and rendering
 app.get('*', (req, res, next) => {

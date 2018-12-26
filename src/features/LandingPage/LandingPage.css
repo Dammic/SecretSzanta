@@ -5,3 +5,7 @@
     background-color: var(--landing-page-bg);
     min-height: 100vh;
 }
+
+.page {
+    height: 100%;
+}
