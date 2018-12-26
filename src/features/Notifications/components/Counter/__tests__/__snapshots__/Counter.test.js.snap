@@ -4,6 +4,7 @@ exports[`<Counter /> matches snapshot at beginning of countdown 1`] = `
 <span
   className="counter"
 >
-  2sec
+  2
+  sec
 </span>
 `;
