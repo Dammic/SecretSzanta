@@ -81,13 +81,14 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customRes
 
 export const increaseElectionTracker = ({ currentRoom }) => {
     increaseFailedElectionsCount(currentRoom)
+    emits.emitIncreaseTrackerPosition(currentRoom)
 }
 
-export const resetElectionTracker = (socket) => {
-    const trackerPosition = getFailedElectionsCount(socket.currentRoom)
+export const resetElectionTracker = ({ currentRoom }) => {
+    const trackerPosition = getFailedElectionsCount(currentRoom)
 
-    resetFailedElectionsCount(socket.currentRoom)
-    emits.emitResetTracker()
+    resetFailedElectionsCount(currentRoom)
+    emits.emitResetTracker(currentRoom)
 }
 
 export const resetElectionTrackerAndEnactPolicy = (socket) => {
