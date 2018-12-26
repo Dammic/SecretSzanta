@@ -1,10 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { setModal } from '../../../ducks/modalDuck'
+import { setModal } from '../../../../ducks/modalDuck'
 import { TopNavbarComponent } from './TopNavbarComponent'
 
 class TopNavbar extends PureComponent {
+    static propTypes = {
+        setModal: PropTypes.func,
+        userName: PropTypes.string,
+    }
+
     onShowModal = () => {
         this.props.setModal({
             title: 'Create new game',
@@ -18,17 +23,18 @@ class TopNavbar extends PureComponent {
         return (
             <TopNavbarComponent
                 onShowModal={this.onShowModal}
+                userName={this.props.userName}
             />
         )
     }
 }
 
-TopNavbar.propTypes = {
-    setModal: PropTypes.func,
-}
+const mapStateToProps = ({ user }) => ({
+    userName: user.userName,
+})
 
 const mapDispatchToProps = dispatch => ({
     setModal: modalOptions => dispatch(setModal(modalOptions)),
 })
 
-export default connect(null, mapDispatchToProps)(TopNavbar)
+export default connect(mapStateToProps, mapDispatchToProps)(TopNavbar)

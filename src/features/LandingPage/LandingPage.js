@@ -5,7 +5,7 @@ import { Views } from '../../../Dictionary'
 import Header from '../Header/Header'
 import LoginPage from '../LoginPage/LoginPage'
 import GameRoom from '../GameRoom/GameRoom'
-import GameList from '../GameList/GameList'
+import { Lobby } from '../Lobby'
 import SocketHandler from '../../utils/SocketHandler'
 import Modal from '../Modal/Modal'
 import Notifications from '../Notifications/Notifications'
@@ -42,7 +42,7 @@ export class LandingPage extends React.PureComponent {
         } else if (currentView === Views.About) {
             returnedView = <AboutComponent />
         } else if (currentView === Views.Lobby) {
-            returnedView = <GameList />
+            returnedView = <Lobby />
         } else {
             returnedView = <LoginPage />
         }
