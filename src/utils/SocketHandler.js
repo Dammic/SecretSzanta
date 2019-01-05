@@ -11,6 +11,7 @@ import {
     MessagesTypes,
     Views,
 } from '../../Dictionary'
+import { store } from '../store'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck'
@@ -144,7 +145,7 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.PlayerKilled, (payload) => {
-            const { playerName, wasHitler, timestamp } = payload.data
+            const { playerName } = payload.data
             this.props.roomActions.killPlayer({ playerName })
         })
         socket.on(SocketEvents.PlayerKicked, (payload) => {
@@ -200,18 +201,17 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
-            const { timestamp } = payload.data
-            let delay = 0
-            //TODO: trackerPositionBeforeReset take from the tree!!!
-            const trackerPositionBeforeReset = 0;
+            const trackerPositionBeforeReset = store.room.trackerPosition
             if (trackerPositionBeforeReset === 3) {
-              this.props.roomActions.increaseTracker()
-              delay = 4000
-            }
-            setTimeout(() => {
+                this.props.roomActions.increaseTracker()
+
+                // time of delay must be greater that time of an animation of tracker beeing moved
+                setTimeout(() => {
+                    this.props.roomActions.resetTracker()
+                }, 4000)
+            } else {
                 this.props.roomActions.resetTracker()
-            }, delay)
-            // time of delay must be greater that time of an animation of tracker beeing moved
+            }
         })
 
         socket.on(SocketEvents.ChoosePolicy, ({ data: { policyCards, title } }) => {
