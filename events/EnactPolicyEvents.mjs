@@ -85,8 +85,6 @@ export const increaseElectionTracker = ({ currentRoom }) => {
 }
 
 export const resetElectionTracker = ({ currentRoom }) => {
-    const trackerPosition = getFailedElectionsCount(currentRoom)
-
     resetFailedElectionsCount(currentRoom)
     emits.emitResetTracker(currentRoom)
 }
