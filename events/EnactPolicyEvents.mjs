@@ -62,7 +62,7 @@ export const enactPolicyEvent = (socket, policy) => {
     emits.emitNewPolicy(socket.currentRoom, policy)
 }
 
-export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customResumeFunc = null, delay = TimeDelay.LONG_DELAY) => {
+export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustomNextStep = null, delay = TimeDelay.LONG_DELAY) => {
     // const additionalDelay = hasPolicyBeenEnacted ? TimeDelay.SHORT_DELAY : 0;
     // const delay = TimeDelay.LONG_DELAY + additionalDelay;
     const topCard = hasPolicyBeenEnacted ? peekLastEnactedPolicyCard(socket.currentRoom) : null
@@ -75,13 +75,13 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customRes
     } else if (checkIfGameShouldFinish(socket.currentRoom)) {
         nextStepFunction = PhaseSocketEvents.endGame;
     } else {
-        if (!customResumeFunc) {
+        if (!getCustomNextStep) {
             const messageContent = 'The chancellor choise phase will begin in {counter}…'
             emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {counter: delay / 1000})
             nextStepFunction = PhaseSocketEvents.startChancellorChoicePhaseEvent;
         }
         else {
-            nextStepFunction = customResumeFunc;
+            nextStepFunction = getCustomNextStep(delay);
         }
     }
 
