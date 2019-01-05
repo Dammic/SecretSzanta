@@ -101,12 +101,12 @@
     --header-height: 50px;
 
     --default-blur: blur(3px);
-
-
-    /********************
-    *        Media      *
-    *********************/
-    @custom-media --tablet (width >= 767px);
-    @custom-media --desktop (width >= 992px);
-    @custom-media --desktopLarge (width >= 1200px);
 }
+
+/********************
+*        Media      *
+*********************/
+@custom-media --tablet (width >= 767px);
+@custom-media --desktop (width >= 992px);
+@custom-media --desktopLarge (width >= 1200px);
+
