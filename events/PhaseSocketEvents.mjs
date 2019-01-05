@@ -13,7 +13,7 @@ import {
     checkWinConditions,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
-import { TimeDelay } from './consts.mjs'
+import { TimeDelay } from './consts'
 
 const { forEach, get, truncate } = lodash
 

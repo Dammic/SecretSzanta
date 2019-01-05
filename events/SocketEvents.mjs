@@ -69,7 +69,7 @@ import {
 } from '../utils/RoomsManager'
 import * as emits from './emits'
 
-import { TimeDelay } from './consts.mjs'
+import { TimeDelay } from './consts'
 
 import {
     isInPlayersList,

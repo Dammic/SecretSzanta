@@ -18,7 +18,7 @@ import {
     peekLastEnactedPolicyCard,
     resetFailedElectionsCount,
 } from '../utils/RoomsManager'
-import { TimeDelay } from './consts.mjs'
+import { TimeDelay } from './consts'
 import * as emits from './emits'
 
 export const checkForImmediateSuperpowers = ({ currentRoom }) => {
@@ -63,8 +63,6 @@ export const enactPolicyEvent = (socket, policy) => {
 }
 
 export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustomNextStep = null, delay = TimeDelay.LONG_DELAY) => {
-    // const additionalDelay = hasPolicyBeenEnacted ? TimeDelay.SHORT_DELAY : 0;
-    // const delay = TimeDelay.LONG_DELAY + additionalDelay;
     const topCard = hasPolicyBeenEnacted ? peekLastEnactedPolicyCard(socket.currentRoom) : null
     const isFacist = topCard === PolicyCards.FacistPolicy
     const activeSuperpowerCallback = isFacist ? checkForImmediateSuperpowers(socket) : null
