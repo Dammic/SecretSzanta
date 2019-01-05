@@ -8,31 +8,25 @@ pipeline {
     parameters {
         string(name: 'branchName', defaultValue: 'master', description: 'Branch to deploy (default master)')
     }
+
     stages {
-        stage('Ssh into astralfox') {
+        stage('Deploy') {
             steps {
-                sh 'ssh -tt dammic@192.168.1.18'
-                sh 'cd projects/SecretSzanta'
-                sh 'git checkout master'
-                sh 'git pull origin master'
-            } 
-        }
-        stage('Build') { 
-            steps {
-                sh 'rm -rf node_modules'
-                sh 'npm install'
-                sh 'npm run build:prod'
-            }
-        }
-        stage('Test') { 
-            steps {
-                sh 'npm run test'
-            }
-        }
-        stage('restart server') {
-            steps {
-                sh 'lsof -i4 :3000'
-                sh 'npm run run'
+                echo '------------Accessing astralfox server...------------'
+                sshagent (['Astralfox']) {
+                    sh 'ssh -o StrictHostKeyChecking=no dammic@192.168.1.18 bash -c " \
+                        ls \
+                        cd projects/SecretSzanta \
+                        ls \
+                        git clean -f -d \
+                        git checkout master \
+                        git pull origin master \
+                        npm install \
+                        npm run build:prod \
+                        kill $(lsof -t -i :3000) \
+                        nohup npm run run & \
+                    "'
+                }
             }
         }
     }
