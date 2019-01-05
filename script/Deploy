@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Ssh into astralfox') {
             steps {
-                sh 'ssh docker@192.168.1.18'
+                sh 'ssh dammic@192.168.1.18'
                 sh 'cd projects/SecretSzanta'
                 sh 'git checkout master'
                 sh 'git pull origin master'
