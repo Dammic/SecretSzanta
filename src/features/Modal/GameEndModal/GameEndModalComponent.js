@@ -1,6 +1,6 @@
 import React from 'react'
 import { map } from 'lodash'
-import PlayerAvatar from '../../PlayerBoard/Player/PlayerAvatar/PlayerAvatar'
+import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 
 import styles from './GameEndModal.css'
 

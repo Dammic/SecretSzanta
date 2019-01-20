@@ -19,16 +19,9 @@ exports[`<SubmenuComponent /> matches snapshot, rendering hidden affiliation men
         isDead={false}
         isOwner={false}
         liberalAvatar={1}
+        role={null}
       />
     </span>
-  </div>
-  <div
-    className="roleWrapper"
-  >
-    <PlayerRole
-      className="uiBoxRole"
-      role={null}
-    />
   </div>
 </div>
 `;
@@ -52,16 +45,9 @@ exports[`<SubmenuComponent /> matches snapshot, rendering visible affiliation me
         isDead={false}
         isOwner={false}
         liberalAvatar={1}
+        role={null}
       />
     </span>
-  </div>
-  <div
-    className="roleWrapper"
-  >
-    <PlayerRole
-      className="uiBoxRole"
-      role={null}
-    />
   </div>
 </div>
 `;
