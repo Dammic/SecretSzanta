@@ -14,18 +14,20 @@ pipeline {
             steps {
                 echo '------------Accessing astralfox server...------------'
                 sshagent (['Astralfox']) {
-                    sh 'ssh -o StrictHostKeyChecking=no dammic@192.168.1.18 bash -c " \
-                        ls \
-                        cd projects/SecretSzanta \
-                        ls \
-                        git clean -f -d \
-                        git checkout master \
-                        git pull origin master \
-                        npm install \
-                        npm run build:prod \
-                        kill $(lsof -t -i :3000) \
-                        nohup npm run run & \
-                    "'
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no dammic@192.168.1.18 <<EOF
+                            cd projects/SecretSzanta
+                            git clean -f -d
+                            echo Checking out $branchName
+                            git checkout $branchName
+                            git pull origin $branchName
+                            npm install --ci
+                            npm run build:prod
+                            lsof -n -i4TCP:3000 | grep LISTEN | awk '{ print $2 }' | xargs kill
+                            nohup npm run run &
+                            exit
+                        EOF
+                    '''
                 }
             }
         }
