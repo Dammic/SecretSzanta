@@ -7,8 +7,14 @@
     ],
     "settings": {
         "import/resolver": {
-            "node": { "extensions": [".js", ".mjs"] }
-        }
+            "node": { "extensions": [".js", ".mjs"] },
+            "alias": {
+                "map": [
+                    ['packages', './src/packages'],
+                ],
+                extensions: ['.js'],
+            },
+        },
     },
     "rules": {
         "max-len": ["error", { "code": 120 }],
