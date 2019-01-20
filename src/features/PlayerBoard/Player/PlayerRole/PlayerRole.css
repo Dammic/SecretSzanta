@@ -1,6 +1,0 @@
-@import 'variables/variables.css';
-
-.role {
-    width: var(--player-image-width);
-    max-width: 130px;
-}
