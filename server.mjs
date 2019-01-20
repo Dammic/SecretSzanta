@@ -6,33 +6,29 @@ import expressStaticGzip from 'express-static-gzip'
 import { initializeIO } from './io'
 
 // initialize the server and configure support for ejs templates
-const __dirname = path.dirname(new URL(import.meta.url).pathname)
+const __dirname = path.resolve('.') //new URL(import.meta.url).pathname)
+const distDirName = path.join(__dirname, '.dist')
 const app = new Express()
 const server = new http.Server(app)
 
-// view engine setup to ejs
-app.engine('html', ejs.renderFile)
-app.set('view engine', 'html')
-
 // view engine setup
-app.set('views', path.join(__dirname, '.dist'))
+app.set('views', distDirName)
 
 // socket.io
 initializeIO(server)
 
 app.get('/', (req, res) => {
-    return res.render('index.html', { root: `${__dirname}/.dist` })
+    console.log(distDirName)
+    return res.sendFile('index.html', { root: distDirName })
 })
 
-app.use(expressStaticGzip(path.join(__dirname, '/.dist'), {
-    enableBrotli: true,
-}))
+app.use(expressStaticGzip(distDirName))
 
 // universal routing and rendering
 app.get('*', (req, res, next) => {
     res.status(404)
     console.log(`404! Page not found! Original url: ${req.originalUrl}`)
-    return res.render('index.html', { root: `${__dirname}/.dist` })
+    return res.sendFile('index', { root: distDirName })
 })
 
 // start the server

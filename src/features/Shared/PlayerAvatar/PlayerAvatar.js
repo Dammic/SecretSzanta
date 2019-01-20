@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { getAvatar } from '../../../../utils/avatarsHelper'
-import { Icon } from '../../../Shared/Icon'
+import { getAvatar } from '../../../utils/avatarsHelper'
+import { Icon } from '../../Shared/Icon'
+import { PlayerRole } from './PlayerRole'
 
 import styles from './PlayerAvatar.css'
 
@@ -12,6 +13,7 @@ const PlayerAvatar = ({
     isDead,
     isPlayerWaitedFor,
     isOwner,
+    role,
     className,
 }) => {
     const liberalAvatarPicture = getAvatar(`liberal-${liberalAvatar}`)
@@ -27,6 +29,7 @@ const PlayerAvatar = ({
             {isPlayerWaitedFor && <Icon name="fa-clock-o" className={styles.selectingWaitIcon} />}
             {fascistAvatar && <img className={classNames(styles.portrait, styles.fascistPortrait)} src={fascistAvatarPicture} alt="Player fascist avatar" />}
             <img className={styles.portrait} src={liberalAvatarPicture} alt="Player liberal avatar" />
+            {!isDead && <PlayerRole role={role} />}
         </div>
     )
 }
@@ -36,8 +39,10 @@ PlayerAvatar.propTypes = {
     liberalAvatar: PropTypes.number.isRequired,
     fascistAvatar: PropTypes.number,
     isDead: PropTypes.bool,
+    role: PropTypes.string,
     isPlayerWaitedFor: PropTypes.bool,
     isOwner: PropTypes.bool,
     className: PropTypes.string,
 }
-export default PlayerAvatar
+
+export { PlayerAvatar }
