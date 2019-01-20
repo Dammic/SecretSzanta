@@ -3,12 +3,11 @@ import { shallow } from 'enzyme'
 import { forEach } from 'lodash'
 import { expectMatchingSnapshot } from 'packages/testUtils'
 import { PlayerRole as PlayerRoleDict } from '../../../../../../Dictionary'
-import PlayerRole from '../PlayerRole'
+import { PlayerRole } from '../PlayerRole'
 
 const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
     const props = {
         role: null,
-        className: 'mockClassName',
         ...propsOverrides,
     }
     const component = renderMethod(<PlayerRole {...props} />)
@@ -26,7 +25,7 @@ describe('<PlayerRole />', () => {
         expectMatchingSnapshot(<PlayerRole {...props} />)
     })
 
-    it('returns proper images if role is one of correct roles', () => {
+    it('returns proper ribbon classes for correct roles', () => {
         const correctRoles = [
             PlayerRoleDict.ROLE_CHANCELLOR,
             PlayerRoleDict.ROLE_PRESIDENT,
