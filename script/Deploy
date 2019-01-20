@@ -10,6 +10,19 @@ pipeline {
     }
 
     stages {
+        stage('Build') { 
+            steps {
+                sh 'npm install --ci'
+                sh 'npm run build:prod'
+            }
+        }
+
+        stage('Test') { 
+            steps {
+                sh 'npm run test'
+            }
+        }
+
         stage('Deploy') {
             steps {
                 echo '------------Accessing astralfox server...------------'
