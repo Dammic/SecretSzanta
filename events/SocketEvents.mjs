@@ -68,7 +68,6 @@ import {
     getChancellorCandidateInfo,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
-
 import { TimeDelay } from './consts'
 
 import {
