@@ -18,7 +18,7 @@ const GameListItemComponent = ({
                 </div>
                 <div>
                     <ControlButton onClick={() => onClick(roomId)}>
-                        JOIN
+                        join
                     </ControlButton>
                 </div>
             </div>

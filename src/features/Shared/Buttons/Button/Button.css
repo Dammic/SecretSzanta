@@ -11,6 +11,7 @@
     padding: 2px 5px;
     border-radius: 0;
     border: 1px solid var(--button-default-border);
+    text-transform: capitalize;
 
     &:hover {
         background-color: var(--button-default-bg-hover);
