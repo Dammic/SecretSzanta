@@ -17,40 +17,29 @@
 .affiliationCards {
     display: flex;
     height: 80%;
-    & .card {
-        flex-basis: 0;
-        flex-grow: 1;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 100% 100%;
-        &:first-child {
-            margin-right: 5px; 
-        }
-        &.liberal {
-            background-image: url('../../../static/Liberal_Membership.png');
-        }
+}
 
-        &.facist {
-            background-image: url('../../../static/Facist_Membership.png');
-        }
-        & .uiBoxAvatar {
-            height: 100%;
-            & img {
-                max-width: unset;
-                width: 100%;
-                height: inherit;
-            }
-        }
+.card {
+    flex-basis: 0;
+    flex-grow: 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    &:first-child {
+        margin-right: 5px; 
     }
 }
 
-.roleWrapper {
+.liberal {
+    background-image: url('../../../static/Liberal_Membership.png');
+}
+
+.facist {
+    background-image: url('../../../static/Facist_Membership.png');
+}
+
+.uiBoxAvatar {
+    max-width: unset;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    height: 20%;
-    align-items: center;
-    & .uiBoxRole {
-        width: 100%; 
-    }
 }
