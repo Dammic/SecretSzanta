@@ -6,8 +6,12 @@ exports[`<ControlButton /> matches snapshot 1`] = `
   role="button"
   tabIndex="0"
 >
-  <span>
-    mockLabel
+  <span
+    className="buttonText"
+  >
+    <span>
+      mockLabel
+    </span>
   </span>
 </div>
 `;
