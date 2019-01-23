@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { GamePhases } from '../../../../Dictionary'
-import { Button } from '../../Shared/Buttons'
+import { ControlButton } from '../../Shared/Buttons'
 import { Icon } from '../../Shared/Icon'
 
 import styles from './GameControls.css'
 
 const renderButton = (label, onClick) => (
-    <Button key={label} onClick={onClick}>{label}</Button>
+    <ControlButton key={label} onClick={onClick}>{label}</ControlButton>
 )
 
 const GameControlsComponent = ({
@@ -29,11 +29,11 @@ const GameControlsComponent = ({
     return (
         <div className={styles.gameControls}>
             <div className={styles.buttons}>
-                <Button onClick={onShowAffiliationClick}>
+                <ControlButton onClick={onShowAffiliationClick}>
                     <span>
                         roles<Icon name={classNames('fa-fw', isAffiliationHidden ? 'fa-angle-right' : 'fa-angle-left')} className={styles.menuArrowIcon} />
                     </span>
-                </Button>
+                </ControlButton>
                 {isOwner && ownersButtons}
             </div>
         </div>

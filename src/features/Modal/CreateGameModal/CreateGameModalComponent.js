@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from '../../Shared/Buttons'
+import { ControlButton } from '../../Shared/Buttons'
 
 import styles from './CreateGameModal.css'
 
@@ -32,7 +32,7 @@ const CreateGameModalComponent = ({
                     onChange={onChange}
                 />
             </div>
-            <Button className={styles.createButton} onClick={onCreate}>Create</Button>
+            <ControlButton className={styles.createButton} onClick={onCreate}>Create</ControlButton>
         </div>
     )
 }

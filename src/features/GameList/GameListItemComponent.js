@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { ControlButton } from '../Shared/Buttons'
 
 import styles from './GameList.css'
 
@@ -16,9 +17,9 @@ const GameListItemComponent = ({
                     <div>{roomName} |{playerCount}/9999</div>
                 </div>
                 <div>
-                    <button data-roomid={roomId} onClick={onClick}>
+                    <ControlButton onClick={() => onClick(roomId)}>
                         JOIN
-                    </button>
+                    </ControlButton>
                 </div>
             </div>
         </div>

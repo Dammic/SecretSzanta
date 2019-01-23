@@ -13,8 +13,7 @@ export class GameList extends React.PureComponent {
         roomsList: PropTypes.objectOf(PropTypes.any),
     }
 
-    setRoomName = (event) => {
-        const roomId = event.target.attributes.getNamedItem('data-roomid').value
+    setRoomName = (roomId) => {
         this.props.setRoom({ roomName: roomId })
         socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { playerName: this.props.userName, roomName: roomId })
     }

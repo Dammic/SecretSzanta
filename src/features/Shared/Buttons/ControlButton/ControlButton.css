@@ -1,0 +1,11 @@
+@import 'variables/variables.css';
+
+.control {
+    padding: 4px 12px;
+    background-color: var(--button-control-bg);
+    color: var(--button-control-font-color);
+
+    &:hover {
+        background-color: var(--button-control-bg-hover);
+    }
+}
