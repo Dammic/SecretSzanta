@@ -23,7 +23,8 @@ const GameListComponent = ({
                             key={room.roomId}
                             roomId={room.roomId}
                             roomName={room.roomName}
-                            playerCount={room.playerCount}
+                            playersCount={room.playersCount}
+                            maxPlayers={room.maxPlayers}
                             onClick={onClick}
                         />
                     ))}

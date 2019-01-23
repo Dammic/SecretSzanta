@@ -1,25 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ControlButton } from '../Shared/Buttons'
+import { Icon } from '../Shared/Icon'
 
 import styles from './GameList.css'
 
 const GameListItemComponent = ({
     roomId,
     roomName,
-    playerCount,
+    playersCount,
+    maxPlayers,
     onClick,
 }) => {
     return (
         <div key={roomName} className={styles.gameListElement}>
             <div className={styles.gameElementContainer}>
-                <div>
-                    <div>{roomName} |{playerCount}/9999</div>
-                </div>
-                <div>
-                    <ControlButton onClick={() => onClick(roomId)}>
+                <div className={styles.roomName}>{roomName}</div>
+                <div className={styles.rightSide}>
+                    <ControlButton onClick={() => onClick(roomId)} className={styles.button}>
                         join
                     </ControlButton>
+                    <span className={styles.playerCount}>
+                        {playersCount}/{maxPlayers}
+                        <Icon name="fa-user" className={styles.icon} />
+                    </span>
                 </div>
             </div>
         </div>
@@ -29,7 +33,8 @@ const GameListItemComponent = ({
 GameListItemComponent.propTypes = {
     roomId: PropTypes.string,
     roomName: PropTypes.string,
-    playerCount: PropTypes.number,
+    playersCount: PropTypes.number,
+    maxPlayers: PropTypes.number,
     onClick: PropTypes.func,
 }
 
