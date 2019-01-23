@@ -53,9 +53,10 @@
     --button-primary-bg-hover: #267089;
     --button-primary-font-color: #EEEEEE;
 
-    --button-control-bg: #eeeeee;
-    --button-control-bg-hover: #e3e3e3;
-    --button-control-font-color: #666666;
+    --button-control-bg: #e3e3e3;
+    --button-control-bg-hover: #eeeeee;
+    --button-control-font-color: rgba(98, 94, 94, 0.8);
+    --button-control-font-color-hover: rgba(48, 182, 40, 0.8);
 
     --button-default-bg: #EEE;
     --button-default-bg-hover: #E3E3E3;

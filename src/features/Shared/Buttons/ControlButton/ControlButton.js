@@ -13,7 +13,7 @@ const ControlButton = (props) => {
             {...props}
             className={classNames(styles.control, className)}
         >
-            {children}
+            <span className={styles.buttonText}>{children}</span>
         </Button>
     )
 }
