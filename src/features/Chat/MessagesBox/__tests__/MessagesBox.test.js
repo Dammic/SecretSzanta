@@ -19,9 +19,9 @@ describe('<MessagesBox />', () => {
         instance.scrollToBottomOfMessages = jest.fn()
         instance.messagesBoxRef = {
             current: {
-                scrollHeight: 200,
+                scrollTop: 100,
                 offsetHeight: 100,
-                scrollTop: 78,
+                scrollHeight: 200,
             },
         }
         component.setProps({ messages: [...props.messages, aMessage()] })
