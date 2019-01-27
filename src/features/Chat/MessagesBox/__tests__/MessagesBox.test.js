@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { aMessage, arrayOf } from 'packages/factories'
-import { expectMatchingSnapshot } from 'packages/testUtils'
 import { MessagesBox } from '../MessagesBox'
 
 const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
@@ -14,11 +13,33 @@ const setupProps = (propsOverrides = {}, renderMethod = shallow) => {
 }
 
 describe('<MessagesBox />', () => {
-    it('calls scrollToBottomOfMessages on each update', () => {
+    it('calls scrollToBottomOfMessages on each update if user has scrolled to bottom already', () => {
         const { props, component } = setupProps()
-        const instance = component.instance();
+        const instance = component.instance()
         instance.scrollToBottomOfMessages = jest.fn()
+        instance.messagesBoxRef = {
+            current: {
+                scrollTop: 100,
+                offsetHeight: 100,
+                scrollHeight: 200,
+            },
+        }
         component.setProps({ messages: [...props.messages, aMessage()] })
         expect(instance.scrollToBottomOfMessages).toHaveBeenCalled()
+    })
+
+    it('doesnt call scrollToBottomOfMessages if user has not scrolled to the bottom of chat', () => {
+        const { props, component } = setupProps()
+        const instance = component.instance()
+        instance.scrollToBottomOfMessages = jest.fn()
+        instance.messagesBoxRef = {
+            current: {
+                scrollHeight: 200,
+                offsetHeight: 100,
+                scrollTop: 30,
+            },
+        }
+        component.setProps({ messages: [...props.messages, aMessage()] })
+        expect(instance.scrollToBottomOfMessages).not.toHaveBeenCalled()
     })
 })
