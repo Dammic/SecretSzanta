@@ -5,6 +5,7 @@ import MessagesBoxComponent from './MessagesBoxComponent'
 
 export class MessagesBox extends React.PureComponent {
     static displayName = 'MessagesBox'
+
     static propTypes = {
         // redux
         messages: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
@@ -15,8 +16,23 @@ export class MessagesBox extends React.PureComponent {
         this.messagesBoxRef = React.createRef()
     }
 
-    componentDidUpdate() {
-        this.scrollToBottomOfMessages()
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (snapshot) {
+            this.scrollToBottomOfMessages()
+        }
+    }
+
+    getSnapshotBeforeUpdate() {
+        const { current } = this.messagesBoxRef
+        if (current) {
+            // visible height + pixel scrolled === total height
+            // if user has chat scrolled to bottom in moment of receiving message
+            // return true (which means for componentDidUpdate, scroll the chat!)
+            if (current.offsetHeight + current.scrollTop === current.scrollHeight) {
+                return true
+            }
+        }
+        return false
     }
 
     scrollToBottomOfMessages = () => {
