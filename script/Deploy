@@ -1,0 +1,48 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:current' 
+        }
+    }
+    parameters {
+        string(name: 'branchName', defaultValue: 'master', description: 'Branch to deploy (default master)')
+    }
+
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'npm install --ci'
+                sh 'npm run build:prod'
+            }
+        }
+
+        stage('Test') { 
+            steps {
+                sh 'npm run test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo '------------Accessing astralfox server...------------'
+                sshagent (['Astralfox']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no dammic@192.168.1.18 <<EOF
+                            cd projects/SecretSzanta
+                            git clean -f -d
+                            echo Checking out $branchName
+                            git checkout $branchName
+                            git pull origin $branchName
+                            npm install --ci
+                            npm run build:prod
+                            lsof -n -i4TCP:3000 | grep LISTEN | awk '{ print $2 }' | xargs kill
+                            nohup npm run run &
+                            exit
+                        EOF
+                    '''
+                }
+            }
+        }
+    }
+}
+
