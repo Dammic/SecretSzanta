@@ -18,6 +18,7 @@ import {
     peekLastEnactedPolicyCard,
     resetFailedElectionsCount,
 } from '../utils/RoomsManager'
+import { TimeDelay } from './consts'
 import * as emits from './emits'
 
 export const checkForImmediateSuperpowers = ({ currentRoom }) => {
@@ -50,7 +51,7 @@ export const checkForImmediateSuperpowers = ({ currentRoom }) => {
             const messageContent = 'The power of veto has been unlocked for next rounds!'
             emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
 
-            SocketEventsUtils.resumeGame(socket, { delay: 5000, func: PhaseSocketEvents.startKillPhase })
+            SocketEventsUtils.resumeGame(socket, { delay: TimeDelay.SHORT_DELAY, func: PhaseSocketEvents.startKillPhase })
         }
     }
     return null
@@ -61,33 +62,38 @@ export const enactPolicyEvent = (socket, policy) => {
     emits.emitNewPolicy(socket.currentRoom, policy)
 }
 
-export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, customResumeFunc = null) => {
+export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustomNextStep = null, delay = TimeDelay.LONG_DELAY) => {
     const topCard = hasPolicyBeenEnacted ? peekLastEnactedPolicyCard(socket.currentRoom) : null
     const isFacist = topCard === PolicyCards.FacistPolicy
     const activeSuperpowerCallback = isFacist ? checkForImmediateSuperpowers(socket) : null
 
+    let nextStepFunction;
     if (activeSuperpowerCallback) {
-        activeSuperpowerCallback(socket)
+        nextStepFunction = activeSuperpowerCallback;
     } else if (checkIfGameShouldFinish(socket.currentRoom)) {
-        PhaseSocketEvents.endGame(socket)
+        nextStepFunction = PhaseSocketEvents.endGame;
     } else {
-        if (!customResumeFunc) {
+        if (!getCustomNextStep) {
             const messageContent = 'The chancellor choise phase will begin in {counter}…'
-            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: 30 })
+            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {counter: delay / 1000})
+            nextStepFunction = PhaseSocketEvents.startChancellorChoicePhaseEvent;
         }
-        SocketEventsUtils.resumeGame(socket, { delay: 30000, func: customResumeFunc || PhaseSocketEvents.startChancellorChoicePhaseEvent })
+        else {
+            nextStepFunction = getCustomNextStep(delay);
+        }
     }
+
+    SocketEventsUtils.resumeGame(socket, { delay, func: nextStepFunction })
 }
 
 export const increaseElectionTracker = ({ currentRoom }) => {
     increaseFailedElectionsCount(currentRoom)
+    emits.emitIncreaseTrackerPosition(currentRoom)
 }
 
-export const resetElectionTracker = (socket) => {
-    const trackerPosition = getFailedElectionsCount(socket.currentRoom)
-
-    resetFailedElectionsCount(socket.currentRoom)
-    emits.emitResetTracker()
+export const resetElectionTracker = ({ currentRoom }) => {
+    resetFailedElectionsCount(currentRoom)
+    emits.emitResetTracker(currentRoom)
 }
 
 export const resetElectionTrackerAndEnactPolicy = (socket) => {
