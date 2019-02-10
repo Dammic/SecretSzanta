@@ -9,7 +9,7 @@ import {
     killPlayer,
     kickPlayer,
     isInBlackList,
-    getOtherAlivePlayers,
+    getOtherAlivePlayerNames,
 } from '../players'
 import { initializeRoom } from '../rooms'
 
@@ -20,7 +20,7 @@ import { initializeRoom } from '../rooms'
 // isRoomOwner,
 // killPlayer,
 // kickPlayer,
-// getOtherAlivePlayers,
+// getOtherAlivePlayerNames,
 
 describe('players', () => {
     beforeEach(() => {
