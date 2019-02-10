@@ -1,13 +1,12 @@
-import { roomsStore } from '../../stores'
+import { getRoom, updateRoom } from '../../stores'
 
 export const increaseFailedElectionsCount = (roomName) => {
-    const room = roomsStore[roomName]
-    room.failedElectionsCount += 1
+    const { failedElectionsCount } = getRoom(roomName)
+    updateRoom(roomName, 'failedElectionsCount', failedElectionsCount + 1)
 }
 export const getFailedElectionsCount = (roomName) => {
-    const { failedElectionsCount } = roomsStore[roomName]
-    return failedElectionsCount
+    return getRoom(roomName).failedElectionsCount
 }
 export const resetFailedElectionsCount = (roomName) => {
-    roomsStore[roomName].failedElectionsCount = 0
+    updateRoom(roomName, 'failedElectionsCount', 0)
 }

@@ -1,5 +1,5 @@
-import { roomsStore } from '../../stores'
 import lodash from 'lodash'
+import { getRoom, updateRoom } from '../../stores'
 import { GamePhases, PlayerAffilications, ErrorTypes } from '../../Dictionary'
 import { setGamePhase } from './gamePhases'
 import { logInfo } from '../utils'
@@ -22,7 +22,7 @@ const {
  * @param {Object} socket - Socket.IO socket object of the added player (for contacting with facists)
  */
 export const addPlayer = (roomName, playerName, socket) => {
-    const { playersDict, freeSlots, gamePhase } = roomsStore[roomName]
+    const { playersDict, freeSlots, gamePhase } = getRoom(roomName)
     const nextEmptySlot = freeSlots[0]
 
     if (!includes([GamePhases.GAME_PHASE_NEW, GamePhases.Paused], gamePhase)) {
@@ -48,8 +48,8 @@ export const addPlayer = (roomName, playerName, socket) => {
         isDead: false,
         emit: socket.emit.bind(socket),
     }
-    playersDict[playerName] = newPlayer
-    roomsStore[roomName].freeSlots = tail(freeSlots)
+    updateRoom(roomName, `playersDict.${playerName}`, newPlayer)
+    updateRoom(roomName, 'freeSlots', tail(freeSlots))
 }
 
 /**
@@ -58,28 +58,28 @@ export const addPlayer = (roomName, playerName, socket) => {
  * @param {String} playerName - name of the player to be removed from the room
  */
 export const removePlayer = (roomName, playerName) => {
-    const { playersDict, freeSlots } = roomsStore[roomName]
-    const player = playersDict[playerName]
+    const { playersDict, freeSlots } = getRoom(roomName)
+    const { [playerName]: removedPlayer, ...restPlayers } = playersDict
 
-    if (player) {
-        freeSlots.unshift(player.slotNumber)
-        delete playersDict[playerName]
+    if (removedPlayer) {
+        updateRoom(roomName, 'freeSlots', [removedPlayer.slotNumber, ...freeSlots])
+        updateRoom(roomName, 'playersDict', restPlayers)
     }
 }
 
 export const getOtherAlivePlayers = (roomName, currentPlayerName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
     const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
     return playersChoices
 }
 
 export const isInBlackList = (roomName, playerName) => {
-    const { blackList } = roomsStore[roomName]
+    const { blackList } = getRoom(roomName)
     return includes(blackList, playerName)
 }
 
 export const getPlayerInfo = (roomName, playerName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
     const player = playersDict[playerName]
 
     return (player
@@ -89,25 +89,25 @@ export const getPlayerInfo = (roomName, playerName) => {
 }
 
 export const isRoomOwner = (roomName, playerName) => {
-    return playerName === roomsStore[roomName].ownerName
+    return playerName === getRoom(roomName).ownerName
 }
 
 export const killPlayer = (roomName, playerName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
 
     const player = find(playersDict, { playerName })
     if (player) {
-        player.isDead = true
+        updateRoom(roomName, `playersDist.${playerName}.isDead`, true)
     }
 }
 
 export const kickPlayer = (roomName, playerName, banned) => {
-    const { playersDict, blackList } = roomsStore[roomName]
+    const { blackList } = getRoom(roomName)
 
     if (banned) {
-        blackList.push(playerName)
+        updateRoom(roomName, 'blackList', [...blackList, playerName])
     }
 
     setGamePhase(roomName, GamePhases.Paused)
-    delete playersDict[playerName]
+    removePlayer(roomName, playerName)
 }

@@ -39,6 +39,7 @@ export const SocketEvents = {
     SuperpowerAffiliationPeekAffiliationReveal: 'SUPERPOWER_AFFILIATION_PEEK_AFFILIATION_REVEAL',
     PeekCards: 'PEEK_CARDS',
     SetChooserPlayer: 'SET_CHOOSER_PLAYER',
+    logoutPlayer: 'LOGOUT_PLAYER',
 }
 export const PlayerDirection = {
     PLAYER_DIRECTION_LEFT: 'PLAYER_DIRECTION_LEFT',

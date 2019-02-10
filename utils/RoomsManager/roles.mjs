@@ -1,9 +1,7 @@
-import { roomsStore } from '../../stores'
+import { getRoom, updateRoom } from '../../stores'
 import lodash from 'lodash'
 
-import {
-    PlayerRole,
-} from '../../Dictionary'
+import { PlayerRole } from '../../Dictionary'
 const {
     reject,
     findIndex,
@@ -15,70 +13,68 @@ const {
 } = lodash
 
 export const getPlayerRole = (roomName, playerName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
     return get(playersDict, `${playerName}.role`)
 }
 
 export const setChancellor = (roomName) => {
-    const { playersDict, chancellorCandidateName } = roomsStore[roomName]
+    const { playersDict, chancellorCandidateName } = getRoom(roomName)
 
     const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
     if (previousChancellor) {
-        previousChancellor.role = null
+        updateRoom(roomName, `playersDict.${previousChancellor.playerName}.role`, null)
     }
     const currentChancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
     if (currentChancellor) {
-        currentChancellor.role = PlayerRole.ROLE_PREVIOUS_CHANCELLOR
+        updateRoom(roomName, `playersDict.${currentChancellor.playerName}.role`, PlayerRole.ROLE_PREVIOUS_CHANCELLOR)
     }
 
     if (chancellorCandidateName) {
-        const nextChancellor = playersDict[chancellorCandidateName]
-        nextChancellor.role = PlayerRole.ROLE_CHANCELLOR
+        updateRoom(roomName, `playersDict.${chancellorCandidateName}.role`, PlayerRole.ROLE_CHANCELLOR)
     }
 }
 
 export const getChancellor = (roomName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
     const chancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
 
     return (chancellor ? pick(chancellor, ['playerName', 'avatarNumber']) : null)
 }
 
 export const getChancellorCandidateInfo = (roomName) => {
-    const { playersDict, chancellorCandidateName } = roomsStore[roomName]
+    const { playersDict, chancellorCandidateName } = getRoom(roomName)
     const chancellorCandidate = playersDict[chancellorCandidateName]
 
     return (chancellorCandidate ? pick(chancellorCandidate, ['playerName', 'avatarNumber']) : null)
 }
 
 export const setPresident = (roomName, presidentName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom[roomName]
 
     const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
     if (previousPresident) {
-        previousPresident.role = null
+        updateRoom(roomName, `playersDict.${previousPresident.playerName}.role`, null)
     }
 
     const currentPresident = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
     if (currentPresident) {
-        currentPresident.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
+        updateRoom(roomName, `playersDict.${currentPresident.playerName}.role`, PlayerRole.ROLE_PREVIOUS_PRESIDENT)
     }
 
-    const nextPresident = playersDict[presidentName]
-    nextPresident.role = PlayerRole.ROLE_PRESIDENT
+    updateRoom(roomName, `playersDict.${presidentName}.role`, PlayerRole.ROLE_PRESIDENT)
 }
 
 export const getPresident = (roomName) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
     const president = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
 
     return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
 }
 export const resetPresidentBackup = (roomName) => {
-    roomsStore[roomName].previousPresidentNameBackup = null
+    updateRoom(roomName, 'previousPresidentNameBackup', null)
 }
 export const chooseNextPresident = (roomName) => {
-    const { playersDict, previousPresidentNameBackup } = roomsStore[roomName]
+    const { playersDict, previousPresidentNameBackup } = getRoom(roomName)
     const sortedPlayers = sortBy(reject(playersDict, { isDead: true }), 'slotNumber')
 
     const lastPresidentIndex = (previousPresidentNameBackup
@@ -92,10 +88,10 @@ export const chooseNextPresident = (roomName) => {
     if (previousPresidentNameBackup) resetPresidentBackup(roomName)
 }
 export const getRoleSocket = (roomName, role) => {
-    const { playersDict } = roomsStore[roomName]
+    const { playersDict } = getRoom(roomName)
     return find(playersDict, { role }).emit
 }
 export const setPresidentBackup = (roomName) => {
     const currentPresident = getPresident(roomName)
-    roomsStore[roomName].previousPresidentNameBackup = currentPresident.playerName
+    updateRoom(roomName, 'previousPresidentNameBackup', currentPresident.playerName)
 }

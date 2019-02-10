@@ -51,6 +51,7 @@ const actions = {
             notifications: newNotifications,
         }
     },
+
 }
 
 export { addNotification, deleteNotification }
