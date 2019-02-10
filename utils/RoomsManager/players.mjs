@@ -75,9 +75,7 @@ export const getOtherAlivePlayerNames = (roomName, currentPlayerName) => {
 
 export const getAlivePlayers = (roomName) => {
     const { playersDict } = roomsStore[roomName]
-    console.log("playersDict =", playersDict)
     const playersChoices = reject(playersDict, player => player.isDead)
-    console.log("playersChoices =", playersChoices)
     return playersChoices
 }
 

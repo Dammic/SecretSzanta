@@ -63,7 +63,6 @@ export const getChancellorChoices = (roomName) => {
     const alivePlayersDict = getAlivePlayers(roomName)
     const chancellorChoices = []
     const numberOfPlayers = size(alivePlayersDict)
-    console.log("numberOfPlayers =", numberOfPlayers)
     forEach(alivePlayersDict, (player) => {
         if (isEligeable(player, numberOfPlayers)) {
             chancellorChoices.push(player.playerName)
