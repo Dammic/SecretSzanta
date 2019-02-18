@@ -75,7 +75,7 @@ export {
     killPlayer,
     kickPlayer,
     isInBlackList,
-    getOtherAlivePlayers,
+    getOtherAlivePlayerNames,
 } from './players'
 export {
     getGamePhase,

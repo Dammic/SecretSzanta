@@ -67,9 +67,15 @@ export const removePlayer = (roomName, playerName) => {
     }
 }
 
-export const getOtherAlivePlayers = (roomName, currentPlayerName) => {
+export const getOtherAlivePlayerNames = (roomName, currentPlayerName) => {
     const { playersDict } = roomsStore[roomName]
     const playersChoices = map(reject(playersDict, player => player.isDead || player.playerName === currentPlayerName), 'playerName')
+    return playersChoices
+}
+
+export const getAlivePlayers = (roomName) => {
+    const { playersDict } = roomsStore[roomName]
+    const playersChoices = reject(playersDict, player => player.isDead)
     return playersChoices
 }
 
