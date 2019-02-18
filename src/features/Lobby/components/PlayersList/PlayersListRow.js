@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { getAvatar } from '../../../utils/avatarsHelper'
+import { getAvatar } from '../../../../utils/avatarsHelper'
 
 import styles from './PlayersList.css'
-import commonStyles from '../../Shared/CommonStyles/commonStyles.css'
+import commonStyles from '../../../Shared/CommonStyles/commonStyles.css'
 
-const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
+export const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
     return (
         <div className={classNames(styles.playerRow, { [styles.busy]: !!currentRoom })}>
             <img
@@ -35,5 +35,3 @@ PlayersListRow.propTypes = {
     avatarNumber: PropTypes.number.isRequired,
     currentRoom: PropTypes.string,
 }
-
-export default PlayersListRow

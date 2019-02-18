@@ -1,0 +1,28 @@
+@import 'variables/variables.css';
+
+.gameList {
+    @media (--tablet) {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: auto;
+    }
+}
+
+.gameListElement {
+    height: 60px;
+    border: 1px solid var(--game-list-elements-separator);
+    padding: 10px;
+    margin: 5px;
+    background-color: var(--game-list-element-bg);
+}
+
+.gameElementContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    border: 1px solid var(--game-list-element-border);
+    padding-left: 5px;
+    padding-right: 5px;
+    color: var(--game-list-element-font);
+}
