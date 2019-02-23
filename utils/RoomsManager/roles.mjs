@@ -49,7 +49,7 @@ export const getChancellorCandidateInfo = (roomName) => {
 }
 
 export const setPresident = (roomName, presidentName) => {
-    const { playersDict } = getRoom[roomName]
+    const { playersDict } = getRoom(roomName)
 
     const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
     if (previousPresident) {

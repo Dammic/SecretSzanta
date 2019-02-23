@@ -25,36 +25,27 @@ import {
 } from './EnactPolicyEvents'
 import {
     setGamePhase,
-    clearVetoVotes,
-    getRoleSocket,
     getGamePhase,
     getVetoVotes,
     getPlayerRole,
     addVetoVote,
     didVetoSucceed,
     discardPolicyByVeto,
-    getPolicyCardsCount,
-    isRoomPresent,
     getRoomOwner,
     removePlayer,
     findNewRoomOwner,
     getRoomDetails,
-    getPlayersCount,
     getFacists,
     removeRoom,
     initializeRoom,
-    getRoomDetailsForLobby,
     isInBlackList,
     vote,
-    getRemainingVotesCount,
     addPlayer,
     didAllVote,
     getVotingResult,
     setChancellor,
-    getVotes,
     getChancellor,
     getDrawnCards,
-    getPlayerInfo,
     getPresident,
     discardPolicy,
     killPlayer,
@@ -64,10 +55,9 @@ import {
     chooseNextPresident,
     initializeVoting,
     isVetoUnlocked,
-    checkIfGameShouldFinish,
-    getChancellorCandidateInfo,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
+import { isRoomPresent } from '../stores/roomsStore'
 import { TimeDelay } from './consts'
 
 import {

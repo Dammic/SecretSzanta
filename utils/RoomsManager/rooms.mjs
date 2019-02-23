@@ -13,12 +13,12 @@ import {
 } from './policies'
 
 import { logInfo } from '../../utils/utils'
-import { getRoom, getAllRooms, updateRoom, deleteRoom } from '../../stores'
+import { getRoom, getAllRooms, updateRoom, deleteRoom, createRoom } from '../../stores'
 
 const {
     values, mapValues, isNil,
     forEach, random, slice, times, map,
-    find, pick, shuffle, size, sample, get, concat, fill,
+    find, pick, shuffle, size, sample, get, fill,
 } = lodash
 
 /**
@@ -39,7 +39,7 @@ export const initializeRoom = (roomName, ownerName, maxPlayers = 10, password) =
         currentPlayerName: ownerName,
     }, 'New room was created by the player')
 
-    updateRoom(roomName, '', {
+    createRoom(roomName, {
         ownerName,
         freeSlots,
         playersDict: {},
@@ -143,15 +143,6 @@ export const getRoomDetails = (roomName) => {
             affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
         })),
     }
-}
-
-/**
- * Function that checks if the room is defined or not
- * @param roomName - id of a room
- * @returns {Boolean} - true if created, false if not created
- */
-export const isRoomPresent = (roomName) => {
-    return !isNil(getRoom(roomName))
 }
 
 export const getRoomOwner = (roomName) => {

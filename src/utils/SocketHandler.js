@@ -300,9 +300,7 @@ export class SocketHandler extends React.PureComponent {
         })
         socket.on(SocketEvents.logoutPlayer, ({ data: { message } }) => {
             this.props.rootActions.logoutUser()
-            if (message) {
-                this.props.addNotification({ type: MessagesTypes.ERROR, message })
-            }
+            this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message: message || 'You have been logged out!' })
         })
     }
 

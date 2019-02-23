@@ -1,16 +1,19 @@
 import lodash from 'lodash'
 
-const { set, cloneDeep } = lodash
+const { set, cloneDeep, isNil } = lodash
 
 const roomsStore = {
 
 }
 
-export const getRoom = (roomName) => {
+const assertRoomExistence = (roomName) => {
     if (!roomsStore[roomName]) {
-        // throw new Error("")
-        console.error('get error')
+        throw new Error('Client tried to access a room that does not exist!')
     }
+}
+
+export const getRoom = (roomName) => {
+    assertRoomExistence(roomName)
 
     return cloneDeep(roomsStore[roomName])
 }
@@ -19,19 +22,22 @@ export const deleteRoom = (roomName) => {
     delete roomsStore[roomName]
 }
 
-export const getAllRooms = (roomName) => {
-    if (!roomsStore[roomName]) {
-        // throw new Error("")
-        console.error('get error')
-    }
+export const createRoom = (roomName, roomData) => {
+    roomsStore[roomName] = cloneDeep(roomData)
+}
 
+export const getAllRooms = () => {
     return cloneDeep(roomsStore)
 }
 
 export const updateRoom = (roomName, path, value) => {
-    if (!roomsStore[roomName]) {
-        console.error('update error')
-    }
+    assertRoomExistence(roomName)
 
-    set(roomsStore[roomName], path, value)
+    set(roomsStore[roomName], path, cloneDeep(value))
 }
+
+export const isRoomPresent = (roomName) => {
+    return !isNil(roomsStore[roomName])
+}
+
+//TODO: change this solution to proxy!
