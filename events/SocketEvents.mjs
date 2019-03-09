@@ -81,7 +81,7 @@ const { isNil, includes, find, get, truncate } = lodash
 export const triggerVetoPrompt = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
 
-    const delay = TimeDelay.LONG_DELAY
+    const delay = TimeDelay.VETO_DELAY
     
     const notifyAndResume = (delay) => {
         const messageContent = 'The president and chancellor can now veto the enacted policy for {counter}. Otherwise the chancellor choice phase will begin.'

@@ -1,5 +1,7 @@
 import lodash from 'lodash'
 import { roomsStore } from '../../stores'
+import { getAlivePlayers } from './players.mjs';
+import { PlayerRole } from '../../Dictionary'
 
 const {
     reject,
@@ -52,11 +54,17 @@ export const getVotingResult = (roomName) => {
     return ((votesCount[true] > votesCount[false]) || !votesCount[false])
 }
 
+const isEligeable = (player, numberOfPlayers) => {
+    const eligeable = isNil(player.role) || (numberOfPlayers <= 5 && player.role == PlayerRole.ROLE_PREVIOUS_PRESIDENT)
+    return eligeable 
+}
+
 export const getChancellorChoices = (roomName) => {
-    const { playersDict } = roomsStore[roomName]
+    const alivePlayersDict = getAlivePlayers(roomName)
     const chancellorChoices = []
-    forEach(playersDict, (player) => {
-        if (isNil(player.role) && !player.isDead) {
+    const numberOfPlayers = size(alivePlayersDict)
+    forEach(alivePlayersDict, (player) => {
+        if (isEligeable(player, numberOfPlayers)) {
             chancellorChoices.push(player.playerName)
         }
     })
