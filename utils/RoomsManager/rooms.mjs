@@ -73,13 +73,14 @@ export const setPlayerboardType = (roomName) => {
     } else if (playersCount <= 10) {
         boardType = PlayerBoards.LargeBoard
     }
-    updateRoom(roomName, 'boardType', boardType)
+    updateRoom(roomName, { boardType })
 }
 
 export const startGame = (roomName) => {
     const { playersDict } = getRoom(roomName)
-    updateRoom(roomName, 'gamePhase', GamePhases.START_GAME)
-    updateRoom(roomName, 'failedElectionsCount', 0)
+    const updateObject = {}
+    updateObject.gamePhase = GamePhases.START_GAME
+    updateObject.failedElectionsCount = 0
     setPlayerboardType(roomName)
     const liberalCount = Math.floor(size(playersDict) / 2) + 1
     const facistCount = size(playersDict) - liberalCount
@@ -95,12 +96,14 @@ export const startGame = (roomName) => {
     })
     playersDict[hitlerPlayerName].affiliation = PlayerAffilications.HITLER_AFFILIATION
     playersDict[hitlerPlayerName].facistAvatar = 50
-    updateRoom(roomName, 'playersDict', playersDict)
+    updateObject.playersDict = playersDict
 
     // creating policy cards
     const fascistCards = fill(Array(11), PolicyCards.FacistPolicy)
     const liberalCards = fill(Array(6), PolicyCards.LiberalPolicy)
-    updateRoom(roomName, 'drawPile', shuffle([...fascistCards, ...liberalCards]))
+    updateObject.drawPile = shuffle([...fascistCards, ...liberalCards])
+
+    updateRoom(roomName, updateObject)
 }
 
 export const getRoomsList = () => {
@@ -153,7 +156,7 @@ export const getRoomOwner = (roomName) => {
 export const findNewRoomOwner = (roomName) => {
     const { playersDict } = getRoom(roomName)
     const newOwner = sample(playersDict)
-    updateRoom(roomName, 'ownerName', get(newOwner, 'playerName'))
+    updateRoom(roomName, { ownerName: get(newOwner, 'playerName') })
     return newOwner
 }
 

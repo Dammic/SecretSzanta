@@ -19,19 +19,23 @@ export const getPlayerRole = (roomName, playerName) => {
 
 export const setChancellor = (roomName) => {
     const { playersDict, chancellorCandidateName } = getRoom(roomName)
+    const updateObject = { playersDict: {} }
 
     const previousChancellor = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR })
     if (previousChancellor) {
-        updateRoom(roomName, `playersDict.${previousChancellor.playerName}.role`, null)
+        updateObject.playersDict[previousChancellor.playerName] = { role: null }
     }
+
     const currentChancellor = find(playersDict, { role: PlayerRole.ROLE_CHANCELLOR })
     if (currentChancellor) {
-        updateRoom(roomName, `playersDict.${currentChancellor.playerName}.role`, PlayerRole.ROLE_PREVIOUS_CHANCELLOR)
+        updateObject.playersDict[currentChancellor.playerName] = { role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR }
     }
 
     if (chancellorCandidateName) {
-        updateRoom(roomName, `playersDict.${chancellorCandidateName}.role`, PlayerRole.ROLE_CHANCELLOR)
+        updateObject.playersDict[chancellorCandidateName] = { role: PlayerRole.ROLE_CHANCELLOR }
     }
+
+    updateRoom(roomName, updateObject)
 }
 
 export const getChancellor = (roomName) => {
@@ -50,18 +54,20 @@ export const getChancellorCandidateInfo = (roomName) => {
 
 export const setPresident = (roomName, presidentName) => {
     const { playersDict } = getRoom(roomName)
+    const updateObject = { playersDict: {} }
 
     const previousPresident = find(playersDict, { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT })
     if (previousPresident) {
-        updateRoom(roomName, `playersDict.${previousPresident.playerName}.role`, null)
+        updateObject.playersDict[previousPresident.playerName] = { role: null }
     }
 
     const currentPresident = find(playersDict, { role: PlayerRole.ROLE_PRESIDENT })
     if (currentPresident) {
-        updateRoom(roomName, `playersDict.${currentPresident.playerName}.role`, PlayerRole.ROLE_PREVIOUS_PRESIDENT)
+        updateObject.playersDict[currentPresident.playerName] = { role: PlayerRole.ROLE_PREVIOUS_PRESIDENT }
     }
 
-    updateRoom(roomName, `playersDict.${presidentName}.role`, PlayerRole.ROLE_PRESIDENT)
+    updateObject.playersDict[presidentName] = { role: PlayerRole.ROLE_PRESIDENT }
+    updateRoom(roomName, updateObject)
 }
 
 export const getPresident = (roomName) => {
@@ -71,7 +77,7 @@ export const getPresident = (roomName) => {
     return (president ? pick(president, ['playerName', 'avatarNumber']) : null)
 }
 export const resetPresidentBackup = (roomName) => {
-    updateRoom(roomName, 'previousPresidentNameBackup', null)
+    updateRoom(roomName, { previousPresidentNameBackup: null })
 }
 export const chooseNextPresident = (roomName) => {
     const { playersDict, previousPresidentNameBackup } = getRoom(roomName)
@@ -93,5 +99,5 @@ export const getRoleSocket = (roomName, role) => {
 }
 export const setPresidentBackup = (roomName) => {
     const currentPresident = getPresident(roomName)
-    updateRoom(roomName, 'previousPresidentNameBackup', currentPresident.playerName)
+    updateRoom(roomName, { previousPresidentNameBackup: currentPresident.playerName })
 }

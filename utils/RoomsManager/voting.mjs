@@ -13,14 +13,16 @@ const {
 } = lodash
 
 export const initializeVoting = (roomName, chancellorCandidateName) => {
-    updateRoom(roomName, 'votes', {})
-    updateRoom(roomName, 'chancellorCandidateName', chancellorCandidateName)
+    updateRoom(roomName, {
+        votes: {},
+        chancellorCandidateName,
+    })
 }
 
 export const vote = (roomName, playerName, value) => {
     const { playersDict } = getRoom(roomName)
     if (!playersDict[playerName].isDead) {
-        updateRoom(roomName, `votes.${playerName}`, value)
+        updateRoom(roomName, { votes: { [playerName]: value } })
     }
 }
 

@@ -48,8 +48,10 @@ export const addPlayer = (roomName, playerName, socket) => {
         isDead: false,
         emit: socket.emit.bind(socket),
     }
-    updateRoom(roomName, `playersDict.${playerName}`, newPlayer)
-    updateRoom(roomName, 'freeSlots', tail(freeSlots))
+    updateRoom(roomName, {
+        playersDict: { [playerName]: newPlayer },
+        freeSlots: tail(freeSlots),
+    })
 }
 
 /**
@@ -62,8 +64,10 @@ export const removePlayer = (roomName, playerName) => {
     const { [playerName]: removedPlayer, ...restPlayers } = playersDict
 
     if (removedPlayer) {
-        updateRoom(roomName, 'freeSlots', [removedPlayer.slotNumber, ...freeSlots])
-        updateRoom(roomName, 'playersDict', restPlayers)
+        updateRoom(roomName, {
+            freeSlots: [removedPlayer.slotNumber, ...freeSlots],
+            playersDict: restPlayers,
+        })
     }
 }
 
@@ -97,7 +101,7 @@ export const killPlayer = (roomName, playerName) => {
 
     const player = find(playersDict, { playerName })
     if (player) {
-        updateRoom(roomName, `playersDist.${playerName}.isDead`, true)
+        updateRoom(roomName, { playersDict: { [playerName]: { isDead: true } } })
     }
 }
 
@@ -105,7 +109,7 @@ export const kickPlayer = (roomName, playerName, banned) => {
     const { blackList } = getRoom(roomName)
 
     if (banned) {
-        updateRoom(roomName, 'blackList', [...blackList, playerName])
+        updateRoom(roomName, { blackList: [...blackList, playerName] })
     }
 
     setGamePhase(roomName, GamePhases.Paused)

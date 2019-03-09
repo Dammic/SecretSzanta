@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 
-const { set, cloneDeep, isNil } = lodash
+const { set, cloneDeep, isNil, merge } = lodash
 
 const roomsStore = {
 
@@ -30,10 +30,9 @@ export const getAllRooms = () => {
     return cloneDeep(roomsStore)
 }
 
-export const updateRoom = (roomName, path, value) => {
+export const updateRoom = (roomName, changeObject) => {
     assertRoomExistence(roomName)
-
-    set(roomsStore[roomName], path, cloneDeep(value))
+    merge(roomsStore[roomName], changeObject)
 }
 
 export const isRoomPresent = (roomName) => {

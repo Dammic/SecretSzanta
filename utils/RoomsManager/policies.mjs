@@ -21,17 +21,21 @@ export const moveCard = (roomName, sourcePileName, destinationPileName, card) =>
         return
     }
     const firstOccurenceOfCard = indexOf(sourcePile, card)
-    updateRoom(roomName, sourcePileName, [
-        ...sourcePile.slice(0, firstOccurenceOfCard),
-        ...sourcePile.slice(firstOccurenceOfCard + 1),
-    ])
-    updateRoom(roomName, destinationPileName, [...destinationPile, card])
+    updateRoom(roomName, {
+        [sourcePileName]: [
+            ...sourcePile.slice(0, firstOccurenceOfCard),
+            ...sourcePile.slice(firstOccurenceOfCard + 1),
+        ],
+        [destinationPileName]: [...destinationPile, card],
+    })
 }
 
 export const discardAllCards = (roomName) => {
     const { discardPile, drawnCards } = getRoom(roomName)
-    updateRoom(roomName, 'discardPile', [...discardPile, ...drawnCards])
-    updateRoom(roomName, 'drawnCards', [])
+    updateRoom(roomName, {
+        discardPile: [...discardPile, ...drawnCards],
+        drawnCards: [],
+    })
 }
 
 export const enactPolicy = (roomName, card) => {
@@ -56,8 +60,10 @@ export const getDrawnCards = (roomName) => {
 export const reShuffle = (roomName) => {
     const { drawPile, discardPile } = getRoom(roomName)
 
-    updateRoom(roomName, 'drawPile', shuffle([...drawPile, ...discardPile]))
-    updateRoom(roomName, 'discardPile', [])
+    updateRoom(roomName, {
+        drawPile: shuffle([...drawPile, ...discardPile]),
+        discardPile: [],
+    })
 }
 
 export const takeChoicePolicyCards = (roomName, amount) => {
@@ -66,8 +72,10 @@ export const takeChoicePolicyCards = (roomName, amount) => {
     if (size(drawPile) < amount) reShuffle(roomName)
 
     const policies = take(drawPile, amount)
-    updateRoom(roomName, 'drawPile', amount)
-    updateRoom(roomName, 'drawnCards', policies)
+    updateRoom(roomName, {
+        drawPile: amount,
+        drawnCards: policies,
+    })
 
     if (size(drawPile) < 3) reShuffle(roomName)
     return policies

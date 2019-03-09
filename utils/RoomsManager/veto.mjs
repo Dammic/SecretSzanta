@@ -15,7 +15,7 @@ const {
 } = lodash
 
 export const toggleVeto = (roomName) => {
-    updateRoom(roomName, 'isVetoUnlocked', true)
+    updateRoom(roomName, { isVetoUnlocked: true })
 }
 export const addVetoVote = (roomName, playerName) => {
     const { vetoVotes } = getRoom(roomName)
@@ -24,7 +24,7 @@ export const addVetoVote = (roomName, playerName) => {
         includes([PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT], playerRole)
         && !includes(vetoVotes, playerRole)
     ) {
-        updateRoom(roomName, 'vetoVotes', [...vetoVotes, playerRole])
+        updateRoom(roomName, { vetoVotes: [...vetoVotes, playerRole] })
     }
 }
 export const didVetoSucceed = (roomName) => {
@@ -35,7 +35,7 @@ export const getVetoVotes = (roomName) => {
     return getRoom(roomName).vetoVotes
 }
 export const clearVetoVotes = (roomName) => {
-    updateRoom(roomName, 'vetoVotes', [])
+    updateRoom(roomName, { vetoVotes: [] })
 }
 
 export const isVetoUnlocked = (roomName) => {
