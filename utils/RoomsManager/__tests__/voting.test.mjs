@@ -1,5 +1,5 @@
 import { size } from 'lodash'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom } from '../../../stores'
 
 import {
     initializeVoting,
@@ -27,11 +27,11 @@ describe('voting', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
     describe('didAllVote', () => {
         test('all eligible voted (1 dead person)', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 ala: { isDead: false, playerName: 'ala' },
                 ola: { isDead: true, playerName: 'ola' },
@@ -48,7 +48,7 @@ describe('voting', () => {
         })
 
         test('not all eligible voted', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 ala: { isDead: false, playerName: 'ala' },
                 ula: { isDead: false, playerName: 'ula' },
@@ -63,7 +63,7 @@ describe('voting', () => {
         })
 
         test('dead person voted, for some reason and should not take it into consideration', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 ala: { isDead: true, playerName: 'ala' },
                 ula: { isDead: false, playerName: 'ula' },
@@ -80,7 +80,7 @@ describe('voting', () => {
 
     describe('getRemainingVotingPlayers', () => {
         test('returns players that did not vote', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 ala: { isDead: true, playerName: 'ala' },
                 ula: { isDead: false, playerName: 'ula' },
@@ -94,7 +94,7 @@ describe('voting', () => {
         })
 
         test('returns players that did not vote #2', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 ala: { isDead: true, playerName: 'ala' },
                 ula: { isDead: false, playerName: 'ula' },

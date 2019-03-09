@@ -1,5 +1,5 @@
 import { size } from 'lodash'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom } from '../../../stores'
 
 import {
     addPlayer,
@@ -28,26 +28,26 @@ describe('players', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
 
     describe('isInBlackList', () => {
         test('if blacklist is empty, should return false', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.blackList = []
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(false)
         })
 
         test('if blacklist contains the user, should return true', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.blackList = ['ala', 'ola']
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(true)
         })
 
         test('if blacklist contains some users but not this one, should return false', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.blackList = ['olga', 'ola']
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(false)

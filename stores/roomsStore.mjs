@@ -1,6 +1,12 @@
 import lodash from 'lodash'
 
-const { set, cloneDeep, isNil, merge } = lodash
+const { set, cloneDeep, isNil, mergeWith, isArray } = lodash
+
+const customMerge = (objValue, srcValue) => {
+    if (isArray(objValue)) {
+        return objValue
+    }
+}
 
 const roomsStore = {
 
@@ -32,7 +38,7 @@ export const getAllRooms = () => {
 
 export const updateRoom = (roomName, changeObject) => {
     assertRoomExistence(roomName)
-    merge(roomsStore[roomName], changeObject)
+    mergeWith(roomsStore[roomName], changeObject, customMerge)
 }
 
 export const isRoomPresent = (roomName) => {

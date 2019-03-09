@@ -14,7 +14,7 @@ import {
 import { initializeRoom } from '../rooms'
 
 import { PolicyCards } from '../../../Dictionary'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom } from '../../../stores'
 
 // TODO: functions that are not tested:
 // getDrawnCards,
@@ -73,12 +73,12 @@ describe('policies', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
 
     describe('reShuffle', () => {
         test('The same cards stay after reShuffle', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy]
             testRoom.discardPile = [PolicyCards.LiberalPolicy]
             const preparedRoom = cloneDeep(testRoom)
@@ -93,7 +93,7 @@ describe('policies', () => {
 
     describe('discardPolicy', () => {
         test(`If no card is passed then it reports error, any pile isn't changed`, () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
@@ -118,7 +118,7 @@ describe('policies', () => {
         })
 
         test('Should move chosen card from drawn cards pile to discard pile', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
                 ...times(2, () => PolicyCards.LiberalPolicy),
@@ -133,7 +133,7 @@ describe('policies', () => {
         })
 
         test('If card does not exist in draw pile, then error is reported and any pile is not changed', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 ...times(3, () => PolicyCards.FacistPolicy),
             ]
@@ -161,7 +161,7 @@ describe('policies', () => {
 
     describe('moveCard', () => {
         test('Policy card is removed from drawn card pile and added to discard pile', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [PolicyCards.LiberalPolicy]
             testRoom.discardPile = []
             moveCard(testRoom.drawPile, testRoom.discardPile, testRoom.drawPile[0])
@@ -170,7 +170,7 @@ describe('policies', () => {
         })
 
         test('Non-existing policy in source pile is not moved to other pile', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = []
             testRoom.discardPile = []
             moveCard(testRoom.drawPile, testRoom.discardPile, PolicyCards.LiberalPolicy)
@@ -179,7 +179,7 @@ describe('policies', () => {
         })
 
         test('Only chosen policy is moved to another pile', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [PolicyCards.LiberalPolicy, PolicyCards.FacistPolicy]
             testRoom.discardPile = []
             const cardToStay = testRoom.drawPile[1]
@@ -191,7 +191,7 @@ describe('policies', () => {
 
     describe('takeChoicePolicyCards', () => {
         test('Should take 1 out of 4 cards', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.FacistPolicy,
@@ -218,7 +218,7 @@ describe('policies', () => {
         })
 
         test('Should take 2 out of 4 cards and shuffle the rest with discards', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.FacistPolicy,
@@ -253,7 +253,7 @@ describe('policies', () => {
         })
 
         test('Should take 1 out of 1 cards and shuffle the rest with discards', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [PolicyCards.LiberalPolicy]
             testRoom.discardPile = [
                 PolicyCards.FacistPolicy,
@@ -281,7 +281,7 @@ describe('policies', () => {
         })
 
         test('Should take 1 out of 3 cards and shuffle the rest with discards', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 PolicyCards.FacistPolicy,
                 PolicyCards.FacistPolicy,
@@ -314,7 +314,7 @@ describe('policies', () => {
             expect(testRoom.drawPile.length).toEqual(5)
         })
         test('Should take 3 cards, but first shuffle, because there is only one available on draw pile', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [
                 PolicyCards.FacistPolicy,
             ]
@@ -339,7 +339,7 @@ describe('policies', () => {
 
     describe('peekPolicyCards', () => {
         test('Should return 3 cards but not modify anything', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.drawPile = [PolicyCards.FacistPolicy, PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy, PolicyCards.LiberalPolicy]
             const preparedRoomProps = cloneDeep(testRoom)
             const peekedCards = peekPolicyCards('testRoom')

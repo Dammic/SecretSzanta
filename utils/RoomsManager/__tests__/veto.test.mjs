@@ -1,6 +1,6 @@
 import { cloneDeep, size } from 'lodash'
 import { PlayerRole } from '../../../Dictionary'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom } from '../../../stores'
 
 import {
     toggleVeto,
@@ -24,12 +24,12 @@ describe('veto', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
 
     describe('toggleVeto', () => {
         test('should set isVetoUnlocked to true and not mess other things up', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             const preparedRoomProps = cloneDeep(testRoom)
             preparedRoomProps.isVetoUnlocked = true
             toggleVeto('testRoom')
@@ -39,7 +39,7 @@ describe('veto', () => {
 
     describe('addVetoVote', () => {
         test('should be able to add president vote into votes ', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict.ala = {
                 role: PlayerRole.ROLE_PRESIDENT,
             }
@@ -50,7 +50,7 @@ describe('veto', () => {
             expect(preparedRoomProps).toEqual(testRoom)
         })
         test('should be able to add chancellor vote into votes ', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict.ala = {
                 role: PlayerRole.ROLE_CHANCELLOR,
             }
@@ -61,7 +61,7 @@ describe('veto', () => {
             expect(preparedRoomProps).toEqual(testRoom)
         })
         test('should be able to add chancellor and president votes into votes ', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict.ala = {
                 role: PlayerRole.ROLE_CHANCELLOR,
             }
@@ -78,7 +78,7 @@ describe('veto', () => {
         })
 
         test('should be able to add president and chancellor votes into votes ', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict.ala = {
                 role: PlayerRole.ROLE_CHANCELLOR,
             }
@@ -95,7 +95,7 @@ describe('veto', () => {
         })
 
         test('should not add more than 2 votes ever', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict.ala = {
                 role: PlayerRole.ROLE_CHANCELLOR,
             }
@@ -121,7 +121,7 @@ describe('veto', () => {
         })
 
         test('non-president and non-chancellor cannot vote for veto', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict.ala = {
                 role: null,
             }

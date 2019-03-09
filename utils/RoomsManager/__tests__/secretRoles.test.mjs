@@ -1,6 +1,6 @@
 import { size } from 'lodash'
 import { PlayerAffilications } from '../../../Dictionary'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom } from '../../../stores'
 
 import {
     getFacists,
@@ -19,11 +19,11 @@ describe('secretRoles', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
     describe('getHitler', () => {
         test('it returns hitler if one is on the board', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 hitlerPlayer: {
                     playerName: 'hitlerPlayer',
@@ -41,7 +41,7 @@ describe('secretRoles', () => {
             expect(getHitler('testRoom')).toEqual(testRoom.playersDict.hitlerPlayer)
         })
         test('it returns null', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 fascistPlayer: {
                     playerName: 'fascistPlayer',

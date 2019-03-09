@@ -1,6 +1,6 @@
 import { cloneDeep, size } from 'lodash'
 import { PlayerRole } from '../../../Dictionary'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom } from '../../../stores'
 
 import {
     getPlayerRole,
@@ -31,12 +31,12 @@ describe('roles', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
 
     describe('chooseNextPresident', () => {
         test('should choose next new president (normal flow, 3 players)', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {}
             testRoom.playersDict.player1 = {
                 playerName: 'player1',
@@ -61,7 +61,7 @@ describe('roles', () => {
         })
 
         test('should choose next new president (normal flow, 3 players, 2 -> 3)', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {}
             testRoom.playersDict.player1 = {
                 playerName: 'player1',
@@ -87,7 +87,7 @@ describe('roles', () => {
         })
 
         test('should choose next new president (normal flow, 3 players, 3 -> 1, should use modulo)', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {}
             testRoom.playersDict.player1 = {
                 playerName: 'player1',
@@ -113,7 +113,7 @@ describe('roles', () => {
         })
 
         test('should choose next new president (normal flow, 3 players, 1 -> 3, should ommit dead)', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {}
             testRoom.playersDict.player1 = {
                 playerName: 'player1',
@@ -140,7 +140,7 @@ describe('roles', () => {
         })
 
         test('should choose next new president (normal flow, 3 players, 2 -> 1, should ommit dead and use modulo)', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {}
             testRoom.playersDict.player1 = {
                 playerName: 'player1',
@@ -167,7 +167,7 @@ describe('roles', () => {
         })
 
         test('should choose next new president (special flow, 4 players, 1 -> 2 -> 2 (and 2nd was special president))', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {}
             testRoom.previousPresidentNameBackup = 'player1'
             testRoom.playersDict.player1 = {
@@ -204,7 +204,7 @@ describe('roles', () => {
 
     describe('setPresidentBackup', () => {
         test('Should set president backup', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             testRoom.playersDict = {
                 player1: {
                     playerName: 'player1',
@@ -222,7 +222,7 @@ describe('roles', () => {
 
     describe('resetPresidentBackup', () => {
         test('Should reset president backup', () => {
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             const preparedRoomProps = cloneDeep(testRoom)
             resetPresidentBackup('testRoom')
             preparedRoomProps.previousPresidentNameBackup = null
