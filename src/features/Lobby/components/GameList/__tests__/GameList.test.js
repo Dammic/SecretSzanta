@@ -3,6 +3,7 @@ import { mount } from 'enzyme'
 import { aRoomsList } from 'packages/factories'
 import { SocketEvents } from '../../../../../../Dictionary'
 import { socket } from '../../../../../utils/SocketHandler'
+import { ControlButton } from '../../../../Shared/Buttons'
 import { GameList } from '../GameList'
 
 const setupProps = (propsOverrides = {}, renderMethod = mount) => {
@@ -28,7 +29,7 @@ describe('<GameList />', () => {
                 },
             ]
 
-            component.find('button').first().simulate('click')
+            component.find(ControlButton).first().simulate('click')
 
             expect(socket.emit).toHaveBeenCalledWith(...expectedSocketParams)
         })

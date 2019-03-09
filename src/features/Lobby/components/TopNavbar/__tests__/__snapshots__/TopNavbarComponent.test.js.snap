@@ -13,12 +13,10 @@ exports[`<TopNavbarComponent /> matches snapshot 1`] = `
     </b>
     !
   </span>
-  <div>
-    <Button
-      onClick={[MockFunction]}
-    >
-      New Room
-    </Button>
-  </div>
+  <ControlButton
+    onClick={[MockFunction]}
+  >
+    New room
+  </ControlButton>
 </div>
 `;

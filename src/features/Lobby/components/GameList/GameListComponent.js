@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
+import { ControlButton } from '../../../Shared/Buttons'
 
 import styles from './GameList.css'
 
@@ -13,9 +14,9 @@ export const GameListComponent = ({ rooms, onClick }) => (
                         <div>{roomName} |{playerCount}/9999</div>
                     </div>
                     <div>
-                        <button onClick={React.useCallback(() => onClick(roomId), [roomId])}>
-                            JOIN
-                        </button>
+                        <ControlButton onClick={React.useCallback(() => onClick(roomId), [roomId])}>
+                            join
+                        </ControlButton>
                     </div>
                 </div>
             </div>
