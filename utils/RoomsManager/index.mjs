@@ -8,6 +8,7 @@ export {
     getRoomDetailsForLobby,
     getRoomDetails,
     isRoomPresent,
+    isRoomPasswordCorrect,
     getRoomOwner,
     findNewRoomOwner,
     getPlayersCount,

@@ -161,6 +161,10 @@ export const isRoomPresent = (roomName) => {
     return !isNil(roomsStore[roomName])
 }
 
+export const isRoomPasswordCorrect = (roomName, password) => {
+    return roomsStore[roomName].password === password
+}
+
 export const getRoomOwner = (roomName) => {
     const { playersDict, ownerName } = roomsStore[roomName]
     return playersDict[ownerName]
