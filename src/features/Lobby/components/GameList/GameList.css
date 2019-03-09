@@ -26,3 +26,31 @@
     padding-right: 5px;
     color: var(--game-list-element-font);
 }
+
+.rightSide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.playerCount {
+    font-size: 14px;
+    position: relative;
+    top: 2px;
+}
+
+.button {
+    flex-grow: 1;
+}
+
+.icon {
+    margin-left: 4px;
+    font-size: 11px;
+}
+
+.roomName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 20px;
+}
