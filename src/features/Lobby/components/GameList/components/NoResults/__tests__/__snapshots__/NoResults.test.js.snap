@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NoResults /> matches snapshot 1`] = `
+<div
+  className="noResults"
+>
+  <span
+    className="noResultsHeadline"
+  >
+    No rooms found at this moment
+  </span>
+  <span
+    className="noResultsParagraph"
+  >
+    Click on the 'New Room' button to your right to create a new room
+  </span>
+</div>
+`;

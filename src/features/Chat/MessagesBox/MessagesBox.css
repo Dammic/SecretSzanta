@@ -6,7 +6,6 @@
     max-height: 100%;
     overflow-y: auto;
     background-color: var(--chat-box-background);
-    border: 2px solid var(--border-color);
     border-bottom: none;
     border-right: none;
 }

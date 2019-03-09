@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PlayersList /> matches snapshot - renders list of 4 players with the ones having a  room at the top 1`] = `
+<div
+  className="playersList"
+>
+  <div
+    className="category"
+  >
+    <span>
+      Online: 
+      <b>
+        4
+      </b>
+    </span>
+  </div>
+  <PlayersListRow
+    avatarNumber={4}
+    currentRoom="Division"
+    playerName="Hubert93"
+  />
+  <PlayersListRow
+    avatarNumber={1}
+    currentRoom="magenta"
+    playerName="Jazmin33"
+  />
+  <PlayersListRow
+    avatarNumber={2}
+    currentRoom="payment"
+    playerName="Lila48"
+  />
+  <PlayersListRow
+    avatarNumber={1}
+    currentRoom={null}
+    playerName="Hayden_Zieme0"
+  />
+</div>
+`;

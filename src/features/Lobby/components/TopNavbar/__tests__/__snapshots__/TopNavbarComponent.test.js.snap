@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TopNavbarComponent /> matches snapshot 1`] = `
+<div
+  className="topBar"
+>
+  <span
+    className="ellipsis"
+  >
+    Hello 
+    <b>
+      mockUserName
+    </b>
+    !
+  </span>
+  <ControlButton
+    onClick={[MockFunction]}
+  >
+    New room
+  </ControlButton>
+</div>
+`;

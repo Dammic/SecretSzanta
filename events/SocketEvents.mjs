@@ -68,6 +68,7 @@ import {
     getChancellorCandidateInfo,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
+import { TimeDelay } from './consts'
 
 import {
     isInPlayersList,
@@ -80,19 +81,18 @@ const { isNil, includes, find, get, truncate } = lodash
 export const triggerVetoPrompt = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
 
-    const messageContent = 'The president and chancellor can now veto the enacted policy for {counter}. Otherwise the chancellor choice phase will begin.'
-    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: 30 })
+    const delay = TimeDelay.VETO_DELAY
+    
+    const notifyAndResume = (delay) => {
+        const messageContent = 'The president and chancellor can now veto the enacted policy for {counter}. Otherwise the chancellor choice phase will begin.'
+        emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: delay / 1000 })
 
-    emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
-    emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
-
-    SocketEventsUtils.resumeGame(
-        socket,
-        {
-            delay: 30000,
-            func: checkForNextStep
-        },
-    )
+        emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
+        emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
+        
+        return PhaseSocketEvents.startChancellorChoicePhaseEvent
+    }
+    checkForNextStep(socket, false, notifyAndResume, delay)
 }
 
 // protect it that it can only be fired by president OR chancellor ONCE
@@ -120,7 +120,7 @@ export const veto = (socket) => {
     const roleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'president' : 'chancellor'
     if (didVetoSucceed(socket.currentRoom)) {
         setGamePhase(socket.currentRoom, GamePhases.ServerAcceptedVeto)
-
+        
         const messageContent = 'The {roleBold} invoked veto for the enacted policy as well! The enacted policy has been rejected!'
         emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { roleBold: roleString })
 
@@ -133,7 +133,7 @@ export const veto = (socket) => {
         // TODO: check if we need this resumeGame (and if we can move it somewhere else?)
         emits.emitSyncPolicies(socket.currentRoom)
 
-        SocketEventsUtils.resumeGame(socket, { delay: 5000, func: checkForNextStep })
+        checkForNextStep(socket)
     } else {
         const missingVetoRoleString = playerRole === PlayerRole.ROLE_PRESIDENT ? 'chancellor' : 'president'
 
@@ -230,16 +230,30 @@ export const voteEvent = (socket, { value }) => {
         emits.emitVotingResult(socket.currentRoom)
 
         const hasPolicyBeenEnacted = updateTrackerPosition(socket, hasVotingSucceed)
-        SocketEventsUtils.resumeGame(socket, {
-            delay: hasPolicyBeenEnacted ? 5000 : 0,
-            func: () => {
-                checkForNextStep(
-                    socket,
-                    hasPolicyBeenEnacted,
-                    hasVotingSucceed ? PhaseSocketEvents.startPresidentPolicyChoice : PhaseSocketEvents.startChancellorChoicePhaseEvent
-                )
-            },
-        })
+        const delay = TimeDelay.NEAR_INSTANT
+        
+        const notifyAndResume = (delay) => {
+            let onResume
+            let messageContent
+
+            if (hasVotingSucceed) {
+                onResume = PhaseSocketEvents.startPresidentPolicyChoice
+                messageContent = 'Voting succeeded.'
+            } else {
+                onResume = PhaseSocketEvents.startChancellorChoicePhaseEvent
+                messageContent = 'Voting failed. Next president will now choose a chancelor.'
+            }
+
+            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent)
+            return onResume
+        }
+        
+        checkForNextStep(
+            socket,
+            hasPolicyBeenEnacted,
+            notifyAndResume,
+            delay,
+        )
     }
 }
 
@@ -250,18 +264,11 @@ export const choosePolicyChancellor = (socket, choice) => {
     const messageContent = 'A {policyNameBold} policy has been enacted!'
     emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { policyNameBold: policyName })
 
-    SocketEventsUtils.resumeGame(socket, {
-        delay: 5000,
-        func: () => {
-            const isVeto = isVetoUnlocked(socket.currentRoom)
-            if (isVeto) {
-                triggerVetoPrompt(socket)
-            } else {
-                checkForNextStep(socket, true)
-            }
-        }
-    })
-
+    if (isVetoUnlocked(socket.currentRoom)) {
+        triggerVetoPrompt(socket)
+    } else {
+        checkForNextStep(socket, true)
+    }
 }
 
 export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
@@ -313,7 +320,7 @@ export const kickIfPresident = (socket, playerName) => {
     setChancellor(socket.currentRoom)
 
     // in future, the game will need to be rollbacked to latest biggest event, so leaving resumeGame for now
-    SocketEventsUtils.resumeGame(socket, { delay: 1000, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
+    SocketEventsUtils.resumeGame(socket, { delay: TimeDelay.NEAR_INSTANT, func: PhaseSocketEvents.startChancellorChoicePhaseEvent })
     return true
 }
 
@@ -358,15 +365,19 @@ export const selectName = (socket, { userName }) => {
 
 export const presidentDesignatedNextPresident = (socket, { playerName }) => {
     emits.emitChooserPlayer(socket.currentRoom, '')
+    const delay = TimeDelay.MEDIUM_DELAY
 
-    const messageContent = '{playerNameBold} has been designated as the next president for the next turn! Chancellor choice phase will begin in {counter}…'
-    emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
-        playerNameBold: playerName,
-        counter: 10,
-    })
+    const notifyAndResume = (delay) => {
+        const messageContent = '{playerNameBold} has been designated as the next president for the next turn! Chancellor choice phase will begin in {counter}…'
+        emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {
+            playerNameBold: playerName,
+            counter: delay / 1000,
+        })
 
-    const onResume = socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName)
-    checkForNextStep(socket, onResume)
+        return socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName);
+    }
+
+    checkForNextStep(socket, false, notifyAndResume, delay)
 }
 
 export const superpowerAffiliationPeekPlayer = (socket, { playerName }) => {

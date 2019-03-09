@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GameListComponent /> matches snapshot - doesnt render list of rooms if there are not any 1`] = `
+<div
+  className="gameList"
+/>
+`;
+
+exports[`<GameListComponent /> matches snapshot - renders list of rooms 1`] = `
+<div
+  className="gameList"
+>
+  <div
+    className="gameListElement"
+  >
+    <div
+      className="gameElementContainer"
+    >
+      <div>
+        <div>
+          Producer Solutions
+           |
+          1
+          /9999
+        </div>
+      </div>
+      <div>
+        <button
+          onClick={[Function]}
+        >
+          JOIN
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    className="gameListElement"
+  >
+    <div
+      className="gameElementContainer"
+    >
+      <div>
+        <div>
+          Compatible
+           |
+          4
+          /9999
+        </div>
+      </div>
+      <div>
+        <button
+          onClick={[Function]}
+        >
+          JOIN
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    className="gameListElement"
+  >
+    <div
+      className="gameElementContainer"
+    >
+      <div>
+        <div>
+          Yen Operations
+           |
+          9
+          /9999
+        </div>
+      </div>
+      <div>
+        <button
+          onClick={[Function]}
+        >
+          JOIN
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

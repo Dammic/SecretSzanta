@@ -6,7 +6,7 @@ import lodash from 'lodash'
 import {
     getPresident,
     getRoleSocket,
-    getOtherAlivePlayers,
+    getOtherAlivePlayerNames,
     peekPolicyCards,
     getPlayerInfo,
     getHitler,
@@ -18,7 +18,7 @@ export const emitPeekAffiliationToPresident = (room) => {
     const presidentEmit = getRoleSocket(room, PlayerRole.ROLE_PRESIDENT)
 
     const presidentName = get(getPresident(room), 'playerName')
-    const playersChoices = getOtherAlivePlayers(room, presidentName)
+    const playersChoices = getOtherAlivePlayerNames(room, presidentName)
 
     emitToPlayer(presidentEmit, SocketEvents.SuperpowerAffiliationPeekPlayerChoose, {
         playersChoices,
@@ -44,7 +44,7 @@ export const emitPlayerKilled = (room, playerName) => {
 
 export const emitPresidentWillKillPlayer = (room) => {
     const presidentName = get(getPresident(room), 'playerName')
-    const playersChoices = getOtherAlivePlayers(room, presidentName)
+    const playersChoices = getOtherAlivePlayerNames(room, presidentName)
 
     const messageContent = 'The president has gained power to kill one person! Now the victim is being choosen…'
     emitGameNotification(room, MessagesTypes.STATUS, messageContent)
@@ -69,7 +69,7 @@ export const emitPlayerAffiliationToPresident = (room, selectedPlayerName) => {
 
 export const emitDesignateNextPresident = (room) => {
     const presidentName = get(getPresident(room), 'playerName')
-    const playersChoices = getOtherAlivePlayers(room, presidentName)
+    const playersChoices = getOtherAlivePlayerNames(room, presidentName)
 
     const messageContent = 'The president has gained power to designate next president for the next round. Waiting for him to choose the next president…'
     emitGameNotification(room, MessagesTypes.STATUS, messageContent)

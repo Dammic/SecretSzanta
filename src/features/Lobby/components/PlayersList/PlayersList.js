@@ -1,17 +1,20 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { map, filter, reject, size } from 'lodash'
-import PlayersListRow from './PlayersListRow'
+import { map, size, groupBy } from 'lodash'
+import { PlayersListRow } from './PlayersListRow'
 
 import styles from './PlayersList.css'
 
-const PlayersListComponent = ({ players }) => {
+export const PlayersList = ({ playersList }) => {
+    const groupedPlayers = groupBy(playersList, player => !!player.currentRoom)
+
     return (
         <div className={styles.playersList}>
             <div className={styles.category}>
-                <span>Online: <b>{size(players)}</b></span>
+                <span>Online: <b>{size(playersList)}</b></span>
             </div>
-            {map(filter(players, player => !!player.currentRoom), player => (
+            {map(groupedPlayers.true, player => (
                 <PlayersListRow
                     key={player.playerName}
                     playerName={player.playerName}
@@ -19,7 +22,7 @@ const PlayersListComponent = ({ players }) => {
                     currentRoom={player.currentRoom}
                 />
             ))}
-            {map(reject(players, player => !!player.currentRoom), player => (
+            {map(groupedPlayers.false, player => (
                 <PlayersListRow
                     key={player.playerName}
                     playerName={player.playerName}
@@ -31,8 +34,16 @@ const PlayersListComponent = ({ players }) => {
     )
 }
 
-PlayersListComponent.propTypes = {
-    players: PropTypes.objectOf(PropTypes.any),
+PlayersList.propTypes = {
+    playersList: PropTypes.objectOf(PropTypes.shape({
+        playerName: PropTypes.string.isRequired,
+        avatarNumber: PropTypes.number.isRequired,
+        currentRoom: PropTypes.string,
+    })),
 }
 
-export default PlayersListComponent
+const mapStateToProps = ({ lobby }) => ({
+    playersList: lobby.playersList,
+})
+
+export default connect(mapStateToProps)(PlayersList)
