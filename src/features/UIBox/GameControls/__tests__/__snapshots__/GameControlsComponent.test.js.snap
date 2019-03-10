@@ -8,33 +8,45 @@ exports[`<GameControlsComponent /> renders left arrow if affiliation menu is sho
     className="buttons"
   >
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      <span>
-        roles
-        <i
-          className="fa fa-fw fa-angle-left menuArrowIcon"
-        />
+      <span
+        className="buttonText"
+      >
+        <span>
+          roles
+          <i
+            className="fa fa-fw fa-angle-left menuArrowIcon"
+          />
+        </span>
       </span>
     </div>
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      kick
+      <span
+        className="buttonText"
+      >
+        kick
+      </span>
     </div>
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      ban
+      <span
+        className="buttonText"
+      >
+        ban
+      </span>
     </div>
   </div>
 </div>
@@ -48,16 +60,20 @@ exports[`<GameControlsComponent /> renders right arrow if affiliation menu is hi
     className="buttons"
   >
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      <span>
-        roles
-        <i
-          className="fa fa-fw fa-angle-right menuArrowIcon"
-        />
+      <span
+        className="buttonText"
+      >
+        <span>
+          roles
+          <i
+            className="fa fa-fw fa-angle-right menuArrowIcon"
+          />
+        </span>
       </span>
     </div>
   </div>
@@ -72,41 +88,57 @@ exports[`<GameControlsComponent /> shows additional start button if game is at n
     className="buttons"
   >
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      <span>
-        roles
-        <i
-          className="fa fa-fw fa-angle-right menuArrowIcon"
-        />
+      <span
+        className="buttonText"
+      >
+        <span>
+          roles
+          <i
+            className="fa fa-fw fa-angle-right menuArrowIcon"
+          />
+        </span>
       </span>
     </div>
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      start
+      <span
+        className="buttonText"
+      >
+        start
+      </span>
     </div>
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      kick
+      <span
+        className="buttonText"
+      >
+        kick
+      </span>
     </div>
     <div
-      className="btn"
+      className="btn control"
       onClick={[MockFunction]}
       role="button"
       tabIndex="0"
     >
-      ban
+      <span
+        className="buttonText"
+      >
+        ban
+      </span>
     </div>
   </div>
 </div>

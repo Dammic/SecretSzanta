@@ -12,33 +12,9 @@
     overflow: auto;
     width: 70%;
     margin: 35px 0 35px 10px;
-}
-.gameList {
-    @media (--tablet) {
-        display: grid;
-        grid-template-columns: 50% 50%;
-        grid-template-rows: auto;
-    }
+    padding: 10px 10px 0 10px;
 }
 
-.gameListElement {
-    height: 60px;
-    border: 1px solid var(--game-list-elements-separator);
-    padding: 10px;
-    margin: 5px;
-    background-color: var(--game-list-element-bg);
-}
-
-.gameElementContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    border: 1px solid var(--game-list-element-border);
-    padding-left: 5px;
-    padding-right: 5px;
-    color: var(--game-list-element-font);
-}
 .secondColumn {
     margin-left: 10px;
     margin-right: 10px;
@@ -49,11 +25,6 @@
     @media (--tablet) {
         width: 30%;
     }
-}
-.utilsRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .lobbyChat {

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { getAvatar } from '../../utils/avatarsHelper'
+import { ControlButton } from '../Shared/Buttons'
 
 import styles from './LoginPage.css'
 
@@ -28,7 +29,7 @@ const LoginPageComponent = ({
                                     onKeyPress={onInputChange}
                                     autoFocus
                                 />
-                                <button onClick={onSetNameClick}>Ok</button>
+                                <ControlButton onClick={onSetNameClick}>Log in</ControlButton>
                             </div>
                             <p className={styles.formText}>
                                 Get right in the game by typing in your desired nickname.

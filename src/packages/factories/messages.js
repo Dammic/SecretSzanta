@@ -1,5 +1,4 @@
 import faker from 'faker'
-import moment from 'moment'
 
 export const aMessage = (propsOverrides, options = { seed: null }) => {
     if (options.seed) {

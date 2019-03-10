@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Lobby /> matches snapshot 1`] = `
+<div
+  className="gameListContainer"
+>
+  <div
+    className="firstColumn"
+  >
+    <Connect(GameList) />
+  </div>
+  <div
+    className="secondColumn"
+  >
+    <Connect(TopNavbar) />
+    <Connect(PlayersList) />
+    <Chat
+      className="lobbyChat"
+    />
+  </div>
+</div>
+`;

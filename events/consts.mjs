@@ -3,7 +3,7 @@ const TimeDelay = {
     SHORT_DELAY: 1000,
     MEDIUM_DELAY: 1000,
     LONG_DELAY: 1000,
+    VETO_DELAY: 20000,
 }
 
 export { TimeDelay }
-

@@ -1,0 +1,38 @@
+@import 'variables/variables.css';
+
+.noResults {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.noResultsHeadline  {
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #edd4d4;
+
+    @media (--tablet) {
+        font-size: 28px;
+        line-height: 34px;
+    }
+}
+
+.noResultsParagraph {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 20px;
+    color: #999;
+    margin-bottom: 300px;
+}
+
+
+.noResultsHeadline, .noResultsParagraph {
+    margin-left: 20px;
+    margin-right: 20px;
+}
