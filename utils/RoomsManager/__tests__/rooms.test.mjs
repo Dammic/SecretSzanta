@@ -11,6 +11,7 @@ import {
     getRoomDetailsForLobby,
     getRoomDetails,
     isRoomPresent,
+    isRoomPasswordCorrect,
     getRoomOwner,
     findNewRoomOwner,
     getPlayersCount,
@@ -131,6 +132,21 @@ describe('RoomsManager', () => {
             testRoom.boardType = PlayerBoards.SmallBoard
 
             expect(getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
+        })
+    })
+
+    describe('getRoomsList', () => {
+        test('when room is not secured with a password it has hasPassword property set to false', () => {
+            const rooms = getRoomsList()
+
+            expect(rooms['testRoom']).toHaveProperty('hasPassword', false)
+        })
+
+        test('when room is secured with a password it has hasPassword property set to true', () => {
+            initializeRoom('testRoom', 'owner', 8, 'somePassword')
+            const rooms = getRoomsList()
+
+            expect(rooms['testRoom']).toHaveProperty('hasPassword', true)
         })
     })
 
@@ -273,6 +289,26 @@ describe('RoomsManager', () => {
                 winningSide: null,
                 reason: null,
             })
+        })
+    })
+    describe('isRoomPasswordCorrect', () => {
+        test('Should always return true when room is not secured', () => {
+            const { testRoom } = roomsStore
+
+            const canJoinRoom = isRoomPasswordCorrect('testRoom', 'anyPassword')
+            expect(canJoinRoom).toEqual(true);
+        })
+
+        test('Should return true only when correct password is passed', () => {
+            const correctPassword = 'password'
+            initializeRoom('testRoom', 'owner', 8, correctPassword)
+            const { testRoom } = roomsStore
+
+            let canJoinRoom = isRoomPasswordCorrect('testRoom', 'anyPassword')
+            expect(canJoinRoom).toEqual(false)
+
+            canJoinRoom = isRoomPasswordCorrect('testRoom', correctPassword)
+            expect(canJoinRoom).toEqual(true)
         })
     })
 })

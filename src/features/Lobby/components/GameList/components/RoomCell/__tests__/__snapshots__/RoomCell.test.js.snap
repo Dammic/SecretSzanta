@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RoomCell /> should match snippet when romm has password 1`] = `
+<div
+  className="room"
+>
+  <div
+    className="roomName"
+  >
+    Corporate
+  </div>
+  <div
+    className="rightSide"
+  >
+    <div
+      className="btn control button"
+      onClick={[Function]}
+      role="button"
+      tabIndex="0"
+    >
+      <span
+        className="buttonText"
+      >
+        join
+        <i
+          className="fa fa-lock icon"
+        />
+      </span>
+    </div>
+    <span
+      className="playerCount"
+    >
+      /
+      <i
+        className="fa fa-user icon"
+      />
+    </span>
+  </div>
+</div>
+`;
