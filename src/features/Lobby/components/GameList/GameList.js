@@ -7,8 +7,8 @@ import { SocketEvents } from '../../../../../Dictionary'
 import { GameListComponent } from './GameListComponent'
 import { NoResults } from './components/NoResults'
 
-const joinRoom = (roomId) => {
-    socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { roomName: roomId })
+const joinRoom = (roomId, password) => {
+    socket.emit(SocketEvents.CLIENT_JOIN_ROOM, { roomName: roomId, password })
 }
 
 export class GameList extends React.PureComponent {
@@ -25,7 +25,7 @@ export class GameList extends React.PureComponent {
         }
 
         return (
-            <GameListComponent rooms={rooms} onClick={joinRoom} />
+            <GameListComponent rooms={rooms} onJoin={joinRoom} />
         )
     }
 }

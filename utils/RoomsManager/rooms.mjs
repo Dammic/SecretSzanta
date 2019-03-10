@@ -114,6 +114,7 @@ export const getRoomsList = () => {
         roomId: key,
         roomName: key,
         maxPlayers: room.maxPlayers,
+        hasPassword: room.password != null && room.password !== '',
         playersCount: size(room.playersDict),
     }))
 }
@@ -125,6 +126,7 @@ export const getRoomDetailsForLobby = (roomName) => {
         roomName,
         roomId: roomName,
         maxPlayers: room.maxPlayers,
+        hasPassword: room.password != null && room.password !== '',
         playersCount: size(room.playersDict),
     }
 }
@@ -162,6 +164,11 @@ export const isRoomPresent = (roomName) => {
 }
 
 export const isRoomPasswordCorrect = (roomName, password) => {
+    if (
+        roomsStore[roomName].password == null
+        || roomsStore[roomName].password === ''
+    ) return true
+
     return roomsStore[roomName].password === password
 }
 
