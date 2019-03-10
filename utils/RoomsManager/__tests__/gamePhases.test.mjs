@@ -44,13 +44,13 @@ describe('gamePhases', () => {
                     },
                 },
             })
-
             const preparedRoomProps = getRoom('testRoom')
-            startChancellorChoicePhase('testRoom', 'player3')
             preparedRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             preparedRoomProps.previousPresidentNameBackup = 'player1'
             preparedRoomProps.playersDict.player1.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             preparedRoomProps.playersDict.player3.role = PlayerRole.ROLE_PRESIDENT
+
+            startChancellorChoicePhase('testRoom', 'player3')
 
             const testRoom = getRoom('testRoom')
             expect(testRoom).toEqual(preparedRoomProps)

@@ -1,5 +1,5 @@
 import { size } from 'lodash'
-import { getAllRooms, getRoom } from '../../../stores'
+import { getAllRooms, updateRoom } from '../../../stores'
 
 import {
     addPlayer,
@@ -33,22 +33,19 @@ describe('players', () => {
 
     describe('isInBlackList', () => {
         test('if blacklist is empty, should return false', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.blackList = []
+            updateRoom('testRoom', { blackList: [] })
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(false)
         })
 
         test('if blacklist contains the user, should return true', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.blackList = ['ala', 'ola']
+            updateRoom('testRoom', { blackList: ['ala', 'ola'] })
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(true)
         })
 
         test('if blacklist contains some users but not this one, should return false', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.blackList = ['olga', 'ola']
+            updateRoom('testRoom', { blackList: ['olga', 'ola'] })
 
             expect(isInBlackList('testRoom', 'ala')).toEqual(false)
         })

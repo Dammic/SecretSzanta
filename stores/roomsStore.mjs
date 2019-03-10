@@ -1,10 +1,10 @@
 import lodash from 'lodash'
 
-const { set, cloneDeep, isNil, mergeWith, isArray } = lodash
+const { cloneDeep, isNil, mergeWith, isArray, isPlainObject, isEmpty } = lodash
 
-const customMerge = (objValue, srcValue) => {
-    if (isArray(objValue)) {
-        return objValue
+const customMerge = (_, srcValue) => {
+    if (isArray(srcValue) || (isPlainObject(srcValue) && isEmpty(srcValue))) {
+        return srcValue
     }
 }
 
@@ -44,5 +44,3 @@ export const updateRoom = (roomName, changeObject) => {
 export const isRoomPresent = (roomName) => {
     return !isNil(roomsStore[roomName])
 }
-
-//TODO: change this solution to proxy!

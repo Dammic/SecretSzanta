@@ -261,7 +261,7 @@ export const choosePolicyChancellor = (socket, choice) => {
     }
 }
 
-export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
+export const choosePolicyPresident = ({ currentRoom }, choice, chancellorName) => {
     setGamePhase(currentRoom, GamePhases.ChancellorPolicyChoice)
 
     emits.emitChancellorWillChoosePolicy(currentRoom, chancellorName)
@@ -271,17 +271,17 @@ export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chanc
     const messageContent = 'The chancellor will now enact one of the 2 policies passed by the president…'
     emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
 
-    emits.emitChoosePolicyToChancellor(currentRoom, drawnCards)
+    emits.emitChoosePolicyToChancellor(currentRoom, getDrawnCards(currentRoom))
 }
 
 export const choosePolicy = (socket, { choice }) => {
     const { gamePhase } = getRoomDetails(socket.currentRoom)
-    let drawnCards = getDrawnCards(socket.currentRoom)
+    const drawnCards = getDrawnCards(socket.currentRoom)
     if (includes(drawnCards, choice)) {
         const president = getPresident(socket.currentRoom)
         const chancellor = getChancellor(socket.currentRoom)
         if (gamePhase === GamePhases.PresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
-            choosePolicyPresident(socket, choice, drawnCards, chancellor.playerName)
+            choosePolicyPresident(socket, choice, chancellor.playerName)
         } else if (gamePhase === GamePhases.ChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
             choosePolicyChancellor(socket, choice)
         } else {

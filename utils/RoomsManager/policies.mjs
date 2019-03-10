@@ -9,6 +9,7 @@ const {
     size,
     take,
     indexOf,
+    drop
 } = lodash
 
 export const moveCard = (roomName, sourcePileName, destinationPileName, card) => {
@@ -67,17 +68,17 @@ export const reShuffle = (roomName) => {
 }
 
 export const takeChoicePolicyCards = (roomName, amount) => {
+    if (size(getRoom(roomName).drawPile) < amount) reShuffle(roomName)
+
     const { drawPile } = getRoom(roomName)
-
-    if (size(drawPile) < amount) reShuffle(roomName)
-
     const policies = take(drawPile, amount)
+    const newDrawPile = drop(drawPile, amount)
     updateRoom(roomName, {
-        drawPile: amount,
+        drawPile: newDrawPile,
         drawnCards: policies,
     })
 
-    if (size(drawPile) < 3) reShuffle(roomName)
+    if (size(newDrawPile) < 3) reShuffle(roomName)
     return policies
 }
 
