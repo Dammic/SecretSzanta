@@ -1,5 +1,5 @@
 import { size } from 'lodash'
-import { getAllRooms, getRoom } from '../../../stores'
+import { getAllRooms, getRoom, updateRoom } from '../../../stores'
 
 import {
     initializeVoting,
@@ -31,77 +31,87 @@ describe('voting', () => {
     })
     describe('didAllVote', () => {
         test('all eligible voted (1 dead person)', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict = {
-                ala: { isDead: false, playerName: 'ala' },
-                ola: { isDead: true, playerName: 'ola' },
-                ula: { isDead: false, playerName: 'ula' },
-                iza: { isDead: false, playerName: 'iza' },
-            }
-            testRoom.votes = {
-                ala: true,
-                ula: false,
-                iza: true,
-            }
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: false, playerName: 'ala' },
+                    ola: { isDead: true, playerName: 'ola' },
+                    ula: { isDead: false, playerName: 'ula' },
+                    iza: { isDead: false, playerName: 'iza' },
+                },
+                votes: {
+                    ala: true,
+                    ula: false,
+                    iza: true,
+                },
+            })
             const result = didAllVote('testRoom')
+
             expect(result).toEqual(true)
         })
 
         test('not all eligible voted', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict = {
-                ala: { isDead: false, playerName: 'ala' },
-                ula: { isDead: false, playerName: 'ula' },
-                iza: { isDead: false, playerName: 'iza' },
-            }
-            testRoom.votes = {
-                ala: true,
-                iza: true,
-            }
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: false, playerName: 'ala' },
+                    ula: { isDead: false, playerName: 'ula' },
+                    iza: { isDead: false, playerName: 'iza' },
+                },
+                votes: {
+                    ala: true,
+                    iza: true,
+                },
+            })
             const result = didAllVote('testRoom')
+
             expect(result).toEqual(false)
         })
 
         test('dead person voted, for some reason and should not take it into consideration', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict = {
-                ala: { isDead: true, playerName: 'ala' },
-                ula: { isDead: false, playerName: 'ula' },
-                iza: { isDead: false, playerName: 'iza' },
-            }
-            testRoom.votes = {
-                ala: true,
-                ula: false,
-            }
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: true, playerName: 'ala' },
+                    ula: { isDead: false, playerName: 'ula' },
+                    iza: { isDead: false, playerName: 'iza' },
+                },
+                votes: {
+                    ala: true,
+                    ula: false,
+                },
+            })
             const result = didAllVote('testRoom')
+
             expect(result).toEqual(false)
         })
     })
 
     describe('getRemainingVotingPlayers', () => {
         test('returns players that did not vote', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict = {
-                ala: { isDead: true, playerName: 'ala' },
-                ula: { isDead: false, playerName: 'ula' },
-                iza: { isDead: false, playerName: 'iza' },
-            }
-            testRoom.votes = {
-                ula: false,
-            }
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: true, playerName: 'ala' },
+                    ula: { isDead: false, playerName: 'ula' },
+                    iza: { isDead: false, playerName: 'iza' },
+                },
+                votes: {
+                    ula: false,
+                },
+            })
             const result = getRemainingVotingPlayers('testRoom')
+
             expect(result).toEqual(['iza'])
         })
 
         test('returns players that did not vote #2', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict = {
-                ala: { isDead: true, playerName: 'ala' },
-                ula: { isDead: false, playerName: 'ula' },
-                iza: { isDead: false, playerName: 'iza' },
-            }
-            testRoom.votes = {}
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: true, playerName: 'ala' },
+                    ula: { isDead: false, playerName: 'ula' },
+                    iza: { isDead: false, playerName: 'iza' },
+                },
+                votes: {},
+            })
             const result = getRemainingVotingPlayers('testRoom')
+
             expect(result).toEqual(['ula', 'iza'])
         })
     })

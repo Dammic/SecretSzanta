@@ -1,6 +1,6 @@
-import { cloneDeep, size } from 'lodash'
+import { size } from 'lodash'
 import { PlayerRole } from '../../../Dictionary'
-import { getAllRooms, getRoom } from '../../../stores'
+import { getAllRooms, getRoom, updateRoom } from '../../../stores'
 
 import {
     toggleVeto,
@@ -29,86 +29,109 @@ describe('veto', () => {
 
     describe('toggleVeto', () => {
         test('should set isVetoUnlocked to true and not mess other things up', () => {
-            const testRoom = getRoom('testRoom')
-            const preparedRoomProps = cloneDeep(testRoom)
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.isVetoUnlocked = true
+
             toggleVeto('testRoom')
-            expect(preparedRoomProps).toEqual(testRoom)
+
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
     })
 
     describe('addVetoVote', () => {
         test('should be able to add president vote into votes ', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict.ala = {
-                role: PlayerRole.ROLE_PRESIDENT,
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        role: PlayerRole.ROLE_PRESIDENT,
+                    },
+                },
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.vetoVotes = [PlayerRole.ROLE_PRESIDENT]
 
             addVetoVote('testRoom', 'ala')
-            expect(preparedRoomProps).toEqual(testRoom)
+
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
         test('should be able to add chancellor vote into votes ', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict.ala = {
-                role: PlayerRole.ROLE_CHANCELLOR,
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                    },
+                },
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR]
 
             addVetoVote('testRoom', 'ala')
-            expect(preparedRoomProps).toEqual(testRoom)
+
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
         test('should be able to add chancellor and president votes into votes ', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict.ala = {
-                role: PlayerRole.ROLE_CHANCELLOR,
-            }
-            testRoom.playersDict.ola = {
-                role: PlayerRole.ROLE_PRESIDENT,
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                    },
+                    ola: {
+                        role: PlayerRole.ROLE_PRESIDENT,
+                    },
+                },
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
 
             addVetoVote('testRoom', 'ala')
             addVetoVote('testRoom', 'ola')
 
-            expect(preparedRoomProps).toEqual(testRoom)
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
 
         test('should be able to add president and chancellor votes into votes ', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict.ala = {
-                role: PlayerRole.ROLE_CHANCELLOR,
-            }
-            testRoom.playersDict.ola = {
-                role: PlayerRole.ROLE_PRESIDENT,
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                    },
+                    ola: {
+                        role: PlayerRole.ROLE_PRESIDENT,
+                    },
+                },
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.vetoVotes = [PlayerRole.ROLE_PRESIDENT, PlayerRole.ROLE_CHANCELLOR]
 
             addVetoVote('testRoom', 'ola')
             addVetoVote('testRoom', 'ala')
 
-            expect(preparedRoomProps).toEqual(testRoom)
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
 
         test('should not add more than 2 votes ever', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict.ala = {
-                role: PlayerRole.ROLE_CHANCELLOR,
-            }
-            testRoom.playersDict.ela = {
-                role: PlayerRole.ROLE_CHANCELLOR,
-            }
-            testRoom.playersDict.iza = {
-                role: PlayerRole.ROLE_PRESIDENT,
-            }
-            testRoom.playersDict.aza = {
-                role: PlayerRole.ROLE_PRESIDENT,
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                    },
+                    ela: {
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                    },
+                    iza: {
+                        role: PlayerRole.ROLE_PRESIDENT,
+                    },
+                    aza: {
+                        role: PlayerRole.ROLE_PRESIDENT,
+                    },
+                },
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.vetoVotes = [PlayerRole.ROLE_CHANCELLOR, PlayerRole.ROLE_PRESIDENT]
 
             addVetoVote('testRoom', 'ala')
@@ -117,28 +140,33 @@ describe('veto', () => {
             addVetoVote('testRoom', 'iza')
             addVetoVote('testRoom', 'aza')
 
-            expect(preparedRoomProps).toEqual(testRoom)
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
 
         test('non-president and non-chancellor cannot vote for veto', () => {
-            const testRoom = getRoom('testRoom')
-            testRoom.playersDict.ala = {
-                role: null,
-            }
-            testRoom.playersDict.iza = {
-                role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR,
-            }
-            testRoom.playersDict.ola = {
-                role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        role: null,
+                    },
+                    iza: {
+                        role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR,
+                    },
+                    ola: {
+                        role: PlayerRole.ROLE_PREVIOUS_PRESIDENT,
+                    },
+                },
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.vetoVotes = []
 
             addVetoVote('testRoom', 'ala')
             addVetoVote('testRoom', 'iza')
             addVetoVote('testRoom', 'ola')
 
-            expect(preparedRoomProps).toEqual(testRoom)
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
     })
 })
