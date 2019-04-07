@@ -1,6 +1,6 @@
-import { cloneDeep, size } from 'lodash'
+import { size } from 'lodash'
 import { GamePhases, PlayerRole } from '../../../Dictionary'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom, updateRoom } from '../../../stores'
 
 import * as roles from '../roles'
 import {
@@ -20,63 +20,65 @@ describe('gamePhases', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
 
     describe('startChancellorChoicePhase', () => {
         test('should set president backup and president if designatedPresidentName is passed', () => {
-            const { testRoom } = roomsStore
-            testRoom.playersDict = {
-                player1: {
-                    playerName: 'player1',
-                    role: PlayerRole.ROLE_PRESIDENT,
-                    slotNumber: 1,
+            updateRoom('testRoom', {
+                playersDict: {
+                    player1: {
+                        playerName: 'player1',
+                        role: PlayerRole.ROLE_PRESIDENT,
+                        slotNumber: 1,
+                    },
+                    player2: {
+                        playerName: 'player2',
+                        role: null,
+                        slotNumber: 1,
+                    },
+                    player3: {
+                        playerName: 'player3',
+                        role: null,
+                        slotNumber: 1,
+                    },
                 },
-                player2: {
-                    playerName: 'player2',
-                    role: null,
-                    slotNumber: 1,
-                },
-                player3: {
-                    playerName: 'player3',
-                    role: null,
-                    slotNumber: 1,
-                },
-            }
-            const preparedRoomProps = cloneDeep(testRoom)
-            startChancellorChoicePhase('testRoom', 'player3')
+            })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             preparedRoomProps.previousPresidentNameBackup = 'player1'
             preparedRoomProps.playersDict.player1.role = PlayerRole.ROLE_PREVIOUS_PRESIDENT
             preparedRoomProps.playersDict.player3.role = PlayerRole.ROLE_PRESIDENT
 
-            expect(preparedRoomProps).toEqual(testRoom)
+            startChancellorChoicePhase('testRoom', 'player3')
+
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
 
         test('should call chooseNextPresident', () => {
-            const { testRoom } = roomsStore
-            const preparedRoomProps = cloneDeep(testRoom)
             const chooseNextPresidentMock = jest.spyOn(roles, 'chooseNextPresident').mockImplementationOnce(jest.fn())
+            const preparedRoomProps = getRoom('testRoom')
+            preparedRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
 
             startChancellorChoicePhase('testRoom')
-
-            preparedRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             expect(chooseNextPresidentMock).toHaveBeenCalled()
-            expect(preparedRoomProps).toEqual(testRoom)
+
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
 
         test('clears veto votes', () => {
-            const { testRoom } = roomsStore
-            testRoom.vetoVotes = ['a', 'b']
-            const preparedRoomProps = cloneDeep(testRoom)
             jest.spyOn(roles, 'chooseNextPresident').mockImplementationOnce(jest.fn())
-
-            startChancellorChoicePhase('testRoom')
-
+            updateRoom('testRoom', { vetoVotes: ['a', 'b'] })
+            const preparedRoomProps = getRoom('testRoom')
             preparedRoomProps.gamePhase = GamePhases.GAME_PHASE_CHANCELLOR_CHOICE
             preparedRoomProps.vetoVotes = []
 
-            expect(preparedRoomProps).toEqual(testRoom)
+            startChancellorChoicePhase('testRoom')
+
+            const testRoom = getRoom('testRoom')
+            expect(testRoom).toEqual(preparedRoomProps)
         })
     })
 })

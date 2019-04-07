@@ -1,6 +1,6 @@
-import { cloneDeep, size, times, forEach, reduce } from 'lodash'
+import { size, times, forEach, reduce } from 'lodash'
 import { GamePhases, PlayerRole, PlayerBoards, PolicyCards, PlayerAffilications, WinReasons } from '../../../Dictionary'
-import { roomsStore } from '../../../stores'
+import { getAllRooms, getRoom, updateRoom } from '../../../stores'
 import {
     initializeRoom,
     setPlayerboardType,
@@ -10,7 +10,6 @@ import {
     getRoomsList,
     getRoomDetailsForLobby,
     getRoomDetails,
-    isRoomPresent,
     isRoomPasswordCorrect,
     getRoomOwner,
     findNewRoomOwner,
@@ -23,7 +22,6 @@ import {
 // getRoomsList,
 // getRoomDetailsForLobby,
 // getRoomDetails,
-// isRoomPresent,
 // getRoomOwner,
 // findNewRoomOwner,
 // getPlayersCount,
@@ -36,12 +34,12 @@ describe('RoomsManager', () => {
     })
     afterEach(() => {
         // this tests if the function did not override different room than it should
-        expect(size(roomsStore)).toEqual(1)
+        expect(size(getAllRooms())).toEqual(1)
     })
     describe('initializeRoom', () => {
         test('should create room with owner', () => {
             initializeRoom('testRoom', 'owner', 8, 'password')
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             expect(testRoom).toBeDefined()
 
             expect(testRoom).toEqual({
@@ -67,7 +65,7 @@ describe('RoomsManager', () => {
         })
         test('should create room without owner', () => {
             initializeRoom('testRoom')
-            const { testRoom } = roomsStore
+            const testRoom = getRoom('testRoom')
             expect(testRoom).toBeDefined()
 
             expect(testRoom).toEqual({
@@ -113,23 +111,24 @@ describe('RoomsManager', () => {
             8: PlayerBoards.MediumBoard,
             9: PlayerBoards.LargeBoard,
             10: PlayerBoards.LargeBoard,
-            11: undefined,
+            11: null,
         }
         forEach(expectedResults, (expectedBoardSize, playersCount) => {
             test(`Should set ${expectedBoardSize} for ${playersCount} players`, () => {
-                const { testRoom } = roomsStore
-                testRoom.playersDict = generatePlayersDict(playersCount)
-                const preparedRoomProps = cloneDeep(testRoom)
+                updateRoom('testRoom', { playersDict: generatePlayersDict(playersCount) })
+                const preparedRoomProps = getRoom('testRoom')
                 preparedRoomProps.boardType = expectedBoardSize
+
                 setPlayerboardType('testRoom')
-                expect(preparedRoomProps).toEqual(testRoom)
+
+                const testRoom = getRoom('testRoom')
+                expect(testRoom).toEqual(preparedRoomProps)
             })
         })
     })
     describe('getPlayerboardType', () => {
         test('should retrieve the boardType from roomsStore', () => {
-            const { testRoom } = roomsStore
-            testRoom.boardType = PlayerBoards.SmallBoard
+            updateRoom('testRoom', { boardType: PlayerBoards.SmallBoard })
 
             expect(getPlayerboardType('testRoom')).toEqual(PlayerBoards.SmallBoard)
         })
@@ -152,19 +151,21 @@ describe('RoomsManager', () => {
 
     describe('checkWinConditions', () => {
         test('Should return liberal affiliation if liberal policies count === 5', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(2, () => PolicyCards.FacistPolicy),
-                ...times(5, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: false,
-                    role: null,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(2, () => PolicyCards.FacistPolicy),
+                    ...times(5, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: false,
+                        role: null,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: PlayerAffilications.LIBERAL_AFFILIATION,
                 reason: WinReasons.fiveLiberalCards,
@@ -172,19 +173,22 @@ describe('RoomsManager', () => {
         })
 
         test('Should return liberal affiliation if liberal policies count < 5, but hitler is dead', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(2, () => PolicyCards.FacistPolicy),
-                ...times(4, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: true,
-                    role: null,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(2, () => PolicyCards.FacistPolicy),
+                    ...times(4, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: true,
+                        role: null,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
+
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: PlayerAffilications.LIBERAL_AFFILIATION,
                 reason: WinReasons.hitlerDead,
@@ -192,19 +196,22 @@ describe('RoomsManager', () => {
         })
 
         test('Should not return liberal affiliation if liberal policies count < 5, but hitler is alive', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(2, () => PolicyCards.FacistPolicy),
-                ...times(4, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: false,
-                    role: null,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(2, () => PolicyCards.FacistPolicy),
+                    ...times(4, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: false,
+                        role: null,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
+
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: null,
                 reason: null,
@@ -212,19 +219,22 @@ describe('RoomsManager', () => {
         })
 
         test('Should return fascist affiliation if fascist policies count === 6', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(6, () => PolicyCards.FacistPolicy),
-                ...times(2, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: false,
-                    role: null,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(6, () => PolicyCards.FacistPolicy),
+                    ...times(2, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: false,
+                        role: null,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
+
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: PlayerAffilications.FACIST_AFFILIATION,
                 reason: WinReasons.sixFascistCards,
@@ -232,19 +242,22 @@ describe('RoomsManager', () => {
         })
 
         test('Should return fascist affiliation if fascist policies === 4 AND hitler is chancellor', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(4, () => PolicyCards.FacistPolicy),
-                ...times(2, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: false,
-                    role: PlayerRole.ROLE_CHANCELLOR,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(4, () => PolicyCards.FacistPolicy),
+                    ...times(2, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: false,
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
+
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: PlayerAffilications.FACIST_AFFILIATION,
                 reason: WinReasons.hitlerBecameChancellor,
@@ -252,19 +265,22 @@ describe('RoomsManager', () => {
         })
 
         test('Should return fascist affiliation if fascist policies === 5 AND hitler is chancellor', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(5, () => PolicyCards.FacistPolicy),
-                ...times(2, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: false,
-                    role: PlayerRole.ROLE_CHANCELLOR,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(5, () => PolicyCards.FacistPolicy),
+                    ...times(2, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: false,
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
+
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: PlayerAffilications.FACIST_AFFILIATION,
                 reason: WinReasons.hitlerBecameChancellor,
@@ -272,19 +288,22 @@ describe('RoomsManager', () => {
         })
 
         test('Should not return fascist affiliation if fascist policies < 4 AND hitler is chancellor', () => {
-            const { testRoom } = roomsStore
-            testRoom.policiesPile = [
-                ...times(3, () => PolicyCards.FacistPolicy),
-                ...times(2, () => PolicyCards.LiberalPolicy),
-            ]
-            testRoom.playersDict = {
-                hitlerTestPlayer: {
-                    isDead: false,
-                    role: PlayerRole.ROLE_CHANCELLOR,
-                    affiliation: PlayerAffilications.HITLER_AFFILIATION,
+            updateRoom('testRoom', {
+                policiesPile: [
+                    ...times(3, () => PolicyCards.FacistPolicy),
+                    ...times(2, () => PolicyCards.LiberalPolicy),
+                ],
+                playersDict: {
+                    hitlerTestPlayer: {
+                        isDead: false,
+                        role: PlayerRole.ROLE_CHANCELLOR,
+                        affiliation: PlayerAffilications.HITLER_AFFILIATION,
+                    },
                 },
-            }
+            })
+
             const winningSide = checkWinConditions('testRoom')
+
             expect(winningSide).toEqual({
                 winningSide: null,
                 reason: null,
@@ -293,16 +312,13 @@ describe('RoomsManager', () => {
     })
     describe('isRoomPasswordCorrect', () => {
         test('Should always return true when room is not secured', () => {
-            const { testRoom } = roomsStore
-
             const canJoinRoom = isRoomPasswordCorrect('testRoom', 'anyPassword')
-            expect(canJoinRoom).toEqual(true);
+            expect(canJoinRoom).toEqual(true)
         })
 
         test('Should return true only when correct password is passed', () => {
             const correctPassword = 'password'
             initializeRoom('testRoom', 'owner', 8, correctPassword)
-            const { testRoom } = roomsStore
 
             let canJoinRoom = isRoomPasswordCorrect('testRoom', 'anyPassword')
             expect(canJoinRoom).toEqual(false)

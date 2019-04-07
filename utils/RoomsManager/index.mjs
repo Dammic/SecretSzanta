@@ -7,7 +7,6 @@ export {
     getRoomsList,
     getRoomDetailsForLobby,
     getRoomDetails,
-    isRoomPresent,
     isRoomPasswordCorrect,
     getRoomOwner,
     findNewRoomOwner,

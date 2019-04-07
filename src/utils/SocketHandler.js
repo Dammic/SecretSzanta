@@ -19,6 +19,7 @@ import * as lobbyActions from '../ducks/lobbyDuck'
 import { setChoiceMode, setChooserPlayer, hideChoiceMode } from '../ducks/playersDuck'
 import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
+import { logoutUser } from '../ducks/rootDuck'
 
 export let socket = {}
 
@@ -297,6 +298,10 @@ export class SocketHandler extends React.PureComponent {
         socket.on(SocketEvents.SetChooserPlayer, ({ data: { playerName } }) => {
             this.props.playersActions.setChooserPlayer({ playerName })
         })
+        socket.on(SocketEvents.logoutPlayer, ({ data: { message } }) => {
+            this.props.rootActions.logoutUser()
+            this.props.notificationsActions.addNotification({ type: MessagesTypes.ERROR, message: message || 'You have been logged out!' })
+        })
     }
 
     switchRooms = (targetRoomName) => {
@@ -334,6 +339,7 @@ const mapDispatchToProps = (dispatch) => {
         modalActions: bindActionCreators(modalActions, dispatch),
         notificationsActions: bindActionCreators({ addNotification }, dispatch),
         lobbyActions: bindActionCreators(lobbyActions, dispatch),
+        rootActions: bindActionCreators({ logoutUser }, dispatch)
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SocketHandler)
