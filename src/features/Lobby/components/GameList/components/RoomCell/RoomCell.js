@@ -1,10 +1,11 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Icon } from '../../../../../Shared/Icon'
 import { ControlButton } from '../../../../../Shared/Buttons'
 
 import styles from './RoomCell.css'
 
-export const RoomCell = ({ room: { roomName, playersCount, roomId, maxPlayers, hasPassword }, onJoin }) => {
+const RoomCell = ({ room: { roomName, playersCount, roomId, maxPlayers, hasPassword }, onJoin }) => {
     const [showPasswordInput, setPasswordInputVisibility] = useState(false)
     const [password, setPassword] = useState('')
 
@@ -47,3 +48,16 @@ export const RoomCell = ({ room: { roomName, playersCount, roomId, maxPlayers, h
         </div>
     )
 }
+
+RoomCell.propTypes = {
+    room: PropTypes.shape({
+        roomName: PropTypes.string,
+        playersCount: PropTypes.number,
+        roomId: PropTypes.string,
+        maxPlayers: PropTypes.number,
+        hasPassword: PropTypes.bool,
+    }),
+    onJoin: PropTypes.func,
+}
+
+export { RoomCell }
