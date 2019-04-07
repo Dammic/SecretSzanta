@@ -111,6 +111,7 @@ export const getRoomsList = () => {
         roomId: key,
         roomName: key,
         maxPlayers: room.maxPlayers,
+        hasPassword: room.password != null && room.password !== '',
         playersCount: size(room.playersDict),
     }))
 }
@@ -122,6 +123,7 @@ export const getRoomDetailsForLobby = (roomName) => {
         roomName,
         roomId: roomName,
         maxPlayers: room.maxPlayers,
+        hasPassword: room.password != null && room.password !== '', 
         playersCount: size(room.playersDict),
     }
 }
@@ -146,6 +148,13 @@ export const getRoomDetails = (roomName) => {
             affiliation: PlayerAffilications.LIBERAL_AFFILIATION,
         })),
     }
+}
+
+export const isRoomPasswordCorrect = (roomName, passwordCandidate) => {
+    const { password } = getRoom(roomName)
+    if (!password) return true
+
+    return password === passwordCandidate
 }
 
 export const getRoomOwner = (roomName) => {

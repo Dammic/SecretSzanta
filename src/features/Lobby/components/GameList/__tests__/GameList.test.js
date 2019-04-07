@@ -25,6 +25,7 @@ describe('<GameList />', () => {
             const expectedSocketParams = [
                 SocketEvents.CLIENT_JOIN_ROOM,
                 {
+                    password: '',
                     roomName: props.rooms[firstRoomName].roomId,
                 },
             ]

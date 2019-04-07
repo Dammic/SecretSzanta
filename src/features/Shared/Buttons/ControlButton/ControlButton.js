@@ -20,7 +20,7 @@ const ControlButton = (props) => {
 
 ControlButton.displayName = 'ControlButton'
 ControlButton.propTypes = {
-    children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+    children: PropTypes.node,
     className: PropTypes.string,
 }
 
