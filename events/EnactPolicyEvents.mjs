@@ -71,7 +71,7 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustom
     let nextStepFunction;
     if (activeSuperpowerCallback) {
         nextStepFunction = activeSuperpowerCallback;
-    } else if (checkIfGameShouldFinish(socket.currentRoom)) {
+    } else if (checkIfGameShouldFinish(socket.currentRoom) && !getCustomNextStep) {
         nextStepFunction = PhaseSocketEvents.endGame;
     } else {
         if (!getCustomNextStep) {

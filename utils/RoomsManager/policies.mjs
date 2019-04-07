@@ -9,6 +9,7 @@ const {
     size,
     concat,
     take,
+    takeRight,
     drop,
     pullAt,
     indexOf,
@@ -42,7 +43,8 @@ export const discardPolicy = (roomName, card) => {
 
 export const discardPolicyByVeto = (roomName) => {
     const { policiesPile, discardPile } = roomsStore[roomName]
-    const discardedPolicy = take(policiesPile, 1)[0]
+    const discardedPolicy = takeRight(policiesPile, 1)[0]
+    console.log(discardedPolicy)
     moveCard(policiesPile, discardPile, discardedPolicy)
 }
 
