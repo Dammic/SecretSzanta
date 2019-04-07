@@ -41,6 +41,7 @@ export class SocketHandler extends React.PureComponent {
             this.switchRooms(roomName)
         })
         socket.on(SocketEvents.ServerWaitingForVeto, (payload) => {
+            console.log("SocketEvents.ServerWaitingForVeto");
             this.props.roomActions.setVeto({ value: true })
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {
@@ -201,7 +202,8 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
-            const trackerPositionBeforeReset = store.room.trackerPosition
+            console.log(this.props)
+            const trackerPositionBeforeReset = this.props.room.trackerPosition
             if (trackerPositionBeforeReset === 3) {
                 this.props.roomActions.increaseTracker()
 
@@ -319,6 +321,7 @@ export class SocketHandler extends React.PureComponent {
 
 const mapStateToProps = ({ user, room }) => {
     return {
+        room,
         userName: user.userName,
         playersDict: room.playersDict,
         trackerPosition: room.trackerPosition,

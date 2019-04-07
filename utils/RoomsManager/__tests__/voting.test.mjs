@@ -105,4 +105,15 @@ describe('voting', () => {
             expect(result).toEqual(['ula', 'iza'])
         })
     })
+
+    describe('getChancellorChoices', () => {
+        test('returns players that did not vote #2', () => {
+            const { testRoom } = roomsStore
+            testRoom.playersDict = {
+                ala: { isDead: true, playerName: 'ala' },
+                ula: { isDead: false, playerName: 'ula' },
+                iza: { isDead: false, playerName: 'iza' },
+            }
+        })
+    })
 })
