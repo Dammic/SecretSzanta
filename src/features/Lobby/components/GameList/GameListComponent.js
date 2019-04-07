@@ -22,5 +22,5 @@ GameListComponent.propTypes = {
         roomId: PropTypes.string,
         maxPlayers: PropTypes.number,
     })),
-    onClick: PropTypes.func,
+    onJoin: PropTypes.func,
 }
