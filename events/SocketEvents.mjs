@@ -35,6 +35,7 @@ import {
     discardPolicyByVeto,
     getPolicyCardsCount,
     isRoomPresent,
+    isRoomPasswordCorrect,
     getRoomOwner,
     removePlayer,
     findNewRoomOwner,
@@ -176,7 +177,7 @@ export const disconnect = (socket) => {
     socket.currentPlayerName = ''
 }
 
-export const joinRoom = (socket, { roomName }) => {
+export const joinRoom = (socket, { roomName, password }) => {
     if (!roomName || socket.currentRoom !== GlobalRoomName || !isRoomPresent(roomName)) {
         logError(socket, 'Player tried to enter nonexistent room!')
         emits.emitError(socket.emit, 'The room does not exist!')
@@ -186,6 +187,12 @@ export const joinRoom = (socket, { roomName }) => {
     if (isInBlackList(roomName, socket.currentPlayerName)) {
         logInfo(socket, 'Banned player tried to enter the room!')
         emits.emitError(socket.emit, 'You are BANNED in this room by the owner!')
+        return
+    }
+
+    if (!isRoomPasswordCorrect(roomName, password)) {
+        logInfo(socket, 'Player did not know correct password')
+        emits.emitError(socket.emit, 'Password is incorrect!')
         return
     }
 
@@ -209,7 +216,7 @@ export const createRoom = (socket, { roomName, maxPlayers, password }) => {
         initializeRoom(roomName, socket.currentPlayerName, maxPlayers, password)
 
         emits.emitRoomsListChanged(roomName, roomName)
-        joinRoom(socket, { roomName })
+        joinRoom(socket, { roomName, password })
     } else {
         logError(socket, 'Selected room is already present! Cannot create a duplicate!')
         emits.emitError(socket.emit, 'You cannot create duplicate of this room!')
