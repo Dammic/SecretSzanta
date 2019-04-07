@@ -67,7 +67,7 @@ export const removePlayer = (roomName, playerName) => {
         updateRoom(roomName, {
             freeSlots: [removedPlayer.slotNumber, ...freeSlots],
             playersDict: restPlayers,
-        })
+        }, true)
     }
 }
 

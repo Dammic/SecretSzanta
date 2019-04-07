@@ -13,7 +13,7 @@ import {
 } from './policies'
 
 import { logInfo } from '../../utils/utils'
-import { getRoom, getAllRooms, updateRoom, deleteRoom, createRoom } from '../../stores'
+import { getRoom, getAllRooms, updateRoom, deleteRoom, createRoom, isRoomPresent } from '../../stores'
 
 const {
     values, mapValues, isNil,
@@ -117,8 +117,11 @@ export const getRoomsList = () => {
 }
 
 export const getRoomDetailsForLobby = (roomName) => {
+    if (!isRoomPresent(roomName)) {
+        return null
+    }
+
     const room = getRoom(roomName)
-    if (!room) return null
     return {
         roomName,
         roomId: roomName,

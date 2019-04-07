@@ -36,9 +36,16 @@ export const getAllRooms = () => {
     return cloneDeep(roomsStore)
 }
 
-export const updateRoom = (roomName, changeObject) => {
+export const updateRoom = (roomName, changeObject, overwrite = false) => {
     assertRoomExistence(roomName)
-    mergeWith(roomsStore[roomName], changeObject, customMerge)
+    if (!overwrite) {
+        mergeWith(roomsStore[roomName], changeObject, customMerge)
+    } else {
+        roomsStore[roomName] = {
+            ...roomsStore[roomName],
+            ...changeObject,
+        }
+    }
 }
 
 export const isRoomPresent = (roomName) => {
