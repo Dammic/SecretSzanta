@@ -24,4 +24,11 @@
         background-color: var(--button-default-bg-active);
         border-color: var(--button-default-border-active);
     }
+
+
+    &.disabled {
+        pointer-events: none;
+        cursor: default;
+        opacity: 0.5;
+    }
 }

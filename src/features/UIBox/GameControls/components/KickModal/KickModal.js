@@ -41,19 +41,23 @@ export const KickModal = ({ onClose, isVisible, type }) => {
             isOverlayOpaque
             closeModal={onClose}
             child={(
-                <div>
+                <React.Fragment>
                     {currentStep === Steps.KickFirstStep && (
                         <PlayersListScreen
                             onNextStepClick={goToSecondStep}
+                            onPlayerSelect={setSelectedPlayer}
+                            selectedPlayer={selectedPlayer}
+                            type={type}
                         />
                     )}
                     {currentStep === Steps.KickSecondStep && (
                         <ConfirmationScreen
                             onNextStepClick={kickPlayer}
                             onBackClick={goToFirstStep}
+                            type={type}
                         />
                     )}
-                </div>
+                </React.Fragment>
             )}
         />
     )

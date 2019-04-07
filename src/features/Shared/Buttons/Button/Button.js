@@ -5,13 +5,13 @@ import classNames from 'classnames'
 import styles from './Button.css'
 
 const Button = (props) => {
-    const { className, children } = props
+    const { className, children, disabled } = props
     return (
         <div
             role="button"
             tabIndex="0"
             {...props}
-            className={classNames(styles.btn, className)}
+            className={classNames(styles.btn, className, { [styles.disabled]: !!disabled })}
         >
             {children}
         </div>
