@@ -57,4 +57,11 @@ describe('<RoomCell />', () => {
 
         expectMatchingSnapshot(<RoomCell {...props} />)
     })
+
+    it('should match snippet when romm doesn\'t have password', () => {
+        const randomSEED = 5670034
+        const { props } = setupProps({ room: aRoom({ hasPassword: false }, { seed: randomSEED }) })
+
+        expectMatchingSnapshot(<RoomCell {...props} />)
+    })
 })
