@@ -164,10 +164,7 @@ export const isRoomPresent = (roomName) => {
 }
 
 export const isRoomPasswordCorrect = (roomName, password) => {
-    if (
-        roomsStore[roomName].password == null
-        || roomsStore[roomName].password === ''
-    ) return true
+    if (!roomsStore[roomName].password) return true
 
     return roomsStore[roomName].password === password
 }
