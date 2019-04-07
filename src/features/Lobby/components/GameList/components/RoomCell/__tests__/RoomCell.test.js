@@ -28,23 +28,18 @@ describe('<RoomCell />', () => {
 
     describe('calls onJoin callback when room', () => {
         it('has no password', () => {
-            const onJoinMock = jest.fn()
-            const { component } = setupProps({ onJoin: onJoinMock })
+            const { props: { onJoin }, component } = setupProps()
 
             component.find(ControlButton).first().simulate('click')
 
-            expect(onJoinMock).toHaveBeenCalled()
+            expect(onJoin).toHaveBeenCalled()
         })
 
         it('has password, it is called with password passed', () => {
-            const onJoinMock = jest.fn()
             const testRoom = aRoom({ hasPassword: true });
             const password = 'somePassword';
 
-            const { component } = setupProps({
-                room: testRoom,
-                onJoin: onJoinMock,
-            })
+            const { props: { onJoin }, component } = setupProps({ room: testRoom })
 
             component.find(ControlButton).first().simulate('click')
 
@@ -52,12 +47,13 @@ describe('<RoomCell />', () => {
             component.find('input').simulate('change', { target: { value: password } })
 
             component.find(ControlButton).first().simulate('click')
-            expect(onJoinMock).toHaveBeenCalledWith(testRoom.roomId, password)
+            expect(onJoin).toHaveBeenCalledWith(testRoom.roomId, password)
         })
     })
 
     it('should match snippet when romm has password', () => {
-        const { props } = setupProps({ room: aRoom({ hasPassword: true }, { seed: 5670034 }) })
+        const randomSEED = 5670034
+        const { props } = setupProps({ room: aRoom({ hasPassword: true }, { seed: randomSEED }) })
 
         expectMatchingSnapshot(<RoomCell {...props} />)
     })
