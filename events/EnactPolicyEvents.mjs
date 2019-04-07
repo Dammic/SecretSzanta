@@ -71,9 +71,9 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustom
     let nextStepFunction;
     if (activeSuperpowerCallback) {
         nextStepFunction = activeSuperpowerCallback;
-    } else if(getCustomNextStep) {
+    } else if (getCustomNextStep) {
         nextStepFunction = getCustomNextStep(delay);
-    }else if (checkIfGameShouldFinish(socket.currentRoom)) {
+    } else if (checkIfGameShouldFinish(socket.currentRoom)) {
         nextStepFunction = PhaseSocketEvents.endGame;
     } else {
         const messageContent = 'The chancellor choise phase will begin in {counter}…'

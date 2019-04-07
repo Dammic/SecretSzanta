@@ -13,6 +13,8 @@ import {
 } from '../voting'
 import { initializeRoom } from '../rooms'
 
+import { PlayerRole } from '../../../Dictionary'
+
 // TODO: MISSING TESTING FUNCTIONS
 // initializeVoting,
 // vote,
@@ -117,13 +119,17 @@ describe('voting', () => {
     })
 
     describe('getChancellorChoices', () => {
-        test('returns players that did not vote #2', () => {
-            const { testRoom } = roomsStore
-            testRoom.playersDict = {
-                ala: { isDead: true, playerName: 'ala' },
-                ula: { isDead: false, playerName: 'ula' },
-                iza: { isDead: false, playerName: 'iza' },
-            }
+        test('returns aren\'t the previous chancelor', () => {
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: true, playerName: 'ala', role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR },
+                    ula: { isDead: false, playerName: 'ula', role: PlayerRole.ROLE_PREVIOUS_PRESIDENT },
+                    iza: { isDead: false, playerName: 'iza' },
+                },
+            })
+            const result = getChancellorChoices('testRoom')
+
+            expect(result).toEqual(['ula', 'iza'])
         })
     })
 })
