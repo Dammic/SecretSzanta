@@ -7,7 +7,7 @@ exports[`<RoomCell /> should match snippet when romm doesn't have password 1`] =
   <div
     className="roomName"
   >
-    Corporate
+    Producer Solutions
   </div>
   <div
     className="rightSide"
@@ -43,7 +43,7 @@ exports[`<RoomCell /> should match snippet when romm has password 1`] = `
   <div
     className="roomName"
   >
-    Corporate
+    Producer Solutions
   </div>
   <div
     className="rightSide"
