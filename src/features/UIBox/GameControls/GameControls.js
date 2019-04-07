@@ -1,37 +1,50 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import GameControlsComponent from './GameControlsComponent'
 import { toggleAffiliationMenu } from '../../../ducks/userDuck'
-import { startGame, startKickPlayerMode, startBanPlayerMode } from '../../../gameLogic/ownerActions'
+import { startGame } from '../../../gameLogic/ownerActions'
+import { KickModal, KickModalTypes } from './components/KickModal'
 
-export class GameControls extends React.PureComponent {
-    static displayName = 'GameControls'
-    static propTypes = {
-        toggleAffiliationMenu: PropTypes.func.isRequired,
-        gamePhase: PropTypes.string,
-        isOwner: PropTypes.bool,
-        isAffiliationHidden: PropTypes.bool,
-    }
+export const GameControls = ({ gamePhase, isAffiliationHidden, isOwner, toggleAffiliationMenu }) => {
+    const [activeSpecialModal, setActiveSpecialModal] = useState(null)
+    const closeModal = useCallback(() => {
+        setActiveSpecialModal(null)
+    }, [])
 
-    toggleShow = () => {
-        this.props.toggleAffiliationMenu()
-    }
+    const showKickModal = useCallback(() => {
+        setActiveSpecialModal(KickModalTypes.Kick)
+    }, [])
 
-    render() {
-        const { gamePhase, isAffiliationHidden, isOwner } = this.props
-        return (
+    const showBanModal = useCallback(() => {
+        setActiveSpecialModal(KickModalTypes.Ban)
+    }, [])
+
+    return (
+        <React.Fragment>
             <GameControlsComponent
                 onStartGame={startGame}
-                onKickPlayer={startKickPlayerMode}
-                onBanPlayer={startBanPlayerMode}
-                onShowAffiliationClick={this.toggleShow}
+                onKickPlayer={!activeSpecialModal ? showKickModal : undefined}
+                onBanPlayer={!activeSpecialModal ? showBanModal : undefined}
+                onShowAffiliationClick={toggleAffiliationMenu}
                 isOwner={isOwner}
                 gamePhase={gamePhase}
                 isAffiliationHidden={isAffiliationHidden}
             />
-        )
-    }
+            <KickModal
+                onClose={closeModal}
+                isVisible={!!activeSpecialModal}
+                type={activeSpecialModal}
+            />
+        </React.Fragment>
+    )
+}
+
+GameControls.propTypes = {
+    toggleAffiliationMenu: PropTypes.func.isRequired,
+    gamePhase: PropTypes.string,
+    isOwner: PropTypes.bool,
+    isAffiliationHidden: PropTypes.bool,
 }
 
 const mapStateToProps = ({ user, room }) => ({

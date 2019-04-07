@@ -24,32 +24,6 @@ export function openInvitePlayersScreen() {
 
 }
 
-export function startKickPlayerMode() {
-    const { user, room } = store.getState()
-    const playersWithoutOwner = map(reject(room.playersDict, { playerName: user.userName }), 'playerName')
-
-    invokeOnEvery([
-        playersActions.setChooserPlayer({ playerName: user.userName }),
-        playersActions.setChoiceMode({
-            context: ChoiceModeContexts.KickChoice,
-            selectablePlayers: playersWithoutOwner,
-        }),
-    ], store.dispatch)
-}
-
-export function startBanPlayerMode() {
-    const { user, room } = store.getState()
-    const playersWithoutOwner = map(reject(room.playersDict, { playerName: user.userName }), 'playerName')
-
-    invokeOnEvery([
-        playersActions.setChooserPlayer({ playerName: user.userName }),
-        playersActions.setChoiceMode({
-            context: ChoiceModeContexts.BanChoice,
-            selectablePlayers: playersWithoutOwner,
-        }),
-    ], store.dispatch)
-}
-
 export function endGame() {
     socket.emit(SocketEvents.GameFinished)
 }
