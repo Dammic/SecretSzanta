@@ -78,8 +78,10 @@ describe('policies', () => {
 
     describe('reShuffle', () => {
         test('The same cards stay after reShuffle', () => {
-            updateRoom('testRoom', { drawPile: [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy] })
-            updateRoom('testRoom', { discardPile: [PolicyCards.LiberalPolicy] })
+            updateRoom('testRoom', {
+                drawPile: [PolicyCards.FacistPolicy, PolicyCards.LiberalPolicy],
+                discardPile: [PolicyCards.LiberalPolicy],
+            })
             const preparedRoom = getRoom('testRoom')
 
             reShuffle('testRoom')

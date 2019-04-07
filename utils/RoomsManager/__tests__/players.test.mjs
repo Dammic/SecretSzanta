@@ -1,5 +1,5 @@
 import { size } from 'lodash'
-import { getAllRooms, updateRoom } from '../../../stores'
+import { getAllRooms, updateRoom, getRoom } from '../../../stores'
 
 import {
     addPlayer,
@@ -54,32 +54,39 @@ describe('players', () => {
 
     describe('getAlivePlayers', () => {
         test('returns alive players', () => {
-            const { testRoom } = roomsStore
-            testRoom.playersDict.ala = {
-                isDead: true,
-            }
-            testRoom.playersDict.ola = {
-                isDead: false,
-            }
-            testRoom.playersDict.ela = {
-                isDead: false
-            }
-            testRoom.playersDict.umbrela = {
-                isDead: true
-            }
-            const expectedResult = [ testRoom.playersDict.ola, testRoom.playersDict.ela ]
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        isDead: true,
+                    },
+                    ola: {
+                        isDead: false,
+                    },
+                    ela: {
+                        isDead: false,
+                    },
+                    umbrela: {
+                        isDead: true,
+                    },
+                },
+            })
+            const { playersDict } = getRoom('testRoom')
+            const expectedResult = [playersDict.ola, playersDict.ela]
 
             expect(getAlivePlayers('testRoom')).toEqual(expectedResult)
         })
         test('returns empty array if everyone is dead', () => {
-            const { testRoom } = roomsStore
-            testRoom.playersDict.ala = {
-                isDead: true,
-            }
-            testRoom.playersDict.umbrela = {
-                isDead: true
-            }
-            const expectedResult =[ ]
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        isDead: true,
+                    },
+                    umbrela: {
+                        isDead: true,
+                    },
+                },
+            })
+            const expectedResult = []
 
             expect(getAlivePlayers('testRoom')).toEqual(expectedResult)
         })
@@ -87,43 +94,47 @@ describe('players', () => {
 
     describe('getOtherAlivePlayerNames', () => {
         test('returns all other alive players', () => {
-            const { testRoom } = roomsStore
-            testRoom.playersDict.ala = {
-                playerName : 'ala',
-                isDead: true,
-            }
-            testRoom.playersDict.ola = {
-                playerName : 'ola',
-                isDead: false,
-            }
-            testRoom.playersDict.ela = {
-                playerName : 'ela',
-                isDead: false
-            }
-            testRoom.playersDict.umbrela = {
-                playerName : 'umbrela',
-                isDead: true
-            }
-            //const expectedResult = [ testRoom.playersDict.ola, testRoom.playersDict.ela ]
-
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        playerName: 'ala',
+                        isDead: true,
+                    },
+                    ola: {
+                        playerName: 'ola',
+                        isDead: false,
+                    },
+                    ela: {
+                        playerName: 'ela',
+                        isDead: false,
+                    },
+                    umbrela: {
+                        playerName: 'umbrela',
+                        isDead: true,
+                    },
+                },
+            })
             expect(getOtherAlivePlayerNames('testRoom', 'ola')).toEqual(['ela'])
             expect(getOtherAlivePlayerNames('testRoom', 'ela')).toEqual(['ola'])
         })
-        test('returns empty array if everyone is dead', () => {
-            const { testRoom } = roomsStore
-            testRoom.playersDict.ala = {
-                playerName : 'ala',
-                isDead: true,
-            }
-            testRoom.playersDict.umbrela = {
-                playerName : 'umbrela',
-                isDead: true
-            }
-            testRoom.playersDict.ela = {
-                playerName : 'ela',
-                isDead: false
-            }
-            const expectedResult =[ ]
+        test('returns empty array if everyone except for ela is dead', () => {
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: {
+                        playerName: 'ala',
+                        isDead: true,
+                    },
+                    ela: {
+                        playerName: 'ela',
+                        isDead: false,
+                    },
+                    umbrela: {
+                        playerName: 'umbrela',
+                        isDead: true,
+                    },
+                },
+            })
+            const expectedResult = []
 
             expect(getOtherAlivePlayerNames('testRoom', 'ela')).toEqual(expectedResult)
         })
