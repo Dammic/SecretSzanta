@@ -25,36 +25,28 @@ import {
 } from './EnactPolicyEvents'
 import {
     setGamePhase,
-    clearVetoVotes,
-    getRoleSocket,
     getGamePhase,
     getVetoVotes,
     getPlayerRole,
     addVetoVote,
     didVetoSucceed,
     discardPolicyByVeto,
-    getPolicyCardsCount,
-    isRoomPresent,
+    isRoomPasswordCorrect,
     getRoomOwner,
     removePlayer,
     findNewRoomOwner,
     getRoomDetails,
-    getPlayersCount,
     getFacists,
     removeRoom,
     initializeRoom,
-    getRoomDetailsForLobby,
     isInBlackList,
     vote,
-    getRemainingVotesCount,
     addPlayer,
     didAllVote,
     getVotingResult,
     setChancellor,
-    getVotes,
     getChancellor,
     getDrawnCards,
-    getPlayerInfo,
     getPresident,
     discardPolicy,
     killPlayer,
@@ -64,10 +56,9 @@ import {
     chooseNextPresident,
     initializeVoting,
     isVetoUnlocked,
-    checkIfGameShouldFinish,
-    getChancellorCandidateInfo,
 } from '../utils/RoomsManager'
 import * as emits from './emits'
+import { isRoomPresent } from '../stores/roomsStore'
 import { TimeDelay } from './consts'
 
 import {
@@ -178,7 +169,7 @@ export const disconnect = (socket) => {
     socket.currentPlayerName = ''
 }
 
-export const joinRoom = (socket, { roomName }) => {
+export const joinRoom = (socket, { roomName, password }) => {
     if (!roomName || socket.currentRoom !== GlobalRoomName || !isRoomPresent(roomName)) {
         logError(socket, 'Player tried to enter nonexistent room!')
         emits.emitError(socket.emit, 'The room does not exist!')
@@ -188,6 +179,12 @@ export const joinRoom = (socket, { roomName }) => {
     if (isInBlackList(roomName, socket.currentPlayerName)) {
         logInfo(socket, 'Banned player tried to enter the room!')
         emits.emitError(socket.emit, 'You are BANNED in this room by the owner!')
+        return
+    }
+
+    if (!isRoomPasswordCorrect(roomName, password)) {
+        logInfo(socket, 'Player did not know correct password')
+        emits.emitError(socket.emit, 'Password is incorrect!')
         return
     }
 
@@ -211,7 +208,7 @@ export const createRoom = (socket, { roomName, maxPlayers, password }) => {
         initializeRoom(roomName, socket.currentPlayerName, maxPlayers, password)
 
         emits.emitRoomsListChanged(roomName, roomName)
-        joinRoom(socket, { roomName })
+        joinRoom(socket, { roomName, password })
     } else {
         logError(socket, 'Selected room is already present! Cannot create a duplicate!')
         emits.emitError(socket.emit, 'You cannot create duplicate of this room!')
@@ -273,7 +270,7 @@ export const choosePolicyChancellor = (socket, choice) => {
     }
 }
 
-export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chancellorName) => {
+export const choosePolicyPresident = ({ currentRoom }, choice, chancellorName) => {
     setGamePhase(currentRoom, GamePhases.ChancellorPolicyChoice)
 
     emits.emitChancellorWillChoosePolicy(currentRoom, chancellorName)
@@ -283,17 +280,17 @@ export const choosePolicyPresident = ({ currentRoom }, choice, drawnCards, chanc
     const messageContent = 'The chancellor will now enact one of the 2 policies passed by the president…'
     emits.emitGameNotification(currentRoom, MessagesTypes.STATUS, messageContent)
 
-    emits.emitChoosePolicyToChancellor(currentRoom, drawnCards)
+    emits.emitChoosePolicyToChancellor(currentRoom, getDrawnCards(currentRoom))
 }
 
 export const choosePolicy = (socket, { choice }) => {
     const { gamePhase } = getRoomDetails(socket.currentRoom)
-    let drawnCards = getDrawnCards(socket.currentRoom)
+    const drawnCards = getDrawnCards(socket.currentRoom)
     if (includes(drawnCards, choice)) {
         const president = getPresident(socket.currentRoom)
         const chancellor = getChancellor(socket.currentRoom)
         if (gamePhase === GamePhases.PresidentPolicyChoice && president.playerName === socket.currentPlayerName) {
-            choosePolicyPresident(socket, choice, drawnCards, chancellor.playerName)
+            choosePolicyPresident(socket, choice, chancellor.playerName)
         } else if (gamePhase === GamePhases.ChancellorPolicyChoice && chancellor.playerName === socket.currentPlayerName) {
             choosePolicyChancellor(socket, choice)
         } else {

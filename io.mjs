@@ -5,10 +5,20 @@ import ClientVerificationHof from './utils/ClientVerificationHof'
 import { SocketEvents as SocketEventsDictionary } from './Dictionary'
 import socketEvents from './events/SocketEvents'
 import { emitMessage } from './events/emits'
+import { logError } from './utils/utils'
 
 const { cloneDeep, partial, mapValues, partialRight } = lodash
 
 export let io = {}
+
+const handleSocketErrors = (func, socket) => (...args) => {
+    try {
+        func(...args)
+    } catch (error) {
+        socket.emit(SocketEventsDictionary.logoutPlayer, { data: { message: 'An unknown problem occured. Please log in again.'} })
+        logError(socket, error.message)
+    }
+}
 
 const initializeEvents = () => {
     io.on('connection', (socket) => {
@@ -31,8 +41,8 @@ const initializeEvents = () => {
             ...socketEvents,
             ...phaseSocketEventsCopy,
             sendMessage: (socket, ...rest) => emitMessage(socket.currentRoom, null, ...rest),
-        }, func => partial(func, socket))
-        partialFunctions.banPlayer = partialRight(partialFunctions.kickPlayerEvent, true)
+            banPlayer: (socket, ...rest) => socketEvents.kickPlayerEvent(socket, ...rest, true),
+        }, func => handleSocketErrors(partial(func, socket), socket))
 
         socket.on('disconnect', partialFunctions.disconnect)
         socket.on(SocketEventsDictionary.CLIENT_CREATE_ROOM, partialFunctions.createRoom)
