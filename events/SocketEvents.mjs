@@ -83,7 +83,7 @@ export const triggerVetoPrompt = (socket) => {
         emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_PRESIDENT)
         emits.emitServerWaitingForVeto(socket.currentRoom, PlayerRole.ROLE_CHANCELLOR)
         
-        return PhaseSocketEvents.startChancellorChoicePhaseEvent
+        return socket => checkForNextStep(socket)
     }
     checkForNextStep(socket, false, notifyAndResume, delay)
 }
@@ -373,7 +373,7 @@ export const presidentDesignatedNextPresident = (socket, { playerName }) => {
             counter: delay / 1000,
         })
 
-        return socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName);
+        return socketObject => PhaseSocketEvents.startChancellorChoicePhaseEvent(socketObject, playerName)
     }
 
     checkForNextStep(socket, false, notifyAndResume, delay)

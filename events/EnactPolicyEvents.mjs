@@ -71,17 +71,14 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustom
     let nextStepFunction;
     if (activeSuperpowerCallback) {
         nextStepFunction = activeSuperpowerCallback;
-    } else if (checkIfGameShouldFinish(socket.currentRoom) && !getCustomNextStep) {
+    } else if(getCustomNextStep) {
+        nextStepFunction = getCustomNextStep(delay);
+    }else if (checkIfGameShouldFinish(socket.currentRoom)) {
         nextStepFunction = PhaseSocketEvents.endGame;
     } else {
-        if (!getCustomNextStep) {
-            const messageContent = 'The chancellor choise phase will begin in {counter}…'
-            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {counter: delay / 1000})
-            nextStepFunction = PhaseSocketEvents.startChancellorChoicePhaseEvent;
-        }
-        else {
-            nextStepFunction = getCustomNextStep(delay);
-        }
+        const messageContent = 'The chancellor choise phase will begin in {counter}…'
+        emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {counter: delay / 1000})
+        nextStepFunction = PhaseSocketEvents.startChancellorChoicePhaseEvent;
     }
 
     SocketEventsUtils.resumeGame(socket, { delay, func: nextStepFunction })
