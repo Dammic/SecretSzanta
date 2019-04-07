@@ -27,7 +27,6 @@ export const emitPeekAffiliationToPresident = (room) => {
 
 export const emitServerWaitingForVeto = (room, role) => {
     const roleEmit = getRoleSocket(room, role)
-    console.log(emitServerWaitingForVeto);
     emitToPlayer(roleEmit, SocketEvents.ServerWaitingForVeto)
 }
 

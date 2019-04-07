@@ -42,7 +42,6 @@ export class SocketHandler extends React.PureComponent {
             this.switchRooms(roomName)
         })
         socket.on(SocketEvents.ServerWaitingForVeto, (payload) => {
-            console.log("SocketEvents.ServerWaitingForVeto");
             this.props.roomActions.setVeto({ value: true })
         })
         socket.on(SocketEvents.CLIENT_JOIN_ROOM, (payload) => {

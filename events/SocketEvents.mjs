@@ -70,7 +70,6 @@ import {
 const { isNil, includes, find, get, truncate } = lodash
 
 export const triggerVetoPrompt = (socket) => {
-    console.log("triggerVetoPrompt");
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)
 
     const delay = TimeDelay.VETO_DELAY
