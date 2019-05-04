@@ -75,7 +75,6 @@ export const triggerVetoPrompt = (socket) => {
     const delay = TimeDelay.VETO_DELAY
     
     const notifyAndResume = (delay) => {
-        console.log("notifyAndResume")
         const messageContent = 'The president and chancellor can now veto the enacted policy for {counter}. Otherwise the chancellor choice phase will begin.'
         emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, { counter: delay / 1000 })
 

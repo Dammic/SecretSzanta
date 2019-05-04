@@ -202,7 +202,6 @@ export class SocketHandler extends React.PureComponent {
         })
 
         socket.on(SocketEvents.ResetTracker, (payload) => {
-            console.log(this.props)
             const trackerPositionBeforeReset = this.props.room.trackerPosition
             if (trackerPositionBeforeReset === 3) {
                 this.props.roomActions.increaseTracker()
