@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "12"
+
+jobs:
+  include:
+    - stage: building
+      script: "npm run build:prod"
+    - stage: unit tests
+      script: "npm run test"
+    # - stage: deploy to staging
+    # - stage: deploy to production
+    #   script: skip
+    #   deploy:
+    #     <<: *heroku
+    #     app: sf-stages-production
