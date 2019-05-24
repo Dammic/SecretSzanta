@@ -1,15 +1,17 @@
 dist: trusty
+
+branches:
+  only:
+  - master
+
 jobs:
   include:
     - stage: Build Docker Image
       script: 
         - docker build -t secret_szanta .
+    - stage: Push Image To Production
+      if: branch = master
+      script: 
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
         - docker tag secret_szanta $DOCKER_LOGIN/secret_szanta
         - docker push $DOCKER_LOGIN/secret_szanta
-    # - stage: Push Image To Production
-      # if: branch = master
-      # script: 
-      #   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
-      #   - docker tag secret_szanta $DOCKER_LOGIN/secret_szanta
-      #   - docker push $DOCKER_LOGIN/secret_szanta
