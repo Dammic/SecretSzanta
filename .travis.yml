@@ -1,17 +1,18 @@
 dist: trusty
-build_docker_image:
-  name: Test and Build docker image
-  script:
-  - docker build -t secret_szanta .
-
-push_to_production:
-  on:
-    branch: master
-  script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
-    - docker tag secret_szanta $DOCKER_LOGIN/secret_szanta
-    - docker push $DOCKER_LOGIN/secret_szanta
-
+jobs:
+  include:
+    - stage: Build Docker Image
+      script: 
+        - docker build -t secret_szanta .
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+        - docker tag secret_szanta $DOCKER_LOGIN/secret_szanta
+        - docker push $DOCKER_LOGIN/secret_szanta
+    - stage: Push Image To Production
+      if: branch = master
+      script: 
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+        - docker tag secret_szanta $DOCKER_LOGIN/secret_szanta
+        - docker push $DOCKER_LOGIN/secret_szanta
 env:
   matrix:
   - secure: soqsQPUNG+TPcO5Ev9N7VaZduxKKuNWCf5Jdvbx3zR4mNXE6c3nIlr9QwodBGk9c/+lzHGeoxWsIEVGb1mQtJH3symRSzTN7gQ00r0wZF94AYclJMU9k75QbpZ2/4BTbTfnG8/s9mGN9h0beDnf7SK8fYj/MQHpxkreJOlkqR2XSKoyHdLYyASZt93Xu7XjQkqUnshaHQ4dTs8Ukon29mkHHFz//MtXRdS0uVo+pNZpDSDyCJHdPvNopmi02aXahiQHhtPqk3T8ED1jmudTv7Fus3ALnqpxjnaS054j12vSRReRH67xLnhfwtBeKjxBSaLtGA0/04xLPSc2mqVitjQevk90YbOKSNIykhcwOyGApGfeYp/o3qKFsEqjjxlH2n/D9vkxIzZXDYuMcn0T2jIjFtY9Lz58YSf5WNdR+gzwWG9v9AnOBrtCGyUlD+nPYgnMiuPjPmX4H/9a3N2n2FITJFbvylE+VL0uQ77OXUbFDNE2p0cu1G6390o7uKVQPgt7sajeSFw5eLDE/tBjjqSKcgwPxFsKEgQrTkFZmDJJXTHPrX1oRUFXbadNXDpyc3A+LJlCMmusPN4hKbEOhqp2scL4HmUzHS/HZ/kuYtiDxbMoRBv7VO5JtJ77ZjhDihntVCjp0vjX08407mZU7AWIRcJgC2Fwv+zWuvluGZhM=
