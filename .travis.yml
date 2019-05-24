@@ -5,7 +5,6 @@ branches:
   - master
 
 install:
-  - yarn install
 
 script:
   - docker build -t secret_szanta .
