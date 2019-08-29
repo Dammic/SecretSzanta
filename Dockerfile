@@ -1,17 +1,10 @@
 FROM node:latest
-
-WORKDIR /secretSzanta
-
-# copy dependencies
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-# exposing port inside of container to outside
+ADD . /code
+WORKDIR /code
+RUN yarn install
+RUN yarn run test
+RUN yarn run build:prod
 EXPOSE 3000
 
-RUN npm run build:prod
+CMD yarn run run
 
-CMD [ "npm", "run", "run"]
