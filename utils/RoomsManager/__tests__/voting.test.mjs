@@ -13,6 +13,8 @@ import {
 } from '../voting'
 import { initializeRoom } from '../rooms'
 
+import { PlayerRole } from '../../../Dictionary'
+
 // TODO: MISSING TESTING FUNCTIONS
 // initializeVoting,
 // vote,
@@ -96,9 +98,18 @@ describe('voting', () => {
                     ula: false,
                 },
             })
-            const result = getRemainingVotingPlayers('testRoom')
-
+            
+            let result = getRemainingVotingPlayers('testRoom')
             expect(result).toEqual(['iza'])
+            updateRoom('testRoom', {
+                votes: {
+                    ula: false,
+                    iza: true,
+                },
+            })
+
+            result = getRemainingVotingPlayers('testRoom')
+            expect(result).toEqual([])
         })
 
         test('returns players that did not vote #2', () => {
@@ -113,6 +124,40 @@ describe('voting', () => {
             const result = getRemainingVotingPlayers('testRoom')
 
             expect(result).toEqual(['ula', 'iza'])
+        })
+    })
+
+    describe('getChancellorChoices', () => {
+        test('returns everyone, but the previous chancelor if less than 6 players', () => {
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: false, playerName: 'ala', role: PlayerRole.ROLE_PREVIOUS_PRESIDENT},
+                    ula: { isDead: false, playerName: 'ula', role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR },
+                    iza: { isDead: false, playerName: 'iza' },
+                    aga: { isDead: false, playerName: 'aga' },
+                    staszek: { isDead: false, playerName: 'staszek' },
+                    miłosz: { isDead: true, playerName: 'miłosz' },
+                },
+            })
+
+            const result = getChancellorChoices('testRoom')
+            expect(result).toEqual(['ala', 'iza', 'aga', 'staszek'])
+        })
+
+        test('returns everyone who\'s not the previous president or chancelor if more than 5 players', () => {
+            updateRoom('testRoom', {
+                playersDict: {
+                    ala: { isDead: false, playerName: 'ala', role: PlayerRole.ROLE_PREVIOUS_PRESIDENT},
+                    ula: { isDead: false, playerName: 'ula', role: PlayerRole.ROLE_PREVIOUS_CHANCELLOR },
+                    iza: { isDead: false, playerName: 'iza' },
+                    aga: { isDead: false, playerName: 'aga' },
+                    staszek: { isDead: false, playerName: 'staszek' },
+                    miłosz: { isDead: false, playerName: 'miłosz' },
+                },
+            })
+
+            const result = getChancellorChoices('testRoom')
+            expect(result).toEqual(['iza', 'aga', 'staszek', 'miłosz'])
         })
     })
 })

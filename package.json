@@ -12,8 +12,8 @@
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
     "build:prod": "rimraf public && webpack --mode production --config webpack.config.js --progress",
-    "test": "node_modules/jest/bin/jest.js",
-    "test:fe": "node_modules/jest/bin/jest.js src/*",
+    "test": "jest",
+    "test:fe": "jest src/*",
     "test:silent": "NODE_HIDECONSOLE=true npm run test"
   },
   "husky": {

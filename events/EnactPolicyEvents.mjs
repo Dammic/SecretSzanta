@@ -44,7 +44,7 @@ export const checkForImmediateSuperpowers = ({ currentRoom }) => {
         return PhaseSocketEvents.startKillPhase
     }
     // 5th power is always kill AND veto power unlock
-    if (fascistPolicyCount === 5) {
+    if (fascistPolicyCount === 5 && !isVetoUnlocked(currentRoom)) {
         return (socket) => {
             toggleVeto(socket.currentRoom)
 
@@ -63,6 +63,7 @@ export const enactPolicyEvent = (socket, policy) => {
 }
 
 export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustomNextStep = null, delay = TimeDelay.LONG_DELAY) => {
+    
     const topCard = hasPolicyBeenEnacted ? peekLastEnactedPolicyCard(socket.currentRoom) : null
     const isFacist = topCard === PolicyCards.FacistPolicy
     const activeSuperpowerCallback = isFacist ? checkForImmediateSuperpowers(socket) : null
@@ -70,17 +71,14 @@ export const checkForNextStep = (socket, hasPolicyBeenEnacted = false, getCustom
     let nextStepFunction;
     if (activeSuperpowerCallback) {
         nextStepFunction = activeSuperpowerCallback;
+    } else if (getCustomNextStep) {
+        nextStepFunction = getCustomNextStep(delay);
     } else if (checkIfGameShouldFinish(socket.currentRoom)) {
         nextStepFunction = PhaseSocketEvents.endGame;
     } else {
-        if (!getCustomNextStep) {
-            const messageContent = 'The chancellor choise phase will begin in {counter}…'
-            emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {counter: delay / 1000})
-            nextStepFunction = PhaseSocketEvents.startChancellorChoicePhaseEvent;
-        }
-        else {
-            nextStepFunction = getCustomNextStep(delay);
-        }
+        const messageContent = 'The chancellor choise phase will begin in {counter}…'
+        emits.emitGameNotification(socket.currentRoom, MessagesTypes.STATUS, messageContent, {counter: delay / 1000})
+        nextStepFunction = PhaseSocketEvents.startChancellorChoicePhaseEvent;
     }
 
     SocketEventsUtils.resumeGame(socket, { delay, func: nextStepFunction })

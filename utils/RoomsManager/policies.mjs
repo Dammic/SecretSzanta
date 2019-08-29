@@ -8,8 +8,9 @@ const {
     shuffle,
     size,
     take,
-    indexOf,
-    drop
+    takeRight,
+    drop,
+    indexOf
 } = lodash
 
 export const moveCard = (roomName, sourcePileName, destinationPileName, card) => {
@@ -50,7 +51,7 @@ export const discardPolicy = (roomName, card) => {
 
 export const discardPolicyByVeto = (roomName) => {
     const { policiesPile } = getRoom(roomName)
-    const discardedPolicy = take(policiesPile, 1)[0]
+    const discardedPolicy = takeRight(policiesPile, 1)[0]
     moveCard(roomName, 'policiesPile', 'discardPile', discardedPolicy)
 }
 
