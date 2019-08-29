@@ -16,6 +16,11 @@
     "test:fe": "node_modules/jest/bin/jest.js src/*",
     "test:silent": "NODE_HIDECONSOLE=true npm run test"
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn run build:prod & yarn run test"
+    }
+  },
   "jest": {
     "verbose": true,
     "testURL": "http://localhost/",
@@ -103,11 +108,12 @@
     "fs": "0.0.1-security",
     "happypack": "5.0.0",
     "html-webpack-plugin": "4.0.0-alpha",
+    "husky": "^2.3.0",
     "identity-obj-proxy": "3.0.0",
     "image-webpack-loader": "4.6.0",
     "jest": "24.3.1",
     "merge-stream": "1.0.1",
-    "node-sass": "4.11.0",
+    "node-sass": "4.12.0",
     "nodemon": "1.12.1",
     "npm-run-all": "4.0.2",
     "optipng-bin": "5.1.0",

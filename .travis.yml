@@ -1,0 +1,19 @@
+dist: trusty
+
+branches:
+  only:
+  - master
+
+install:
+
+script:
+  - docker build -t secret_szanta .
+
+deploy:
+  - provider: script
+    script: 
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+      - docker tag secret_szanta $DOCKER_LOGIN/secret_szanta
+      - docker push $DOCKER_LOGIN/secret_szanta
+    on:
+      branch: master
