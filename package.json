@@ -4,14 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "clean": "rimraf public",
-    "build": "webpack --mode development --config webpack.config.js --progress",
-    "build:watch": "webpack --mode development --config webpack.config.js --watch --progress",
-    "run": "node --experimental-modules server.mjs",
-    "run:dev": "nodemon --experimental-modules server.mjs --watch utils/ --watch events/ --watch server.js",
+    "clean": "rimraf .dist",
+    "build": "webpack --mode development --config src/config/webpack.config.js --progress",
+    "build:watch": "webpack --mode development --config src/config/webpack.config.js --watch --progress",
+    "run": "node -r esm server/server.js",
+    "run:dev": "nodemon server/server.js --watch server/utils/ --watch server/events/ --watch server/server.js",
     "dev": "npm-run-all --parallel build:watch run:dev",
     "eslint": "eslint ./src",
-    "build:prod": "rimraf public && webpack --mode production --config webpack.config.js --progress",
+    "build:prod": "rimraf .dist && webpack --mode production --config src/config/webpack.config.js --progress",
     "test": "jest",
     "test:fe": "jest src/*",
     "test:silent": "NODE_HIDECONSOLE=true npm run test"
@@ -26,27 +26,27 @@
     "testURL": "http://localhost/",
     "moduleNameMapper": {
       ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy",
-      ".+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/__mocks__/fileMock.js",
+      ".+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/src/__mocks__/fileMock.js",
       "packages(.*)$": "<rootDir>/src/packages$1"
     },
     "testMatch": [
-      "**/__tests__/**/*.?(m)js?(x)",
-      "**/?(*.)(spec|test).?(m)js?(x)"
+      "**/__tests__/**/*.?js?(x)",
+      "**/?(*.)(spec|test).?js?(x)"
     ],
     "moduleFileExtensions": [
       "js",
       "json",
       "jsx",
       "node",
-      "mjs"
+      "ts"
     ],
     "transform": {
-      ".mjs": "babel-jest",
+      ".ts": "babel-jest",
       ".js": "babel-jest"
     },
     "setupFiles": [
       "raf/polyfill",
-      "./setupTests.js"
+      "./src/config/setupTests.js"
     ]
   },
   "authors": [
@@ -56,6 +56,7 @@
   ],
   "dependencies": {
     "classnames": "2.2.6",
+    "esm": "^3.2.25",
     "font-awesome": "4.7.0",
     "history": "4.10.1",
     "lodash": "4.17.15",

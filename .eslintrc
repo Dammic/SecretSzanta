@@ -7,7 +7,7 @@
     ],
     "settings": {
         "import/resolver": {
-            "node": { "extensions": [".js", ".mjs"] },
+            "node": { "extensions": [".js", ".ts"] },
             "alias": {
                 "map": [
                     ['packages', './src/packages'],
@@ -28,7 +28,7 @@
           {
             "js": "never",
             "jsx": "never",
-            "mjs": "never"
+            "ts": "never"
           }
         ],
         "indent": ["error", 4, {"SwitchCase": 1}],
