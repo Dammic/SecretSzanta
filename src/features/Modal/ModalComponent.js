@@ -1,6 +1,5 @@
 import React from 'react'
 import { CSSTransition } from 'react-transition-group'
-import { Scrollbars } from 'react-custom-scrollbars'
 import classNames from 'classnames/bind'
 import { Icon } from '../Shared/Icon'
 

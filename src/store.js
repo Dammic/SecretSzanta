@@ -1,18 +1,17 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import { routerMiddleware } from 'react-router-redux'
-import thunk from 'redux-thunk'
+import { routerMiddleware } from 'connected-react-router'
 import { createBrowserHistory } from 'history'
-import { rootReducer } from './ducks/rootDuck'
+import thunk from 'redux-thunk'
+import { createRootReducer } from './ducks/rootDuck'
 
-/* eslint-disable no-underscore-dangle */
 export const history = createBrowserHistory()
-const router = routerMiddleware(history)
 
 export const store = createStore(
-    rootReducer,
+    createRootReducer(history),
     compose(
-        applyMiddleware(thunk, router),
+        applyMiddleware(thunk, routerMiddleware(history)),
+        /* eslint-disable no-underscore-dangle */
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+        /* eslint-enable */
     ),
 )
-/* eslint-enable */

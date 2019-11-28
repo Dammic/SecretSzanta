@@ -11,7 +11,6 @@ import {
     MessagesTypes,
     Views,
 } from '../../Dictionary'
-import { store } from '../store'
 import * as roomActions from '../ducks/roomDuck'
 import * as modalActions from '../ducks/modalDuck'
 import * as userActions from '../ducks/userDuck'

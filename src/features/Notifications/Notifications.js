@@ -2,10 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { find, map, takeRight, reverse } from 'lodash'
-import NotificationPanel from './NotificationPanel'
+import { takeRight, reverse } from 'lodash'
 import NotificationsComponent from './NotificationsComponent'
-import { MessagesTypes } from '../../../Dictionary'
 import * as notificationsActions from '../../ducks/notificationsDuck'
 
 export class Notifications extends React.PureComponent {
