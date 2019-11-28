@@ -3,6 +3,7 @@
 lib
 node_modules
 public/
+build
 .dist/
 babel_cache
 npm-debug.log
