@@ -1,8 +1,6 @@
 import moment from 'moment'
-import lodash from 'lodash'
+import { pad } from 'lodash'
 import { MessagesTypes } from '../../Dictionary'
-
-const { pad } = lodash
 
 const getCurrentTimestamp = () => Math.floor(Date.now() / 1000)
 

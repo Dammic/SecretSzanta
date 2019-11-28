@@ -1,4 +1,5 @@
-import lodash from 'lodash'
+import { get } from 'lodash'
+
 import { SocketEvents, PlayerAffilications, PlayerRole, MessagesTypes } from '../../../Dictionary'
 import { getCurrentTimestamp } from '../../utils/utils'
 import { emitToRoom, emitToPlayer, emitGameNotification } from './generic'
@@ -11,8 +12,6 @@ import {
     getPlayerInfo,
     getHitler,
 } from '../../utils/RoomsManager'
-
-const { get } = lodash
 
 export const emitPeekAffiliationToPresident = (room) => {
     const presidentEmit = getRoleSocket(room, PlayerRole.ROLE_PRESIDENT)

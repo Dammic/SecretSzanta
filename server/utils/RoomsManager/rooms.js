@@ -1,4 +1,8 @@
-import lodash from 'lodash'
+import {
+    values, mapValues,
+    forEach, random, slice, times, map,
+    find, pick, shuffle, size, sample, get, fill,
+} from 'lodash'
 import {
     GamePhases,
     PlayerRole,
@@ -14,12 +18,6 @@ import {
 
 import { logInfo } from '../../utils/utils'
 import { getRoom, getAllRooms, updateRoom, deleteRoom, createRoom, isRoomPresent } from '../../stores'
-
-const {
-    values, mapValues, isNil,
-    forEach, random, slice, times, map,
-    find, pick, shuffle, size, sample, get, fill,
-} = lodash
 
 /**
  * This function contains methods to manage rooms variables and rooms.

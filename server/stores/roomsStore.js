@@ -1,6 +1,4 @@
-import lodash from 'lodash'
-
-const { cloneDeep, isNil, mergeWith, isArray, isPlainObject, isEmpty } = lodash
+import { cloneDeep, isNil, mergeWith, isArray, isPlainObject, isEmpty } from 'lodash'
 
 const customMerge = (_, srcValue) => {
     if (isArray(srcValue) || (isPlainObject(srcValue) && isEmpty(srcValue))) {

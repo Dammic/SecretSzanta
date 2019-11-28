@@ -1,16 +1,14 @@
-import lodash from 'lodash'
-import { getRoom } from '../../stores'
 import {
-    PlayerAffilications,
-} from '../../../Dictionary'
-
-const {
     filter,
     includes,
     map,
     find,
     pick,
-} = lodash
+} from 'lodash'
+import { getRoom } from '../../stores'
+import {
+    PlayerAffilications,
+} from '../../../Dictionary'
 
 export const getFacists = (roomName) => {
     const { playersDict } = getRoom(roomName)

@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { map, pick, truncate } from 'lodash'
 import { GamePhases, SocketEvents, MessagesTypes } from '../../../Dictionary'
 import { getCurrentTimestamp } from '../../utils/utils'
 import { emitToRoom, emitGameNotification } from './generic'
@@ -10,8 +10,6 @@ import {
     getChancellorChoices,
     getPresident,
 } from '../../utils/RoomsManager'
-
-const { map, pick, truncate } = lodash
 
 export const emitStartGame = (room) => {
     const messageContent = 'The game has been started. Chancellor choice phase will begin in {counter}…'

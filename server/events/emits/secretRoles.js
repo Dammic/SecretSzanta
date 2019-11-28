@@ -1,12 +1,10 @@
-import lodash from 'lodash'
+import { map, pick } from 'lodash'
 import { SocketEvents, PlayerAffilications } from '../../../Dictionary'
 import { emitToPlayer } from './generic'
 
 import {
     getPlayersCount,
 } from '../../utils/RoomsManager'
-
-const { map, pick } = lodash
 
 export const emitBecomeFascistToPlayer = (room, player, fascists) => {
     const playerCount = getPlayersCount(room)

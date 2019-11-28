@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { truncate } from 'lodash'
 import { SocketEvents, MessagesTypes } from '../../../Dictionary'
 import { emitToRoom, emitGameNotification } from './generic'
 import {
@@ -8,8 +8,6 @@ import {
     getVotes,
     getVotingResult,
 } from '../../utils/RoomsManager'
-
-const { truncate } = lodash
 
 export const emitRemainingPlayersNotification = (room) => {
     const remainingPlayers = getRemainingVotingPlayers(room)

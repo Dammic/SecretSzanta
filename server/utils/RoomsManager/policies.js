@@ -1,8 +1,4 @@
-import lodash from 'lodash'
-import { getRoom, updateRoom } from '../../stores'
-import { logError } from '../../utils/utils'
-
-const {
+import {
     filter,
     includes,
     shuffle,
@@ -11,7 +7,9 @@ const {
     takeRight,
     drop,
     indexOf
-} = lodash
+} from 'lodash'
+import { getRoom, updateRoom } from '../../stores'
+import { logError } from '../../utils/utils'
 
 export const moveCard = (roomName, sourcePileName, destinationPileName, card) => {
     const room = getRoom(roomName)

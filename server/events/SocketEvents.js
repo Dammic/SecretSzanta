@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { isNil, includes, find, get, truncate } from 'lodash'
 import { io } from '../io'
 import {
     getCurrentTimestamp,
@@ -66,8 +66,6 @@ import {
     addPlayerToPlayersList,
     removePlayerFromPlayersList,
 } from '../utils/PlayersManager'
-
-const { isNil, includes, find, get, truncate } = lodash
 
 export const triggerVetoPrompt = (socket) => {
     setGamePhase(socket.currentRoom, GamePhases.ServerWaitingForVeto)

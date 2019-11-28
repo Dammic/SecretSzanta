@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { forEach, get, truncate } from 'lodash';
 import { GamePhases, PlayerAffilications, MessagesTypes } from '../../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import {
@@ -14,8 +14,6 @@ import {
 } from '../utils/RoomsManager'
 import * as emits from './emits'
 import { TimeDelay } from './consts'
-
-const { forEach, get, truncate } = lodash
 
 export const startChancellorChoicePhaseEvent = ({ currentRoom }, designatedPresidentName = null) => {
     startChancellorChoicePhase(currentRoom, designatedPresidentName)

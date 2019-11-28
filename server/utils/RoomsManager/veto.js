@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { includes, size } from 'lodash'
 import { getRoom, updateRoom } from '../../stores'
 
 import {
@@ -8,11 +8,6 @@ import {
 import {
     PlayerRole,
 } from '../../../Dictionary'
-
-const {
-    includes,
-    size,
-} = lodash
 
 export const toggleVeto = (roomName) => {
     updateRoom(roomName, { isVetoUnlocked: true })

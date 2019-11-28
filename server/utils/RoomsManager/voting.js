@@ -1,9 +1,4 @@
-import lodash from 'lodash'
-import { getRoom, updateRoom } from '../../stores'
-import { getAlivePlayers } from './players'
-import { PlayerRole } from '../../../Dictionary'
-
-const {
+import {
     reject,
     countBy,
     isNil,
@@ -12,7 +7,10 @@ const {
     includes,
     map,
     keys,
-} = lodash
+} from 'lodash'
+import { getRoom, updateRoom } from '../../stores'
+import { getAlivePlayers } from './players'
+import { PlayerRole } from '../../../Dictionary'
 
 export const initializeVoting = (roomName, chancellorCandidateName) => {
     updateRoom(roomName, {

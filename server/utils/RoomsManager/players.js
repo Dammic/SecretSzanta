@@ -1,10 +1,4 @@
-import lodash from 'lodash'
-import { getRoom, updateRoom } from '../../stores'
-import { GamePhases, PlayerAffilications, ErrorTypes } from '../../../Dictionary'
-import { setGamePhase } from './gamePhases'
-import { logInfo } from '../utils'
-
-const {
+import {
     reject,
     tail,
     includes,
@@ -12,7 +6,11 @@ const {
     map,
     find,
     pick,
-} = lodash
+} from 'lodash'
+import { getRoom, updateRoom } from '../../stores'
+import { GamePhases, PlayerAffilications, ErrorTypes } from '../../../Dictionary'
+import { setGamePhase } from './gamePhases'
+import { logInfo } from '../utils'
 
 /**
  * Function that performs adding a new player to a room

@@ -1,4 +1,5 @@
-import lodash from 'lodash'
+import { cloneDeep, partial, mapValues } from 'lodash'
+
 import SocketIO from 'socket.io'
 import PhaseSocketEvents from './events/PhaseSocketEvents'
 import ClientVerificationHof from './utils/ClientVerificationHof'
@@ -6,8 +7,6 @@ import { SocketEvents as SocketEventsDictionary } from '../Dictionary'
 import socketEvents from './events/SocketEvents'
 import { emitMessage } from './events/emits'
 import { logError } from './utils/utils'
-
-const { cloneDeep, partial, mapValues, partialRight } = lodash
 
 export let io = {}
 

@@ -1,10 +1,8 @@
-import lodash from 'lodash'
+import { random } from 'lodash'
 import {
     GlobalRoomName,
 } from '../../../Dictionary'
 import { playersStore } from '../../stores'
-
-const { random } = lodash
 
 export const getPlayersList = () => {
     return playersStore

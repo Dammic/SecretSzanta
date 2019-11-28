@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { io } from '../io'
 import { SocketEvents, PlayerAffilications, GlobalRoomName } from '../../Dictionary'
 import { getCurrentTimestamp } from './utils'
@@ -14,8 +13,6 @@ import {
     getPlayerFromPlayersList,
 } from './PlayersManager'
 import * as emits from '../events/emits'
-
-const { pick, map } = lodash
 
 let cancelTimeoutToken
 

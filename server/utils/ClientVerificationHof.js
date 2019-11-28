@@ -1,9 +1,7 @@
-import lodash from 'lodash'
+import { forEach, pick, get } from 'lodash'
 import { SocketEvents, ErrorMessages } from '../../Dictionary'
 import { isRoomOwner, getPresident, getChancellor } from './RoomsManager'
 import { logError } from './utils'
-
-const { forEach, pick, get } = lodash
 
 class VerificationError extends Error {}
 

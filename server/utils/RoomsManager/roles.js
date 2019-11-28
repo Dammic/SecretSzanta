@@ -1,8 +1,5 @@
 import { getRoom, updateRoom } from '../../stores'
-import lodash from 'lodash'
-
-import { PlayerRole } from '../../../Dictionary'
-const {
+import {
     reject,
     findIndex,
     sortBy,
@@ -10,7 +7,9 @@ const {
     pick,
     size,
     get,
-} = lodash
+} from 'lodash'
+
+import { PlayerRole } from '../../../Dictionary'
 
 export const getPlayerRole = (roomName, playerName) => {
     const { playersDict } = getRoom(roomName)
