@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { Button } from '..'
 
-import styles from './ControlButton.css'
+import styles from './ControlButton.module.css'
 
 const ControlButton = (props) => {
     const { className, children } = props

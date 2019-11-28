@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getAvatar } from '../../../../utils/avatarsHelper'
 
-import styles from './PlayersList.css'
-import commonStyles from '../../../Shared/CommonStyles/commonStyles.css'
+import styles from './PlayersList.module.css'
+import commonStyles from '../../../Shared/CommonStyles/commonStyles.module.css'
 
 export const PlayersListRow = ({ playerName, avatarNumber, currentRoom }) => {
     return (

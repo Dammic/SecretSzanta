@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { FancyButton } from '../../Shared/Buttons'
 import { Icon } from '../../Shared/Icon'
 
-import styles from './HaltModal.css'
+import styles from './HaltModal.module.css'
 
 const HaltModalComponent = ({
     hasGameEnded,

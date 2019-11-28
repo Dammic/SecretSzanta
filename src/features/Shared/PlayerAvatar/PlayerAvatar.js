@@ -5,7 +5,7 @@ import { getAvatar } from '../../../utils/avatarsHelper'
 import { Icon } from '../../Shared/Icon'
 import { PlayerRole } from './PlayerRole'
 
-import styles from './PlayerAvatar.css'
+import styles from './PlayerAvatar.module.css'
 
 const PlayerAvatar = ({
     liberalAvatar,

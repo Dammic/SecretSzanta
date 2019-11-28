@@ -5,7 +5,7 @@ import { map } from 'lodash'
 import { PolicyCards } from '../../../../Dictionary'
 import { FancyButton } from '../../Shared/Buttons'
 
-import styles from './PolicyChoiceModal.css'
+import styles from './PolicyChoiceModal.module.css'
 
 const liberalPolicy = require('../../../static/liberalcard.png')
 const fascistPolicy = require('../../../static/facistcard.png')

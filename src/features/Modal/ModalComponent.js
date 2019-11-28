@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 import classNames from 'classnames/bind'
 import { Icon } from '../Shared/Icon'
 
-import styles from './Modal.css'
+import styles from './Modal.module.css'
 
 const ModalComponent = ({
     isVisible = false,

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './Counter.css'
+import styles from './Counter.module.css'
 
 export class Counter extends React.PureComponent {
     static displayName = 'Counter'

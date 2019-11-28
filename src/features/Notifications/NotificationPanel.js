@@ -4,7 +4,7 @@ import classNames from 'classnames/bind'
 import { Icon } from '../Shared/Icon'
 import { MessagesTypes } from '../../../Dictionary'
 
-import styles from './Notifications.css'
+import styles from './Notifications.module.css'
 
 export default class NotificationPanel extends PureComponent {
     static propTypes = {

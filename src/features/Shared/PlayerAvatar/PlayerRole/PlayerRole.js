@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { PlayerRole as PlayerRoleDict } from '../../../../../Dictionary'
 
-import styles from './PlayerRole.css'
+import styles from './PlayerRole.module.css'
 
 const roleMapping = {
     [PlayerRoleDict.ROLE_CHANCELLOR]: 'Chancellor',

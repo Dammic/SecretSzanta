@@ -1,6 +1,6 @@
 import React from 'react'
 
-import styles from './NoResults.css'
+import styles from './NoResults.module.css'
 
 export const NoResults = () => (
     <div className={styles.noResults}>

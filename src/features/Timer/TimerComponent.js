@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { Button } from '../Shared/Buttons'
 
-import styles from './Timer.css'
+import styles from './Timer.module.css'
 
 const TimerComponent = ({ secondsRemaining, isVetoUnlocked, onVetoClick }) => (
     <div className={classNames(styles.timer, { [styles.visible]: !!secondsRemaining })}>

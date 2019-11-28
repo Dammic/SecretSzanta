@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import MessagesBox from './MessagesBox/MessagesBox'
 import ChatForm from './ChatForm/ChatForm'
 
-import styles from './Chat.css'
+import styles from './Chat.module.css'
 
 const Chat = ({ className }) => (
     <div className={classNames(styles.chat, className)}>

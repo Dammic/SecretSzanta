@@ -4,7 +4,7 @@ import PlayerBoard from '../PlayerBoard/PlayerBoard'
 import Chat from '../Chat/Chat'
 import Timer from '../Timer/Timer'
 
-import styles from './GameRoom.css'
+import styles from './GameRoom.module.css'
 
 const GameRoomComponent = () => {
     return (
