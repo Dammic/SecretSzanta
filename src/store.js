@@ -10,10 +10,9 @@ const router = routerMiddleware(history)
 
 export const store = createStore(
     rootReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     compose(
-        applyMiddleware(thunk),
-        applyMiddleware(router),
+        applyMiddleware(thunk, router),
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     ),
 )
 /* eslint-enable */

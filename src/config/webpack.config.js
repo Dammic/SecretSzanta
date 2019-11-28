@@ -4,15 +4,15 @@ const CompressionPlugin = require('compression-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HappyPack = require('happypack')
 const happyThreadPool = HappyPack.ThreadPool({ size: 6 })
-const getLatestGitCommitHash = require('./utils/webpackUtils').getLatestGitCommitHash
+const childProcess = require('child_process')
+
+const getLatestGitCommitHash = () => {
+    return childProcess
+        .execSync('git rev-parse HEAD')
+        .toString().trim().slice(0, 7)
+}
 
 const productionPlugins = [
-    new CompressionPlugin({
-        asset: '[path].gz[query]',
-        algorithm: 'gzip',
-        regExp: /\.js$|\.css$|\.html$/,
-        threshold: 1,
-    }),
 ]
 
 module.exports = (env, argv) => {
