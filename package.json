@@ -25,17 +25,21 @@
     "classnames": "2.2.6",
     "connected-react-router": "^6.6.1",
     "customize-cra": "^0.9.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "esm": "^3.2.25",
     "express": "4.17.1",
     "express-static-gzip": "2.0.5",
     "font-awesome": "4.7.0",
     "history": "4.10.1",
+    "identity-obj-proxy": "^3.0.0",
     "lodash": "4.17.15",
     "moment": "2.24.0",
     "node-sass": "4.13.0",
     "nodemon": "2.0.1",
     "postcss-import": "^12.0.1",
     "prop-types": "15.7.2",
+    "raf-polyfill": "^1.0.0",
     "react": "^16.12.0",
     "react-addons-css-transition-group": "15.6.2",
     "react-app-rewire-postcss": "^3.0.2",
@@ -69,6 +73,25 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/",
+    "moduleNameMapper": {
+      ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy",
+      ".+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/src/__mocks__/fileMock.js",
+      "packages(.*)$": "<rootDir>/src/packages$1"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "node"
+    ],
+    "setupFiles": [
+      "raf/polyfill",
+      "./src/config/test.config.js"
     ]
   }
 }
