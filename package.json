@@ -9,7 +9,8 @@
     "eslint": "eslint ./src",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test"
+    "test": "jest",
+    "test:fe": "jest src/*"
   },
   "husky": {
     "hooks": {
@@ -22,11 +23,17 @@
     "Marek Tkaczyk"
   ],
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
     "classnames": "2.2.6",
     "connected-react-router": "^6.6.1",
     "customize-cra": "^0.9.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-react": "^1.1.7",
+    "eslint-plugin-jest": "^23.0.5",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-lodash": "^6.0.0",
     "esm": "^3.2.25",
     "express": "4.17.1",
     "express-static-gzip": "2.0.5",
@@ -51,6 +58,7 @@
     "react-transition-group": "4.3.0",
     "redux": "4.0.4",
     "redux-actions": "2.6.5",
+    "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "2.3.0",
     "socket.io": "2.3.0",
     "socket.io-client": "2.3.0"
@@ -82,6 +90,9 @@
       ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy",
       ".+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/src/__mocks__/fileMock.js",
       "packages(.*)$": "<rootDir>/src/packages$1"
+    },
+    "transform": {
+      ".js": "babel-jest"
     },
     "moduleFileExtensions": [
       "js",

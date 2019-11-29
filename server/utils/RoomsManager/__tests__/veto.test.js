@@ -1,5 +1,5 @@
 import { size } from 'lodash'
-import { PlayerRole } from '../../../../../Dictionary'
+import { PlayerRole } from '../../../../Dictionary'
 import { getAllRooms, getRoom, updateRoom } from '../../../stores'
 
 import {

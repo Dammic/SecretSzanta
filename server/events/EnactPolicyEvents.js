@@ -1,4 +1,4 @@
-import { PolicyCards, PlayerBoards, MessagesTypes } from '@Dictionary'
+import { PolicyCards, PlayerBoards, MessagesTypes } from '../../Dictionary'
 import SocketEventsUtils from '../utils/SocketEventsUtils'
 import PhaseSocketEvents from './PhaseSocketEvents'
 import {

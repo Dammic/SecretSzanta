@@ -20,11 +20,13 @@ import { addMessage, clearChat } from '../ducks/chatDuck'
 import { addNotification } from '../ducks/notificationsDuck'
 import { logoutUser } from '../ducks/rootDuck'
 
+const SOCKET_URL = 'http://localhost:3000'
+
 export let socket = {}
 
 export class SocketHandler extends React.PureComponent {
     componentDidMount() {
-        socket = IO()
+        socket = IO(SOCKET_URL)
         socket.on(SocketEvents.CLIENT_GET_ROOM_DATA, (payload) => {
             this.props.roomActions.syncRoomData(payload.data)
             if (payload.data.gamePhase === GamePhases.Paused) {
