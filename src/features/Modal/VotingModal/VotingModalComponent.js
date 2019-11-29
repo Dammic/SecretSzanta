@@ -5,8 +5,8 @@ import { FancyButton } from '../../Shared/Buttons'
 import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 import { Icon } from '../../Shared/Icon'
 
-import commonStyles from '../../Shared/CommonStyles/commonStyles.css'
-import styles from './VotingModal.css'
+import commonStyles from '../../Shared/CommonStyles/commonStyles.module.css'
+import styles from './VotingModal.module.css'
 
 const VotingModalComponent = ({
     onYesVote,

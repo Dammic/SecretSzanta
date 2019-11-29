@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ControlButton } from '../../../Shared/Buttons'
 
-import styles from './TopNavbar.css'
-import commonStyles from '../../../Shared/CommonStyles/commonStyles.css'
+import styles from './TopNavbar.module.css'
+import commonStyles from '../../../Shared/CommonStyles/commonStyles.module.css'
 
 export const TopNavbarComponent = ({ onShowModal, userName }) => (
     <div className={styles.topBar}>

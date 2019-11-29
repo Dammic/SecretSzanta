@@ -6,7 +6,7 @@ import { map } from 'lodash'
 import { Views } from '../../../Dictionary'
 import { Icon } from '../Shared/Icon'
 
-import styles from './Header.css'
+import styles from './Header.module.css'
 
 const HeaderComponent = ({
     setView,

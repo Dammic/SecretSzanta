@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import classNames from 'classnames/bind'
 
-import styles from './MessagesBox.css'
+import styles from './MessagesBox.module.css'
 
 const buildMessage = (message, index) => {
     const { time, author, content } = message

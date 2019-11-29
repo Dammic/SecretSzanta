@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { map, size, groupBy } from 'lodash'
 import { PlayersListRow } from './PlayersListRow'
 
-import styles from './PlayersList.css'
+import styles from './PlayersList.module.css'
 
 export const PlayersList = ({ playersList }) => {
     const groupedPlayers = groupBy(playersList, player => !!player.currentRoom)

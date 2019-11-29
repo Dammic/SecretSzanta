@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { getAvatar } from '../../utils/avatarsHelper'
 import { ControlButton } from '../Shared/Buttons'
 
-import styles from './LoginPage.css'
+import styles from './LoginPage.module.css'
 
 const LoginPageComponent = ({
     onSetNameClick,

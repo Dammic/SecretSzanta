@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Icon } from '../../../../../Shared/Icon'
 import { ControlButton } from '../../../../../Shared/Buttons'
 
-import styles from './RoomCell.css'
+import styles from './RoomCell.module.css'
 
 const RoomCell = ({ room: { roomName, playersCount, roomId, maxPlayers, hasPassword }, onJoin }) => {
     const [showPasswordInput, setPasswordInputVisibility] = useState(false)

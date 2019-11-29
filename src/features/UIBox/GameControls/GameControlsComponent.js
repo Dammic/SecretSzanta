@@ -5,7 +5,7 @@ import { GamePhases } from '../../../../Dictionary'
 import { ControlButton } from '../../Shared/Buttons'
 import { Icon } from '../../Shared/Icon'
 
-import styles from './GameControls.css'
+import styles from './GameControls.module.css'
 
 const renderButton = (label, onClick) => (
     <ControlButton key={label} onClick={onClick}>{label}</ControlButton>

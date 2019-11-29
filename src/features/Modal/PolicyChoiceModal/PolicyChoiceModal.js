@@ -1,9 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { get, pullAt } from 'lodash'
 import PolicyChoiceModalComponent from './PolicyChoiceModalComponent'
-import { SocketEvents, PlayerRole } from '../../../../Dictionary'
+import { SocketEvents } from '../../../../Dictionary'
 import { socket } from '../../../utils/SocketHandler'
 
 export class PolicyChoiceModal extends React.PureComponent {

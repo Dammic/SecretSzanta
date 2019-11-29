@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { Button } from '..'
 
-import styles from './FancyButton.css'
+import styles from './FancyButton.module.css'
 
 const FancyButton = (props) => {
     const { className, children } = props

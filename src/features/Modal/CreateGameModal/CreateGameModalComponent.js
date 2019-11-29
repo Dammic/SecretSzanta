@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ControlButton } from '../../Shared/Buttons'
 
-import styles from './CreateGameModal.css'
+import styles from './CreateGameModal.module.css'
 
 const CreateGameModalComponent = ({
     roomName,

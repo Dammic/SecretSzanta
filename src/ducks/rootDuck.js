@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { createAction } from 'redux-actions'
-import { routerReducer } from 'react-router-redux'
+import { connectRouter } from 'connected-react-router'
 
 import chat from './chatDuck'
 import user from './userDuck'
@@ -15,7 +15,7 @@ const LOGOUT_USER = 'root/USER_LOGOUT'
 // Actions
 export const logoutUser = createAction(LOGOUT_USER)
 
-const appReducer = combineReducers({
+const appReducer = (history) => combineReducers({
     chat,
     user,
     room,
@@ -23,13 +23,13 @@ const appReducer = combineReducers({
     players,
     modal,
     lobby,
-    routing: routerReducer,
+    router: connectRouter(history),
 })
 
-export const rootReducer = (state, action) => {
+export const createRootReducer = (history) => (state, action) => {
     if (action.type === LOGOUT_USER) {
-        return appReducer(undefined, action)
+        return appReducer(history)(undefined, action)
     }
 
-    return appReducer(state, action)
+    return appReducer(history)(state, action)
 }

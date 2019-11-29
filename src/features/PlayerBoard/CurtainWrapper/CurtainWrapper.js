@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import styles from './CurtainWrapper.css'
+import styles from './CurtainWrapper.module.css'
 
 class CurtainWrapper extends PureComponent {
     static displayName = 'CurtainWrapper'

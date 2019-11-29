@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 import VoteBubble from './VoteBubble/VoteBubble'
 
-import styles from './Player.css'
+import styles from './Player.module.css'
 
 const PlayerComponent = ({
     playerName,

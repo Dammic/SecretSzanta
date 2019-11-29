@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { isUndefined, get } from 'lodash'
 import { PlayerDirection, GamePhases } from '../../../../../Dictionary'
 
-import styles from './VoteBubble.css'
+import styles from './VoteBubble.module.css'
 
 const bubbleStylesMapping = {
     [PlayerDirection.PLAYER_DIRECTION_LEFT]: styles.bubbleLeft,

@@ -3,7 +3,7 @@ import { map } from 'lodash'
 import NotificationPanel from './NotificationPanel'
 import { StatusNotification } from './StatusNotification'
 
-import styles from './Notifications.css'
+import styles from './Notifications.module.css'
 
 const NotificationsComponent = ({ notifications, statusNotification, deleteNotification }) => (
     <div className={styles.notifications} >

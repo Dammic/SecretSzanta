@@ -1,6 +1,6 @@
 import React from 'react'
 
-import styles from './News.css'
+import styles from './News.module.css'
 
 const NewsComponent = () => {
     return (

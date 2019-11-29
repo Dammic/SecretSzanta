@@ -13,8 +13,8 @@ import News from './StaticPages/News/News'
 import HowToPlayComponent from './StaticPages/HowToPlay/HowToPlayComponent'
 import AboutComponent from './StaticPages/About/AboutComponent'
 
-import '../../styles/globals.css'
-import styles from './LandingPage.css'
+import '../../styles/globals.module.css'
+import styles from './LandingPage.module.css'
 
 export class LandingPage extends React.PureComponent {
     static propTypes = {

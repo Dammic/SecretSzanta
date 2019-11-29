@@ -2,7 +2,7 @@ import React from 'react'
 import { map } from 'lodash'
 import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 
-import styles from './WinningModal.css'
+import styles from './WinningModal.module.css'
 
 const WinningModalComponent = ({ winners, losers }) => {
     return (

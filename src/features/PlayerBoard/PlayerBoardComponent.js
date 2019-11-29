@@ -9,7 +9,7 @@ import facistCard from '../../static/facistcard.png'
 import liberalPolicies from '../../static/liberalpolicies.png'
 import CurtainWrapper from './CurtainWrapper/CurtainWrapper'
 
-import styles from './PlayerBoard.css'
+import styles from './PlayerBoard.module.css'
 
 const PlayerBoardComponent = ({
     playersLeft = [],

@@ -5,7 +5,7 @@ import { includes } from 'lodash'
 import { PlayerAffilications } from '../../../../Dictionary'
 import { PlayerAvatar } from '../../Shared/PlayerAvatar'
 
-import styles from './Submenu.css'
+import styles from './Submenu.module.css'
 
 const renderPlayerCard = (liberalAvatar, fascistAvatar, isOwner, isDead, role) => {
     if (!liberalAvatar) return null

@@ -6,7 +6,7 @@ import FacistMembershipImage from '../../../static/Facist_Membership.png'
 import LiberalMembershipImage from '../../../static/Liberal_Membership.png'
 import { FancyButton } from '../../Shared/Buttons'
 
-import styles from './PeekAffiliationModal.css'
+import styles from './PeekAffiliationModal.module.css'
 
 const PeekAffiliationModal = ({
     avatarNumber,

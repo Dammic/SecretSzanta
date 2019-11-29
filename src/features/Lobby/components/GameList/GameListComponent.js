@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { map } from 'lodash'
 
 import { RoomCell } from './components/RoomCell'
-import styles from './GameList.css'
+import styles from './GameList.module.css'
 
 export const GameListComponent = ({ rooms, onJoin }) => (
     <div className={styles.gameList}>

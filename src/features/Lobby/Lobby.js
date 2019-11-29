@@ -4,7 +4,7 @@ import { TopNavbar } from './components/TopNavbar'
 import { PlayersList } from './components/PlayersList'
 import Chat from '../Chat/Chat'
 
-import styles from './Lobby.css'
+import styles from './Lobby.module.css'
 
 export const Lobby = () => (
     <div className={styles.gameListContainer}>

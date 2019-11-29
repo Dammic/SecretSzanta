@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Icon } from '../../Shared/Icon'
 
-import styles from './ChatForm.css'
+import styles from './ChatForm.module.css'
 
 const ChatFormComponent = ({
     sendMessage,
